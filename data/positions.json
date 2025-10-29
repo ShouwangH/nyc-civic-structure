@@ -1,0 +1,25 @@
+{
+  "positions": {
+    "nyc_charter": { "x": 400, "y": 100 },
+
+    "public_advocate": { "x": 300, "y": 230 },
+    "city_council": { "x": 300, "y": 330 },
+    "administrative_code": { "x": 300, "y": 430 },
+
+    "mayor": { "x": 470, "y": 230 },
+    "comptroller": { "x": 620, "y": 230 },
+
+    "nyc_budget": { "x": 520, "y": 370 },
+
+    "departments": { "x": 470, "y": 500 },
+    "rules_of_city": { "x": 470, "y": 600 },
+
+    "community_system": { "x": 950, "y": 100 },
+
+    "borough_manhattan": { "x": 800, "y": 250 },
+    "borough_brooklyn": { "x": 900, "y": 250 },
+    "borough_bronx": { "x": 1000, "y": 250 },
+    "borough_queens": { "x": 1100, "y": 250 },
+    "borough_staten_island": { "x": 1200, "y": 250 }
+  }
+}
