@@ -1,0 +1,180 @@
+{
+  "meta": {
+    "title": "New York City Government Structure",
+    "description": "Simplified graph of NYC government branches and processes for civic education."
+  },
+
+  "nodes": [
+    {
+      "id": "nyc_charter",
+      "label": "NYC Charter",
+      "type": "law",
+      "branch": "constitutional",
+      "factoid": "The foundational law of the City of New York, defining powers of the Mayor, Council, and other offices."
+    },
+    {
+      "id": "administrative_code",
+      "label": "NYC Administrative Code",
+      "type": "law",
+      "branch": "administrative",
+      "factoid": "Compilation of permanent laws passed by the City Council and signed by the Mayor."
+    },
+    {
+      "id": "mayor",
+      "label": "Mayor (E. Adams)",
+      "type": "office",
+      "branch": "executive",
+      "process": ["budget", "administrative"],
+      "factoid": "Chief executive of NYC. Prepares the city budget, enforces laws, and oversees city agencies."
+    },
+    {
+      "id": "comptroller",
+      "label": "Comptroller (B. Lander)",
+      "type": "office",
+      "branch": "executive",
+      "process": ["budget"],
+      "factoid": "Chief financial officer and auditor of city agencies. Reviews contracts and manages pensions."
+    },
+    {
+      "id": "city_council",
+      "label": "City Council",
+      "type": "body",
+      "branch": "legislative",
+      "process": ["legislative", "budget"],
+      "factoid": "NYC's legislative body with 51 members. Passes local laws and approves the budget."
+    },
+    {
+      "id": "speaker",
+      "label": "Speaker (A. Adams)",
+      "type": "office",
+      "branch": "legislative",
+      "factoid": "Presides over the City Council. Coordinates legislative agenda and committee leadership."
+    },
+    {
+      "id": "nyc_departments",
+      "label": "NYC Departments",
+      "type": "agency",
+      "branch": "administrative",
+      "process": ["budget", "administrative"],
+      "factoid": "Over 50 agencies and offices implement city policy, ranging from sanitation to education."
+    },
+    {
+      "id": "community_boards",
+      "label": "Community Boards (59)",
+      "type": "body",
+      "branch": "community",
+      "process": ["ulurp"],
+      "factoid": "Advisory groups of up to 50 members each, representing neighborhoods in land use and budget matters."
+    },
+    {
+      "id": "borough_presidents",
+      "label": "Borough Presidents (5)",
+      "type": "office",
+      "branch": "community",
+      "process": ["ulurp", "budget"],
+      "factoid": "Elected officials for each borough who appoint community board members and advocate for local interests."
+    },
+    {
+      "id": "ulurp",
+      "label": "ULURP (Land Use Process)",
+      "type": "process",
+      "branch": "planning",
+      "process": ["ulurp"],
+      "factoid": "Uniform Land Use Review Procedure — formal public review process for land use changes and zoning."
+    },
+    {
+      "id": "nyc_budget",
+      "label": "NYC Budget",
+      "type": "process",
+      "branch": "financial",
+      "process": ["budget"],
+      "factoid": "Annual financial plan allocating about $116 billion across operating and capital expenses."
+    }
+  ],
+
+  "edges": [
+    {
+      "source": "nyc_charter",
+      "target": "mayor",
+      "type": "structural",
+      "process": ["administrative"],
+      "label": "Defines executive powers"
+    },
+    {
+      "source": "nyc_charter",
+      "target": "city_council",
+      "type": "structural",
+      "process": ["legislative"],
+      "label": "Establishes legislative body"
+    },
+    {
+      "source": "city_council",
+      "target": "speaker",
+      "type": "organizational",
+      "label": "Council leadership"
+    },
+    {
+      "source": "city_council",
+      "target": "administrative_code",
+      "type": "legislative",
+      "process": ["legislative"],
+      "label": "Passes laws codified here"
+    },
+    {
+      "source": "mayor",
+      "target": "nyc_departments",
+      "type": "executive",
+      "process": ["administrative"],
+      "label": "Oversees city agencies"
+    },
+    {
+      "source": "mayor",
+      "target": "nyc_budget",
+      "type": "financial",
+      "process": ["budget"],
+      "label": "Prepares and submits budget"
+    },
+    {
+      "source": "nyc_budget",
+      "target": "city_council",
+      "type": "financial",
+      "process": ["budget"],
+      "label": "Council reviews and adopts budget"
+    },
+    {
+      "source": "comptroller",
+      "target": "nyc_budget",
+      "type": "financial",
+      "process": ["budget"],
+      "label": "Audits and certifies budget accuracy"
+    },
+    {
+      "source": "city_council",
+      "target": "borough_presidents",
+      "type": "budget",
+      "process": ["budget"],
+      "label": "Allocates borough capital funds"
+    },
+    {
+      "source": "borough_presidents",
+      "target": "community_boards",
+      "type": "community",
+      "process": ["ulurp", "budget"],
+      "label": "Appoint members and advise local budgets"
+    },
+    {
+      "source": "community_boards",
+      "target": "ulurp",
+      "type": "planning",
+      "process": ["ulurp"],
+      "label": "Submit advisory opinions"
+    },
+    {
+      "source": "ulurp",
+      "target": "city_council",
+      "type": "planning",
+      "process": ["ulurp"],
+      "label": "Final land use approval"
+    }
+  ]
+}
