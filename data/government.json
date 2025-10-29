@@ -1,180 +1,243 @@
 {
   "meta": {
-    "title": "New York City Government Structure",
-    "description": "Simplified graph of NYC government branches and processes for civic education."
+    "title": "NYC Government Structure",
+    "description": "Visualization of entities established under the NYC Charter and the five borough governments."
   },
-
   "nodes": [
     {
       "id": "nyc_charter",
       "label": "NYC Charter",
       "type": "law",
       "branch": "constitutional",
-      "factoid": "The foundational law of the City of New York, defining powers of the Mayor, Council, and other offices."
-    },
-    {
-      "id": "administrative_code",
-      "label": "NYC Administrative Code",
-      "type": "law",
-      "branch": "administrative",
-      "factoid": "Compilation of permanent laws passed by the City Council and signed by the Mayor."
+      "factoid": "Foundational document defining the structure and powers of New York City government.",
+      "position": {
+        "x": 400,
+        "y": 100
+      }
     },
     {
       "id": "mayor",
-      "label": "Mayor (E. Adams)",
+      "label": "Mayor",
       "type": "office",
       "branch": "executive",
-      "process": ["budget", "administrative"],
-      "factoid": "Chief executive of NYC. Prepares the city budget, enforces laws, and oversees city agencies."
+      "process": [
+        "budget",
+        "legislative"
+      ],
+      "factoid": "Elected citywide executive. Oversees agencies, prepares the budget, and enforces city laws.",
+      "position": {
+        "x": 470,
+        "y": 230
+      }
     },
     {
       "id": "comptroller",
-      "label": "Comptroller (B. Lander)",
+      "label": "Comptroller",
       "type": "office",
       "branch": "executive",
-      "process": ["budget"],
-      "factoid": "Chief financial officer and auditor of city agencies. Reviews contracts and manages pensions."
+      "process": [
+        "budget"
+      ],
+      "factoid": "Fiscal watchdog and auditor. Oversees the city's financial operations and pensions.",
+      "position": {
+        "x": 620,
+        "y": 230
+      }
+    },
+    {
+      "id": "public_advocate",
+      "label": "Public Advocate",
+      "type": "office",
+      "branch": "executive",
+      "process": [
+        "legislative"
+      ],
+      "factoid": "Monitors city agencies and acts as a public ombudsman, representing residents before city government.",
+      "position": {
+        "x": 300,
+        "y": 230
+      }
     },
     {
       "id": "city_council",
       "label": "City Council",
       "type": "body",
       "branch": "legislative",
-      "process": ["legislative", "budget"],
-      "factoid": "NYC's legislative body with 51 members. Passes local laws and approves the budget."
+      "process": [
+        "legislative",
+        "budget"
+      ],
+      "factoid": "51-member legislative body that passes local laws, approves the budget, and exercises oversight.",
+      "position": {
+        "x": 300,
+        "y": 330
+      }
     },
     {
-      "id": "speaker",
-      "label": "Speaker (A. Adams)",
-      "type": "office",
-      "branch": "legislative",
-      "factoid": "Presides over the City Council. Coordinates legislative agenda and committee leadership."
-    },
-    {
-      "id": "nyc_departments",
-      "label": "NYC Departments",
+      "id": "departments",
+      "label": "NYC Departments & Agencies",
       "type": "agency",
       "branch": "administrative",
-      "process": ["budget", "administrative"],
-      "factoid": "Over 50 agencies and offices implement city policy, ranging from sanitation to education."
+      "process": [
+        "budget"
+      ],
+      "factoid": "Agencies responsible for carrying out policy across housing, health, planning, education, and more.",
+      "position": {
+        "x": 470,
+        "y": 500
+      }
     },
     {
-      "id": "community_boards",
-      "label": "Community Boards (59)",
-      "type": "body",
-      "branch": "community",
-      "process": ["ulurp"],
-      "factoid": "Advisory groups of up to 50 members each, representing neighborhoods in land use and budget matters."
+      "id": "administrative_code",
+      "label": "Administrative Code (NYC Statute)",
+      "type": "law",
+      "branch": "legislative",
+      "factoid": "Compilation of permanent local laws enacted by the City Council and signed by the Mayor.",
+      "position": {
+        "x": 300,
+        "y": 430
+      }
     },
     {
-      "id": "borough_presidents",
-      "label": "Borough Presidents (5)",
-      "type": "office",
-      "branch": "community",
-      "process": ["ulurp", "budget"],
-      "factoid": "Elected officials for each borough who appoint community board members and advocate for local interests."
-    },
-    {
-      "id": "ulurp",
-      "label": "ULURP (Land Use Process)",
-      "type": "process",
-      "branch": "planning",
-      "process": ["ulurp"],
-      "factoid": "Uniform Land Use Review Procedure — formal public review process for land use changes and zoning."
+      "id": "rules_of_city",
+      "label": "Rules of the City of New York (Administrative Law)",
+      "type": "regulation",
+      "branch": "administrative",
+      "factoid": "Regulations issued by city agencies to implement provisions of the Administrative Code.",
+      "position": {
+        "x": 470,
+        "y": 600
+      }
     },
     {
       "id": "nyc_budget",
       "label": "NYC Budget",
       "type": "process",
       "branch": "financial",
-      "process": ["budget"],
-      "factoid": "Annual financial plan allocating about $116 billion across operating and capital expenses."
+      "process": [
+        "budget"
+      ],
+      "factoid": "Annual financial plan allocating operating and capital funds across city agencies and boroughs.",
+      "position": {
+        "x": 620,
+        "y": 370
+      }
+    },
+    {
+      "id": "borough_manhattan",
+      "label": "Manhattan",
+      "type": "region",
+      "branch": "community",
+      "factoid": "Manhattan's Borough President oversees 12 Community Boards, representing local neighborhoods.",
+      "position": {
+        "x": 800,
+        "y": 250
+      },
+      "sidebarDetails": {
+        "summary": "Manhattan\u2019s Borough President oversees 12 Community Boards, representing local neighborhoods."
+      }
+    },
+    {
+      "id": "borough_brooklyn",
+      "label": "Brooklyn",
+      "type": "region",
+      "branch": "community",
+      "factoid": "Brooklyn's Borough President oversees 18 Community Boards.",
+      "position": {
+        "x": 950,
+        "y": 250
+      },
+      "sidebarDetails": {
+        "summary": "Brooklyn\u2019s Borough President oversees 18 Community Boards."
+      }
+    },
+    {
+      "id": "borough_bronx",
+      "label": "Bronx",
+      "type": "region",
+      "branch": "community",
+      "factoid": "Bronx's Borough President oversees 12 Community Boards.",
+      "position": {
+        "x": 1100,
+        "y": 250
+      },
+      "sidebarDetails": {
+        "summary": "Bronx\u2019s Borough President oversees 12 Community Boards."
+      }
+    },
+    {
+      "id": "borough_queens",
+      "label": "Queens",
+      "type": "region",
+      "branch": "community",
+      "factoid": "Queens's Borough President oversees 14 Community Boards.",
+      "position": {
+        "x": 1250,
+        "y": 250
+      },
+      "sidebarDetails": {
+        "summary": "Queens\u2019s Borough President oversees 14 Community Boards."
+      }
+    },
+    {
+      "id": "borough_staten_island",
+      "label": "Staten Island",
+      "type": "region",
+      "branch": "community",
+      "factoid": "Staten Island's Borough President oversees 3 Community Boards.",
+      "position": {
+        "x": 1400,
+        "y": 250
+      },
+      "sidebarDetails": {
+        "summary": "Staten Island\u2019s Borough President oversees 3 Community Boards."
+      }
     }
   ],
-
   "edges": [
     {
       "source": "nyc_charter",
-      "target": "mayor",
-      "type": "structural",
-      "process": ["administrative"],
-      "label": "Defines executive powers"
+      "target": "mayor"
     },
     {
       "source": "nyc_charter",
-      "target": "city_council",
-      "type": "structural",
-      "process": ["legislative"],
-      "label": "Establishes legislative body"
+      "target": "comptroller"
     },
     {
-      "source": "city_council",
-      "target": "speaker",
-      "type": "organizational",
-      "label": "Council leadership"
+      "source": "nyc_charter",
+      "target": "public_advocate"
     },
     {
-      "source": "city_council",
-      "target": "administrative_code",
-      "type": "legislative",
-      "process": ["legislative"],
-      "label": "Passes laws codified here"
+      "source": "nyc_charter",
+      "target": "city_council"
     },
     {
       "source": "mayor",
-      "target": "nyc_departments",
-      "type": "executive",
-      "process": ["administrative"],
-      "label": "Oversees city agencies"
+      "target": "departments"
+    },
+    {
+      "source": "city_council",
+      "target": "administrative_code"
+    },
+    {
+      "source": "departments",
+      "target": "rules_of_city"
+    },
+    {
+      "source": "public_advocate",
+      "target": "city_council"
     },
     {
       "source": "mayor",
-      "target": "nyc_budget",
-      "type": "financial",
-      "process": ["budget"],
-      "label": "Prepares and submits budget"
+      "target": "nyc_budget"
     },
     {
-      "source": "nyc_budget",
-      "target": "city_council",
-      "type": "financial",
-      "process": ["budget"],
-      "label": "Council reviews and adopts budget"
+      "source": "city_council",
+      "target": "nyc_budget"
     },
     {
       "source": "comptroller",
-      "target": "nyc_budget",
-      "type": "financial",
-      "process": ["budget"],
-      "label": "Audits and certifies budget accuracy"
-    },
-    {
-      "source": "city_council",
-      "target": "borough_presidents",
-      "type": "budget",
-      "process": ["budget"],
-      "label": "Allocates borough capital funds"
-    },
-    {
-      "source": "borough_presidents",
-      "target": "community_boards",
-      "type": "community",
-      "process": ["ulurp", "budget"],
-      "label": "Appoint members and advise local budgets"
-    },
-    {
-      "source": "community_boards",
-      "target": "ulurp",
-      "type": "planning",
-      "process": ["ulurp"],
-      "label": "Submit advisory opinions"
-    },
-    {
-      "source": "ulurp",
-      "target": "city_council",
-      "type": "planning",
-      "process": ["ulurp"],
-      "label": "Final land use approval"
+      "target": "nyc_budget"
     }
   ]
 }
