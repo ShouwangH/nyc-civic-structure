@@ -26,7 +26,7 @@
       ],
       "factoid": "Elected citywide executive. Oversees agencies, prepares the budget, and enforces city laws.",
       "position": {
-        "x": 470,
+        "x": 410,
         "y": 230
       }
     },
@@ -40,7 +40,7 @@
       ],
       "factoid": "Fiscal watchdog and auditor. Oversees the city's financial operations and pensions.",
       "position": {
-        "x": 620,
+        "x": 580,
         "y": 230
       }
     },
@@ -54,7 +54,7 @@
       ],
       "factoid": "Monitors city agencies and acts as a public ombudsman, representing residents before city government.",
       "position": {
-        "x": 300,
+        "x": 230,
         "y": 230
       }
     },
@@ -69,8 +69,8 @@
       ],
       "factoid": "51-member legislative body that passes local laws, approves the budget, and exercises oversight.",
       "position": {
-        "x": 300,
-        "y": 330
+        "x": 230,
+        "y": 370
       }
     },
     {
@@ -83,7 +83,7 @@
       ],
       "factoid": "Agencies responsible for carrying out policy across housing, health, planning, education, and more.",
       "position": {
-        "x": 470,
+        "x": 450,
         "y": 500
       }
     },
@@ -94,8 +94,8 @@
       "branch": "legislative",
       "factoid": "Compilation of permanent local laws enacted by the City Council and signed by the Mayor.",
       "position": {
-        "x": 300,
-        "y": 430
+        "x": 230,
+        "y": 500
       }
     },
     {
@@ -105,8 +105,8 @@
       "branch": "administrative",
       "factoid": "Regulations issued by city agencies to implement provisions of the Administrative Code.",
       "position": {
-        "x": 470,
-        "y": 600
+        "x": 450,
+        "y": 650
       }
     },
     {
@@ -119,7 +119,7 @@
       ],
       "factoid": "Annual financial plan allocating operating and capital funds across city agencies and boroughs.",
       "position": {
-        "x": 620,
+        "x": 580,
         "y": 370
       }
     },
@@ -131,7 +131,7 @@
       "factoid": "Manhattan's Borough President oversees 12 Community Boards, representing local neighborhoods.",
       "position": {
         "x": 800,
-        "y": 250
+        "y": 230
       },
       "sidebarDetails": {
         "summary": "Manhattan\u2019s Borough President oversees 12 Community Boards, representing local neighborhoods."
@@ -145,7 +145,7 @@
       "factoid": "Brooklyn's Borough President oversees 18 Community Boards.",
       "position": {
         "x": 950,
-        "y": 250
+        "y": 230
       },
       "sidebarDetails": {
         "summary": "Brooklyn\u2019s Borough President oversees 18 Community Boards."
@@ -159,7 +159,7 @@
       "factoid": "Bronx's Borough President oversees 12 Community Boards.",
       "position": {
         "x": 1100,
-        "y": 250
+        "y": 230
       },
       "sidebarDetails": {
         "summary": "Bronx\u2019s Borough President oversees 12 Community Boards."
@@ -173,7 +173,7 @@
       "factoid": "Queens's Borough President oversees 14 Community Boards.",
       "position": {
         "x": 1250,
-        "y": 250
+        "y": 230
       },
       "sidebarDetails": {
         "summary": "Queens\u2019s Borough President oversees 14 Community Boards."
@@ -187,7 +187,7 @@
       "factoid": "Staten Island's Borough President oversees 3 Community Boards.",
       "position": {
         "x": 1400,
-        "y": 250
+        "y": 230
       },
       "sidebarDetails": {
         "summary": "Staten Island\u2019s Borough President oversees 3 Community Boards."
