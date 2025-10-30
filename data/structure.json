@@ -8,120 +8,79 @@
       "id": "nyc_charter",
       "label": "NYC Charter",
       "type": "law",
-      "branch": "constitutional",
+      "branch": "law",
       "factoid": "Foundational document defining the structure and powers of New York City government.",
-      "position": {
-        "x": 400,
-        "y": 100
-      }
+      "position": { "x": 400, "y": 100 }
     },
     {
       "id": "mayor",
       "label": "Mayor",
       "type": "office",
       "branch": "executive",
-      "process": [
-        "budget",
-        "legislative"
-      ],
+      "process": ["budget", "legislative"],
       "factoid": "Elected citywide executive. Oversees agencies, prepares the budget, and enforces city laws.",
-      "position": {
-        "x": 410,
-        "y": 230
-      }
+      "position": { "x": 410, "y": 230 }
     },
     {
       "id": "comptroller",
       "label": "Comptroller",
       "type": "office",
       "branch": "executive",
-      "process": [
-        "budget"
-      ],
+      "process": ["budget"],
       "factoid": "Fiscal watchdog and auditor. Oversees the city's financial operations and pensions.",
-      "position": {
-        "x": 580,
-        "y": 230
-      }
+      "position": { "x": 580, "y": 230 }
     },
     {
       "id": "public_advocate",
       "label": "Public Advocate",
       "type": "office",
       "branch": "executive",
-      "process": [
-        "legislative"
-      ],
+      "process": ["legislative"],
       "factoid": "Monitors city agencies and acts as a public ombudsman, representing residents before city government.",
-      "position": {
-        "x": 230,
-        "y": 230
-      }
+      "position": { "x": 230, "y": 230 }
     },
     {
       "id": "city_council",
       "label": "City Council",
       "type": "body",
       "branch": "legislative",
-      "process": [
-        "legislative",
-        "budget"
-      ],
+      "process": ["legislative", "budget"],
       "factoid": "51-member legislative body that passes local laws, approves the budget, and exercises oversight.",
-      "position": {
-        "x": 230,
-        "y": 370
-      }
+      "position": { "x": 230, "y": 370 }
     },
     {
       "id": "departments",
       "label": "NYC Departments & Agencies",
       "type": "agency",
       "branch": "administrative",
-      "process": [
-        "budget"
-      ],
+      "process": ["budget"],
       "factoid": "Agencies responsible for carrying out policy across housing, health, planning, education, and more.",
-      "position": {
-        "x": 450,
-        "y": 500
-      }
+      "position": { "x": 410, "y": 500 }
     },
     {
       "id": "administrative_code",
       "label": "Administrative Code (NYC Statute)",
       "type": "law",
-      "branch": "legislative",
+      "branch": "law",
       "factoid": "Compilation of permanent local laws enacted by the City Council and signed by the Mayor.",
-      "position": {
-        "x": 230,
-        "y": 500
-      }
+      "position": { "x": 230, "y": 500 }
     },
     {
       "id": "rules_of_city",
       "label": "Rules of the City of New York (Administrative Law)",
-      "type": "regulation",
-      "branch": "administrative",
+      "type": "law",
+      "branch": "law",
       "factoid": "Regulations issued by city agencies to implement provisions of the Administrative Code.",
-      "position": {
-        "x": 450,
-        "y": 650
-      }
+      "position": { "x": 410, "y": 650 }
     },
     {
       "id": "nyc_budget",
       "label": "NYC Budget",
       "type": "process",
       "branch": "financial",
-      "process": [
-        "budget"
-      ],
+      "process": ["budget"],
       "factoid": "Annual financial plan allocating operating and capital funds across city agencies and boroughs.",
-      "position": {
-        "x": 580,
-        "y": 370
-      }
+      "position": { "x": 580, "y": 370 }
     },
     {
       "id": "borough_manhattan",
@@ -129,13 +88,7 @@
       "type": "region",
       "branch": "community",
       "factoid": "Manhattan's Borough President oversees 12 Community Boards, representing local neighborhoods.",
-      "position": {
-        "x": 800,
-        "y": 230
-      },
-      "sidebarDetails": {
-        "summary": "Manhattan\u2019s Borough President oversees 12 Community Boards, representing local neighborhoods."
-      }
+      "position": { "x": 800, "y": 230 }
     },
     {
       "id": "borough_brooklyn",
@@ -143,13 +96,7 @@
       "type": "region",
       "branch": "community",
       "factoid": "Brooklyn's Borough President oversees 18 Community Boards.",
-      "position": {
-        "x": 950,
-        "y": 230
-      },
-      "sidebarDetails": {
-        "summary": "Brooklyn\u2019s Borough President oversees 18 Community Boards."
-      }
+      "position": { "x": 950, "y": 230 }
     },
     {
       "id": "borough_bronx",
@@ -157,13 +104,7 @@
       "type": "region",
       "branch": "community",
       "factoid": "Bronx's Borough President oversees 12 Community Boards.",
-      "position": {
-        "x": 1100,
-        "y": 230
-      },
-      "sidebarDetails": {
-        "summary": "Bronx\u2019s Borough President oversees 12 Community Boards."
-      }
+      "position": { "x": 1100, "y": 230 }
     },
     {
       "id": "borough_queens",
@@ -171,13 +112,7 @@
       "type": "region",
       "branch": "community",
       "factoid": "Queens's Borough President oversees 14 Community Boards.",
-      "position": {
-        "x": 1250,
-        "y": 230
-      },
-      "sidebarDetails": {
-        "summary": "Queens\u2019s Borough President oversees 14 Community Boards."
-      }
+      "position": { "x": 1250, "y": 230 }
     },
     {
       "id": "borough_staten_island",
@@ -185,59 +120,15 @@
       "type": "region",
       "branch": "community",
       "factoid": "Staten Island's Borough President oversees 3 Community Boards.",
-      "position": {
-        "x": 1400,
-        "y": 230
-      },
-      "sidebarDetails": {
-        "summary": "Staten Island\u2019s Borough President oversees 3 Community Boards."
-      }
-    }
-  ],
-  "edges": [
-    {
-      "source": "nyc_charter",
-      "target": "mayor"
+      "position": { "x": 1400, "y": 230 }
     },
-    {
-      "source": "nyc_charter",
-      "target": "comptroller"
-    },
-    {
-      "source": "nyc_charter",
-      "target": "public_advocate"
-    },
-    {
-      "source": "nyc_charter",
-      "target": "city_council"
-    },
-    {
-      "source": "mayor",
-      "target": "departments"
-    },
-    {
-      "source": "city_council",
-      "target": "administrative_code"
-    },
-    {
-      "source": "departments",
-      "target": "rules_of_city"
-    },
-    {
-      "source": "public_advocate",
-      "target": "city_council"
-    },
-    {
-      "source": "mayor",
-      "target": "nyc_budget"
-    },
-    {
-      "source": "city_council",
-      "target": "nyc_budget"
-    },
-    {
-      "source": "comptroller",
-      "target": "nyc_budget"
+        {
+      "id": "community_boards",
+      "label": "Community Boards",
+      "type": "region",
+      "branch": "community",
+      "factoid": "Each community board has at most 50 members",
+      "position": { "x": 1100, "y": 350 }
     }
   ]
 }
