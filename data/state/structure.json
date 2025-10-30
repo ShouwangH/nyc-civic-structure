@@ -1,0 +1,46 @@
+{
+  "meta": {
+    "title": "New York State Government",
+    "description": "High-level structure of New York State government as defined by the State Constitution."
+  },
+  "nodes": [
+    {
+      "id": "ny_state_constitution",
+      "label": "NY State Constitution",
+      "type": "law",
+      "branch": "law",
+      "factoid": "Governing document outlining the structure and powers of New York State's government."
+    },
+    {
+      "id": "governor_ny",
+      "label": "Governor of New York",
+      "type": "office",
+      "branch": "executive",
+      "process": ["budget", "legislative"],
+      "factoid": "The elected chief executive who proposes the state budget and oversees statewide agencies."
+    },
+    {
+      "id": "state_legislature",
+      "label": "NY State Legislature",
+      "type": "body",
+      "branch": "legislative",
+      "process": ["legislative", "budget"],
+      "factoid": "Bicameral legislature made up of the Assembly and Senate. Crafts state laws and adopts the budget."
+    },
+    {
+      "id": "state_agencies",
+      "label": "State Agencies",
+      "type": "agency",
+      "branch": "administrative",
+      "factoid": "Departments that implement state policy across transportation, health, education, and more."
+    },
+    {
+      "id": "state_budget",
+      "label": "State Budget",
+      "type": "process",
+      "branch": "financial",
+      "process": ["budget"],
+      "factoid": "Annual fiscal plan that allocates funding to statewide priorities and agencies."
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "processes": [
+    {
+      "id": "federal_budget",
+      "label": "Federal Budget & Appropriations",
+      "description": "The annual federal budgeting and appropriations process.",
+      "nodes": ["agencies", "omb", "president", "congress", "appropriations_committees"],
+      "edges": [
+        { "source": "agencies", "target": "omb" },
+        { "source": "omb", "target": "president" },
+        { "source": "president", "target": "congress" },
+        { "source": "congress", "target": "appropriations_committees" },
+        { "source": "appropriations_committees", "target": "president" }
+      ],
+      "steps": [
+        { "id": "agency_prep", "title": "Agency Requests", "description": "Agencies submit funding requests to OMB." },
+        { "id": "pres_budget", "title": "President’s Budget", "description": "OMB compiles and President submits budget to Congress." },
+        { "id": "hearings", "title": "Congressional Hearings", "description": "Committees hold hearings and draft appropriations bills." },
+        { "id": "passage", "title": "Appropriations Passage", "description": "Both chambers pass bills; differences reconciled." },
+        { "id": "signature", "title": "Presidential Action", "description": "President signs or vetoes appropriations bills." }
+      ]
+    },
+    {
+      "id": "federal_rulemaking",
+      "label": "Federal Regulatory Rulemaking (APA)",
+      "description": "Administrative rulemaking under the Administrative Procedure Act.",
+      "nodes": ["agency", "oira", "public", "congress"],
+      "edges": [
+        { "source": "agency", "target": "oira" },
+        { "source": "oira", "target": "public" },
+        { "source": "public", "target": "agency" },
+        { "source": "agency", "target": "congress" }
+      ],
+      "steps": [
+        { "id": "draft", "title": "Draft Rule", "description": "Agency drafts proposed rule." },
+        { "id": "review", "title": "OIRA Review", "description": "Office of Information and Regulatory Affairs reviews proposal." },
+        { "id": "comment", "title": "Public Comment", "description": "Rule published for public feedback." },
+        { "id": "final_rule", "title": "Final Rule", "description": "Agency finalizes and publishes rule." },
+        { "id": "oversight", "title": "Congressional Oversight", "description": "Congress may review or nullify via Congressional Review Act." }
+      ]
+    },
+    {
+      "id": "impeachment",
+      "label": "Federal Impeachment Process",
+      "description": "The process to remove a federal official from office.",
+      "nodes": ["house", "house_judiciary_committee", "senate", "chief_justice"],
+      "edges": [
+        { "source": "house", "target": "house_judiciary_committee" },
+        { "source": "house_judiciary_committee", "target": "house" },
+        { "source": "house", "target": "senate" },
+        { "source": "senate", "target": "chief_justice" }
+      ],
+      "steps": [
+        { "id": "investigation", "title": "House Investigation", "description": "Judiciary Committee investigates and drafts articles." },
+        { "id": "impeachment", "title": "House Vote", "description": "Full House votes to impeach (majority required)." },
+        { "id": "trial", "title": "Senate Trial", "description": "Senate conducts trial; Chief Justice presides if President." },
+        { "id": "verdict", "title": "Verdict", "description": "Senate votes to convict or acquit (two-thirds required)." }
+      ]
+    }
+  ]
+}
