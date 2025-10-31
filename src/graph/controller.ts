@@ -173,7 +173,6 @@ class GraphController {
           return;
         }
 
-        console.log('🐞 [Subgraph] Add node payload', node.id, node);
         const added = this.cy.add({
           group: 'nodes',
           data: node,
@@ -190,7 +189,6 @@ class GraphController {
           return;
         }
 
-        console.log('🐞 [Subgraph] Add edge payload', edge.id, edge);
         this.cy.add({
           group: 'edges',
           data: edge,
@@ -203,15 +201,24 @@ class GraphController {
     const subNodes = this.cy.nodes().filter((node) => subgraphNodeIds.has(node.id()));
     logPositions('Subgraph post-add pre-style', subNodes, ['mayor', 'departments']);
 
-    const subEdges = subNodes.connectedEdges();
-    const others = this.cy.elements().not(subNodes).not(subEdges);
+    const subEdges = this.cy.collection();
+    subgraph.edges.forEach((edge) => {
+      const cyEdge = this.cy.getElementById(edge.id);
+      if (cyEdge && cyEdge.length > 0) {
+        subEdges.merge(cyEdge);
+      }
+    });
+    const otherNodes = this.cy.nodes().not(subNodes);
+    const otherEdges = this.cy.edges().not(subEdges);
 
     logPositions('Subgraph after add', subNodes);
 
     this.cy.batch(() => {
       this.cy.elements().removeClass('highlighted faded hidden dimmed');
       subNodes.addClass('highlighted');
-      others.addClass('faded');
+      subEdges.addClass('highlighted');
+      otherNodes.addClass('faded');
+      otherEdges.addClass('hidden');
     });
 
     const layoutOptions = cloneLayoutOptions(subgraph.layout, {
@@ -221,14 +228,6 @@ class GraphController {
       fit: false,
       padding: 80,
     });
-    console.log('🐞 [Subgraph] Layout options', layoutOptions);
-
-    console.log('🐞 [Subgraph] Layout start request', {
-      nodeCount: subNodes.length,
-      layoutName: layoutOptions.name,
-      subNodeIds: subNodes.map((node) => node.id()),
-    });
-
     logPositions('Subgraph before layout run', subNodes, ['mayor', 'departments']);
     const layoutElements = subNodes.union(subEdges);
 
@@ -621,6 +620,15 @@ class GraphController {
         }
       });
       nodesToRemove.remove();
+    }
+
+    if (this.mainGraph.nodesHavePreset) {
+      this.cy.nodes().forEach((node) => {
+        const orgPos = node.data('orgPos');
+        if (orgPos) {
+          node.position(copyPosition(orgPos));
+        }
+      });
     }
 
     const layout = this.cy.layout({

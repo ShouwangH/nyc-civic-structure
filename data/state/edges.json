@@ -1,10 +1,17 @@
 {
   "edges": [
-    { "source": "ny_state_constitution", "target": "governor_ny" },
-    { "source": "ny_state_constitution", "target": "state_legislature" },
-    { "source": "governor_ny", "target": "state_agencies" },
-    { "source": "state_legislature", "target": "state_budget" },
-    { "source": "governor_ny", "target": "state_budget" },
-    { "source": "state_budget", "target": "state_agencies" }
+    { "source": "ny_state_constitution", "target": "governor_ny", "relation": "establishes" },
+    { "source": "ny_state_constitution", "target": "state_legislature", "relation": "establishes" },
+    { "source": "ny_state_constitution", "target": "state_judiciary", "relation": "establishes" },
+    { "source": "ny_state_constitution", "target": "state_comptroller", "relation": "establishes" },
+    { "source": "state_legislature", "target": "ny_consolidated_laws", "relation": "enacts" },
+    { "source": "state_legislature", "target": "state_budget", "relation": "adopts" },
+    { "source": "state_legislature", "target": "state_assembly", "relation": "includes" },
+    { "source": "state_legislature", "target": "state_senate", "relation": "includes" },
+    { "source": "governor_ny", "target": "state_budget", "relation": "proposes" },
+    { "source": "governor_ny", "target": "state_agencies", "relation": "oversees" },
+    { "source": "state_agencies", "target": "nycrr", "relation": "issues" },
+    { "source": "state_comptroller", "target": "state_budget", "relation": "audits" },
+    { "source": "state_judiciary", "target": "ny_consolidated_laws", "relation": "interprets" }
   ]
 }

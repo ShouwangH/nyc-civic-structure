@@ -9,7 +9,7 @@ type ScopeOption = {
 
 type ControlsPanelProps = {
   scopes: ScopeOption[];
-  activeScope: GovernmentScope;
+  activeScope: GovernmentScope | null;
   onScopeChange: (scope: GovernmentScope) => void;
   subgraphConfigs: SubgraphConfig[];
   activeSubgraphId: string | null;
@@ -47,7 +47,6 @@ const ControlsPanel = ({
         aria-expanded={isOpen}
         className="flex items-center justify-between gap-2 border-b border-slate-200 px-4 py-3 text-sm font-medium text-slate-600 transition hover:bg-slate-100"
       >
-        <span>{isOpen ? 'Hide Menu' : 'Show Menu'}</span>
         <span>{isOpen ? '⟨' : '⟩'}</span>
       </button>
 
@@ -75,12 +74,12 @@ const ControlsPanel = ({
 
           <section className="space-y-3">
             <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Subgraphs
+              Departments and Agencies
             </h2>
-            {subgraphConfigs.length === 0 ? (
-              <p className="text-xs text-slate-500">
-                No focused subgraphs available yet for this scope.
-              </p>
+            {activeScope === null ? (
+              <p className="text-xs text-slate-500">Select a scope to view agencies and departments</p>
+            ) : subgraphConfigs.length === 0 ? (
+              <p className="text-xs text-slate-500">No agencies available for this scope.</p>
             ) : (
               <div className="space-y-2">
                 {subgraphConfigs.map((config) => {
@@ -110,8 +109,10 @@ const ControlsPanel = ({
             <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">
               Processes
             </h2>
-            {processes.length === 0 ? (
-              <p className="text-xs text-slate-500">No spotlight processes yet.</p>
+            {activeScope === null ? (
+              <p className="text-xs text-slate-500">Select a scope to view processes.</p>
+            ) : processes.length === 0 ? (
+              <p className="text-xs text-slate-500">No processes yet for this scope.</p>
             ) : (
               <div className="space-y-2">
                 {processes.map((process) => {

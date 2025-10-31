@@ -16,6 +16,8 @@ class GraphInputHandler {
   }
 
   attach() {
+    this.detach();
+
     this.handleNodeTapBound = (event: EventObject) => {
       this.orchestrator.handleNodeTap(event.target.id());
     };
@@ -40,15 +42,19 @@ class GraphInputHandler {
   detach() {
     if (this.handleNodeTapBound) {
       this.cy.removeListener('tap', 'node', this.handleNodeTapBound);
+      this.handleNodeTapBound = null;
     }
     if (this.handleEdgeTapBound) {
       this.cy.removeListener('tap', 'edge', this.handleEdgeTapBound);
+      this.handleEdgeTapBound = null;
     }
     if (this.handleBackgroundTapBound) {
       this.cy.removeListener('tap', this.handleBackgroundTapBound);
+      this.handleBackgroundTapBound = null;
     }
     if (this.handleZoomBound) {
       this.cy.removeListener('zoom', this.handleZoomBound);
+      this.handleZoomBound = null;
     }
   }
 }

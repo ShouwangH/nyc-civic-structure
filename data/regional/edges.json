@@ -1,0 +1,25 @@
+{
+  "edges": [
+    { "source": "public_authorities_law", "target": "mta", "relation": "establishes" },
+    { "source": "public_authorities_law", "target": "nycha", "relation": "enables" },
+    { "source": "public_authorities_law", "target": "port_authority", "relation": "authorizes" },
+    { "source": "public_authorities_law", "target": "nys_thruway", "relation": "establishes" },
+    { "source": "public_authorities_law", "target": "esd", "relation": "establishes" },
+    { "source": "public_authorities_law", "target": "battery_park_city_authority", "relation": "establishes" },
+    { "source": "public_authorities_law", "target": "roosevelt_island", "relation": "establishes" },
+
+    { "source": "governor_ny", "target": "mta", "relation": "appoints_chair_and_board" },
+    { "source": "governor_ny", "target": "port_authority", "relation": "appoints_commissioners" },
+    { "source": "governor_ny", "target": "nys_thruway", "relation": "appoints_board" },
+    { "source": "governor_ny", "target": "esd", "relation": "oversees" },
+    { "source": "governor_ny", "target": "battery_park_city_authority", "relation": "appoints_board" },
+    { "source": "governor_ny", "target": "roosevelt_island", "relation": "appoints_board" },
+
+    { "source": "mayor_nyc", "target": "nycha", "relation": "appoints_board" },
+    { "source": "mayor_nyc", "target": "mta", "relation": "appoints_city_representatives" },
+
+    { "source": "port_authority", "target": "mta", "relation": "coordinates_infrastructure" },
+    { "source": "mta", "target": "nycha", "relation": "coordinates_transit_and_housing" },
+    { "source": "esd", "target": "battery_park_city_authority", "relation": "coordinates_projects" }
+  ]
+}

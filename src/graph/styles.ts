@@ -78,6 +78,18 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
     },
   },
   {
+    selector: 'node[type = "anchor"]',
+    style: {
+      display: 'none',
+    },
+  },
+  {
+    selector: 'edge[?isAnchorEdge]',
+    style: {
+      display: 'none',
+    },
+  },
+  {
     selector: 'edge[label = ""]',
     style: {
       'text-opacity': 0,

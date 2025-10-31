@@ -1,9 +1,9 @@
-import { useCallback, useReducer } from 'react';
+import { useCallback, useMemo, useReducer } from 'react';
 import type { GovernmentScope } from '../data/datasets';
 
 export type VisualizationState = {
   controlsOpen: boolean;
-  activeScope: GovernmentScope;
+  activeScope: GovernmentScope | null;
   selectedNodeId: string | null;
   selectedEdgeId: string | null;
   activeProcessId: string | null;
@@ -11,11 +11,9 @@ export type VisualizationState = {
   isSidebarHover: boolean;
 };
 
-const INITIAL_SCOPE: GovernmentScope = 'city';
-
 const initialState: VisualizationState = {
   controlsOpen: true,
-  activeScope: INITIAL_SCOPE,
+  activeScope: null,
   selectedNodeId: null,
   selectedEdgeId: null,
   activeProcessId: null,
@@ -26,14 +24,15 @@ const initialState: VisualizationState = {
 type Action =
   | { type: 'setControlsOpen'; value: boolean }
   | { type: 'toggleControlsOpen' }
-  | { type: 'setActiveScope'; scope: GovernmentScope }
+  | { type: 'setActiveScope'; scope: GovernmentScope | null }
   | { type: 'setSelectedNode'; id: string | null }
   | { type: 'setSelectedEdge'; id: string | null }
   | { type: 'setActiveProcess'; id: string | null }
   | { type: 'setActiveSubgraph'; id: string | null }
   | { type: 'setSidebarHover'; value: boolean }
+  | { type: 'clearFocus' }
   | { type: 'clearSelections' }
-  | { type: 'resetAll'; scopeOverride?: GovernmentScope };
+  | { type: 'resetAll'; scopeOverride?: GovernmentScope | null };
 
 const reducer = (state: VisualizationState, action: Action): VisualizationState => {
   switch (action.type) {
@@ -61,9 +60,19 @@ const reducer = (state: VisualizationState, action: Action): VisualizationState 
       return { ...state, activeSubgraphId: action.id };
     case 'setSidebarHover':
       return { ...state, isSidebarHover: action.value };
+    case 'clearFocus':
+      return {
+        ...state,
+        selectedNodeId: null,
+        selectedEdgeId: null,
+        activeProcessId: null,
+        activeSubgraphId: null,
+        isSidebarHover: false,
+      };
     case 'clearSelections':
       return {
         ...state,
+        activeScope: null,
         selectedNodeId: null,
         selectedEdgeId: null,
         activeProcessId: null,
@@ -73,7 +82,7 @@ const reducer = (state: VisualizationState, action: Action): VisualizationState 
     case 'resetAll':
       return {
         ...initialState,
-        activeScope: action.scopeOverride ?? INITIAL_SCOPE,
+        activeScope: action.scopeOverride ?? null,
       };
     default:
       return state;
@@ -91,7 +100,7 @@ export const useVisualizationState = () => {
   const toggleControlsOpen = useCallback(() => dispatch({ type: 'toggleControlsOpen' }), []);
 
   const setActiveScope = useCallback(
-    (scope: GovernmentScope) => dispatch({ type: 'setActiveScope', scope }),
+    (scope: GovernmentScope | null) => dispatch({ type: 'setActiveScope', scope }),
     [],
   );
 
@@ -120,6 +129,8 @@ export const useVisualizationState = () => {
     [],
   );
 
+  const clearFocus = useCallback(() => dispatch({ type: 'clearFocus' }), []);
+
   const clearSelections = useCallback(() => dispatch({ type: 'clearSelections' }), []);
 
   const resetAll = useCallback(
@@ -127,9 +138,8 @@ export const useVisualizationState = () => {
     [],
   );
 
-  return {
-    state,
-    actions: {
+  const actions = useMemo(
+    () => ({
       setControlsOpen,
       toggleControlsOpen,
       setActiveScope,
@@ -138,9 +148,28 @@ export const useVisualizationState = () => {
       setActiveProcess,
       setActiveSubgraph,
       setSidebarHover,
+      clearFocus,
       clearSelections,
       resetAll,
-    },
+    }),
+    [
+      setControlsOpen,
+      toggleControlsOpen,
+      setActiveScope,
+      setSelectedNode,
+      setSelectedEdge,
+      setActiveProcess,
+      setActiveSubgraph,
+      setSidebarHover,
+      clearFocus,
+      clearSelections,
+      resetAll,
+    ],
+  );
+
+  return {
+    state,
+    actions,
   };
 };
 

@@ -49,8 +49,8 @@ const buildGraphEdge = (edge: RawEdge): GraphEdgeInfo => ({
   id: edge.id ?? `${edge.source}->${edge.target}`,
   source: edge.source,
   target: edge.target,
-  label: '',
-  type: 'relationship',
+  label: edge.label ?? '',
+  type: edge.type ?? 'relationship',
   process: edge.process ?? [],
 });
 

@@ -3,7 +3,11 @@ import type { NodeCollection } from 'cytoscape';
 export const captureNodePositions = (collection: NodeCollection) =>
   collection.map((node) => ({ id: node.id(), position: node.position() }));
 
-const DEFAULT_WATCH_IDS = ['mayor', 'departments'];
+let defaultWatchIds = ['mayor', 'departments'];
+
+export const setDefaultWatchIds = (ids: string[]) => {
+  defaultWatchIds = Array.from(new Set(ids));
+};
 
 export const logPositions = (
   stage: string,
@@ -13,7 +17,7 @@ export const logPositions = (
   const positions = captureNodePositions(collection);
   const uniquePositions = new Set(positions.map((item) => `${item.position.x},${item.position.y}`));
   const allSame = uniquePositions.size <= 1;
-  const effectiveWatchIds = Array.from(new Set([...DEFAULT_WATCH_IDS, ...watchIds]));
+  const effectiveWatchIds = Array.from(new Set([...defaultWatchIds, ...watchIds]));
   const watched = effectiveWatchIds.map((id) => {
     const match = positions.find((item) => item.id === id);
     return { id, position: match?.position ?? null };

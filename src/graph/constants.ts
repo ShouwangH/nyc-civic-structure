@@ -2,11 +2,12 @@ export const NODE_WIDTH = 120;
 export const NODE_HEIGHT = 80;
 
 export const branchPalette: Record<string, string> = {
-  law: '#1d4ed8',
-  administrative: '#7c3aed',
-  executive: '#0369a1',
-  legislative: '',
+  law: '#3b82f6',
+  administrative: '#8b5cf6',
+  executive: '#0ea5e9',
+  legislative: '#e11d48',
   community: '#f97316',
-  planning: '#9333ea',
+  planning: '#2dd4bf',
   financial: '#16a34a',
+  judicial: '#9ea316'
 };

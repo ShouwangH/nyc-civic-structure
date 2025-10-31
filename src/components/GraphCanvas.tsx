@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
 import type { GraphConfig, GraphNodeInfo } from '../graph/types';
 import type { ProcessDefinition } from '../data/types';
 import type { SubgraphConfig } from '../graph/subgraphs';
@@ -41,6 +41,24 @@ const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
   ) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const orchestratorRef = useRef<GraphOrchestrator | null>(null);
+    const store = useMemo(
+      () => ({
+        setSelectedNode: storeActions.setSelectedNode,
+        setSelectedEdge: storeActions.setSelectedEdge,
+        setActiveProcess: storeActions.setActiveProcess,
+        setActiveSubgraph: storeActions.setActiveSubgraph,
+        setSidebarHover: storeActions.setSidebarHover,
+        clearSelections: storeActions.clearSelections,
+      }),
+      [
+        storeActions.setSelectedNode,
+        storeActions.setSelectedEdge,
+        storeActions.setActiveProcess,
+        storeActions.setActiveSubgraph,
+        storeActions.setSidebarHover,
+        storeActions.clearSelections,
+      ],
+    );
 
     useEffect(() => {
       if (!containerRef.current) {
@@ -53,7 +71,7 @@ const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
         subgraphByEntryId,
         subgraphById,
         data: { processes, nodesById },
-        store: storeActions,
+        store,
       });
 
       orchestrator.initialize();
@@ -63,7 +81,7 @@ const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
         orchestrator.destroy();
         orchestratorRef.current = null;
       };
-    }, [mainGraph, processes, nodesById, storeActions, subgraphByEntryId, subgraphById]);
+    }, [mainGraph, processes, nodesById, store, subgraphByEntryId, subgraphById]);
 
     useImperativeHandle(
       ref,
