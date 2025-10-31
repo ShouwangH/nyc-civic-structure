@@ -1,0 +1,39 @@
+{
+  "id": "state_judiciary",
+  "label": "State Judicial System",
+  "entryNodeId": "state_judiciary",
+  "description": "High-level view of the New York State Unified Court System as established under Article VI of the State Constitution.",
+  "elements": {
+    "nodes": [
+      { "data": { "id": "ny_state_constitution", "label": "NY State Constitution", "type": "law" } },
+      { "data": { "id": "state_judiciary", "label": "State Judicial System", "type": "category" } },
+      { "data": { "id": "court_of_appeals", "label": "Court of Appeals", "type": "court_high" } },
+      { "data": { "id": "appellate_division", "label": "Supreme Court, Appellate Division", "type": "court_appellate" } },
+      { "data": { "id": "supreme_court_trial", "label": "Supreme Court (Trial Level)", "type": "court_trial" } },
+      { "data": { "id": "county_court", "label": "County Court", "type": "court_trial" } },
+      { "data": { "id": "family_court", "label": "Family Court", "type": "court_specialized" } },
+      { "data": { "id": "surrogate_court", "label": "Surrogate’s Court", "type": "court_specialized" } },
+      { "data": { "id": "court_of_claims", "label": "Court of Claims", "type": "court_specialized" } },
+      { "data": { "id": "local_courts", "label": "Town, Village, City, District Courts", "type": "court_local" } }
+    ],
+    "edges": [
+      { "data": { "source": "ny_state_constitution", "target": "state_judiciary", "relation": "establishes" } },
+      { "data": { "source": "state_judiciary", "target": "court_of_appeals", "relation": "includes" } },
+      { "data": { "source": "state_judiciary", "target": "appellate_division", "relation": "includes" } },
+      { "data": { "source": "state_judiciary", "target": "supreme_court_trial", "relation": "includes" } },
+      { "data": { "source": "state_judiciary", "target": "county_court", "relation": "includes" } },
+      { "data": { "source": "state_judiciary", "target": "family_court", "relation": "includes" } },
+      { "data": { "source": "state_judiciary", "target": "surrogate_court", "relation": "includes" } },
+      { "data": { "source": "state_judiciary", "target": "court_of_claims", "relation": "includes" } },
+      { "data": { "source": "state_judiciary", "target": "local_courts", "relation": "includes" } },
+
+      { "data": { "source": "local_courts", "target": "county_court", "relation": "appeals_to" } },
+      { "data": { "source": "county_court", "target": "appellate_division", "relation": "appeals_to" } },
+      { "data": { "source": "supreme_court_trial", "target": "appellate_division", "relation": "appeals_to" } },
+      { "data": { "source": "family_court", "target": "appellate_division", "relation": "appeals_to" } },
+      { "data": { "source": "surrogate_court", "target": "appellate_division", "relation": "appeals_to" } },
+      { "data": { "source": "court_of_claims", "target": "appellate_division", "relation": "appeals_to" } },
+      { "data": { "source": "appellate_division", "target": "court_of_appeals", "relation": "appeals_to" } }
+    ]
+  }
+}

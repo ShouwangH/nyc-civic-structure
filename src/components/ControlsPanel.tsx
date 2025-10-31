@@ -47,7 +47,8 @@ const ControlsPanel = ({
         aria-expanded={isOpen}
         className="flex items-center justify-between gap-2 border-b border-slate-200 px-4 py-3 text-sm font-medium text-slate-600 transition hover:bg-slate-100"
       >
-        <span>{isOpen ? '⟨' : '⟩'}</span>
+        <span>{isOpen ? 'Hide' : '='}</span>
+        <span>{isOpen ? '⟨' : ''}</span>
       </button>
 
       {isOpen ? (
@@ -63,7 +64,7 @@ const ControlsPanel = ({
                   className={`w-full rounded-md px-3 py-2 text-left text-sm font-medium transition border ${
                     activeScope === scope.id
                       ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
-                      : 'bg-white text-slate-800 border-slate-200 hover:bg-slate-100'
+                      : 'bg-white text-slate-800 border-slate-200 hover:bg-slate-200'
                   }`}
                 >
                   {scope.label}
@@ -94,7 +95,7 @@ const ControlsPanel = ({
                       className={`w-full rounded-md px-3 py-2 text-left text-sm font-medium transition ${
                         isActive
                           ? 'bg-blue-600 text-white shadow-sm'
-                          : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                          : 'bg-white text-slate-700 hover:bg-slate-200 border border-slate-200'
                       }`}
                     >
                       {config.meta.label}
@@ -127,7 +128,7 @@ const ControlsPanel = ({
                       className={`w-full rounded-md px-3 py-2 text-left text-sm font-semibold transition ${
                         isActive
                           ? 'bg-blue-600 text-white shadow-sm'
-                          : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                          : 'bg-white text-slate-700 hover:bg-slate-200 border border-slate-200'
                       }`}
                     >
                       {process.label}

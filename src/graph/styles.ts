@@ -77,18 +77,18 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
       'text-rotation': 'autorotate',
     },
   },
-  {
-    selector: 'node[type = "anchor"]',
-    style: {
-      display: 'none',
-    },
+{
+  selector: 'node[type = "anchor"]',
+  style: {
+    display: 'none',
   },
-  {
-    selector: 'edge[?isAnchorEdge]',
-    style: {
-      display: 'none',
-    },
+},
+{
+  selector: 'edge[?isAnchorEdge]',
+  style: {
+    display: 'none',
   },
+},
   {
     selector: 'edge[label = ""]',
     style: {

@@ -1,9 +1,8 @@
-import type { Core, LayoutOptions } from 'cytoscape';
+import type { Core, LayoutOptions, CollectionReturnValue } from 'cytoscape';
 import type cytoscape from 'cytoscape';
 import type { GraphConfig, GraphEdgeInfo, GraphNodeInfo } from './types';
 import type { ProcessDefinition } from '../data/types';
-import { NODE_HEIGHT, NODE_WIDTH } from './constants';
-import { logPositions } from './utils/logging';
+import { runSubgraphConcentricDebug } from './utils/debugHarness';
 
 type ActiveSubgraph = {
   id: string;
@@ -22,6 +21,12 @@ const cloneLayoutOptions = (layout: LayoutOptions, overrides: Partial<LayoutOpti
 const ANIMATION_DURATION = 550;
 const ANIMATION_EASING: cytoscape.AnimationOptions['easing'] = 'ease';
 const DEBUG_SUBGRAPH_CONCENTRIC = false;
+type CyCollection = CollectionReturnValue;
+
+type MainLayoutOptions = {
+  animateFit?: boolean;
+  fitPadding?: number;
+};
 
 class GraphController {
   private cy: Core;
@@ -120,6 +125,49 @@ class GraphController {
     this.resetHighlightClasses();
   }
 
+  private async animateFitToCollection(collection: CyCollection, padding: number) {
+    if (!collection || collection.length === 0) {
+      return;
+    }
+
+    try {
+      await this.cy
+        .animation({
+          fit: {
+            eles: collection,
+            padding,
+          },
+          duration: ANIMATION_DURATION,
+          easing: ANIMATION_EASING,
+        })
+        .play()
+        .promise();
+    } catch {
+      // ignore cancelled animations
+    }
+  }
+
+  private async runMainGraphLayout(options: MainLayoutOptions = {}) {
+    const { animateFit = true, fitPadding = 200 } = options;
+    const layoutOptions = cloneLayoutOptions(this.mainGraph.layout, {
+      animate: true,
+      animationDuration: ANIMATION_DURATION,
+      animationEasing: ANIMATION_EASING,
+      fit: false,
+    });
+
+    const layout = this.cy.layout(layoutOptions);
+    const layoutPromise = layout.promiseOn('layoutstop');
+    layout.run();
+    await layoutPromise;
+
+    if (animateFit) {
+      await this.animateFitToCollection(this.cy.nodes() as unknown as CyCollection, fitPadding);
+    }
+
+    this.captureInitialPositions();
+  }
+
   isSubgraphActive(id?: string) {
     if (!this.activeSubgraph) {
       return false;
@@ -151,19 +199,17 @@ class GraphController {
       await this.restoreMainView();
     }
 
-    logPositions('Subgraph activating snapshot', this.cy.nodes());
-
-
     this.transitionInProgress = true;
     this.markProgrammaticZoom();
 
     if (DEBUG_SUBGRAPH_CONCENTRIC) {
-      await this.runDebugConcentricTest(meta, subgraph);
+      await runSubgraphConcentricDebug(this.cy, meta, subgraph, {
+        duration: ANIMATION_DURATION,
+        easing: ANIMATION_EASING,
+      });
       this.transitionInProgress = false;
       return;
     }
-
-    logPositions('Subgraph restoring snapshot', this.cy.nodes());
 
     const existingNodeIds = new Set(this.cy.nodes().map((node) => node.id()));
 
@@ -199,8 +245,6 @@ class GraphController {
 
     const subgraphNodeIds = new Set(subgraph.nodes.map((node) => node.id));
     const subNodes = this.cy.nodes().filter((node) => subgraphNodeIds.has(node.id()));
-    logPositions('Subgraph post-add pre-style', subNodes, ['mayor', 'departments']);
-
     const subEdges = this.cy.collection();
     subgraph.edges.forEach((edge) => {
       const cyEdge = this.cy.getElementById(edge.id);
@@ -210,8 +254,6 @@ class GraphController {
     });
     const otherNodes = this.cy.nodes().not(subNodes);
     const otherEdges = this.cy.edges().not(subEdges);
-
-    logPositions('Subgraph after add', subNodes);
 
     this.cy.batch(() => {
       this.cy.elements().removeClass('highlighted faded hidden dimmed');
@@ -228,17 +270,12 @@ class GraphController {
       fit: false,
       padding: 80,
     });
-    logPositions('Subgraph before layout run', subNodes, ['mayor', 'departments']);
     const layoutElements = subNodes.union(subEdges);
 
-    const layout = this.cy.layout({
-      ...layoutOptions,
-      eles: layoutElements,
-    });
+    const layout = layoutElements.layout(layoutOptions);
     const layoutPromise = layout.promiseOn('layoutstop');
     layout.run();
     await layoutPromise;
-    logPositions('Subgraph layout finished', subNodes, ['mayor', 'departments']);
 
     this.activeSubgraph = {
       id: meta.id,
@@ -260,116 +297,6 @@ class GraphController {
       .catch(() => {});
 
     this.transitionInProgress = false;
-  }
-
-  private async runDebugConcentricTest(
-    meta: { id: string; entryNodeId: string },
-    subgraph: GraphConfig,
-  ) {
-
-    const debugNodes = subgraph.nodes.map((node) => ({
-      original: node,
-      debugId: node.id,
-    }));
-
-    this.cy.batch(() => {
-      debugNodes.forEach((debugNode) => {
-        const { original, debugId } = debugNode;
-        const existing = this.cy.getElementById(debugId);
-        if (existing.length === 0) {
-          this.cy.add({
-            group: 'nodes',
-            data: {
-              id: debugId,
-              originalId: original.id,
-              label: original.label,
-              branch: original.branch ?? 'debug',
-              type: original.type ?? 'debug',
-              process: original.process ?? [],
-              factoid: original.factoid ?? 'Debug node for concentric layout test.',
-              branchColor: original.branchColor ?? '#a855f7',
-              system: original.system ?? 'subgraph-node',
-              width: NODE_WIDTH,
-              height: NODE_HEIGHT,
-            }
-          });
-        }
-
-        const edgeId = `debug_concentric_edge_${debugId}`;
-        const existingEdge = this.cy.getElementById(edgeId);
-        if (existingEdge.length === 0) {
-          this.cy.add({
-            group: 'edges',
-            data: {
-              id: edgeId,
-              source: meta.entryNodeId,
-              target: debugId,
-              label: '',
-              type: 'relationship',
-              process: [],
-            },
-          });
-        }
-      });
-    });
-
-    const debugCollection = this.cy.collection();
-    debugNodes.forEach((debugNode) => {
-      debugCollection.merge(this.cy.getElementById(debugNode.debugId));
-    });
-    debugCollection.merge(this.cy.getElementById(meta.entryNodeId));
-    const debugEdges = debugCollection.connectedEdges();
-
-    const anchorIds = new Set([meta.entryNodeId, 'mayor']);
-
-    const layoutOptions = {
-      name: 'concentric',
-      animate: true,
-      animationDuration: ANIMATION_DURATION,
-      animationEasing: ANIMATION_EASING,
-      fit: false,
-      padding: 80,
-      minNodeSpacing: 60,
-      avoidOverlap: true,
-      concentric: (node: cytoscape.NodeSingular) => {
-        const nodeId = node.id();
-        const originalId = String(node.data('originalId') ?? '');
-        if (anchorIds.has(nodeId) || anchorIds.has(originalId)) {
-          return 2;
-        }
-        return 1;
-      },
-      levelWidth: () => 1,
-    } as LayoutOptions;
-
-    const layout = this.cy.layout({
-      ...layoutOptions,
-      eles: debugCollection.union(debugEdges),
-    });
-    const layoutPromise = layout.promiseOn('layoutstop');
-    layout.run();
-    await layoutPromise;
-
-    await this.cy
-      .animation({
-        fit: {
-          eles: debugCollection,
-          padding: 160,
-        },
-        duration: ANIMATION_DURATION,
-        easing: ANIMATION_EASING,
-      })
-      .play()
-      .promise()
-      .catch(() => {});
-
-    /*this.cy.batch(() => {
-      debugNodes.forEach((debugNode) => {
-        const debugId = debugNode.debugId;
-        this.cy.getElementById(debugId).remove();
-        this.cy.getElementById(`debug_concentric_edge_${debugId}`).remove();
-      });
-    })*/;
   }
 
   async restoreMainView() {
@@ -422,22 +349,7 @@ class GraphController {
 
     this.resetHighlightClasses();
 
-    const layoutOptions = cloneLayoutOptions(this.mainGraph.layout, {
-      animate: true,
-      animationDuration: ANIMATION_DURATION,
-      animationEasing: ANIMATION_EASING,
-      fit: true,
-      padding: 80,
-    });
-
-    const layout = this.cy.layout(layoutOptions);
-    const layoutPromise = layout.promiseOn('layoutstop');
-    layout.run();
-    await layoutPromise;
-
-    this.captureInitialPositions();
-
-    logPositions('Subgraph main view restored', this.cy.nodes());
+    await this.runMainGraphLayout({ animateFit: true, fitPadding: 200 });
 
     this.activeSubgraph = null;
     this.transitionInProgress = false;
@@ -457,8 +369,6 @@ class GraphController {
     }
 
     await this.clearProcessHighlight();
-
-    logPositions('Process showing snapshot', this.cy.nodes());
 
     this.processTransitionInProgress = true;
     this.markProgrammaticZoom();
@@ -496,19 +406,6 @@ class GraphController {
     });
 
     const processNodes = this.cy.nodes().filter((node) => nodeIdSet.has(node.id()));
-    logPositions('Process post-add pre-style', processNodes, ['mayor', 'departments']);
-    const processSeedOffset = 120;
-    processNodes.forEach((node, index) => {
-      const position = node.position();
-      node.position({
-        x: position.x,
-        y: position.y + index * processSeedOffset,
-      });
-    });
-    logPositions('Process seeded positions', processNodes, ['mayor', 'departments']);
-
-
-
     this.cy.batch(() => {
       this.cy.nodes().removeClass('dimmed process-active');
       this.cy.edges().removeClass('dimmed process-active-edge');
@@ -547,16 +444,12 @@ class GraphController {
         },
       } as LayoutOptions;
 
-      logPositions('Process before layout run', processNodes, ['mayor', 'departments']);
 
-      const layout = this.cy.layout({
-        ...layoutOptions,
-        eles: processNodes.union(processEdges),
-      });
+      const layoutCollection = processNodes.union(processEdges);
+      const layout = layoutCollection.layout(layoutOptions);
       const layoutPromise = layout.promiseOn('layoutstop');
       layout.run();
       await layoutPromise;
-      logPositions('Process layout finished', processNodes, ['mayor', 'departments']);
       await this.cy
         .animation({
           fit: {
@@ -579,8 +472,6 @@ class GraphController {
       edgeIds: edgeIdSet,
     };
 
-    logPositions('Process show complete', this.cy.nodes());
-
     this.processTransitionInProgress = false;
   }
 
@@ -589,8 +480,6 @@ class GraphController {
     if (!currentProcess || this.processTransitionInProgress) {
       return;
     }
-
-    logPositions('Process clearing highlight snapshot', this.cy.nodes());
 
     this.processTransitionInProgress = true;
     this.markProgrammaticZoom();
@@ -622,41 +511,14 @@ class GraphController {
       nodesToRemove.remove();
     }
 
-    if (this.mainGraph.nodesHavePreset) {
-      this.cy.nodes().forEach((node) => {
-        const orgPos = node.data('orgPos');
-        if (orgPos) {
-          node.position(copyPosition(orgPos));
-        }
-      });
-    }
+    this.cy.nodes().forEach((node) => {
+      const orgPos = node.data('orgPos');
+      if (orgPos) {
+        node.position(copyPosition(orgPos));
+      }
+    });
 
-    const layout = this.cy.layout({
-      ...this.mainGraph.layout,
-      animate: true,
-      animationDuration: ANIMATION_DURATION,
-      animationEasing: ANIMATION_EASING,
-    } as LayoutOptions);
-    const layoutPromise = layout.promiseOn('layoutstop');
-    layout.run();
-    await layoutPromise;
-
-    await this.cy
-      .animation({
-        fit: {
-          eles: this.cy.nodes(),
-          padding: 200,
-        },
-        duration: ANIMATION_DURATION,
-        easing: ANIMATION_EASING,
-      })
-      .play()
-      .promise()
-      .catch(() => {});
-
-    this.captureInitialPositions();
-
-    logPositions('Process highlight cleared', this.cy.nodes());
+    await this.runMainGraphLayout({ animateFit: true, fitPadding: 220 });
 
     this.activeProcess = null;
     this.processTransitionInProgress = false;

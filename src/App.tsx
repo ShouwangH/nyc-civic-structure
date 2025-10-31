@@ -12,6 +12,7 @@ import type { GovernmentDataset, GovernmentScope } from './data/datasets';
 import type { ProcessDefinition } from './data/types';
 import type { SubgraphConfig } from './graph/subgraphs';
 import { useVisualizationState } from './state/useVisualizationState';
+import { buildUnifiedDataset } from './data/unifiedDataset';
 
 cytoscape.use(cytoscapeElk);
 
@@ -44,92 +45,7 @@ function App() {
     },
   } = useVisualizationState();
 
-  const combinedDataset = useMemo<GovernmentDataset>(() => {
-    const federal = governmentDatasets.federal;
-    const state = governmentDatasets.state;
-    const city = governmentDatasets.city;
-
-    const scopeGroups: Array<{ scope: GovernmentScope; id: string }> = [
-      { scope: 'federal', id: 'federal-group' },
-      { scope: 'state', id: 'state-group' },
-      { scope: 'city', id: 'city-group' },
-    ];
-
-    const anchorNodes = scopeGroups.map((group) => ({
-      id: `${group.id}-anchor`,
-      label: '',
-      type: 'anchor',
-      branch: 'grouping',
-      factoid: '',
-      process: [],
-      parent: group.id,
-    }));
-
-    const scopedNodes = scopeGroups.flatMap((group) => {
-      const source = governmentDatasets[group.scope].structure.nodes;
-      return source.map((node) => ({
-        ...node,
-        parent: group.id,
-      }));
-    });
-
-    const anchorEdges = scopeGroups.flatMap((group, index) => {
-      const nextGroup = scopeGroups[index + 1];
-      const attachEdges = governmentDatasets[group.scope].structure.nodes.map((node) => ({
-        source: `${group.id}-anchor`,
-        target: node.id,
-        id: `${group.id}-anchor-${node.id}`,
-        type: 'relationship',
-        label: '',
-        process: [],
-        isAnchorEdge: true,
-      }));
-
-      if (nextGroup) {
-        attachEdges.push({
-          source: `${group.id}-anchor`,
-          target: `${nextGroup.id}-anchor`,
-          id: `${group.id}-anchor-to-${nextGroup.id}`,
-          type: 'relationship',
-          label: '',
-          process: [],
-          isAnchorEdge: true,
-        });
-      }
-
-      return attachEdges;
-    });
-
-    const combinedStructure = {
-      meta: {
-        title: 'Federal, State, and City Government Overview',
-        description:
-          'Unified canvas showing U.S. federal structure alongside New York State and City governance.',
-      },
-      nodes: [...anchorNodes, ...scopedNodes],
-    } satisfies GovernmentDataset['structure'];
-
-    const combinedEdges = {
-      edges: [...federal.edges.edges, ...state.edges.edges, ...city.edges.edges, ...anchorEdges],
-    } satisfies GovernmentDataset['edges'];
-
-    const combinedProcesses = [...federal.processes, ...state.processes, ...city.processes];
-    const combinedSubgraphs = [
-      ...(federal.subgraphs ?? []),
-      ...(state.subgraphs ?? []),
-      ...(city.subgraphs ?? []),
-    ];
-
-    return {
-      scope: 'city',
-      label: 'Federal • State • City',
-      description: combinedStructure.meta.description,
-      structure: combinedStructure,
-      edges: combinedEdges,
-      processes: combinedProcesses,
-      subgraphs: combinedSubgraphs,
-    } as GovernmentDataset;
-  }, []);
+  const { dataset: combinedDataset, scopeNodeIds } = useMemo(() => buildUnifiedDataset(), []);
 
   const dataset = combinedDataset;
   const allProcesses = useMemo(() => processesForDataset(dataset), [dataset]);
@@ -139,6 +55,7 @@ function App() {
     () => ({
       federal: governmentDatasets.federal.processes,
       state: governmentDatasets.state.processes,
+      regional: governmentDatasets.regional.processes,
       city: governmentDatasets.city.processes,
     }),
     [],
@@ -147,15 +64,6 @@ function App() {
   const visibleProcesses = useMemo<ProcessDefinition[]>(
     () => (activeScope ? processesByScope[activeScope] ?? [] : []),
     [activeScope, processesByScope],
-  );
-
-  const scopeNodeIds = useMemo<Record<GovernmentScope, string[]>>(
-    () => ({
-      federal: ['federal-group', 'federal-group-anchor', ...governmentDatasets.federal.structure.nodes.map((node) => node.id)],
-      state: ['state-group', 'state-group-anchor', ...governmentDatasets.state.structure.nodes.map((node) => node.id)],
-      city: ['city-group', 'city-group-anchor', ...governmentDatasets.city.structure.nodes.map((node) => node.id)],
-    }),
-    [],
   );
 
   const subgraphConfigs = useMemo<SubgraphConfig[]>(() => {
@@ -410,7 +318,7 @@ function App() {
   const subgraphLabel = activeSubgraphId
     ? subgraphById.get(activeSubgraphId)?.meta.label ?? null
     : null;
-  const mainLayoutClass = 'flex flex-1 overflow-hidden bg-white';
+  const mainLayoutClass = 'flex flex-1 overflow-hidden bg-[#eceae4]';
   const graphSectionClass = shouldShowSidebar
     ? 'relative flex flex-1 flex-col gap-6 px-6 py-6 lg:min-w-0'
     : 'relative flex flex-1 flex-col gap-6 px-6 py-6';
@@ -428,10 +336,10 @@ function App() {
   );
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-white">
-      <header className="border-b border-slate-200 bg-slate-50 px-6 py-5">
+    <div className="relative flex min-h-screen flex-col bg-[#eceae4]">
+      <header className="border-b border-slate-200 bg-slate-100 px-6 py-5">
         <h1 className="text-2xl font-semibold text-slate-900">
-          {dataset.structure.meta.title}
+          <span>Maximum New York</span><span className='text-gray-500 '>| {dataset.structure.meta.title}</span>
         </h1>
         <p className="mt-1 max-w-3xl text-sm text-slate-600">
           {dataset.structure.meta.description}
@@ -456,10 +364,10 @@ function App() {
         />
 
         <section className={graphSectionClass}>
-          <div className="flex flex-1 min-h-[75vh] overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm lg:min-h-[82vh]">
+          <div className="flex flex-1 min-h-[75vh] overflow-hidden rounded-lg border border-slate-200 bg-slate-50 shadow-sm lg:min-h-[82vh]">
             <GraphCanvas
               ref={graphRef}
-              className="h-full w-full min-h-[75vh] rounded-lg bg-slate-50 lg:min-h-[82vh]"
+              className="h-full w-full min-h-[75vh] rounded-lg bg-[#eceae4] lg:min-h-[82vh]"
               mainGraph={mainGraph}
               subgraphByEntryId={subgraphByEntryId}
               subgraphById={subgraphById}

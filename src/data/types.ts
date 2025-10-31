@@ -6,6 +6,7 @@ export type StructureNode = {
   factoid: string;
   process?: string[];
   position?: { x: number; y: number };
+  parent?: string;
 };
 
 export type StructureData = {
@@ -61,4 +62,4 @@ export type SubgraphFile = {
   elements: SubgraphElements;
 };
 
-export type GovernmentScope = 'city' | 'state' | 'federal';
+export type GovernmentScope = 'city' | 'state' | 'regional' | 'federal';
