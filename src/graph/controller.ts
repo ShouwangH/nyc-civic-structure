@@ -59,6 +59,67 @@ class GraphController {
     return performance.now() <= this.ignoreZoomUntil;
   }
 
+  private resetHighlightClasses() {
+    this.cy.batch(() => {
+      this.cy.elements().removeClass('highlighted faded hidden dimmed');
+    });
+  }
+
+  async focusNodes(nodeIds: string[]) {
+    if (this.transitionInProgress) {
+      return;
+    }
+
+    const targets = this.cy.collection();
+    nodeIds.forEach((id) => {
+      const node = this.cy.getElementById(id);
+      if (node && node.length > 0) {
+        targets.merge(node);
+      }
+    });
+
+    if (targets.length === 0) {
+      return;
+    }
+
+    this.transitionInProgress = true;
+    this.markProgrammaticZoom();
+
+    const targetEdges = targets.connectedEdges();
+    const otherNodes = this.cy.nodes().not(targets);
+    const otherEdges = this.cy.edges().not(targetEdges);
+
+    this.cy.batch(() => {
+      this.cy.elements().removeClass('highlighted faded hidden dimmed');
+      targets.addClass('highlighted');
+      targetEdges.removeClass('faded hidden');
+      otherNodes.addClass('faded');
+      otherEdges.addClass('faded');
+    });
+
+    try {
+      await this.cy
+        .animation({
+          fit: {
+            eles: targets,
+            padding: 160,
+          },
+          duration: ANIMATION_DURATION,
+          easing: ANIMATION_EASING,
+        })
+        .play()
+        .promise();
+    } catch {
+      // ignore animation cancellation
+    }
+
+    this.transitionInProgress = false;
+  }
+
+  clearNodeFocus() {
+    this.resetHighlightClasses();
+  }
+
   isSubgraphActive(id?: string) {
     if (!this.activeSubgraph) {
       return false;
@@ -360,9 +421,7 @@ class GraphController {
       node.position(copyPosition(orgPos));
     });
 
-    this.cy.batch(() => {
-      this.cy.elements().removeClass('highlighted faded hidden dimmed');
-    });
+    this.resetHighlightClasses();
 
     const layoutOptions = cloneLayoutOptions(this.mainGraph.layout, {
       animate: true,
