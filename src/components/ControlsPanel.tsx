@@ -1,0 +1,167 @@
+import type { GovernmentScope } from '../data/datasets';
+import type { ProcessDefinition } from '../data/types';
+import type { SubgraphConfig } from '../graph/subgraphs';
+
+type ScopeOption = {
+  id: GovernmentScope;
+  label: string;
+};
+
+type ControlsPanelProps = {
+  scopes: ScopeOption[];
+  activeScope: GovernmentScope;
+  onScopeChange: (scope: GovernmentScope) => void;
+  subgraphConfigs: SubgraphConfig[];
+  activeSubgraphId: string | null;
+  onSubgraphToggle: (subgraphId: string) => void;
+  processes: ProcessDefinition[];
+  activeProcessId: string | null;
+  onProcessToggle: (processId: string) => void | Promise<void>;
+  isOpen: boolean;
+  onToggleOpen: () => void;
+};
+
+const ControlsPanel = ({
+  scopes,
+  activeScope,
+  onScopeChange,
+  subgraphConfigs,
+  activeSubgraphId,
+  onSubgraphToggle,
+  processes,
+  activeProcessId,
+  onProcessToggle,
+  isOpen,
+  onToggleOpen,
+}: ControlsPanelProps) => {
+  return (
+    <aside
+      className={`relative flex flex-shrink-0 flex-col border-r border-slate-200 bg-slate-50 transition-all duration-200 ${
+        isOpen ? 'w-72' : 'w-16'
+      }`}
+      aria-label="Controls menu"
+    >
+      <button
+        type="button"
+        onClick={onToggleOpen}
+        aria-expanded={isOpen}
+        className="flex items-center justify-between gap-2 border-b border-slate-200 px-4 py-3 text-sm font-medium text-slate-600 transition hover:bg-slate-100"
+      >
+        <span>{isOpen ? 'Hide Menu' : 'Show Menu'}</span>
+        <span>{isOpen ? '⟨' : '⟩'}</span>
+      </button>
+
+      {isOpen ? (
+        <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-4 py-5 text-sm text-slate-700">
+          <section className="space-y-3">
+            <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">Scope</h2>
+            <div className="space-y-2">
+              {scopes.map((scope) => (
+                <label
+                  key={scope.id}
+                  className="flex cursor-pointer items-center justify-between rounded-md border border-transparent px-3 py-2 transition hover:border-slate-300 hover:bg-white"
+                >
+                  <span className="font-medium text-slate-800">{scope.label}</span>
+                  <input
+                    type="radio"
+                    name="scope"
+                    value={scope.id}
+                    checked={activeScope === scope.id}
+                    onChange={() => onScopeChange(scope.id)}
+                    className="h-4 w-4 accent-blue-600"
+                  />
+                </label>
+              ))}
+            </div>
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+              Subgraphs
+            </h2>
+            {subgraphConfigs.length === 0 ? (
+              <p className="text-xs text-slate-500">
+                No focused subgraphs available yet for this scope.
+              </p>
+            ) : (
+              <div className="space-y-2">
+                {subgraphConfigs.map((config) => {
+                  const isActive = activeSubgraphId === config.meta.id;
+                  return (
+                    <button
+                      key={config.meta.id}
+                      type="button"
+                      onClick={() => {
+                        void onSubgraphToggle(config.meta.id);
+                      }}
+                      className={`w-full rounded-md px-3 py-2 text-left text-sm font-medium transition ${
+                        isActive
+                          ? 'bg-blue-600 text-white shadow-sm'
+                          : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                      }`}
+                    >
+                      {config.meta.label}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </section>
+
+          <section className="space-y-3">
+            <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+              Processes
+            </h2>
+            {processes.length === 0 ? (
+              <p className="text-xs text-slate-500">No spotlight processes yet.</p>
+            ) : (
+              <div className="space-y-2">
+                {processes.map((process) => {
+                  const isActive = process.id === activeProcessId;
+                  return (
+                    <button
+                      key={process.id}
+                      type="button"
+                      onClick={() => {
+                        void onProcessToggle(process.id);
+                      }}
+                      className={`w-full rounded-md px-3 py-2 text-left text-sm font-semibold transition ${
+                        isActive
+                          ? 'bg-blue-600 text-white shadow-sm'
+                          : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                      }`}
+                    >
+                      {process.label}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+            {activeProcessId && (
+              <div className="rounded-md bg-slate-100 px-3 py-2 text-xs text-slate-600">
+                {(() => {
+                  const activeProcess = processes.find((process) => process.id === activeProcessId);
+                  if (!activeProcess) {
+                    return null;
+                  }
+                  return (
+                    <>
+                      <p className="font-semibold text-slate-700">{activeProcess.label}</p>
+                      <p className="mt-1">{activeProcess.description}</p>
+                    </>
+                  );
+                })()}
+              </div>
+            )}
+          </section>
+        </div>
+      ) : (
+        <div className="flex flex-1 items-center justify-center text-xs font-semibold uppercase tracking-wide text-slate-500">
+          Menu
+        </div>
+      )}
+    </aside>
+  );
+};
+
+export { ControlsPanel };

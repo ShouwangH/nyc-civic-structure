@@ -1,0 +1,10 @@
+{
+  "edges": [
+    { "source": "ny_state_constitution", "target": "governor_ny" },
+    { "source": "ny_state_constitution", "target": "state_legislature" },
+    { "source": "governor_ny", "target": "state_agencies" },
+    { "source": "state_legislature", "target": "state_budget" },
+    { "source": "governor_ny", "target": "state_budget" },
+    { "source": "state_budget", "target": "state_agencies" }
+  ]
+}

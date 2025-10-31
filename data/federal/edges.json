@@ -1,0 +1,10 @@
+{
+  "edges": [
+    { "source": "us_constitution", "target": "president" },
+    { "source": "us_constitution", "target": "congress" },
+    { "source": "us_constitution", "target": "supreme_court" },
+    { "source": "president", "target": "federal_agencies" },
+    { "source": "congress", "target": "federal_budget" },
+    { "source": "president", "target": "federal_budget" }
+  ]
+}

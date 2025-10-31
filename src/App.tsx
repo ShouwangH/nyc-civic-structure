@@ -1,548 +1,302 @@
 import cytoscape from 'cytoscape';
-import type { Core, LayoutOptions } from 'cytoscape';
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import structureData from '../data/structure.json';
-import edgesData from '../data/edges.json';
-import ulurpData from '../data/processes/ulurp.json';
+import cytoscapeElk from 'cytoscape-elk';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 
-type StructureNode = (typeof structureData.nodes)[number];
-type ProcessDefinition = {
-  id: string;
-  label: string;
-  description: string;
-  nodes: string[];
-  edges: Array<{ source: string; target: string }>;
-  steps?: Array<{ id: string; title: string; description: string }>;
-};
+import { ControlsPanel } from './components/ControlsPanel';
+import { DetailsSidebar } from './components/DetailsSidebar';
+import { GraphCanvas, type GraphCanvasHandle } from './components/GraphCanvas';
+import { buildMainGraph, buildSubgraphGraph } from './graph/data';
+import type { GraphEdgeInfo, GraphNodeInfo } from './graph/types';
+import { governmentDatasets, governmentScopes } from './data/datasets';
+import type { GovernmentDataset } from './data/datasets';
+import type { ProcessDefinition } from './data/types';
+import type { SubgraphConfig } from './graph/subgraphs';
+import { useVisualizationState } from './state/useVisualizationState';
 
-const processes: ProcessDefinition[] = [ulurpData as ProcessDefinition];
+cytoscape.use(cytoscapeElk);
 
-const branchPalette: Record<string, string> = {
-  law: '#1d4ed8',
-  administrative: '#7c3aed',
-  executive: '#0369a1',
-  legislative: '',
-  community: '#f97316',
-  planning: '#9333ea',
-  financial: '#16a34a',
-};
-
-type SystemCategory = 'charter' | 'process' | 'borough';
-
-const categorizeSystem = (node: StructureNode): SystemCategory => {
-  if (node.branch === 'community') {
-    return 'borough';
-  }
-  if (node.type === 'process' || node.branch === 'planning' || node.branch === 'financial') {
-    return 'process';
-  }
-  return 'charter';
-};
-
-const NODE_WIDTH = 120;
-const NODE_HEIGHT = 80;
-
-const nodes = structureData.nodes;
-
-type RawEdge = {
-  source: string;
-  target: string;
-  id?: string;
-  label?: string;
-  type?: string;
-  process?: string[];
-};
-
-type EdgeRecord = {
-  id: string;
-  source: string;
-  target: string;
-  label: string;
-  type: string;
-  process: string[];
-};
-
-const rawEdges = edgesData.edges as RawEdge[];
-
-const edges: EdgeRecord[] = rawEdges.map((edge) => ({
-  id: edge.id ?? `${edge.source}->${edge.target}`,
-  source: edge.source,
-  target: edge.target,
-  label: edge.label ?? '',
-  type: edge.type ?? 'relationship',
-  process: edge.process ?? [],
-}));
-
-const nodesHavePreset = nodes.every((node) => Boolean(node.position));
+const processesForDataset = (dataset: GovernmentDataset): ProcessDefinition[] =>
+  dataset.processes ?? [];
 
 function App() {
-  const containerRef = useRef<HTMLDivElement | null>(null);
-  const cyRef = useRef<Core | null>(null);
+  const graphRef = useRef<GraphCanvasHandle | null>(null);
 
-  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
-  const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null);
-  const [activeProcessId, setActiveProcessId] = useState<string | null>(null);
-  const [isSidebarHover, setIsSidebarHover] = useState(false);
+  const {
+    state: {
+      controlsOpen,
+      activeScope,
+      selectedNodeId,
+      selectedEdgeId,
+      activeProcessId,
+      activeSubgraphId,
+      isSidebarHover,
+    },
+    actions: {
+      toggleControlsOpen,
+      setActiveScope,
+      setSelectedNode,
+      setSelectedEdge,
+      setActiveProcess,
+      setActiveSubgraph,
+      setSidebarHover,
+      clearSelections,
+    },
+  } = useVisualizationState();
+
+  const dataset = useMemo<GovernmentDataset>(() => governmentDatasets[activeScope], [activeScope]);
+  const processes = useMemo(() => processesForDataset(dataset), [dataset]);
+  const mainGraph = useMemo(() => buildMainGraph(dataset.structure, dataset.edges), [dataset]);
+
+  const subgraphConfigs = useMemo<SubgraphConfig[]>(() => {
+    return (dataset.subgraphs ?? []).map((subgraph) => ({
+      meta: subgraph,
+      graph: buildSubgraphGraph(subgraph),
+    }));
+  }, [dataset]);
+
+  const subgraphByEntryId = useMemo(() => {
+    const map = new Map<string, SubgraphConfig>();
+    subgraphConfigs.forEach((config) => {
+      map.set(config.meta.entryNodeId, config);
+    });
+    return map;
+  }, [subgraphConfigs]);
+
+  const subgraphById = useMemo(() => {
+    const map = new Map<string, SubgraphConfig>();
+    subgraphConfigs.forEach((config) => {
+      map.set(config.meta.id, config);
+    });
+    return map;
+  }, [subgraphConfigs]);
 
   const nodesById = useMemo(() => {
-    const map = new Map<string, StructureNode>();
-    nodes.forEach((node) => map.set(node.id, node));
+    const map = new Map<string, GraphNodeInfo>();
+    mainGraph.nodes.forEach((node) => map.set(node.id, node));
+    subgraphConfigs.forEach((config) => {
+      config.graph.nodes.forEach((node) => {
+        if (!map.has(node.id)) {
+          map.set(node.id, node);
+        }
+      });
+    });
     return map;
-  }, []);
+  }, [mainGraph, subgraphConfigs]);
 
-  const elements = useMemo(() => {
-    const nodeElements = nodes.map((node) => ({
-      data: {
-        id: node.id,
-        label: node.label,
-        branch: node.branch,
-        type: node.type,
-        process: node.process ?? [],
-        factoid: node.factoid ?? 'No details available yet.',
-        branchColor: branchPalette[node.branch] ?? '#0f172a',
-        system: categorizeSystem(node),
-        width: NODE_WIDTH,
-        height: NODE_HEIGHT,
-      },
-      position: node.position,
-    }));
-
-    const edgeElements = edges.map((edge) => ({
-      data: {
-        id: edge.id,
-        source: edge.source,
-        target: edge.target,
-        label: edge.label,
-        type: edge.type,
-        process: edge.process,
-      },
-    }));
-
-    return [...nodeElements, ...edgeElements];
-  }, []);
-
-  const layoutOptions = useMemo<LayoutOptions>(() => {
-    if (nodesHavePreset) {
-      return {
-        name: 'preset',
-        fit: false,
-      };
-    }
-
-    return {
-      name: 'breadthfirst',
-      directed: true,
-      padding: 50,
-      spacingFactor: 1.4,
-    };
-  }, []);
+  const edgesById = useMemo(() => {
+    const map = new Map<string, GraphEdgeInfo>();
+    mainGraph.edges.forEach((edge) => map.set(edge.id, edge));
+    subgraphConfigs.forEach((config) => {
+      config.graph.edges.forEach((edge) => {
+        if (!map.has(edge.id)) {
+          map.set(edge.id, edge);
+        }
+      });
+    });
+    return map;
+  }, [mainGraph, subgraphConfigs]);
 
   useEffect(() => {
-    if (!containerRef.current) {
-      return;
-    }
+    clearSelections();
+  }, [dataset, clearSelections]);
 
-    const cy = cytoscape({
-      container: containerRef.current,
-      elements,
-      layout: layoutOptions,
-      style: [
-        {
-          selector: 'node',
-          style: {
-            'background-color': 'data(branchColor)',
-            'border-color': 'rgba(15, 23, 42, 0.18)',
-            'border-width': '2px',
-            'width': 'data(width)',
-            'height': 'data(height)',
-            label: 'data(label)',
-            color: '#0f172a',
-            'font-size': '12px',
-            'font-weight': 600,
-            'text-wrap': 'wrap',
-            'text-max-width': '96px',
-            'text-valign': 'center',
-            'text-halign': 'center',
-            'padding': '8px',
-            'shape': 'round-rectangle',
-          },
-        },
-        {
-          selector: 'node[system = "borough"]',
-          style: {
-            'background-color': '#fb923c',
-            color: '#7f1d1d',
-            'border-color': '#ea580c',
-            'border-width': '4px',
-          },
-        },
-        {
-          selector: 'node[system = "charter"]',
-          style: {
-            color: '#0f172a',
-          },
-        },
-        {
-          selector: 'edge',
-          style: {
-            'curve-style': 'bezier',
-            'width': '2px',
-            'line-color': '#334155',
-            'line-opacity': 0.9,
-            'target-arrow-color': '#334155',
-            'target-arrow-shape': 'triangle',
-            'target-arrow-fill': 'filled',
-            'opacity': 0.9,
-            'arrow-scale': 1.1,
-            label: 'data(label)',
-            'font-size': '10px',
-            color: '#334155',
-            'text-background-color': '#f8fafc',
-            'text-background-opacity': 0.9,
-            'text-background-padding': '2px',
-            'text-rotation': 'autorotate',
-          },
-        },
-        {
-          selector: 'edge[label = ""]',
-          style: {
-            'text-opacity': 0,
-          },
-        },
-        {
-          selector: '.dimmed',
-          style: {
-            opacity: 0.18,
-            'text-opacity': 0.18,
-          },
-        },
-        {
-          selector: 'edge.dimmed',
-          style: {
-            'line-color': '#cbd5f5',
-            'target-arrow-color': '#cbd5f5',
-            opacity: 0.18,
-          },
-        },
-        {
-          selector: '.process-active',
-          style: {
-            'background-color': '#bfdbfe',
-            'border-color': '#2563eb',
-            'border-width': '3px',
-          },
-        },
-        {
-          selector: '.process-active-edge',
-          style: {
-            'line-color': '#2563eb',
-            'target-arrow-color': '#2563eb',
-            'width': '3px',
-            opacity: 0.95,
-          },
-        },
-        {
-          selector: 'node:selected',
-          style: {
-            'border-color': '#0f172a',
-            'border-width': '3px',
-          },
-        },
-      ],
-    });
-
-    cyRef.current = cy;
-
-    cy.ready(() => {
-      cy.resize();
-      cy.fit(undefined, 40);
-      if (nodesHavePreset) {
-        cy.nodes().lock();
-      }
-    });
-
-    cy.on('tap', 'node', (event) => {
-      const nodeId = event.target.id();
-      setSelectedEdgeId(null);
-      setSelectedNodeId(nodeId);
-      setIsSidebarHover(true);
-    });
-
-    cy.on('tap', 'edge', (event) => {
-      const edgeId = event.target.id();
-      setSelectedNodeId(null);
-      setSelectedEdgeId(edgeId);
-      setIsSidebarHover(true);
-    });
-
-    cy.on('tap', (event) => {
-      if (event.target === cy) {
-        setSelectedNodeId(null);
-        setSelectedEdgeId(null);
-        setActiveProcessId(null);
-        setIsSidebarHover(false);
-      }
-    });
-
-    return () => {
-      cy.destroy();
-      cyRef.current = null;
-    };
-  }, [elements, layoutOptions]);
-
-  const activeNode = useMemo(() => {
-    return nodes.find((node) => node.id === selectedNodeId) ?? null;
-  }, [selectedNodeId]);
-
-  const activeEdge = useMemo(() => {
-    return edges.find((edge) => edge.id === selectedEdgeId) ?? null;
-  }, [selectedEdgeId]);
-
-  const activeProcess = useMemo(() => {
-    return processes.find((process) => process.id === activeProcessId) ?? null;
-  }, [activeProcessId]);
-
-  const applyProcessHighlight = useCallback(
-    (process: ProcessDefinition | null) => {
-      const cy = cyRef.current;
-      if (!cy) {
+  const handleProcessToggle = useCallback(
+    async (processId: string) => {
+      const graphHandle = graphRef.current;
+      if (!graphHandle) {
         return;
       }
 
-      cy.batch(() => {
-        cy.nodes().removeClass('dimmed process-active');
-        cy.edges().removeClass('dimmed process-active-edge');
+      if (activeSubgraphId) {
+        await graphHandle.restoreMainView();
+      }
 
-        if (!process) {
-          return;
+      if (activeProcessId === processId) {
+        await graphHandle.clearProcessHighlight();
+        if (!selectedNodeId && !selectedEdgeId) {
+          setSidebarHover(false);
         }
+        return;
+      }
 
-        const processNodes = new Set(process.nodes);
-        const processEdgeKeys = new Set(
-          process.edges.map((edge) => `${edge.source}->${edge.target}`),
-        );
+      if (!processes.find((process) => process.id === processId)) {
+        console.warn('[Process] Definition not found for process', processId);
+        return;
+      }
 
-        cy.nodes().forEach((node) => {
-          if (processNodes.has(node.id())) {
-            node.addClass('process-active');
-          } else {
-            node.addClass('dimmed');
-          }
-        });
-
-        cy.edges().forEach((edge) => {
-          const key = `${edge.data('source')}->${edge.data('target')}`;
-          if (processEdgeKeys.has(key)) {
-            edge.addClass('process-active-edge');
-          } else {
-            edge.addClass('dimmed');
-          }
-        });
-      });
+      await graphHandle.highlightProcess(processId);
+      setSidebarHover(true);
     },
-    [],
+    [activeProcessId, activeSubgraphId, processes, selectedEdgeId, selectedNodeId, setSidebarHover],
   );
 
-  useEffect(() => {
-    applyProcessHighlight(activeProcess ?? null);
-  }, [activeProcess, applyProcessHighlight]);
+  const handleSubgraphToggle = useCallback(
+    async (subgraphId: string) => {
+      const graphHandle = graphRef.current;
+      if (!graphHandle) {
+        return;
+      }
 
-  const handleProcessToggle = useCallback(
-    (processId: string) => {
-      setActiveProcessId((current) => {
-        const next = current === processId ? null : processId;
-        if (next) {
-          setIsSidebarHover(true);
-        } else if (!selectedNodeId && !selectedEdgeId) {
-          setIsSidebarHover(false);
-        }
-        return next;
-      });
+      if (activeProcessId) {
+        await graphHandle.clearProcessHighlight();
+      }
+
+      const controller = graphHandle.getController();
+      if (controller?.isSubgraphActive(subgraphId)) {
+        await graphHandle.restoreMainView();
+        setSidebarHover(false);
+        return;
+      }
+
+      if (!subgraphById.has(subgraphId)) {
+        console.warn('[Subgraph] Definition not found for subgraph', subgraphId);
+        return;
+      }
+
+      await graphHandle.activateSubgraph(subgraphId);
+      setSidebarHover(true);
     },
-    [selectedEdgeId, selectedNodeId],
+    [activeProcessId, setSidebarHover, subgraphById],
   );
+
+  const handleClearSelection = useCallback(async () => {
+    const graphHandle = graphRef.current;
+
+    if (activeProcessId) {
+      if (graphHandle) {
+        await graphHandle.clearProcessHighlight();
+      }
+    }
+
+    if (activeSubgraphId) {
+      if (graphHandle) {
+        await graphHandle.restoreMainView();
+      }
+    }
+    clearSelections();
+  }, [activeProcessId, activeSubgraphId, clearSelections]);
 
   const selectionActive =
-    Boolean(selectedNodeId) || Boolean(selectedEdgeId) || Boolean(activeProcessId);
+    Boolean(selectedNodeId) ||
+    Boolean(selectedEdgeId) ||
+    Boolean(activeProcessId) ||
+    Boolean(activeSubgraphId);
   const shouldShowSidebar = selectionActive || isSidebarHover;
 
   const handleSidebarMouseLeave = () => {
     if (!selectionActive) {
-      setIsSidebarHover(false);
+      setSidebarHover(false);
     }
   };
 
   const handleHotzoneLeave = () => {
     if (!selectionActive) {
-      setIsSidebarHover(false);
+      setSidebarHover(false);
     }
   };
 
-  const selectedEdgeSource = activeEdge ? nodesById.get(activeEdge.source) : null;
-  const selectedEdgeTarget = activeEdge ? nodesById.get(activeEdge.target) : null;
-  const graphOffsetClass = shouldShowSidebar ? 'lg:pr-[380px]' : '';
+  const activeNode = useMemo(
+    () => (selectedNodeId ? nodesById.get(selectedNodeId) ?? null : null),
+    [nodesById, selectedNodeId],
+  );
+
+  const activeEdge = useMemo(
+    () => (selectedEdgeId ? edgesById.get(selectedEdgeId) ?? null : null),
+    [edgesById, selectedEdgeId],
+  );
+
+  const activeProcess = useMemo(
+    () => processes.find((process) => process.id === activeProcessId) ?? null,
+    [processes, activeProcessId],
+  );
+
+  const selectedEdgeSource = activeEdge ? nodesById.get(activeEdge.source) ?? null : null;
+  const selectedEdgeTarget = activeEdge ? nodesById.get(activeEdge.target) ?? null : null;
+  const subgraphLabel = activeSubgraphId
+    ? subgraphById.get(activeSubgraphId)?.meta.label ?? null
+    : null;
+  const mainLayoutClass = 'flex flex-1 overflow-hidden bg-white';
+  const graphSectionClass = shouldShowSidebar
+    ? 'relative flex flex-1 flex-col gap-6 px-6 py-6 lg:min-w-0'
+    : 'relative flex flex-1 flex-col gap-6 px-6 py-6';
+
+  const graphStoreActions = useMemo(
+    () => ({
+      setSelectedNode,
+      setSelectedEdge,
+      setActiveProcess,
+      setActiveSubgraph,
+      setSidebarHover,
+      clearSelections,
+    }),
+    [setSelectedNode, setSelectedEdge, setActiveProcess, setActiveSubgraph, setSidebarHover, clearSelections],
+  );
 
   return (
     <div className="relative flex min-h-screen flex-col bg-white">
       <header className="border-b border-slate-200 bg-slate-50 px-6 py-5">
         <h1 className="text-2xl font-semibold text-slate-900">
-          {structureData.meta.title}
+          {dataset.structure.meta.title}
         </h1>
         <p className="mt-1 max-w-3xl text-sm text-slate-600">
-          {structureData.meta.description}
+          {dataset.structure.meta.description}
         </p>
       </header>
 
-      <main className="relative flex flex-1 flex-col gap-6 p-6">
-        <section className={`relative flex w-full flex-1 flex-col gap-4 ${graphOffsetClass}`}>
-          <div className="flex flex-1 min-h-[75vh] lg:min-h-[82vh] overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm">
-            <div
-              ref={containerRef}
-              className="h-full w-full min-h-[75vh] lg:min-h-[82vh] rounded-lg bg-slate-50"
-              role="presentation"
+      <main className={mainLayoutClass}>
+        <ControlsPanel
+          scopes={governmentScopes}
+          activeScope={activeScope}
+          onScopeChange={(scope) => setActiveScope(scope)}
+          subgraphConfigs={subgraphConfigs}
+          activeSubgraphId={activeSubgraphId}
+          onSubgraphToggle={handleSubgraphToggle}
+          processes={processes}
+          activeProcessId={activeProcessId}
+          onProcessToggle={handleProcessToggle}
+          isOpen={controlsOpen}
+          onToggleOpen={toggleControlsOpen}
+        />
+
+        <section className={graphSectionClass}>
+          <div className="flex flex-1 min-h-[75vh] overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm lg:min-h-[82vh]">
+            <GraphCanvas
+              ref={graphRef}
+              className="h-full w-full min-h-[75vh] rounded-lg bg-slate-50 lg:min-h-[82vh]"
+              mainGraph={mainGraph}
+              subgraphByEntryId={subgraphByEntryId}
+              subgraphById={subgraphById}
+              processes={processes}
+              nodesById={nodesById}
+              storeActions={graphStoreActions}
             />
           </div>
           <p className="text-xs text-slate-500">
-            Zoom with scroll, drag to pan, click a node or edge to inspect. Tap empty space to
-            reset selections.
+            Zoom with scroll, drag to pan, click a node or edge to inspect. Use the left menu to
+            switch scopes, spotlight processes, or explore a subgraph view.
           </p>
         </section>
 
         {shouldShowSidebar && (
-          <aside
-            className="pointer-events-auto z-30 mt-6 flex w-full flex-col rounded-lg border border-slate-200 bg-white p-6 shadow-xl transition-all duration-200 lg:absolute lg:inset-y-6 lg:right-6 lg:mt-0 lg:max-w-md"
-            onMouseEnter={() => setIsSidebarHover(true)}
+          <DetailsSidebar
+            activeNode={activeNode}
+            activeEdge={activeEdge}
+            edgeSourceNode={selectedEdgeSource}
+            edgeTargetNode={selectedEdgeTarget}
+            activeProcess={activeProcess}
+            subgraphLabel={subgraphLabel}
+            hasSelection={selectionActive}
+            isSubgraphActive={Boolean(activeSubgraphId)}
+            onClear={handleClearSelection}
+            onMouseEnter={() => setSidebarHover(true)}
             onMouseLeave={handleSidebarMouseLeave}
-          >
-            <div className="flex items-start justify-between">
-              <h2 className="text-lg font-medium text-slate-900">
-                {activeNode
-                  ? activeNode.label
-                  : activeEdge
-                    ? `${selectedEdgeSource?.label ?? activeEdge.source} → ${selectedEdgeTarget?.label ?? activeEdge.target}`
-                    : activeProcess
-                      ? `${activeProcess.label} process`
-                      : 'Details'}
-              </h2>
-              {(selectedNodeId || selectedEdgeId || activeProcessId) && (
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSelectedNodeId(null);
-                    setSelectedEdgeId(null);
-                    setActiveProcessId(null);
-                    setIsSidebarHover(false);
-                  }}
-                  className="text-xs font-medium text-slate-500 transition hover:text-slate-700"
-                >
-                  Clear
-                </button>
-              )}
-            </div>
-
-            <div className="mt-4 space-y-4 text-sm text-slate-600">
-              {activeNode ? (
-                <>
-                  <p>{activeNode.factoid}</p>
-                  <dl className="space-y-2">
-                    <div className="flex justify-between">
-                      <dt className="text-slate-500">Branch</dt>
-                      <dd className="font-semibold text-slate-900">
-                        {activeNode.branch}
-                      </dd>
-                    </div>
-                    <div className="flex justify-between">
-                      <dt className="text-slate-500">Type</dt>
-                      <dd className="font-semibold text-slate-900">
-                        {activeNode.type}
-                      </dd>
-                    </div>
-                    {activeNode.process && activeNode.process.length > 0 && (
-                      <div className="space-y-1">
-                        <dt className="text-slate-500">Processes</dt>
-                        <dd className="flex flex-wrap gap-2">
-                          {activeNode.process.map((processName) => (
-                            <span
-                              key={processName}
-                              className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium capitalize text-slate-700"
-                            >
-                              {processName}
-                            </span>
-                          ))}
-                        </dd>
-                      </div>
-                    )}
-                  </dl>
-                </>
-              ) : activeEdge ? (
-                <dl className="space-y-2">
-                  <div>
-                    <dt className="text-slate-500">From</dt>
-                    <dd className="font-semibold text-slate-900">
-                      {selectedEdgeSource?.label ?? activeEdge.source}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="text-slate-500">To</dt>
-                    <dd className="font-semibold text-slate-900">
-                      {selectedEdgeTarget?.label ?? activeEdge.target}
-                    </dd>
-                  </div>
-                  {activeEdge.label && (
-                    <div>
-                      <dt className="text-slate-500">Relationship</dt>
-                      <dd className="text-slate-700">{activeEdge.label}</dd>
-                    </div>
-                  )}
-                </dl>
-              ) : activeProcess ? (
-                <p>{activeProcess.description}</p>
-              ) : (
-                <p className="text-slate-500">
-                  Select a civic entity, relationship, or process to see focused details.
-                </p>
-              )}
-
-              <div className="border-t border-slate-200 pt-4">
-                <h3 className="text-sm font-semibold text-slate-900">Processes</h3>
-                <div className="mt-3 flex flex-wrap gap-2">
-                  {processes.map((process) => {
-                    const isActive = process.id === activeProcessId;
-                    return (
-                      <button
-                        key={process.id}
-                        type="button"
-                        onClick={() => handleProcessToggle(process.id)}
-                        className={`rounded-full px-3 py-1 text-xs font-semibold transition ${
-                          isActive
-                            ? 'bg-blue-600 text-white shadow-sm'
-                            : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
-                        }`}
-                      >
-                        {process.label}
-                      </button>
-                    );
-                  })}
-                </div>
-                {activeProcess && (
-                  <ul className="mt-3 space-y-2 text-xs text-slate-500">
-                    {activeProcess.steps?.map((step) => (
-                      <li key={step.id}>
-                        <span className="font-semibold text-slate-700">{step.title}:</span>{' '}
-                        {step.description}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </div>
-            </div>
-          </aside>
+          />
         )}
       </main>
 
       <div
         className="fixed inset-y-0 right-0 w-4 lg:w-6"
-        onMouseEnter={() => setIsSidebarHover(true)}
+        onMouseEnter={() => setSidebarHover(true)}
         onMouseLeave={handleHotzoneLeave}
         aria-hidden="true"
       />

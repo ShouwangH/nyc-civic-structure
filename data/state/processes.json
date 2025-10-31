@@ -1,0 +1,57 @@
+{
+  "processes": [
+    {
+      "id": "state_budget",
+      "label": "State Budget Process",
+      "description": "How New York State prepares and enacts its annual budget.",
+      "nodes": ["agencies", "division_of_budget", "governor", "legislature", "comptroller"],
+      "edges": [
+        { "source": "agencies", "target": "division_of_budget" },
+        { "source": "division_of_budget", "target": "governor" },
+        { "source": "governor", "target": "legislature" },
+        { "source": "legislature", "target": "governor" },
+        { "source": "governor", "target": "comptroller" }
+      ],
+      "steps": [
+        { "id": "requests", "title": "Agency Requests", "description": "Agencies propose funding levels to DOB." },
+        { "id": "exec_budget", "title": "Executive Budget", "description": "Governor submits proposed budget to Legislature." },
+        { "id": "hearings", "title": "Legislative Hearings", "description": "Budget committees hold hearings and negotiate changes." },
+        { "id": "adoption", "title": "Adoption", "description": "Legislature passes budget bills; Governor signs or vetoes items." },
+        { "id": "implementation", "title": "Implementation & Oversight", "description": "Comptroller oversees spending compliance." }
+      ]
+    },
+    {
+      "id": "judicial_appointment",
+      "label": "Judicial Appointment (Court of Appeals)",
+      "description": "Process for selecting and confirming New York’s highest court judges.",
+      "nodes": ["commission_on_judicial_nomination", "governor", "senate"],
+      "edges": [
+        { "source": "commission_on_judicial_nomination", "target": "governor" },
+        { "source": "governor", "target": "senate" }
+      ],
+      "steps": [
+        { "id": "nomination_pool", "title": "Nomination Pool", "description": "Commission submits list of qualified candidates to Governor." },
+        { "id": "selection", "title": "Governor Selection", "description": "Governor selects one nominee from the list." },
+        { "id": "confirmation", "title": "Senate Confirmation", "description": "Senate confirms or rejects nominee." },
+        { "id": "appointment", "title": "Appointment", "description": "Confirmed nominee takes office as Judge of the Court of Appeals." }
+      ]
+    },
+    {
+      "id": "bond_act",
+      "label": "State Bond Act / Ballot Proposition",
+      "description": "Process for proposing and approving large state borrowing measures.",
+      "nodes": ["legislature", "governor", "attorney_general", "voters"],
+      "edges": [
+        { "source": "legislature", "target": "governor" },
+        { "source": "governor", "target": "attorney_general" },
+        { "source": "attorney_general", "target": "voters" }
+      ],
+      "steps": [
+        { "id": "proposal", "title": "Proposal", "description": "Legislature passes bond act bill." },
+        { "id": "approval", "title": "Executive Review", "description": "Governor approves; Attorney General reviews ballot language." },
+        { "id": "referendum", "title": "Voter Referendum", "description": "Voters approve or reject bond act at election." },
+        { "id": "issuance", "title": "Implementation", "description": "State issues bonds and allocates funds to approved projects." }
+      ]
+    }
+  ]
+}

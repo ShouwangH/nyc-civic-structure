@@ -9,8 +9,7 @@
       "label": "NYC Charter",
       "type": "law",
       "branch": "law",
-      "factoid": "Foundational document defining the structure and powers of New York City government.",
-      "position": { "x": 400, "y": 100 }
+      "factoid": "Foundational document defining the structure and powers of New York City government."
     },
     {
       "id": "mayor",
@@ -18,8 +17,7 @@
       "type": "office",
       "branch": "executive",
       "process": ["budget", "legislative"],
-      "factoid": "Elected citywide executive. Oversees agencies, prepares the budget, and enforces city laws.",
-      "position": { "x": 410, "y": 230 }
+      "factoid": "Elected citywide executive. Oversees agencies, prepares the budget, and enforces city laws."
     },
     {
       "id": "comptroller",
@@ -27,8 +25,7 @@
       "type": "office",
       "branch": "executive",
       "process": ["budget"],
-      "factoid": "Fiscal watchdog and auditor. Oversees the city's financial operations and pensions.",
-      "position": { "x": 580, "y": 230 }
+      "factoid": "Fiscal watchdog and auditor. Oversees the city's financial operations and pensions."
     },
     {
       "id": "public_advocate",
@@ -36,8 +33,7 @@
       "type": "office",
       "branch": "executive",
       "process": ["legislative"],
-      "factoid": "Monitors city agencies and acts as a public ombudsman, representing residents before city government.",
-      "position": { "x": 230, "y": 230 }
+      "factoid": "Monitors city agencies and acts as a public ombudsman, representing residents before city government."
     },
     {
       "id": "city_council",
@@ -45,8 +41,7 @@
       "type": "body",
       "branch": "legislative",
       "process": ["legislative", "budget"],
-      "factoid": "51-member legislative body that passes local laws, approves the budget, and exercises oversight.",
-      "position": { "x": 230, "y": 370 }
+      "factoid": "51-member legislative body that passes local laws, approves the budget, and exercises oversight."
     },
     {
       "id": "departments",
@@ -54,24 +49,21 @@
       "type": "agency",
       "branch": "administrative",
       "process": ["budget"],
-      "factoid": "Agencies responsible for carrying out policy across housing, health, planning, education, and more.",
-      "position": { "x": 410, "y": 500 }
+      "factoid": "Agencies responsible for carrying out policy across housing, health, planning, education, and more."
     },
     {
       "id": "administrative_code",
       "label": "Administrative Code (NYC Statute)",
       "type": "law",
       "branch": "law",
-      "factoid": "Compilation of permanent local laws enacted by the City Council and signed by the Mayor.",
-      "position": { "x": 230, "y": 500 }
+      "factoid": "Compilation of permanent local laws enacted by the City Council and signed by the Mayor."
     },
     {
       "id": "rules_of_city",
       "label": "Rules of the City of New York (Administrative Law)",
       "type": "law",
       "branch": "law",
-      "factoid": "Regulations issued by city agencies to implement provisions of the Administrative Code.",
-      "position": { "x": 410, "y": 650 }
+      "factoid": "Regulations issued by city agencies to implement provisions of the Administrative Code."
     },
     {
       "id": "nyc_budget",
@@ -79,56 +71,49 @@
       "type": "process",
       "branch": "financial",
       "process": ["budget"],
-      "factoid": "Annual financial plan allocating operating and capital funds across city agencies and boroughs.",
-      "position": { "x": 580, "y": 370 }
+      "factoid": "Annual financial plan allocating operating and capital funds across city agencies and boroughs."
     },
     {
       "id": "borough_manhattan",
       "label": "Manhattan",
       "type": "region",
       "branch": "community",
-      "factoid": "Manhattan's Borough President oversees 12 Community Boards, representing local neighborhoods.",
-      "position": { "x": 800, "y": 230 }
+      "factoid": "Manhattan's Borough President oversees 12 Community Boards, representing local neighborhoods."
     },
     {
       "id": "borough_brooklyn",
       "label": "Brooklyn",
       "type": "region",
       "branch": "community",
-      "factoid": "Brooklyn's Borough President oversees 18 Community Boards.",
-      "position": { "x": 950, "y": 230 }
+      "factoid": "Brooklyn's Borough President oversees 18 Community Boards."
     },
     {
       "id": "borough_bronx",
       "label": "Bronx",
       "type": "region",
       "branch": "community",
-      "factoid": "Bronx's Borough President oversees 12 Community Boards.",
-      "position": { "x": 1100, "y": 230 }
+      "factoid": "Bronx's Borough President oversees 12 Community Boards."
     },
     {
       "id": "borough_queens",
       "label": "Queens",
       "type": "region",
       "branch": "community",
-      "factoid": "Queens's Borough President oversees 14 Community Boards.",
-      "position": { "x": 1250, "y": 230 }
+      "factoid": "Queens's Borough President oversees 14 Community Boards."
     },
     {
       "id": "borough_staten_island",
       "label": "Staten Island",
       "type": "region",
       "branch": "community",
-      "factoid": "Staten Island's Borough President oversees 3 Community Boards.",
-      "position": { "x": 1400, "y": 230 }
+      "factoid": "Staten Island's Borough President oversees 3 Community Boards."
     },
-        {
+    {
       "id": "community_boards",
       "label": "Community Boards",
       "type": "region",
       "branch": "community",
-      "factoid": "Each community board has at most 50 members",
-      "position": { "x": 1100, "y": 350 }
+      "factoid": "Each community board has at most 50 members"
     }
   ]
 }

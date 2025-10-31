@@ -1,0 +1,53 @@
+{
+  "meta": {
+    "title": "United States Federal Government",
+    "description": "Simplified overview of the constitutional branches of the U.S. federal government."
+  },
+  "nodes": [
+    {
+      "id": "us_constitution",
+      "label": "U.S. Constitution",
+      "type": "law",
+      "branch": "law",
+      "factoid": "Foundational document establishing the federal government, ratified in 1788."
+    },
+    {
+      "id": "president",
+      "label": "President",
+      "type": "office",
+      "branch": "executive",
+      "process": ["budget", "legislative"],
+      "factoid": "Head of state and government. Executes federal law and proposes the federal budget."
+    },
+    {
+      "id": "congress",
+      "label": "Congress",
+      "type": "body",
+      "branch": "legislative",
+      "process": ["legislative", "budget"],
+      "factoid": "Bicameral legislature consisting of the House and Senate. Enacts federal laws and appropriations."
+    },
+    {
+      "id": "federal_agencies",
+      "label": "Federal Agencies",
+      "type": "agency",
+      "branch": "administrative",
+      "factoid": "Cabinet departments and independent agencies that implement federal programs."
+    },
+    {
+      "id": "supreme_court",
+      "label": "Supreme Court",
+      "type": "body",
+      "branch": "judicial",
+      "factoid": "Highest court, interprets the Constitution and federal law."
+    },
+    {
+      "id": "federal_budget",
+      "label": "Federal Budget",
+      "type": "process",
+      "branch": "financial",
+      "process": ["budget"],
+      "factoid": "Annual plan for federal revenues and spending submitted by the President and enacted by Congress."
+    }
+  ]
+}
