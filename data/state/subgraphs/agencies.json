@@ -6,6 +6,7 @@
   "elements": {
     "nodes": [
       { "data": { "id": "governor_ny", "label": "Governor of New York", "type": "office" } },
+      { "data": { "id": "state_agencies", "label": "State Agencies", "type": "category" } },
       { "data": { "id": "dot_ny", "label": "DOT (Transportation)", "type": "agency" } },
       { "data": { "id": "doh_ny", "label": "DOH (Health)", "type": "agency" } },
       { "data": { "id": "sed_ny", "label": "Education Department", "type": "agency" } }

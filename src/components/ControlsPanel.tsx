@@ -57,20 +57,18 @@ const ControlsPanel = ({
             <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">Scope</h2>
             <div className="space-y-2">
               {scopes.map((scope) => (
-                <label
+                <button
                   key={scope.id}
-                  className="flex cursor-pointer items-center justify-between rounded-md border border-transparent px-3 py-2 transition hover:border-slate-300 hover:bg-white"
+                  type="button"
+                  onClick={() => onScopeChange(scope.id)}
+                  className={`w-full rounded-md px-3 py-2 text-left text-sm font-medium transition border ${
+                    activeScope === scope.id
+                      ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
+                      : 'bg-white text-slate-800 border-slate-200 hover:bg-slate-100'
+                  }`}
                 >
-                  <span className="font-medium text-slate-800">{scope.label}</span>
-                  <input
-                    type="radio"
-                    name="scope"
-                    value={scope.id}
-                    checked={activeScope === scope.id}
-                    onChange={() => onScopeChange(scope.id)}
-                    className="h-4 w-4 accent-blue-600"
-                  />
-                </label>
+                  {scope.label}
+                </button>
               ))}
             </div>
           </section>

@@ -9,6 +9,8 @@ export type GraphCanvasHandle = {
   clearProcessHighlight: () => Promise<void>;
   activateSubgraph: (subgraphId: string) => Promise<void>;
   restoreMainView: () => Promise<void>;
+  focusNodes: (nodeIds: string[]) => Promise<void>;
+  clearNodeFocus: () => void;
   getController: () => ReturnType<GraphOrchestrator['getController']>;
   getCy: () => ReturnType<GraphOrchestrator['getCy']>;
 };
@@ -93,6 +95,17 @@ const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
             return;
           }
           await orchestrator.restoreMainView();
+        },
+        focusNodes: async (nodeIds: string[]) => {
+          const orchestrator = orchestratorRef.current;
+          if (!orchestrator) {
+            return;
+          }
+          await orchestrator.focusNodes(nodeIds);
+        },
+        clearNodeFocus: () => {
+          const orchestrator = orchestratorRef.current;
+          orchestrator?.clearNodeFocus();
         },
         getController: () => orchestratorRef.current?.getController() ?? null,
         getCy: () => orchestratorRef.current?.getCy() ?? null,

@@ -1,6 +1,6 @@
 import cytoscape from 'cytoscape';
 import cytoscapeElk from 'cytoscape-elk';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useMemo, useRef } from 'react';
 
 import { ControlsPanel } from './components/ControlsPanel';
 import { DetailsSidebar } from './components/DetailsSidebar';
@@ -43,9 +43,51 @@ function App() {
     },
   } = useVisualizationState();
 
-  const dataset = useMemo<GovernmentDataset>(() => governmentDatasets[activeScope], [activeScope]);
+  const combinedDataset = useMemo<GovernmentDataset>(() => {
+    const federal = governmentDatasets.federal;
+    const state = governmentDatasets.state;
+    const city = governmentDatasets.city;
+
+    const combinedStructure = {
+      meta: {
+        title: 'Federal, State, and City Government Overview',
+        description:
+          'Unified canvas showing U.S. federal structure alongside New York State and City governance.',
+      },
+      nodes: [...federal.structure.nodes, ...state.structure.nodes, ...city.structure.nodes],
+    } satisfies GovernmentDataset['structure'];
+
+    const combinedEdges = {
+      edges: [...federal.edges.edges, ...state.edges.edges, ...city.edges.edges],
+    } satisfies GovernmentDataset['edges'];
+
+    const combinedProcesses = [...federal.processes, ...state.processes, ...city.processes];
+    const combinedSubgraphs = [
+      ...(federal.subgraphs ?? []),
+      ...(state.subgraphs ?? []),
+      ...(city.subgraphs ?? []),
+    ];
+
+    return {
+      scope: 'city',
+      label: 'Federal • State • City',
+      description: combinedStructure.meta.description,
+      structure: combinedStructure,
+      edges: combinedEdges,
+      processes: combinedProcesses,
+      subgraphs: combinedSubgraphs,
+    } as GovernmentDataset;
+  }, []);
+
+  const dataset = combinedDataset;
   const processes = useMemo(() => processesForDataset(dataset), [dataset]);
   const mainGraph = useMemo(() => buildMainGraph(dataset.structure, dataset.edges), [dataset]);
+
+  const scopeNodeIds = useMemo<Record<GovernmentScope, string[]>>(() => ({
+    federal: governmentDatasets.federal.structure.nodes.map((node) => node.id),
+    state: governmentDatasets.state.structure.nodes.map((node) => node.id),
+    city: governmentDatasets.city.structure.nodes.map((node) => node.id),
+  }), []);
 
   const subgraphConfigs = useMemo<SubgraphConfig[]>(() => {
     return (dataset.subgraphs ?? []).map((subgraph) => ({
@@ -96,9 +138,27 @@ function App() {
     return map;
   }, [mainGraph, subgraphConfigs]);
 
-  useEffect(() => {
-    clearSelections();
-  }, [dataset, clearSelections]);
+  const handleScopeFocus = useCallback(
+    async (scope: GovernmentScope) => {
+      setActiveScope(scope);
+
+      const nodeIds = scopeNodeIds[scope] ?? [];
+      const graphHandle = graphRef.current;
+
+      clearSelections();
+      setSidebarHover(false);
+
+      if (!graphHandle || nodeIds.length === 0) {
+        return;
+      }
+
+      await graphHandle.clearProcessHighlight();
+      await graphHandle.restoreMainView();
+      graphHandle.clearNodeFocus();
+      await graphHandle.focusNodes(nodeIds);
+    },
+    [clearSelections, scopeNodeIds, setActiveScope, setSidebarHover],
+  );
 
   const handleProcessToggle = useCallback(
     async (processId: string) => {
@@ -172,6 +232,9 @@ function App() {
       if (graphHandle) {
         await graphHandle.restoreMainView();
       }
+    }
+    if (graphHandle) {
+      graphHandle.clearNodeFocus();
     }
     clearSelections();
   }, [activeProcessId, activeSubgraphId, clearSelections]);
@@ -247,7 +310,9 @@ function App() {
         <ControlsPanel
           scopes={governmentScopes}
           activeScope={activeScope}
-          onScopeChange={(scope) => setActiveScope(scope)}
+          onScopeChange={(scope) => {
+            void handleScopeFocus(scope);
+          }}
           subgraphConfigs={subgraphConfigs}
           activeSubgraphId={activeSubgraphId}
           onSubgraphToggle={handleSubgraphToggle}

@@ -145,6 +145,25 @@ class GraphOrchestrator {
     this.store.setActiveProcess(null);
   }
 
+  async focusNodes(nodeIds: string[]) {
+    const controller = this.controller;
+    if (!controller) {
+      return;
+    }
+
+    await controller.focusNodes(nodeIds);
+
+    this.store.setSelectedNode(null);
+    this.store.setSelectedEdge(null);
+    this.store.setActiveProcess(null);
+    this.store.setActiveSubgraph(null);
+  }
+
+  clearNodeFocus() {
+    const controller = this.controller;
+    controller?.clearNodeFocus();
+  }
+
   async activateSubgraphByEntry(entryNodeId: string) {
     const config = this.subgraphByEntryId.get(entryNodeId);
     if (!config) {
@@ -225,6 +244,7 @@ class GraphOrchestrator {
 
     await this.clearProcessHighlight();
     await this.restoreMainView();
+    this.clearNodeFocus();
   }
 
   private createProcessEdge(processId: string, edge: ProcessDefinition['edges'][number]): GraphEdgeInfo {
