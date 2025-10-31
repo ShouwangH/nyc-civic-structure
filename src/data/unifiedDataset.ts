@@ -101,7 +101,7 @@ export const buildUnifiedDataset = (): UnifiedDatasetResult => {
     meta: {
       title: 'Government Overview',
       description:
-        'Unified canvas showing U.S. federal, New York State, regional authorities, and New York City governance.',
+        'Diagram showing U.S. federal, New York State, regional authorities, and New York City governance.',
     },
     nodes: structureNodes,
   };

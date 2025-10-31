@@ -53,19 +53,19 @@ const DetailsSidebar = ({
       onMouseLeave={onMouseLeave}
     >
       <div className="flex items-start justify-between">
-        <h2 className="text-lg font-medium text-slate-900 hover:cursor-grab">{title}</h2>
+        <h2 className="text-2xl font-medium text-slate-900 hover:cursor-grab">{title}</h2>
         {hasSelection && (
           <button
             type="button"
             onClick={onClear}
-            className="text-xs font-medium text-slate-500 transition hover:text-slate-700"
+            className="text-2xl font-medium text-slate-500 transition hover:text-slate-700"
           >
             X
           </button>
         )}
       </div>
 
-      <div className="mt-4 space-y-4 text-sm text-slate-600">
+      <div className="mt-4 space-y-4 text-xl text-slate-600">
         {activeNode ? (
           <>
             <p>{activeNode.factoid}</p>

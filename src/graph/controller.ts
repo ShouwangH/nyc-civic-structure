@@ -213,6 +213,10 @@ class GraphController {
 
     const existingNodeIds = new Set(this.cy.nodes().map((node) => node.id()));
 
+    // Get entry node position to anchor the subgraph layout
+    const entryNode = this.cy.getElementById(meta.entryNodeId);
+    const entryPos = entryNode.position();
+
     this.cy.batch(() => {
       subgraph.nodes.forEach((node) => {
         if (existingNodeIds.has(node.id)) {
@@ -222,6 +226,7 @@ class GraphController {
         const added = this.cy.add({
           group: 'nodes',
           data: node,
+          position: { x: entryPos.x, y: entryPos.y }, // Start at entry node position
         });
         this.addedNodeIds.add(node.id);
         added.removeData('orgPos');
@@ -263,13 +268,28 @@ class GraphController {
       otherEdges.addClass('hidden');
     });
 
-    const layoutOptions = cloneLayoutOptions(subgraph.layout, {
+    // Add boundingBox for ELK layouts to constrain spread around entry node
+    const additionalLayoutOptions: Record<string, unknown> = {
       animate: true,
       animationDuration: ANIMATION_DURATION,
       animationEasing: ANIMATION_EASING,
       fit: false,
       padding: 80,
-    });
+    };
+
+    // For ELK layouts, add a bounding box centered on the entry node position
+    if (subgraph.layout.name === 'elk') {
+      const boxWidth = 800;
+      const boxHeight = 600;
+      additionalLayoutOptions.boundingBox = {
+        x1: entryPos.x - boxWidth / 2,
+        y1: entryPos.y - boxHeight / 2,
+        x2: entryPos.x + boxWidth / 2,
+        y2: entryPos.y + boxHeight / 2,
+      };
+    }
+
+    const layoutOptions = cloneLayoutOptions(subgraph.layout, additionalLayoutOptions);
     const layoutElements = subNodes.union(subEdges);
 
     const layout = layoutElements.layout(layoutOptions);
@@ -283,11 +303,12 @@ class GraphController {
       graph: subgraph,
     };
 
+    // Gentle viewport adjustment with increased padding
     await this.cy
       .animation({
         fit: {
           eles: subNodes,
-          padding: 160,
+          padding: 280, // Increased padding for gentler fit
         },
         duration: ANIMATION_DURATION,
         easing: ANIMATION_EASING,

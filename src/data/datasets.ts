@@ -7,6 +7,7 @@ import stateStructure from '../../data/state/structure.json';
 import stateEdges from '../../data/state/edges.json';
 import stateProcesses from '../../data/state/processes.json';
 import stateAgencies from '../../data/state/subgraphs/agencies.json';
+import stateCourts from '../../data/state/subgraphs/courts.json';
 
 import federalStructure from '../../data/federal/structure.json';
 import federalEdges from '../../data/federal/edges.json';
@@ -70,7 +71,7 @@ export const governmentDatasets: Record<GovernmentScope, GovernmentDataset> = {
     stateStructure,
     stateEdges,
     stateProcesses,
-    [stateAgencies],
+    [stateAgencies, stateCourts],
   ),
   regional: normalizeDataset(
     'regional',

@@ -59,6 +59,7 @@ export type SubgraphFile = {
   label: string;
   entryNodeId: string;
   description?: string;
+  layoutType?: 'concentric' | 'elk-mrtree' | 'elk-layered';
   elements: SubgraphElements;
 };
 
