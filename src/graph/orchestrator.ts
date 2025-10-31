@@ -217,23 +217,7 @@ class GraphOrchestrator {
   }
 
   handleZoom() {
-    const controller = this.controller;
-    if (!controller) {
-      return;
-    }
-
-    const processActive = controller.isProcessActive();
-    const subgraphActive = controller.isSubgraphActive();
-
-    if (!processActive && !subgraphActive) {
-      return;
-    }
-
-    if (controller.shouldIgnoreZoomReset()) {
-      return;
-    }
-
-    void this.resetView();
+    // Disabled: zoom interactions should no longer clear selections or reset the view.
   }
 
   private async resetView() {

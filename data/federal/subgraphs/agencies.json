@@ -6,7 +6,6 @@
   "elements": {
     "nodes": [
       { "data": { "id": "president", "label": "President", "type": "office" } },
-      { "data": { "id": "federal_agencies", "label": "Federal Agencies", "type": "category" } },
       { "data": { "id": "dod", "label": "Department of Defense", "type": "agency" } },
       { "data": { "id": "hhs", "label": "Department of Health & Human Services", "type": "agency" } },
       { "data": { "id": "epa", "label": "Environmental Protection Agency", "type": "agency" } }

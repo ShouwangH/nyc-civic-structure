@@ -22,9 +22,10 @@ export const logPositions = (
   const cyInstance = collection.length > 0 ? collection[0].cy() : null;
   let rendererAvailable = false;
 
-  if (cyInstance && typeof (cyInstance as any).renderer === 'function') {
+  if (cyInstance && typeof (cyInstance as { renderer?: () => unknown }).renderer === 'function') {
     try {
-      rendererAvailable = Boolean((cyInstance as any).renderer());
+      const renderer = (cyInstance as { renderer?: () => unknown }).renderer;
+      rendererAvailable = Boolean(renderer?.());
     } catch {
       rendererAvailable = false;
     }

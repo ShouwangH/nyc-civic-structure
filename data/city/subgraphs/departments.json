@@ -5,8 +5,8 @@
   "description": "Shows the relationship between the Mayor and executive agencies established under the NYC Charter.",
   "elements": {
     "nodes": [
-      { "data": { "id": "mayor", "label": "Mayor of New York City", "type": "office" } },
-      { "data": { "id": "departments", "label": "City Agencies / Departments", "type": "category" } },
+      { "data": { "id": "mayor", "label": "Mayor", "type": "office" } },
+      { "data": { "id": "departments", "label": "NYC Departments & Agencies", "type": "agency" } },
       { "data": { "id": "DFTA", "label": "Department for the Aging", "type": "agency" } },
       { "data": { "id": "DOB", "label": "Department of Buildings", "type": "agency" } },
       { "data": { "id": "BIC", "label": "Business Integrity Commission", "type": "agency" } },

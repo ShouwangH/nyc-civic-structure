@@ -215,7 +215,10 @@ function App() {
   const subgraphLabel = activeSubgraphId
     ? subgraphById.get(activeSubgraphId)?.meta.label ?? null
     : null;
-  const graphOffsetClass = shouldShowSidebar ? 'lg:pr-[380px]' : '';
+  const mainLayoutClass = 'flex flex-1 overflow-hidden bg-white';
+  const graphSectionClass = shouldShowSidebar
+    ? 'relative flex flex-1 flex-col gap-6 px-6 py-6 lg:min-w-0'
+    : 'relative flex flex-1 flex-col gap-6 px-6 py-6';
 
   const graphStoreActions = useMemo(
     () => ({
@@ -240,7 +243,7 @@ function App() {
         </p>
       </header>
 
-      <main className="flex flex-1 overflow-hidden bg-white">
+      <main className={mainLayoutClass}>
         <ControlsPanel
           scopes={governmentScopes}
           activeScope={activeScope}
@@ -255,7 +258,7 @@ function App() {
           onToggleOpen={toggleControlsOpen}
         />
 
-        <section className={`relative flex flex-1 flex-col gap-6 px-6 py-6 ${graphOffsetClass}`}>
+        <section className={graphSectionClass}>
           <div className="flex flex-1 min-h-[75vh] overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm lg:min-h-[82vh]">
             <GraphCanvas
               ref={graphRef}

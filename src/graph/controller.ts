@@ -1,6 +1,8 @@
 import type { Core, LayoutOptions } from 'cytoscape';
+import type cytoscape from 'cytoscape';
 import type { GraphConfig, GraphEdgeInfo, GraphNodeInfo } from './types';
 import type { ProcessDefinition } from '../data/types';
+import { NODE_HEIGHT, NODE_WIDTH } from './constants';
 import { logPositions } from './utils/logging';
 
 type ActiveSubgraph = {
@@ -16,6 +18,10 @@ const cloneLayoutOptions = (layout: LayoutOptions, overrides: Partial<LayoutOpti
     ...layout,
     ...overrides,
   }) as LayoutOptions;
+
+const ANIMATION_DURATION = 550;
+const ANIMATION_EASING: cytoscape.AnimationOptions['easing'] = 'ease';
+const DEBUG_SUBGRAPH_CONCENTRIC = false;
 
 class GraphController {
   private cy: Core;
@@ -84,27 +90,18 @@ class GraphController {
       await this.restoreMainView();
     }
 
-    const requestedNodeIds = subgraph.nodes.map((node) => node.id);
-    const existingNodeIdsBefore = this.cy.nodes().map((node) => node.id());
-    console.log('[Subgraph] Activating', {
-      subgraphId: meta.id,
-      entryNodeId: meta.entryNodeId,
-      requestedNodeIds,
-      existingNodeIdsBefore,
-    });
     logPositions('Subgraph activating snapshot', this.cy.nodes());
 
-    const entryNode = this.cy.getElementById(meta.entryNodeId);
-    const centerPosition =
-      entryNode && entryNode.length > 0 ? copyPosition(entryNode.position()) : { x: 0, y: 0 };
 
     this.transitionInProgress = true;
     this.markProgrammaticZoom();
 
-    console.log('[Subgraph] Restoring main view', {
-      activeSubgraphId: this.activeSubgraph ? this.activeSubgraph.id : null,
-      nodeIdsBefore: this.cy.nodes().map((node) => node.id()),
-    });
+    if (DEBUG_SUBGRAPH_CONCENTRIC) {
+      await this.runDebugConcentricTest(meta, subgraph);
+      this.transitionInProgress = false;
+      return;
+    }
+
     logPositions('Subgraph restoring snapshot', this.cy.nodes());
 
     const existingNodeIds = new Set(this.cy.nodes().map((node) => node.id()));
@@ -115,12 +112,15 @@ class GraphController {
           return;
         }
 
-        this.cy.add({
+        console.log('🐞 [Subgraph] Add node payload', node.id, node);
+        const added = this.cy.add({
           group: 'nodes',
           data: node,
-          position: centerPosition,
         });
         this.addedNodeIds.add(node.id);
+        added.removeData('orgPos');
+        added.removeScratch('_positions');
+        added.unlock();
       });
 
       subgraph.edges.forEach((edge) => {
@@ -129,6 +129,7 @@ class GraphController {
           return;
         }
 
+        console.log('🐞 [Subgraph] Add edge payload', edge.id, edge);
         this.cy.add({
           group: 'edges',
           data: edge,
@@ -140,25 +141,10 @@ class GraphController {
     const subgraphNodeIds = new Set(subgraph.nodes.map((node) => node.id));
     const subNodes = this.cy.nodes().filter((node) => subgraphNodeIds.has(node.id()));
     logPositions('Subgraph post-add pre-style', subNodes, ['mayor', 'departments']);
-    const seedOffset = 20;
-    subNodes.forEach((node, index) => {
-      const position = node.position();
-      node.position({
-        x: position.x + index * seedOffset,
-        y: position.y + index * seedOffset,
-      });
-    });
-    logPositions('Subgraph seeded positions', subNodes, ['mayor', 'departments']);
+
     const subEdges = subNodes.connectedEdges();
     const others = this.cy.elements().not(subNodes).not(subEdges);
 
-    console.log('[Subgraph] After add', {
-      subgraphId: meta.id,
-      newlyAddedNodeIds: Array.from(this.addedNodeIds),
-      newlyAddedEdgeIds: Array.from(this.addedEdgeIds),
-      totalNodeCount: this.cy.nodes().length,
-      visibleNodeIds: this.cy.nodes().map((node) => node.id()),
-    });
     logPositions('Subgraph after add', subNodes);
 
     this.cy.batch(() => {
@@ -168,21 +154,27 @@ class GraphController {
     });
 
     const layoutOptions = cloneLayoutOptions(subgraph.layout, {
-      // Temporarily disable animations to debug layout behaviour.
-      animate: false,
+      animate: true,
+      animationDuration: ANIMATION_DURATION,
+      animationEasing: ANIMATION_EASING,
       fit: false,
       padding: 80,
     });
+    console.log('🐞 [Subgraph] Layout options', layoutOptions);
 
-    console.log('[Subgraph] Layout start request', {
+    console.log('🐞 [Subgraph] Layout start request', {
       nodeCount: subNodes.length,
       layoutName: layoutOptions.name,
       subNodeIds: subNodes.map((node) => node.id()),
     });
 
     logPositions('Subgraph before layout run', subNodes, ['mayor', 'departments']);
+    const layoutElements = subNodes.union(subEdges);
 
-    const layout = subNodes.layout(layoutOptions);
+    const layout = this.cy.layout({
+      ...layoutOptions,
+      eles: layoutElements,
+    });
     const layoutPromise = layout.promiseOn('layoutstop');
     layout.run();
     await layoutPromise;
@@ -194,9 +186,130 @@ class GraphController {
       graph: subgraph,
     };
 
-    this.cy.fit(subNodes, 160);
+    await this.cy
+      .animation({
+        fit: {
+          eles: subNodes,
+          padding: 160,
+        },
+        duration: ANIMATION_DURATION,
+        easing: ANIMATION_EASING,
+      })
+      .play()
+      .promise()
+      .catch(() => {});
 
     this.transitionInProgress = false;
+  }
+
+  private async runDebugConcentricTest(
+    meta: { id: string; entryNodeId: string },
+    subgraph: GraphConfig,
+  ) {
+
+    const debugNodes = subgraph.nodes.map((node) => ({
+      original: node,
+      debugId: node.id,
+    }));
+
+    this.cy.batch(() => {
+      debugNodes.forEach((debugNode) => {
+        const { original, debugId } = debugNode;
+        const existing = this.cy.getElementById(debugId);
+        if (existing.length === 0) {
+          this.cy.add({
+            group: 'nodes',
+            data: {
+              id: debugId,
+              originalId: original.id,
+              label: original.label,
+              branch: original.branch ?? 'debug',
+              type: original.type ?? 'debug',
+              process: original.process ?? [],
+              factoid: original.factoid ?? 'Debug node for concentric layout test.',
+              branchColor: original.branchColor ?? '#a855f7',
+              system: original.system ?? 'subgraph-node',
+              width: NODE_WIDTH,
+              height: NODE_HEIGHT,
+            }
+          });
+        }
+
+        const edgeId = `debug_concentric_edge_${debugId}`;
+        const existingEdge = this.cy.getElementById(edgeId);
+        if (existingEdge.length === 0) {
+          this.cy.add({
+            group: 'edges',
+            data: {
+              id: edgeId,
+              source: meta.entryNodeId,
+              target: debugId,
+              label: '',
+              type: 'relationship',
+              process: [],
+            },
+          });
+        }
+      });
+    });
+
+    const debugCollection = this.cy.collection();
+    debugNodes.forEach((debugNode) => {
+      debugCollection.merge(this.cy.getElementById(debugNode.debugId));
+    });
+    debugCollection.merge(this.cy.getElementById(meta.entryNodeId));
+    const debugEdges = debugCollection.connectedEdges();
+
+    const anchorIds = new Set([meta.entryNodeId, 'mayor']);
+
+    const layoutOptions = {
+      name: 'concentric',
+      animate: true,
+      animationDuration: ANIMATION_DURATION,
+      animationEasing: ANIMATION_EASING,
+      fit: false,
+      padding: 80,
+      minNodeSpacing: 60,
+      avoidOverlap: true,
+      concentric: (node: cytoscape.NodeSingular) => {
+        const nodeId = node.id();
+        const originalId = String(node.data('originalId') ?? '');
+        if (anchorIds.has(nodeId) || anchorIds.has(originalId)) {
+          return 2;
+        }
+        return 1;
+      },
+      levelWidth: () => 1,
+    } as LayoutOptions;
+
+    const layout = this.cy.layout({
+      ...layoutOptions,
+      eles: debugCollection.union(debugEdges),
+    });
+    const layoutPromise = layout.promiseOn('layoutstop');
+    layout.run();
+    await layoutPromise;
+
+    await this.cy
+      .animation({
+        fit: {
+          eles: debugCollection,
+          padding: 160,
+        },
+        duration: ANIMATION_DURATION,
+        easing: ANIMATION_EASING,
+      })
+      .play()
+      .promise()
+      .catch(() => {});
+
+    /*this.cy.batch(() => {
+      debugNodes.forEach((debugNode) => {
+        const debugId = debugNode.debugId;
+        this.cy.getElementById(debugId).remove();
+        this.cy.getElementById(`debug_concentric_edge_${debugId}`).remove();
+      });
+    })*/;
   }
 
   async restoreMainView() {
@@ -252,8 +365,9 @@ class GraphController {
     });
 
     const layoutOptions = cloneLayoutOptions(this.mainGraph.layout, {
-      // Temporarily disable animations to debug layout behaviour.
-      animate: false,
+      animate: true,
+      animationDuration: ANIMATION_DURATION,
+      animationEasing: ANIMATION_EASING,
       fit: true,
       padding: 80,
     });
@@ -265,10 +379,6 @@ class GraphController {
 
     this.captureInitialPositions();
 
-    console.log('[Subgraph] Main view restored', {
-      totalNodeCount: this.cy.nodes().length,
-      nodeIds: this.cy.nodes().map((node) => node.id()),
-    });
     logPositions('Subgraph main view restored', this.cy.nodes());
 
     this.activeSubgraph = null;
@@ -290,19 +400,6 @@ class GraphController {
 
     await this.clearProcessHighlight();
 
-    const requestedNodeIds = nodeInfos.map((node) => node.id);
-    const requestedEdgeIds = edgeInfos.map((edge) => edge.id);
-    const currentNodeIdsBefore = this.cy.nodes().map((node) => node.id());
-    const missingNodeIds = requestedNodeIds.filter(
-      (id) => this.cy.getElementById(id).length === 0,
-    );
-    console.log('[Process] Showing', {
-      processId: process.id,
-      requestedNodeIds,
-      requestedEdgeIds,
-      missingNodeIds,
-      currentNodeIdsBefore,
-    });
     logPositions('Process showing snapshot', this.cy.nodes());
 
     this.processTransitionInProgress = true;
@@ -342,23 +439,17 @@ class GraphController {
 
     const processNodes = this.cy.nodes().filter((node) => nodeIdSet.has(node.id()));
     logPositions('Process post-add pre-style', processNodes, ['mayor', 'departments']);
-    const processSeedOffset = 20;
+    const processSeedOffset = 120;
     processNodes.forEach((node, index) => {
       const position = node.position();
       node.position({
-        x: position.x + index * processSeedOffset,
+        x: position.x,
         y: position.y + index * processSeedOffset,
       });
     });
     logPositions('Process seeded positions', processNodes, ['mayor', 'departments']);
 
-    console.log('[Process] After add', {
-      processId: process.id,
-      tempNodeIds: Array.from(tempNodeIds),
-      tempEdgeIds: Array.from(tempEdgeIds),
-      processNodeIds: processNodes.map((node) => node.id()),
-      totalNodeCount: this.cy.nodes().length,
-    });
+
 
     this.cy.batch(() => {
       this.cy.nodes().removeClass('dimmed process-active');
@@ -382,11 +473,13 @@ class GraphController {
     });
 
     if (processNodes.length > 0) {
+      const processEdges = this.cy.edges().filter((edge) => edgeIdSet.has(edge.id()));
       const layoutOptions: LayoutOptions = {
         name: 'elk',
         fit: false,
-        // Temporarily disable animations to debug layout behaviour.
-        animate: false,
+        animate: true,
+        animationDuration: ANIMATION_DURATION,
+        animationEasing: ANIMATION_EASING,
         nodeDimensionsIncludeLabels: true,
         elk: {
           algorithm: 'layered',
@@ -398,13 +491,26 @@ class GraphController {
 
       logPositions('Process before layout run', processNodes, ['mayor', 'departments']);
 
-      const layout = processNodes.layout(layoutOptions);
+      const layout = this.cy.layout({
+        ...layoutOptions,
+        eles: processNodes.union(processEdges),
+      });
       const layoutPromise = layout.promiseOn('layoutstop');
       layout.run();
       await layoutPromise;
       logPositions('Process layout finished', processNodes, ['mayor', 'departments']);
-
-      this.cy.fit(processNodes, 140);
+      await this.cy
+        .animation({
+          fit: {
+            eles: processNodes,
+            padding: 140,
+          },
+          duration: ANIMATION_DURATION,
+          easing: ANIMATION_EASING,
+        })
+        .play()
+        .promise()
+        .catch(() => {});
     }
 
     this.activeProcess = {
@@ -415,11 +521,6 @@ class GraphController {
       edgeIds: edgeIdSet,
     };
 
-    console.log('[Process] Show complete', {
-      processId: process.id,
-      nodeIds: Array.from(nodeIdSet),
-      edgeIds: Array.from(edgeIdSet),
-    });
     logPositions('Process show complete', this.cy.nodes());
 
     this.processTransitionInProgress = false;
@@ -431,11 +532,6 @@ class GraphController {
       return;
     }
 
-    console.log('[Process] Clearing highlight', {
-      processId: currentProcess.id,
-      tempNodeIds: Array.from(currentProcess.tempNodeIds),
-      tempEdgeIds: Array.from(currentProcess.tempEdgeIds),
-    });
     logPositions('Process clearing highlight snapshot', this.cy.nodes());
 
     this.processTransitionInProgress = true;
@@ -470,21 +566,29 @@ class GraphController {
 
     const layout = this.cy.layout({
       ...this.mainGraph.layout,
-      // Temporarily disable animations to debug layout behaviour.
-      animate: false,
+      animate: true,
+      animationDuration: ANIMATION_DURATION,
+      animationEasing: ANIMATION_EASING,
     } as LayoutOptions);
     const layoutPromise = layout.promiseOn('layoutstop');
     layout.run();
     await layoutPromise;
 
-    this.cy.fit(this.cy.nodes(), 200);
+    await this.cy
+      .animation({
+        fit: {
+          eles: this.cy.nodes(),
+          padding: 200,
+        },
+        duration: ANIMATION_DURATION,
+        easing: ANIMATION_EASING,
+      })
+      .play()
+      .promise()
+      .catch(() => {});
 
     this.captureInitialPositions();
 
-    console.log('[Process] Highlight cleared', {
-      processId: currentProcess.id,
-      remainingNodeIds: this.cy.nodes().map((node) => node.id()),
-    });
     logPositions('Process highlight cleared', this.cy.nodes());
 
     this.activeProcess = null;

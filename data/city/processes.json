@@ -4,10 +4,10 @@
       "id": "ulurp",
       "label": "ULURP",
       "description": "Uniform Land Use Review Procedure for zoning and land use applications in NYC.",
-      "nodes": ["city_planning_commission", "community_board", "borough_president", "city_council", "mayor"],
+      "nodes": ["city_planning_commission", "community_boards", "borough_president", "city_council", "mayor"],
       "edges": [
-        { "source": "city_planning_commission", "target": "community_board" },
-        { "source": "community_board", "target": "borough_president" },
+        { "source": "city_planning_commission", "target": "community_boards" },
+        { "source": "community_boards", "target": "borough_president" },
         { "source": "borough_president", "target": "city_council" },
         { "source": "city_council", "target": "mayor" }
       ],
@@ -23,10 +23,10 @@
       "id": "city_budget",
       "label": "City Budget Process",
       "description": "How NYC’s annual budget is proposed, negotiated, and adopted.",
-      "nodes": ["agencies", "omb", "mayor", "city_council", "comptroller"],
+      "nodes": ["agencies", "OMB", "mayor", "city_council", "comptroller"],
       "edges": [
-        { "source": "agencies", "target": "omb" },
-        { "source": "omb", "target": "mayor" },
+        { "source": "agencies", "target": "OMB" },
+        { "source": "OMB", "target": "mayor" },
         { "source": "mayor", "target": "city_council" },
         { "source": "city_council", "target": "mayor" },
         { "source": "mayor", "target": "comptroller" }
