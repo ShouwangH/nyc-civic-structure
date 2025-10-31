@@ -11,7 +11,7 @@
     { "source": "governor_ny", "target": "state_budget", "relation": "proposes" },
     { "source": "governor_ny", "target": "state_agencies", "relation": "oversees" },
     { "source": "state_agencies", "target": "nycrr", "relation": "issues" },
-    { "source": "state_comptroller", "target": "state_budget", "relation": "audits" },
-    { "source": "state_judiciary", "target": "ny_consolidated_laws", "relation": "interprets" }
+    { "source": "state_comptroller", "target": "state_budget", "relation": "audits" }
   ]
 }
+

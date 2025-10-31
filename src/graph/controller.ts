@@ -35,7 +35,6 @@ class GraphController {
   private transitionInProgress = false;
   private addedNodeIds = new Set<string>();
   private addedEdgeIds = new Set<string>();
-  private ignoreZoomUntil = 0;
   private activeProcess: {
     id: string;
     tempNodeIds: Set<string>;
@@ -54,14 +53,6 @@ class GraphController {
     this.cy.nodes().forEach((node) => {
       node.data('orgPos', copyPosition(node.position()));
     });
-  }
-
-  markProgrammaticZoom(delayMs = 650) {
-    this.ignoreZoomUntil = performance.now() + delayMs;
-  }
-
-  shouldIgnoreZoomReset() {
-    return performance.now() <= this.ignoreZoomUntil;
   }
 
   private resetHighlightClasses() {
@@ -88,7 +79,6 @@ class GraphController {
     }
 
     this.transitionInProgress = true;
-    this.markProgrammaticZoom();
 
     const targetEdges = targets.connectedEdges();
     const otherNodes = this.cy.nodes().not(targets);
@@ -200,7 +190,6 @@ class GraphController {
     }
 
     this.transitionInProgress = true;
-    this.markProgrammaticZoom();
 
     if (DEBUG_SUBGRAPH_CONCENTRIC) {
       await runSubgraphConcentricDebug(this.cy, meta, subgraph, {
@@ -213,10 +202,6 @@ class GraphController {
 
     const existingNodeIds = new Set(this.cy.nodes().map((node) => node.id()));
 
-    // Get entry node position to anchor the subgraph layout
-    const entryNode = this.cy.getElementById(meta.entryNodeId);
-    const entryPos = entryNode.position();
-
     this.cy.batch(() => {
       subgraph.nodes.forEach((node) => {
         if (existingNodeIds.has(node.id)) {
@@ -226,7 +211,6 @@ class GraphController {
         const added = this.cy.add({
           group: 'nodes',
           data: node,
-          position: { x: entryPos.x, y: entryPos.y }, // Start at entry node position
         });
         this.addedNodeIds.add(node.id);
         added.removeData('orgPos');
@@ -268,28 +252,26 @@ class GraphController {
       otherEdges.addClass('hidden');
     });
 
-    // Add boundingBox for ELK layouts to constrain spread around entry node
-    const additionalLayoutOptions: Record<string, unknown> = {
+    // Get entry node position to center layout around it
+    const entryNode = this.cy.getElementById(meta.entryNodeId);
+    const entryPos = entryNode.position();
+
+    // Use transform to translate layout to entry node position
+    const layoutOptions = cloneLayoutOptions(subgraph.layout, {
       animate: true,
       animationDuration: ANIMATION_DURATION,
       animationEasing: ANIMATION_EASING,
-      fit: false,
+      fit: true,
       padding: 80,
-    };
-
-    // For ELK layouts, add a bounding box centered on the entry node position
-    if (subgraph.layout.name === 'elk') {
-      const boxWidth = 800;
-      const boxHeight = 600;
-      additionalLayoutOptions.boundingBox = {
-        x1: entryPos.x - boxWidth / 2,
-        y1: entryPos.y - boxHeight / 2,
-        x2: entryPos.x + boxWidth / 2,
-        y2: entryPos.y + boxHeight / 2,
-      };
-    }
-
-    const layoutOptions = cloneLayoutOptions(subgraph.layout, additionalLayoutOptions);
+      transform: (_node: any, pos: { x: number; y: number }) => {
+        // Layout calculates in "neutral" space starting from (0,0)
+        // Transform translates entire layout to entry node position
+        return {
+          x: pos.x + entryPos.x,
+          y: pos.y + entryPos.y,
+        };
+      },
+    });
     const layoutElements = subNodes.union(subEdges);
 
     const layout = layoutElements.layout(layoutOptions);
@@ -297,18 +279,12 @@ class GraphController {
     layout.run();
     await layoutPromise;
 
-    this.activeSubgraph = {
-      id: meta.id,
-      entryNodeId: meta.entryNodeId,
-      graph: subgraph,
-    };
-
-    // Gentle viewport adjustment with increased padding
+    // Fit viewport to the translated subgraph positions
     await this.cy
       .animation({
         fit: {
           eles: subNodes,
-          padding: 280, // Increased padding for gentler fit
+          padding: 200,
         },
         duration: ANIMATION_DURATION,
         easing: ANIMATION_EASING,
@@ -316,6 +292,12 @@ class GraphController {
       .play()
       .promise()
       .catch(() => {});
+
+    this.activeSubgraph = {
+      id: meta.id,
+      entryNodeId: meta.entryNodeId,
+      graph: subgraph,
+    };
 
     this.transitionInProgress = false;
   }
@@ -329,7 +311,6 @@ class GraphController {
     }
 
     this.transitionInProgress = true;
-    this.markProgrammaticZoom();
 
     const removeAddedElements = () => {
       this.cy.batch(() => {
@@ -392,7 +373,6 @@ class GraphController {
     await this.clearProcessHighlight();
 
     this.processTransitionInProgress = true;
-    this.markProgrammaticZoom();
 
     const tempNodeIds = new Set<string>();
     const tempEdgeIds = new Set<string>();
@@ -503,7 +483,6 @@ class GraphController {
     }
 
     this.processTransitionInProgress = true;
-    this.markProgrammaticZoom();
 
     this.cy.batch(() => {
       this.cy.nodes().removeClass('process-active dimmed');
