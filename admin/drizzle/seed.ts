@@ -1,3 +1,4 @@
+import 'dotenv/config'
 // ABOUTME: Database seed script that migrates data from JSON files to PostgreSQL
 // ABOUTME: Run this once to populate the database with existing civic structure data
 
