@@ -109,12 +109,12 @@ The app is a React + Cytoscape client. Static JSON for now; optional data servic
 
 * **Orchestrator**
 
-  * `GraphOrchestrator` owns Cytoscape lifecycle for the active dataset.
+  * `createGraphRuntime` composes the Cytoscape lifecycle for the active dataset.
   * Responsibilities:
-    * Instantiates `GraphController`, keeps a reference to the Cytoscape core.
-    * Attaches a `GraphInputHandler` to translate raw `tap`/`zoom` events into store actions.
-    * Delegates to `GraphController` for process highlighting and subgraph activation, and mirrors results back into the store (`setActiveProcess`, `setActiveSubgraph`, `clearSelections`, etc.).
-    * Provides an imperative API (`highlightProcess`, `activateSubgraph`, `restoreMainView`, `clearProcessHighlight`) consumed by React through `GraphCanvas`.
+    * Instantiates the Cytoscape core (allowing dependency injection in tests) and wires `createGraphController`.
+    * Attaches an input binding produced by `createGraphInputHandler` to translate raw `tap`/`zoom` events into store actions.
+    * Delegates to the controller for process highlighting and subgraph activation, mirroring results back into the store (`setActiveProcess`, `setActiveSubgraph`, `clearSelections`, etc.).
+    * Exposes the command surface (`highlightProcess`, `activateSubgraph`, `restoreMainView`, `clearProcessHighlight`) consumed by React through `GraphCanvas`.
 
 * **Renderer**
 
@@ -125,7 +125,7 @@ The app is a React + Cytoscape client. Static JSON for now; optional data servic
 
 * **Input Handling**
 
-  * `GraphInputHandler` listens to core events (`tap` on nodes/edges/background, `zoom`) and forwards intent to the orchestrator, keeping raw Cytoscape logic isolated.
+  * `createGraphInputHandler` listens to core events (`tap` on nodes/edges/background, `zoom`) and forwards intent to the runtime, keeping raw Cytoscape logic isolated and detachable.
 
 * **View Layer**
 
@@ -215,22 +215,31 @@ export interface DatasetBundle {
 
 ```
 src/
-  app/
-    AppShell.tsx
+  App.tsx
+  components/
+    ControlsPanel.tsx
+    DetailsSidebar.tsx
     GraphCanvas.tsx
-    ProcessMenuLeft.tsx
-    DetailsSidebarRight.tsx
-  core/
-    orchestrator/GraphOrchestrator.ts
-    renderer/GraphController.ts
-    input/GraphInputHandler.ts
-    state/store.ts
-    state/selectors.ts
   data/
     datasets.ts
+    unifiedDataset.ts
     city/{structure.json,edges.json,processes.json,subgraphs/*}
     state/*
     federal/*
+  graph/
+    controller.ts                # createGraphController
+    orchestrator.ts              # createGraphRuntime
+    inputHandler.ts              # createGraphInputHandler
+    runtimeTypes.ts
+    data.ts
+    subgraphs.ts
+    processUtils.ts
+    constants.ts
+    types.ts
+  state/
+    useVisualizationState.ts
+  styles/
+    fonts.css
   debug/
     trace.ts
     positionLogger.ts
@@ -288,9 +297,9 @@ src/
 
 ## 10) Refactor & Rename Plan
 
-* `app.tsx` → `AppShell.tsx`.
-* `GraphController` remains, but all Cy mutations flow from store/orchestrator.
-* `GraphInputHandler` contains **all** Cy event bindings.
+* `App.tsx` remains the tracer-bullet shell; keep dataset loading and store wiring thin.
+* `createGraphController` centralizes Cytoscape mutations; all graph changes flow through runtime commands.
+* `createGraphInputHandler` owns **all** Cytoscape event bindings and stays detach-friendly.
 * Move debug helpers to `debug/*`.
 * Introduce `commands.ts` (typed command names & payloads) to enforce orchestration boundaries.
 
@@ -329,6 +338,8 @@ resetView()
 ---
 
 ## Appendix B — Historical Snapshot (verbatim)
+
+> Preserved for context; describes the pre-refactor class-based runtime (`GraphOrchestrator`, `GraphInputHandler`, etc.).
 
 ### Architecture snapshot (previous)
 

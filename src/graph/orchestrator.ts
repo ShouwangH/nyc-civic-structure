@@ -1,208 +1,60 @@
 import cytoscape, { type Core } from 'cytoscape';
 
 import { graphStyles } from './styles';
-import { GraphController } from './controller';
-import type { GraphConfig, GraphEdgeInfo, GraphNodeInfo } from './types';
+import { createGraphController, type GraphController } from './controller';
+import type { GraphNodeInfo } from './types';
 import type { ProcessDefinition } from '../data/types';
 import type { SubgraphConfig } from './subgraphs';
-import { GraphInputHandler } from './inputHandler';
+import { createGraphInputHandler } from './inputHandler';
 import { createPlaceholderProcessNode, createProcessEdgeInfo } from './processUtils';
+import type {
+  GraphRuntime,
+  GraphRuntimeConfig,
+  GraphRuntimeDependencies,
+  GraphRuntimeEventHandlers,
+  GraphRuntimeFactory,
+  GraphInputBinding,
+} from './runtimeTypes';
 
-type StoreActions = {
-  setSelectedNode: (id: string | null) => void;
-  setSelectedEdge: (id: string | null) => void;
-  setActiveProcess: (id: string | null) => void;
-  setActiveSubgraph: (id: string | null) => void;
-  setSidebarHover: (value: boolean) => void;
-  clearSelections: () => void;
-};
-
-type ProcessData = {
-  processes: ProcessDefinition[];
-  nodesById: Map<string, GraphNodeInfo>;
-};
-
-type GraphOrchestratorOptions = {
-  container: HTMLDivElement;
-  mainGraph: GraphConfig;
-  subgraphByEntryId: Map<string, SubgraphConfig>;
-  subgraphById: Map<string, SubgraphConfig>;
-  data: ProcessData;
-  store: StoreActions;
-};
-
-class GraphOrchestrator {
-  private cy: Core | null = null;
-  private controller: GraphController | null = null;
-  private inputHandler: GraphInputHandler | null = null;
-
-  private container: HTMLDivElement;
-  private mainGraph: GraphConfig;
-  private subgraphByEntryId: Map<string, SubgraphConfig>;
-  private subgraphById: Map<string, SubgraphConfig>;
-  private processesById: Map<string, ProcessDefinition>;
-  private nodesById: Map<string, GraphNodeInfo>;
-  private store: StoreActions;
-
-  constructor({
+const createGraphRuntime: GraphRuntimeFactory = (
+  {
     container,
     mainGraph,
     subgraphByEntryId,
     subgraphById,
     data,
     store,
-  }: GraphOrchestratorOptions) {
-    this.container = container;
-    this.mainGraph = mainGraph;
-    this.subgraphByEntryId = subgraphByEntryId;
-    this.subgraphById = subgraphById;
-    this.store = store;
-    this.nodesById = data.nodesById;
-    this.processesById = new Map(data.processes.map((process) => [process.id, process]));
-  }
+  }: GraphRuntimeConfig,
+  dependencies: GraphRuntimeDependencies = {},
+): GraphRuntime => {
+  let cy: Core | null = null;
+  let controller: GraphController | null = null;
+  let inputBinding: GraphInputBinding | null = null;
 
-  initialize() {
-    this.destroy();
+  const {
+    createController: createControllerImpl = createGraphController,
+    createInputHandler: createInputHandlerImpl = createGraphInputHandler,
+    createCy = cytoscape,
+  } = dependencies;
 
-    const cyInstance = cytoscape({
-      container: this.container,
-      elements: this.mainGraph.elements,
-      layout: this.mainGraph.layout,
-      style: graphStyles,
-    });
+  const nodesById: Map<string, GraphNodeInfo> = data.nodesById;
+  const processesById = new Map<string, ProcessDefinition>(
+    data.processes.map((process) => [process.id, process]),
+  );
 
-    this.cy = cyInstance;
+  const getCy = () => cy;
+  const getController = () => controller;
 
-    const controller = new GraphController(cyInstance, this.mainGraph);
-    this.controller = controller;
-
-    cyInstance.one('layoutstop', () => {
-      controller.captureInitialPositions();
-    });
-
-    cyInstance.ready(() => {
-      cyInstance.resize();
-      const layout = cyInstance.layout(this.mainGraph.layout);
-      layout.run();
-    });
-
-    this.inputHandler = new GraphInputHandler(cyInstance, this);
-    this.inputHandler.attach();
-  }
-
-  destroy() {
-    if (this.inputHandler) {
-      this.inputHandler.detach();
-      this.inputHandler = null;
-    }
-    if (this.cy) {
-      this.cy.destroy();
-      this.cy = null;
-    }
-    this.controller = null;
-  }
-
-  getCy() {
-    return this.cy;
-  }
-
-  getController() {
-    return this.controller;
-  }
-
-  async highlightProcess(processId: string) {
-    const controller = this.controller;
-    if (!controller) {
-      return;
-    }
-
-    const process = this.processesById.get(processId);
-    if (!process) {
-      console.warn('[GraphOrchestrator] Process not found', processId);
-      return;
-    }
-
-    await this.restoreMainView();
-
-    const nodeInfos = process.nodes.map((id) => this.nodesById.get(id) ?? createPlaceholderProcessNode(id));
-    const edgeInfos = process.edges.map((edge) => this.createProcessEdge(process.id, edge));
-
-    this.store.setSelectedNode(null);
-    this.store.setSelectedEdge(null);
-
-    await controller.showProcess(process, nodeInfos, edgeInfos);
-    this.store.setActiveProcess(processId);
-    this.store.setSidebarHover(true);
-  }
-
-  async clearProcessHighlight() {
-    const controller = this.controller;
+  async function clearProcessHighlight() {
     if (!controller) {
       return;
     }
 
     await controller.clearProcessHighlight();
-    this.store.setActiveProcess(null);
+    store.setActiveProcess(null);
   }
 
-  async focusNodes(nodeIds: string[]) {
-    const controller = this.controller;
-    if (!controller) {
-      return;
-    }
-
-    await controller.focusNodes(nodeIds);
-
-    this.store.setSelectedNode(null);
-    this.store.setSelectedEdge(null);
-    this.store.setActiveProcess(null);
-    this.store.setActiveSubgraph(null);
-  }
-
-  clearNodeFocus() {
-    const controller = this.controller;
-    controller?.clearNodeFocus();
-  }
-
-  async activateSubgraphByEntry(entryNodeId: string) {
-    const config = this.subgraphByEntryId.get(entryNodeId);
-    if (!config) {
-      return;
-    }
-    await this.activateSubgraphInternal(config);
-  }
-
-  async activateSubgraph(subgraphId: string) {
-    const config = this.subgraphById.get(subgraphId);
-    if (!config) {
-      console.warn('[GraphOrchestrator] Subgraph not found', subgraphId);
-      return;
-    }
-    await this.activateSubgraphInternal(config);
-  }
-
-  private async activateSubgraphInternal(config: SubgraphConfig) {
-    const controller = this.controller;
-    if (!controller) {
-      return;
-    }
-
-    await this.clearProcessHighlight();
-
-    this.store.setSelectedNode(null);
-    this.store.setSelectedEdge(null);
-
-    await controller.activateSubgraph(config.graph, {
-      id: config.meta.id,
-      entryNodeId: config.meta.entryNodeId,
-    });
-
-    this.store.setActiveSubgraph(config.meta.id);
-    this.store.setSidebarHover(true);
-  }
-
-  async restoreMainView() {
-    const controller = this.controller;
+  async function restoreMainView() {
     if (!controller) {
       return;
     }
@@ -211,45 +63,187 @@ class GraphOrchestrator {
     }
 
     await controller.restoreMainView();
-    this.store.setActiveSubgraph(null);
+    store.setActiveSubgraph(null);
   }
 
-  handleNodeTap(nodeId: string) {
-    if (this.subgraphByEntryId.has(nodeId)) {
-      void this.activateSubgraphByEntry(nodeId);
+  const clearNodeFocus = () => {
+    controller?.clearNodeFocus();
+  };
+
+  async function resetView() {
+    store.clearSelections();
+
+    await clearProcessHighlight();
+    await restoreMainView();
+    clearNodeFocus();
+  }
+
+  async function highlightProcess(processId: string) {
+    if (!controller) {
       return;
     }
 
-    this.store.setSelectedEdge(null);
-    this.store.setSelectedNode(nodeId);
-    this.store.setSidebarHover(true);
+    const process = processesById.get(processId);
+    if (!process) {
+      console.warn('[GraphRuntime] Process not found', processId);
+      return;
+    }
+
+    await restoreMainView();
+
+    const nodeInfos = process.nodes.map(
+      (id) => nodesById.get(id) ?? createPlaceholderProcessNode(id),
+    );
+    const edgeInfos = process.edges.map((edge) => createProcessEdgeInfo(process.id, edge));
+
+    store.setSelectedNode(null);
+    store.setSelectedEdge(null);
+
+    await controller.showProcess(process, nodeInfos, edgeInfos);
+    store.setActiveProcess(processId);
+    store.setSidebarHover(true);
   }
 
-  handleEdgeTap(edgeId: string) {
-    this.store.setSelectedNode(null);
-    this.store.setSelectedEdge(edgeId);
-    this.store.setSidebarHover(true);
+  const focusNodes = async (nodeIds: string[]) => {
+    if (!controller) {
+      return;
+    }
+
+    await controller.focusNodes(nodeIds);
+
+    store.setSelectedNode(null);
+    store.setSelectedEdge(null);
+    store.setActiveProcess(null);
+    store.setActiveSubgraph(null);
+  };
+
+  async function activateSubgraphInternal(config: SubgraphConfig) {
+    if (!controller) {
+      return;
+    }
+
+    await clearProcessHighlight();
+
+    store.setSelectedNode(null);
+    store.setSelectedEdge(null);
+
+    await controller.activateSubgraph(config.graph, {
+      id: config.meta.id,
+      entryNodeId: config.meta.entryNodeId,
+    });
+
+    store.setActiveSubgraph(config.meta.id);
+    store.setSidebarHover(true);
   }
 
-  handleBackgroundTap() {
-    void this.resetView();
-  }
+  const activateSubgraphByEntry = async (entryNodeId: string) => {
+    const config = subgraphByEntryId.get(entryNodeId);
+    if (!config) {
+      return;
+    }
+    await activateSubgraphInternal(config);
+  };
 
-  handleZoom() {
+  const activateSubgraph = async (subgraphId: string) => {
+    const config = subgraphById.get(subgraphId);
+    if (!config) {
+      console.warn('[GraphRuntime] Subgraph not found', subgraphId);
+      return;
+    }
+    await activateSubgraphInternal(config);
+  };
+
+  const handleNodeTap = (nodeId: string) => {
+    if (subgraphByEntryId.has(nodeId)) {
+      void activateSubgraphByEntry(nodeId);
+      return;
+    }
+
+    store.setSelectedEdge(null);
+    store.setSelectedNode(nodeId);
+    store.setSidebarHover(true);
+  };
+
+  const handleEdgeTap = (edgeId: string) => {
+    store.setSelectedNode(null);
+    store.setSelectedEdge(edgeId);
+    store.setSidebarHover(true);
+  };
+
+  const handleBackgroundTap = () => {
+    void resetView();
+  };
+
+  const handleZoom = () => {
     // Disabled: zoom interactions should no longer clear selections or reset the view.
-  }
+  };
 
-  private async resetView() {
-    this.store.clearSelections();
+  const eventHandlers: GraphRuntimeEventHandlers = {
+    handleNodeTap,
+    handleEdgeTap,
+    handleBackgroundTap,
+    handleZoom,
+  };
 
-    await this.clearProcessHighlight();
-    await this.restoreMainView();
-    this.clearNodeFocus();
-  }
+  const destroy = () => {
+    if (inputBinding) {
+      inputBinding.detach();
+      inputBinding = null;
+    }
+    if (cy) {
+      cy.destroy();
+      cy = null;
+    }
+    controller = null;
+  };
 
-  private createProcessEdge(processId: string, edge: ProcessDefinition['edges'][number]): GraphEdgeInfo {
-    return createProcessEdgeInfo(processId, edge);
-  }
-}
+  const initialize = () => {
+    destroy();
 
-export { GraphOrchestrator };
+    const cyInstance = createCy({
+      container,
+      elements: mainGraph.elements,
+      layout: mainGraph.layout,
+      style: graphStyles,
+    });
+
+    cy = cyInstance;
+
+    const controllerInstance = createControllerImpl(cyInstance, mainGraph);
+    controller = controllerInstance;
+
+    cyInstance.one('layoutstop', () => {
+      controllerInstance.captureInitialPositions();
+    });
+
+    cyInstance.ready(() => {
+      cyInstance.resize();
+      const layout = cyInstance.layout(mainGraph.layout);
+      layout.run();
+    });
+
+    inputBinding = createInputHandlerImpl(cyInstance, eventHandlers);
+    inputBinding.attach();
+  };
+
+  const runtime: GraphRuntime = {
+    initialize,
+    destroy,
+    highlightProcess,
+    clearProcessHighlight,
+    activateSubgraph,
+    restoreMainView,
+    focusNodes,
+    clearNodeFocus,
+    getController,
+    getCy,
+    handleNodeTap: eventHandlers.handleNodeTap,
+    handleEdgeTap: eventHandlers.handleEdgeTap,
+    handleBackgroundTap: eventHandlers.handleBackgroundTap,
+    handleZoom: eventHandlers.handleZoom,
+  };
+
+  return runtime;
+};
+
+export { createGraphRuntime };

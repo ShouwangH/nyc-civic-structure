@@ -10,6 +10,14 @@ type ActiveSubgraph = {
   graph: GraphConfig;
 };
 
+type ActiveProcessState = {
+  id: string;
+  tempNodeIds: Set<string>;
+  tempEdgeIds: Set<string>;
+  nodeIds: Set<string>;
+  edgeIds: Set<string>;
+};
+
 const copyPosition = (position: { x: number; y: number }) => ({ x: position.x, y: position.y });
 
 const cloneLayoutOptions = (layout: LayoutOptions, overrides: Partial<LayoutOptions> = {}) =>
@@ -28,47 +36,146 @@ type MainLayoutOptions = {
   fitPadding?: number;
 };
 
-class GraphController {
-  private cy: Core;
-  private mainGraph: GraphConfig;
-  private activeSubgraph: ActiveSubgraph | null = null;
-  private transitionInProgress = false;
-  private addedNodeIds = new Set<string>();
-  private addedEdgeIds = new Set<string>();
-  private activeProcess: {
-    id: string;
-    tempNodeIds: Set<string>;
-    tempEdgeIds: Set<string>;
-    nodeIds: Set<string>;
-    edgeIds: Set<string>;
-  } | null = null;
-  private processTransitionInProgress = false;
-
-  constructor(cy: Core, mainGraph: GraphConfig) {
-    this.cy = cy;
-    this.mainGraph = mainGraph;
+const getViewportMetrics = (cy: Core) => {
+  const extent = cy.extent();
+  const width = extent.x2 - extent.x1;
+  const height = extent.y2 - extent.y1;
+  if (Number.isFinite(width) && width > 0 && Number.isFinite(height) && height > 0) {
+    return {
+      centerX: extent.x1 + width / 2,
+      centerY: extent.y1 + height / 2,
+      width,
+      height,
+    };
   }
 
-  captureInitialPositions() {
-    this.cy.nodes().forEach((node) => {
+  const bbox = cy.nodes().boundingBox();
+  const bboxWidth = bbox.x2 - bbox.x1 || 1;
+  const bboxHeight = bbox.y2 - bbox.y1 || 1;
+  return {
+    centerX: (bbox.x1 + bbox.x2) / 2 || 0,
+    centerY: (bbox.y1 + bbox.y2) / 2 || 0,
+    width: bboxWidth,
+    height: bboxHeight,
+  };
+};
+
+const computeRadialPositions = (cy: Core, nodes: GraphNodeInfo[]) => {
+  const { centerX, centerY, width, height } = getViewportMetrics(cy);
+  const positions = new Map<string, { x: number; y: number }>();
+  const count = nodes.length;
+
+  if (count === 0) {
+    return positions;
+  }
+
+  const radius = Math.max(Math.min(width, height) * 0.35, 240);
+
+  if (count === 1) {
+    positions.set(nodes[0].id, { x: centerX, y: centerY });
+    return positions;
+  }
+
+  const angleStep = (2 * Math.PI) / count;
+  nodes.forEach((node, index) => {
+    const angle = -Math.PI / 2 + index * angleStep;
+    positions.set(node.id, {
+      x: centerX + radius * Math.cos(angle),
+      y: centerY + radius * Math.sin(angle),
+    });
+  });
+
+  return positions;
+};
+
+export type GraphController = {
+  captureInitialPositions: () => void;
+  focusNodes: (nodeIds: string[]) => Promise<void>;
+  clearNodeFocus: () => void;
+  activateSubgraph: (subgraph: GraphConfig, meta: { id: string; entryNodeId: string }) => Promise<void>;
+  restoreMainView: () => Promise<void>;
+  showProcess: (
+    process: ProcessDefinition,
+    nodeInfos: GraphNodeInfo[],
+    edgeInfos: GraphEdgeInfo[],
+  ) => Promise<void>;
+  clearProcessHighlight: () => Promise<void>;
+  isSubgraphActive: (id?: string) => boolean;
+  getActiveSubgraphId: () => string | null;
+  isProcessActive: (id?: string) => boolean;
+};
+
+const createGraphController = (cy: Core, mainGraph: GraphConfig): GraphController => {
+  let activeSubgraph: ActiveSubgraph | null = null;
+  let transitionInProgress = false;
+  const addedNodeIds = new Set<string>();
+  const addedEdgeIds = new Set<string>();
+  let activeProcess: ActiveProcessState | null = null;
+  let processTransitionInProgress = false;
+
+  const resetHighlightClasses = () => {
+    cy.batch(() => {
+      cy.elements().removeClass('highlighted faded hidden dimmed');
+    });
+  };
+
+  const captureInitialPositions = () => {
+    cy.nodes().forEach((node) => {
       node.data('orgPos', copyPosition(node.position()));
     });
-  }
+  };
 
-  private resetHighlightClasses() {
-    this.cy.batch(() => {
-      this.cy.elements().removeClass('highlighted faded hidden dimmed');
-    });
-  }
-
-  async focusNodes(nodeIds: string[]) {
-    if (this.transitionInProgress) {
+  const animateFitToCollection = async (collection: CyCollection, padding: number) => {
+    if (!collection || collection.length === 0) {
       return;
     }
 
-    const targets = this.cy.collection();
+    try {
+      await cy
+        .animation({
+          fit: {
+            eles: collection,
+            padding,
+          },
+          duration: ANIMATION_DURATION,
+          easing: ANIMATION_EASING,
+        })
+        .play()
+        .promise();
+    } catch {
+      // ignore cancelled animations
+    }
+  };
+
+  const runMainGraphLayout = async (options: MainLayoutOptions = {}) => {
+    const { animateFit = true, fitPadding = 200 } = options;
+    const layoutOptions = cloneLayoutOptions(mainGraph.layout, {
+      animate: true,
+      animationDuration: ANIMATION_DURATION,
+      animationEasing: ANIMATION_EASING,
+      fit: false,
+    });
+
+    const layout = cy.layout(layoutOptions);
+    const layoutPromise = layout.promiseOn('layoutstop');
+    layout.run();
+    await layoutPromise;
+
+    if (animateFit) {
+      await animateFitToCollection(cy.nodes() as unknown as CyCollection, fitPadding);
+    }
+
+    captureInitialPositions();
+  };
+
+  const focusNodes = async (nodeIds: string[]) => {
+    if (transitionInProgress) {
+      return;
+    }
+
+    const targets = cy.collection();
     nodeIds.forEach((id) => {
-      const node = this.cy.getElementById(id);
+      const node = cy.getElementById(id);
       if (node && node.length > 0) {
         targets.merge(node);
       }
@@ -78,14 +185,14 @@ class GraphController {
       return;
     }
 
-    this.transitionInProgress = true;
+    transitionInProgress = true;
 
     const targetEdges = targets.connectedEdges();
-    const otherNodes = this.cy.nodes().not(targets);
-    const otherEdges = this.cy.edges().not(targetEdges);
+    const otherNodes = cy.nodes().not(targets);
+    const otherEdges = cy.edges().not(targetEdges);
 
-    this.cy.batch(() => {
-      this.cy.elements().removeClass('highlighted faded hidden dimmed');
+    cy.batch(() => {
+      cy.elements().removeClass('highlighted faded hidden dimmed');
       targets.addClass('highlighted');
       targetEdges.removeClass('faded hidden');
       otherNodes.addClass('faded');
@@ -93,7 +200,7 @@ class GraphController {
     });
 
     try {
-      await this.cy
+      await cy
         .animation({
           fit: {
             eles: targets,
@@ -108,169 +215,118 @@ class GraphController {
       // ignore animation cancellation
     }
 
-    this.transitionInProgress = false;
-  }
+    transitionInProgress = false;
+  };
 
-  clearNodeFocus() {
-    this.resetHighlightClasses();
-  }
+  const clearNodeFocus = () => {
+    resetHighlightClasses();
+  };
 
-  private async animateFitToCollection(collection: CyCollection, padding: number) {
-    if (!collection || collection.length === 0) {
-      return;
-    }
-
-    try {
-      await this.cy
-        .animation({
-          fit: {
-            eles: collection,
-            padding,
-          },
-          duration: ANIMATION_DURATION,
-          easing: ANIMATION_EASING,
-        })
-        .play()
-        .promise();
-    } catch {
-      // ignore cancelled animations
-    }
-  }
-
-  private async runMainGraphLayout(options: MainLayoutOptions = {}) {
-    const { animateFit = true, fitPadding = 200 } = options;
-    const layoutOptions = cloneLayoutOptions(this.mainGraph.layout, {
-      animate: true,
-      animationDuration: ANIMATION_DURATION,
-      animationEasing: ANIMATION_EASING,
-      fit: false,
-    });
-
-    const layout = this.cy.layout(layoutOptions);
-    const layoutPromise = layout.promiseOn('layoutstop');
-    layout.run();
-    await layoutPromise;
-
-    if (animateFit) {
-      await this.animateFitToCollection(this.cy.nodes() as unknown as CyCollection, fitPadding);
-    }
-
-    this.captureInitialPositions();
-  }
-
-  isSubgraphActive(id?: string) {
-    if (!this.activeSubgraph) {
+  const isSubgraphActive = (id?: string) => {
+    if (!activeSubgraph) {
       return false;
     }
-    return id ? this.activeSubgraph.id === id : true;
-  }
+    return id ? activeSubgraph.id === id : true;
+  };
 
-  getActiveSubgraphId() {
-    return this.activeSubgraph?.id ?? null;
-  }
+  const getActiveSubgraphId = () => activeSubgraph?.id ?? null;
 
-  isProcessActive(id?: string) {
-    if (!this.activeProcess) {
+  const isProcessActive = (id?: string) => {
+    if (!activeProcess) {
       return false;
     }
-    return id ? this.activeProcess.id === id : true;
-  }
+    return id ? activeProcess.id === id : true;
+  };
 
-  async activateSubgraph(subgraph: GraphConfig, meta: { id: string; entryNodeId: string }) {
-    if (this.transitionInProgress) {
+  const activateSubgraph = async (subgraph: GraphConfig, meta: { id: string; entryNodeId: string }) => {
+    if (transitionInProgress) {
       return;
     }
 
-    if (this.activeSubgraph?.id === meta.id) {
+    if (activeSubgraph?.id === meta.id) {
       return;
     }
 
-    if (this.activeSubgraph) {
-      await this.restoreMainView();
+    if (activeSubgraph) {
+      await restoreMainView();
     }
 
-    this.transitionInProgress = true;
+    transitionInProgress = true;
 
     if (DEBUG_SUBGRAPH_CONCENTRIC) {
-      await runSubgraphConcentricDebug(this.cy, meta, subgraph, {
+      await runSubgraphConcentricDebug(cy, meta, subgraph, {
         duration: ANIMATION_DURATION,
         easing: ANIMATION_EASING,
       });
-      this.transitionInProgress = false;
+      transitionInProgress = false;
       return;
     }
 
-    const existingNodeIds = new Set(this.cy.nodes().map((node) => node.id()));
+    const existingNodeIds = new Set(cy.nodes().map((node) => node.id()));
 
-    this.cy.batch(() => {
+    cy.batch(() => {
       subgraph.nodes.forEach((node) => {
         if (existingNodeIds.has(node.id)) {
           return;
         }
 
-        const added = this.cy.add({
+        const added = cy.add({
           group: 'nodes',
           data: node,
         });
-        this.addedNodeIds.add(node.id);
+        addedNodeIds.add(node.id);
         added.removeData('orgPos');
         added.removeScratch('_positions');
         added.unlock();
       });
 
       subgraph.edges.forEach((edge) => {
-        const existingEdge = this.cy.getElementById(edge.id);
+        const existingEdge = cy.getElementById(edge.id);
         if (existingEdge.length > 0) {
           return;
         }
 
-        this.cy.add({
+        cy.add({
           group: 'edges',
           data: edge,
         });
-        this.addedEdgeIds.add(edge.id);
+        addedEdgeIds.add(edge.id);
       });
     });
 
     const subgraphNodeIds = new Set(subgraph.nodes.map((node) => node.id));
-    const subNodes = this.cy.nodes().filter((node) => subgraphNodeIds.has(node.id()));
-    const subEdges = this.cy.collection();
+    const subNodes = cy.nodes().filter((node) => subgraphNodeIds.has(node.id()));
+    const subEdges = cy.collection();
     subgraph.edges.forEach((edge) => {
-      const cyEdge = this.cy.getElementById(edge.id);
+      const cyEdge = cy.getElementById(edge.id);
       if (cyEdge && cyEdge.length > 0) {
         subEdges.merge(cyEdge);
       }
     });
-    const otherNodes = this.cy.nodes().not(subNodes);
-    const otherEdges = this.cy.edges().not(subEdges);
+    const otherNodes = cy.nodes().not(subNodes);
+    const otherEdges = cy.edges().not(subEdges);
 
-    this.cy.batch(() => {
-      this.cy.elements().removeClass('highlighted faded hidden dimmed');
+    cy.batch(() => {
+      cy.elements().removeClass('highlighted faded hidden dimmed');
       subNodes.addClass('highlighted');
       subEdges.addClass('highlighted');
       otherNodes.addClass('faded');
       otherEdges.addClass('hidden');
     });
 
-    // Get entry node position to center layout around it
-    const entryNode = this.cy.getElementById(meta.entryNodeId);
+    const entryNode = cy.getElementById(meta.entryNodeId);
     const entryPos = entryNode.position();
 
-    // Use transform to translate layout to entry node position
     const layoutOptions = cloneLayoutOptions(subgraph.layout, {
       animate: true,
       animationDuration: ANIMATION_DURATION,
       animationEasing: ANIMATION_EASING,
       fit: true,
       padding: 80,
-      transform: (_node: any, pos: { x: number; y: number }) => {
-        // Layout calculates in "neutral" space starting from (0,0)
-        // Transform translates entire layout to entry node position
-        return {
-          x: pos.x + entryPos.x,
-          y: pos.y + entryPos.y,
-        };
-      },
+      transform: (_node: any, pos: { x: number; y: number }) => ({
+        x: pos.x + entryPos.x,
+        y: pos.y + entryPos.y,
+      }),
     });
     const layoutElements = subNodes.union(subEdges);
 
@@ -279,8 +335,7 @@ class GraphController {
     layout.run();
     await layoutPromise;
 
-    // Fit viewport to the translated subgraph positions
-    await this.cy
+    await cy
       .animation({
         fit: {
           eles: subNodes,
@@ -293,38 +348,38 @@ class GraphController {
       .promise()
       .catch(() => {});
 
-    this.activeSubgraph = {
+    activeSubgraph = {
       id: meta.id,
       entryNodeId: meta.entryNodeId,
       graph: subgraph,
     };
 
-    this.transitionInProgress = false;
-  }
+    transitionInProgress = false;
+  };
 
-  async restoreMainView() {
-    if (!this.activeSubgraph) {
+  const restoreMainView = async () => {
+    if (!activeSubgraph) {
       return;
     }
-    if (this.transitionInProgress) {
+    if (transitionInProgress) {
       return;
     }
 
-    this.transitionInProgress = true;
+    transitionInProgress = true;
 
     const removeAddedElements = () => {
-      this.cy.batch(() => {
-        const nodesToRemove = this.cy.collection();
-        this.addedNodeIds.forEach((id) => {
-          const node = this.cy.getElementById(id);
+      cy.batch(() => {
+        const nodesToRemove = cy.collection();
+        addedNodeIds.forEach((id) => {
+          const node = cy.getElementById(id);
           if (node.length > 0) {
             nodesToRemove.merge(node);
           }
         });
 
-        const edgesToRemove = this.cy.collection();
-        this.addedEdgeIds.forEach((id) => {
-          const edge = this.cy.getElementById(id);
+        const edgesToRemove = cy.collection();
+        addedEdgeIds.forEach((id) => {
+          const edge = cy.getElementById(id);
           if (edge.length > 0) {
             edgesToRemove.merge(edge);
           }
@@ -334,13 +389,13 @@ class GraphController {
         nodesToRemove.remove();
       });
 
-      this.addedNodeIds.clear();
-      this.addedEdgeIds.clear();
+      addedNodeIds.clear();
+      addedEdgeIds.clear();
     };
 
     removeAddedElements();
 
-    this.cy.nodes().forEach((node) => {
+    cy.nodes().forEach((node) => {
       const orgPos = node.data('orgPos');
       if (!orgPos) {
         return;
@@ -349,56 +404,58 @@ class GraphController {
       node.position(copyPosition(orgPos));
     });
 
-    this.resetHighlightClasses();
+    resetHighlightClasses();
 
-    await this.runMainGraphLayout({ animateFit: true, fitPadding: 200 });
+    await runMainGraphLayout({ animateFit: true, fitPadding: 200 });
 
-    this.activeSubgraph = null;
-    this.transitionInProgress = false;
-  }
+    activeSubgraph = null;
+    transitionInProgress = false;
+  };
 
-  async showProcess(
+  const showProcess = async (
     process: ProcessDefinition,
     nodeInfos: GraphNodeInfo[],
     edgeInfos: GraphEdgeInfo[],
-  ) {
-    if (this.processTransitionInProgress) {
+  ) => {
+    if (processTransitionInProgress) {
       return;
     }
 
-    if (this.activeProcess?.id === process.id) {
+    if (activeProcess?.id === process.id) {
       return;
     }
 
-    await this.clearProcessHighlight();
+    await clearProcessHighlight();
 
-    this.processTransitionInProgress = true;
+    processTransitionInProgress = true;
 
     const tempNodeIds = new Set<string>();
     const tempEdgeIds = new Set<string>();
 
     const nodeIdSet = new Set(nodeInfos.map((node) => node.id));
     const edgeIdSet = new Set(edgeInfos.map((edge) => edge.id));
+    const desiredPositions = computeRadialPositions(cy, nodeInfos);
 
-    this.cy.batch(() => {
+    cy.batch(() => {
       nodeInfos.forEach((nodeInfo) => {
-        const existing = this.cy.getElementById(nodeInfo.id);
+        const existing = cy.getElementById(nodeInfo.id);
         if (existing.length > 0) {
           return;
         }
-        this.cy.add({
+        cy.add({
           group: 'nodes',
           data: nodeInfo,
+          position: desiredPositions.get(nodeInfo.id),
         });
         tempNodeIds.add(nodeInfo.id);
       });
 
       edgeInfos.forEach((edgeInfo) => {
-        const existing = this.cy.getElementById(edgeInfo.id);
+        const existing = cy.getElementById(edgeInfo.id);
         if (existing.length > 0) {
           return;
         }
-        this.cy.add({
+        cy.add({
           group: 'edges',
           data: edgeInfo,
         });
@@ -406,12 +463,12 @@ class GraphController {
       });
     });
 
-    const processNodes = this.cy.nodes().filter((node) => nodeIdSet.has(node.id()));
-    this.cy.batch(() => {
-      this.cy.nodes().removeClass('dimmed process-active');
-      this.cy.edges().removeClass('dimmed process-active-edge');
+    const processNodes = cy.nodes().filter((node) => nodeIdSet.has(node.id()));
+    cy.batch(() => {
+      cy.nodes().removeClass('dimmed process-active');
+      cy.edges().removeClass('dimmed process-active-edge');
 
-      this.cy.nodes().forEach((node) => {
+      cy.nodes().forEach((node) => {
         if (nodeIdSet.has(node.id())) {
           node.addClass('process-active');
         } else {
@@ -419,39 +476,24 @@ class GraphController {
         }
       });
 
-      this.cy.edges().forEach((edge) => {
+      cy.edges().forEach((edge) => {
         if (edgeIdSet.has(edge.id())) {
           edge.addClass('process-active-edge');
         } else {
           edge.addClass('dimmed');
         }
       });
+
+      processNodes.forEach((node) => {
+        const target = desiredPositions.get(node.id());
+        if (target) {
+          node.position(copyPosition(target));
+        }
+      });
     });
 
     if (processNodes.length > 0) {
-      const processEdges = this.cy.edges().filter((edge) => edgeIdSet.has(edge.id()));
-      const layoutOptions: LayoutOptions = {
-        name: 'elk',
-        fit: false,
-        animate: true,
-        animationDuration: ANIMATION_DURATION,
-        animationEasing: ANIMATION_EASING,
-        nodeDimensionsIncludeLabels: true,
-        elk: {
-          algorithm: 'layered',
-          'elk.direction': 'RIGHT',
-          'elk.spacing.nodeNode': 80,
-          'elk.layered.spacing.nodeNodeBetweenLayers': 120,
-        },
-      } as LayoutOptions;
-
-
-      const layoutCollection = processNodes.union(processEdges);
-      const layout = layoutCollection.layout(layoutOptions);
-      const layoutPromise = layout.promiseOn('layoutstop');
-      layout.run();
-      await layoutPromise;
-      await this.cy
+      await cy
         .animation({
           fit: {
             eles: processNodes,
@@ -465,7 +507,7 @@ class GraphController {
         .catch(() => {});
     }
 
-    this.activeProcess = {
+    activeProcess = {
       id: process.id,
       tempNodeIds,
       tempEdgeIds,
@@ -473,26 +515,26 @@ class GraphController {
       edgeIds: edgeIdSet,
     };
 
-    this.processTransitionInProgress = false;
-  }
+    processTransitionInProgress = false;
+  };
 
-  async clearProcessHighlight() {
-    const currentProcess = this.activeProcess;
-    if (!currentProcess || this.processTransitionInProgress) {
+  const clearProcessHighlight = async () => {
+    const currentProcess = activeProcess;
+    if (!currentProcess || processTransitionInProgress) {
       return;
     }
 
-    this.processTransitionInProgress = true;
+    processTransitionInProgress = true;
 
-    this.cy.batch(() => {
-      this.cy.nodes().removeClass('process-active dimmed');
-      this.cy.edges().removeClass('process-active-edge dimmed');
+    cy.batch(() => {
+      cy.nodes().removeClass('process-active dimmed');
+      cy.edges().removeClass('process-active-edge dimmed');
     });
 
     if (currentProcess.tempEdgeIds.size > 0) {
-      const edgesToRemove = this.cy.collection();
+      const edgesToRemove = cy.collection();
       currentProcess.tempEdgeIds.forEach((id) => {
-        const edge = this.cy.getElementById(id);
+        const edge = cy.getElementById(id);
         if (edge.length > 0) {
           edgesToRemove.merge(edge);
         }
@@ -501,9 +543,9 @@ class GraphController {
     }
 
     if (currentProcess.tempNodeIds.size > 0) {
-      const nodesToRemove = this.cy.collection();
+      const nodesToRemove = cy.collection();
       currentProcess.tempNodeIds.forEach((id) => {
-        const node = this.cy.getElementById(id);
+        const node = cy.getElementById(id);
         if (node.length > 0) {
           nodesToRemove.merge(node);
         }
@@ -511,18 +553,31 @@ class GraphController {
       nodesToRemove.remove();
     }
 
-    this.cy.nodes().forEach((node) => {
+    cy.nodes().forEach((node) => {
       const orgPos = node.data('orgPos');
       if (orgPos) {
         node.position(copyPosition(orgPos));
       }
     });
 
-    await this.runMainGraphLayout({ animateFit: true, fitPadding: 220 });
+    await runMainGraphLayout({ animateFit: true, fitPadding: 220 });
 
-    this.activeProcess = null;
-    this.processTransitionInProgress = false;
-  }
-}
+    activeProcess = null;
+    processTransitionInProgress = false;
+  };
 
-export { GraphController };
+  return {
+    captureInitialPositions,
+    focusNodes,
+    clearNodeFocus,
+    activateSubgraph,
+    restoreMainView,
+    showProcess,
+    clearProcessHighlight,
+    isSubgraphActive,
+    getActiveSubgraphId,
+    isProcessActive,
+  };
+};
+
+export { createGraphController };
