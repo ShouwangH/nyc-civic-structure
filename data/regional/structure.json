@@ -1,64 +1,99 @@
 {
   "meta": {
-    "title": "New York Public Authorities and Corporations",
-    "description": "Key public authorities that operate across New York State and City, including their governing relationships to state and city executives."
+    "title": "Regional and Cross-Jurisdictional Public Authorities",
+    "description": "Public authorities that operate across NYC, NYS, or multi-state regions, organized by their legal foundations."
   },
   "nodes": [
+    {
+      "id": "regional_authority_laws",
+      "label": "Regional Public Authority Laws",
+      "type": "category",
+      "branch": "law",
+      "factoid": "Legal frameworks establishing public authorities across city, state, and interstate jurisdictions."
+    },
     {
       "id": "public_authorities_law",
       "label": "Public Authorities Law",
       "type": "law",
       "branch": "law",
-      "factoid": "State law establishing and regulating public benefit corporations and authorities in New York."
+      "factoid": "NY State law (Chapter 43-A) establishing and regulating state public benefit corporations."
+    },
+    {
+      "id": "public_housing_law",
+      "label": "NY Public Housing Law",
+      "type": "law",
+      "branch": "law",
+      "factoid": "State law enabling cities to create local housing authorities."
+    },
+    {
+      "id": "interstate_compact_1921",
+      "label": "Port Authority Interstate Compact (1921)",
+      "type": "law",
+      "branch": "law",
+      "factoid": "Interstate compact between NY and NJ, ratified by Congress, creating the Port Authority."
     },
     {
       "id": "mta",
       "label": "Metropolitan Transportation Authority (MTA)",
       "type": "authority",
       "branch": "transportation",
-      "factoid": "Public benefit corporation managing New York’s regional transit systems, including subways, buses, and commuter rail."
-    },
-    {
-      "id": "nycha",
-      "label": "New York City Housing Authority (NYCHA)",
-      "type": "authority",
-      "branch": "housing",
-      "factoid": "City agency and public authority providing and managing affordable housing for NYC residents."
-    },
-    {
-      "id": "port_authority",
-      "label": "Port Authority of New York and New Jersey",
-      "type": "bi_state_authority",
-      "branch": "infrastructure",
-      "factoid": "Bi-state agency overseeing bridges, tunnels, airports, and ports in the NY–NJ metropolitan area."
+      "factoid": "State authority managing NYC subway, buses, and regional commuter rail systems."
     },
     {
       "id": "nys_thruway",
       "label": "New York State Thruway Authority",
       "type": "authority",
       "branch": "transportation",
-      "factoid": "State public authority responsible for operating and maintaining the Thruway system across New York."
+      "factoid": "State authority operating the Thruway highway system across New York."
+    },
+    {
+      "id": "nypa",
+      "label": "New York Power Authority (NYPA)",
+      "type": "authority",
+      "branch": "energy",
+      "factoid": "State authority providing electric power generation and transmission."
+    },
+    {
+      "id": "dasny",
+      "label": "Dormitory Authority (DASNY)",
+      "type": "authority",
+      "branch": "finance",
+      "factoid": "State authority financing construction of schools, hospitals, and public facilities."
     },
     {
       "id": "esd",
       "label": "Empire State Development (ESD)",
       "type": "authority",
       "branch": "economic",
-      "factoid": "State public authority focused on economic development, business incentives, and public–private partnerships."
+      "factoid": "State authority for economic development and business incentives."
     },
     {
       "id": "battery_park_city_authority",
       "label": "Battery Park City Authority (BPCA)",
       "type": "authority",
       "branch": "development",
-      "factoid": "State authority managing the Battery Park City neighborhood and waterfront real estate development."
+      "factoid": "State authority managing Battery Park City neighborhood in Manhattan."
     },
     {
       "id": "roosevelt_island",
       "label": "Roosevelt Island Operating Corporation (RIOC)",
       "type": "authority",
       "branch": "development",
-      "factoid": "State public benefit corporation overseeing operations, transportation, and real estate on Roosevelt Island."
+      "factoid": "State authority overseeing Roosevelt Island operations."
+    },
+    {
+      "id": "port_authority",
+      "label": "Port Authority of New York and New Jersey",
+      "type": "bi_state_authority",
+      "branch": "infrastructure",
+      "factoid": "Bi-state agency managing bridges, tunnels, airports, and seaports in the NY-NJ region."
+    },
+    {
+      "id": "nycha",
+      "label": "New York City Housing Authority (NYCHA)",
+      "type": "city_authority",
+      "branch": "housing",
+      "factoid": "City public authority providing affordable housing for NYC residents."
     }
   ]
 }

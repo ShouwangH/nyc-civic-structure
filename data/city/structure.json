@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "NYC Government Structure",
-    "description": "Visualization of entities established under the NYC Charter and the five borough governments."
+    "description": "Complete NYC government including city-wide governance and borough advisory structures."
   },
   "nodes": [
     {
@@ -12,11 +12,10 @@
       "factoid": "Foundational document defining the structure and powers of New York City government."
     },
     {
-      "id": "mayor",
+      "id": "mayor_nyc",
       "label": "Mayor",
       "type": "office",
       "branch": "executive",
-      "process": ["budget", "legislative"],
       "factoid": "Elected citywide executive. Oversees agencies, prepares the budget, and enforces city laws."
     },
     {
@@ -24,7 +23,6 @@
       "label": "Comptroller",
       "type": "office",
       "branch": "executive",
-      "process": ["budget"],
       "factoid": "Fiscal watchdog and auditor. Oversees the city's financial operations and pensions."
     },
     {
@@ -32,88 +30,119 @@
       "label": "Public Advocate",
       "type": "office",
       "branch": "executive",
-      "process": ["legislative"],
-      "factoid": "Monitors city agencies and acts as a public ombudsman, representing residents before city government."
+      "factoid": "Monitors city agencies and acts as a public ombudsman."
     },
     {
       "id": "city_council",
       "label": "City Council",
       "type": "body",
       "branch": "legislative",
-      "process": ["legislative", "budget"],
-      "factoid": "51-member legislative body that passes local laws, approves the budget, and exercises oversight."
+      "factoid": "51-member legislative body that passes local laws and approves the budget."
     },
     {
       "id": "departments",
       "label": "NYC Departments & Agencies",
       "type": "agency",
       "branch": "administrative",
-      "process": ["budget"],
-      "factoid": "Agencies responsible for carrying out policy across housing, health, planning, education, and more."
+      "factoid": "Agencies implementing city policies across health, housing, planning, and services."
     },
     {
       "id": "administrative_code",
-      "label": "Administrative Code (NYC Statute)",
+      "label": "Administrative Code",
       "type": "law",
       "branch": "law",
-      "factoid": "Compilation of permanent local laws enacted by the City Council and signed by the Mayor."
+      "factoid": "Compilation of permanent local laws enacted by the City Council."
     },
     {
       "id": "rules_of_city",
-      "label": "Rules of the City of New York (Administrative Law)",
+      "label": "Rules of the City of New York",
       "type": "law",
       "branch": "law",
-      "factoid": "Regulations issued by city agencies to implement provisions of the Administrative Code."
+      "factoid": "Regulations issued by city agencies to implement the Administrative Code."
     },
     {
       "id": "nyc_budget",
       "label": "NYC Budget",
       "type": "process",
       "branch": "financial",
-      "process": ["budget"],
-      "factoid": "Annual financial plan allocating operating and capital funds across city agencies and boroughs."
+      "factoid": "Annual financial plan allocating funds across city agencies and boroughs."
     },
     {
-      "id": "borough_manhattan",
-      "label": "Manhattan",
-      "type": "region",
+      "id": "borough_structure",
+      "label": "Borough Advisory Structure",
+      "type": "category",
       "branch": "community",
-      "factoid": "Manhattan's Borough President oversees 12 Community Boards, representing local neighborhoods."
+      "factoid": "Advisory and coordinating bodies at the borough level with NO legislative or executive power. Provide community input on land use, budgets, and services."
     },
     {
-      "id": "borough_brooklyn",
-      "label": "Brooklyn",
-      "type": "region",
-      "branch": "community",
-      "factoid": "Brooklyn's Borough President oversees 18 Community Boards."
+      "id": "bp_manhattan",
+      "label": "Manhattan Borough President",
+      "type": "office",
+      "branch":"community",
+      "factoid": "Elected borough executive with advisory role. Appoints Community Board members."
     },
     {
-      "id": "borough_bronx",
-      "label": "Bronx",
-      "type": "region",
-      "branch": "community",
-      "factoid": "Bronx's Borough President oversees 12 Community Boards."
+      "id": "bp_brooklyn",
+      "label": "Brooklyn Borough President",
+      "type": "office",
+      "branch":"community",
+      "factoid": "Elected borough executive with advisory role. Appoints Community Board members."
     },
     {
-      "id": "borough_queens",
-      "label": "Queens",
-      "type": "region",
-      "branch": "community",
-      "factoid": "Queens's Borough President oversees 14 Community Boards."
+      "id": "bp_bronx",
+      "label": "Bronx Borough President",
+      "type": "office",
+      "branch":"community",
+      "factoid": "Elected borough executive with advisory role. Appoints Community Board members."
     },
     {
-      "id": "borough_staten_island",
-      "label": "Staten Island",
-      "type": "region",
-      "branch": "community",
-      "factoid": "Staten Island's Borough President oversees 3 Community Boards."
+      "id": "bp_queens",
+      "label": "Queens Borough President",
+      "type": "office",
+      "branch":"community",
+      "factoid": "Elected borough executive with advisory role. Appoints Community Board members."
     },
     {
-      "id": "community_boards",
-      "label": "Community Boards",
-      "type": "region",
-      "branch": "community",
-      "factoid": "Each community board has at most 50 members"
+      "id": "bp_staten_island",
+      "label": "Staten Island Borough President",
+      "type": "office",
+      "branch":"community",
+      "factoid": "Elected borough executive with advisory role. Appoints Community Board members."
+    },
+    {
+      "id": "cb_manhattan",
+      "label": "Manhattan Community Boards (12)",
+      "type": "body",
+      "branch":"community",
+      "factoid": "12 advisory boards with up to 50 appointed members each. Review land use and budget proposals."
+    },
+    {
+      "id": "cb_brooklyn",
+      "label": "Brooklyn Community Boards (18)",
+      "type": "body",
+      "branch":"community",
+      "factoid": "18 advisory boards with up to 50 appointed members each. Review land use and budget proposals."
+    },
+    {
+      "id": "cb_bronx",
+      "label": "Bronx Community Boards (12)",
+      "type": "body",
+      "branch":"community",
+      "factoid": "12 advisory boards with up to 50 appointed members each. Review land use and budget proposals."
+    },
+    {
+      "id": "cb_queens",
+      "label": "Queens Community Boards (14)",
+      "type": "body",
+      "branch":"community",
+      "factoid": "14 advisory boards with up to 50 appointed members each. Review land use and budget proposals."
+    },
+    {
+      "id": "cb_staten_island",
+      "label": "Staten Island Community Boards (3)",
+      "type": "body",
+      "branch":"community",
+      "factoid": "3 advisory boards with up to 50 appointed members each. Review land use and budget proposals."
     }
   ]
 }
