@@ -113,7 +113,7 @@ const DetailsSidebar = ({
           <div className="space-y-3">
             <p>{activeProcess.description}</p>
             {activeProcess.steps && (
-              <ul className="space-y-2 text-xs text-slate-500">
+              <ul className="space-y-2 text-x text-slate-500">
                 {activeProcess.steps.map((step) => (
                   <li key={step.id}>
                     <span className="font-semibold text-slate-700">{step.title}:</span>{' '}
@@ -125,7 +125,7 @@ const DetailsSidebar = ({
           </div>
         ) : isSubgraphActive ? (
           <p className="text-slate-500">
-            Use the left menu or click the highlighted hub node to collapse this focused subgraph
+            Use the left menu or click outside the hub to collapse this focused subgraph
             and return to the full structure.
           </p>
         ) : (
