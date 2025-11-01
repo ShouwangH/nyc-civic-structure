@@ -1,62 +1,59 @@
 import type { Core, EventObject } from 'cytoscape';
-import type { GraphOrchestrator } from './orchestrator';
+import type { GraphInputBinding, GraphRuntimeEventHandlers } from './runtimeTypes';
 
-class GraphInputHandler {
-  private cy: Core;
-  private orchestrator: GraphOrchestrator;
+const createGraphInputHandler = (
+  cy: Core,
+  runtime: GraphRuntimeEventHandlers,
+): GraphInputBinding => {
+  let handleNodeTapBound: ((event: EventObject) => void) | null = null;
+  let handleEdgeTapBound: ((event: EventObject) => void) | null = null;
+  let handleBackgroundTapBound: ((event: EventObject) => void) | null = null;
+  let handleZoomBound: (() => void) | null = null;
 
-  private handleNodeTapBound: ((event: EventObject) => void) | null = null;
-  private handleEdgeTapBound: ((event: EventObject) => void) | null = null;
-  private handleBackgroundTapBound: ((event: EventObject) => void) | null = null;
-  private handleZoomBound: (() => void) | null = null;
+  const detach = () => {
+    if (handleNodeTapBound) {
+      cy.removeListener('tap', 'node', handleNodeTapBound);
+      handleNodeTapBound = null;
+    }
+    if (handleEdgeTapBound) {
+      cy.removeListener('tap', 'edge', handleEdgeTapBound);
+      handleEdgeTapBound = null;
+    }
+    if (handleBackgroundTapBound) {
+      cy.removeListener('tap', handleBackgroundTapBound);
+      handleBackgroundTapBound = null;
+    }
+    if (handleZoomBound) {
+      cy.removeListener('zoom', handleZoomBound);
+      handleZoomBound = null;
+    }
+  };
 
-  constructor(cy: Core, orchestrator: GraphOrchestrator) {
-    this.cy = cy;
-    this.orchestrator = orchestrator;
-  }
+  const attach = () => {
+    detach();
 
-  attach() {
-    this.detach();
-
-    this.handleNodeTapBound = (event: EventObject) => {
-      this.orchestrator.handleNodeTap(event.target.id());
+    handleNodeTapBound = (event: EventObject) => {
+      runtime.handleNodeTap(event.target.id());
     };
-    this.handleEdgeTapBound = (event: EventObject) => {
-      this.orchestrator.handleEdgeTap(event.target.id());
+    handleEdgeTapBound = (event: EventObject) => {
+      runtime.handleEdgeTap(event.target.id());
     };
-    this.handleBackgroundTapBound = (event: EventObject) => {
-      if (event.target === this.cy) {
-        this.orchestrator.handleBackgroundTap();
+    handleBackgroundTapBound = (event: EventObject) => {
+      if (event.target === cy) {
+        runtime.handleBackgroundTap();
       }
     };
-    this.handleZoomBound = () => {
-      this.orchestrator.handleZoom();
+    handleZoomBound = () => {
+      runtime.handleZoom();
     };
 
-    this.cy.on('tap', 'node', this.handleNodeTapBound);
-    this.cy.on('tap', 'edge', this.handleEdgeTapBound);
-    this.cy.on('tap', this.handleBackgroundTapBound);
-    this.cy.on('zoom', this.handleZoomBound);
-  }
+    cy.on('tap', 'node', handleNodeTapBound);
+    cy.on('tap', 'edge', handleEdgeTapBound);
+    cy.on('tap', handleBackgroundTapBound);
+    cy.on('zoom', handleZoomBound);
+  };
 
-  detach() {
-    if (this.handleNodeTapBound) {
-      this.cy.removeListener('tap', 'node', this.handleNodeTapBound);
-      this.handleNodeTapBound = null;
-    }
-    if (this.handleEdgeTapBound) {
-      this.cy.removeListener('tap', 'edge', this.handleEdgeTapBound);
-      this.handleEdgeTapBound = null;
-    }
-    if (this.handleBackgroundTapBound) {
-      this.cy.removeListener('tap', this.handleBackgroundTapBound);
-      this.handleBackgroundTapBound = null;
-    }
-    if (this.handleZoomBound) {
-      this.cy.removeListener('zoom', this.handleZoomBound);
-      this.handleZoomBound = null;
-    }
-  }
-}
+  return { attach, detach };
+};
 
-export { GraphInputHandler };
+export { createGraphInputHandler };

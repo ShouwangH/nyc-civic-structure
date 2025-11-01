@@ -2,26 +2,18 @@ import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from 'rea
 import type { GraphConfig, GraphNodeInfo } from '../graph/types';
 import type { ProcessDefinition } from '../data/types';
 import type { SubgraphConfig } from '../graph/subgraphs';
-import { GraphOrchestrator } from '../graph/orchestrator';
+import { createGraphRuntime } from '../graph/orchestrator';
+import type { GraphRuntime, GraphRuntimeStore } from '../graph/runtimeTypes';
 
 export type GraphCanvasHandle = {
-  highlightProcess: (processId: string) => Promise<void>;
-  clearProcessHighlight: () => Promise<void>;
-  activateSubgraph: (subgraphId: string) => Promise<void>;
-  restoreMainView: () => Promise<void>;
-  focusNodes: (nodeIds: string[]) => Promise<void>;
-  clearNodeFocus: () => void;
-  getController: () => ReturnType<GraphOrchestrator['getController']>;
-  getCy: () => ReturnType<GraphOrchestrator['getCy']>;
-};
-
-type StoreActions = {
-  setSelectedNode: (id: string | null) => void;
-  setSelectedEdge: (id: string | null) => void;
-  setActiveProcess: (id: string | null) => void;
-  setActiveSubgraph: (id: string | null) => void;
-  setSidebarHover: (value: boolean) => void;
-  clearSelections: () => void;
+  highlightProcess: GraphRuntime['highlightProcess'];
+  clearProcessHighlight: GraphRuntime['clearProcessHighlight'];
+  activateSubgraph: GraphRuntime['activateSubgraph'];
+  restoreMainView: GraphRuntime['restoreMainView'];
+  focusNodes: GraphRuntime['focusNodes'];
+  clearNodeFocus: GraphRuntime['clearNodeFocus'];
+  getController: GraphRuntime['getController'];
+  getCy: GraphRuntime['getCy'];
 };
 
 type GraphCanvasProps = {
@@ -30,7 +22,7 @@ type GraphCanvasProps = {
   subgraphById: Map<string, SubgraphConfig>;
   processes: ProcessDefinition[];
   nodesById: Map<string, GraphNodeInfo>;
-  storeActions: StoreActions;
+  storeActions: GraphRuntimeStore;
   className?: string;
 };
 
@@ -40,7 +32,7 @@ const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
     ref,
   ) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
-    const orchestratorRef = useRef<GraphOrchestrator | null>(null);
+    const orchestratorRef = useRef<GraphRuntime | null>(null);
     const store = useMemo(
       () => ({
         setSelectedNode: storeActions.setSelectedNode,
@@ -65,7 +57,7 @@ const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
         return;
       }
 
-      const orchestrator = new GraphOrchestrator({
+      const orchestrator = createGraphRuntime({
         container: containerRef.current,
         mainGraph,
         subgraphByEntryId,
