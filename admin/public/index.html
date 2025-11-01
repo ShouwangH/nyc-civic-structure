@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NYC Civic Structure - Data Backfill Tool</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: #f5f5f5;
+      padding: 20px;
+      line-height: 1.6;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    header {
+      background: #2563eb;
+      color: white;
+      padding: 24px;
+      border-radius: 8px 8px 0 0;
+    }
+
+    h1 {
+      font-size: 24px;
+      margin-bottom: 8px;
+    }
+
+    .subtitle {
+      opacity: 0.9;
+      font-size: 14px;
+    }
+
+    .auth-section {
+      padding: 40px;
+      text-align: center;
+    }
+
+    .auth-section input {
+      width: 100%;
+      max-width: 400px;
+      padding: 12px;
+      border: 2px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 16px;
+      margin-bottom: 12px;
+    }
+
+    .auth-section button {
+      width: 100%;
+      max-width: 400px;
+      padding: 12px 24px;
+      background: #2563eb;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .auth-section button:hover {
+      background: #1d4ed8;
+    }
+
+    .auth-section button:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .error {
+      color: #dc2626;
+      margin-top: 8px;
+      font-size: 14px;
+    }
+
+    .success {
+      color: #16a34a;
+      margin-top: 8px;
+      font-size: 14px;
+    }
+
+    .content {
+      padding: 24px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 24px;
+      align-items: center;
+    }
+
+    select, input[type="search"] {
+      padding: 8px 12px;
+      border: 2px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+
+    .node-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .node-card {
+      border: 2px solid #e5e7eb;
+      border-radius: 6px;
+      padding: 16px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .node-card:hover {
+      border-color: #2563eb;
+      box-shadow: 0 2px 8px rgba(37, 99, 235, 0.1);
+    }
+
+    .node-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: start;
+      margin-bottom: 8px;
+    }
+
+    .node-label {
+      font-weight: 600;
+      font-size: 16px;
+      color: #111827;
+    }
+
+    .node-meta {
+      display: flex;
+      gap: 8px;
+      font-size: 12px;
+      color: #6b7280;
+    }
+
+    .badge {
+      background: #e5e7eb;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .node-factoid {
+      color: #6b7280;
+      font-size: 14px;
+      margin-top: 8px;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      padding: 40px 20px;
+      overflow-y: auto;
+    }
+
+    .modal.active {
+      display: flex;
+      align-items: start;
+      justify-content: center;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 8px;
+      padding: 24px;
+      max-width: 600px;
+      width: 100%;
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .modal-header h2 {
+      font-size: 20px;
+    }
+
+    .close-btn {
+      background: none;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #6b7280;
+      padding: 0;
+      width: 32px;
+      height: 32px;
+    }
+
+    .close-btn:hover {
+      color: #111827;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 500;
+      font-size: 14px;
+      color: #374151;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 8px 12px;
+      border: 2px solid #e5e7eb;
+      border-radius: 6px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .form-group textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: flex-end;
+      margin-top: 24px;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn-primary {
+      background: #2563eb;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: #1d4ed8;
+    }
+
+    .btn-primary:disabled {
+      background: #9ca3af;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    .btn-secondary:hover {
+      background: #d1d5db;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    .logout-btn {
+      background: none;
+      border: none;
+      color: white;
+      text-decoration: underline;
+      cursor: pointer;
+      font-size: 14px;
+      opacity: 0.9;
+    }
+
+    .logout-btn:hover {
+      opacity: 1;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div style="display: flex; justify-content: space-between; align-items: start;">
+        <div>
+          <h1>NYC Civic Structure Data Editor</h1>
+          <p class="subtitle">Internal tool for updating placeholder data</p>
+        </div>
+        <button class="logout-btn hidden" id="logoutBtn">Logout</button>
+      </div>
+    </header>
+
+    <!-- Auth Section -->
+    <div class="auth-section" id="authSection">
+      <h2 style="margin-bottom: 16px;">Enter Password</h2>
+      <input
+        type="password"
+        id="passwordInput"
+        placeholder="Password"
+        autocomplete="off"
+      />
+      <button id="loginBtn">Login</button>
+      <div id="authError" class="error"></div>
+    </div>
+
+    <!-- Main Content (hidden until authenticated) -->
+    <div class="content hidden" id="mainContent">
+      <div class="filters">
+        <select id="scopeFilter">
+          <option value="">All Scopes</option>
+          <option value="federal">Federal</option>
+          <option value="state">State</option>
+          <option value="regional">Regional</option>
+          <option value="city">City</option>
+        </select>
+        <input type="search" id="searchInput" placeholder="Search nodes..." style="flex: 1;">
+      </div>
+
+      <div id="nodeList" class="node-list">
+        <!-- Nodes will be loaded here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Modal -->
+  <div class="modal" id="editModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Edit Node</h2>
+        <button class="close-btn" id="closeModal">&times;</button>
+      </div>
+
+      <form id="editForm">
+        <div class="form-group">
+          <label>ID</label>
+          <input type="text" id="nodeId" disabled>
+        </div>
+
+        <div class="form-group">
+          <label>Label *</label>
+          <input type="text" id="nodeLabel" required>
+        </div>
+
+        <div class="form-group">
+          <label>Type *</label>
+          <input type="text" id="nodeType" required>
+        </div>
+
+        <div class="form-group">
+          <label>Branch *</label>
+          <input type="text" id="nodeBranch" required>
+        </div>
+
+        <div class="form-group">
+          <label>Factoid</label>
+          <textarea id="nodeFactoid"></textarea>
+        </div>
+
+        <div id="formError" class="error"></div>
+        <div id="formSuccess" class="success"></div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" id="cancelBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveBtn">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="./app.js"></script>
+</body>
+</html>
