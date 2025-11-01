@@ -91,29 +91,22 @@ export const buildMainGraph = (structure: StructureData, edges: EdgesData): Grap
   };
 };
 
-const deriveSubgraphBranch = (rawType: string, declaredBranch?: string) => {
-  if (declaredBranch) {
-    return declaredBranch;
-  }
-
-  if (rawType === 'office') {
-    return 'executive';
-  }
-
-  if (rawType === 'category') {
-    return 'administrative';
-  }
-
-  return 'administrative';
+const BRANCH_BY_TYPE: Record<string, string> = {
+  office: 'executive',
+  category: 'administrative',
 };
 
-const toTitle = (label: string) => label;
+const DEFAULT_BRANCH = 'administrative';
+
+const deriveSubgraphBranch = (rawType: string, declaredBranch?: string): string => {
+  return declaredBranch ?? BRANCH_BY_TYPE[rawType] ?? DEFAULT_BRANCH;
+};
 
 export const buildSubgraphGraph = (subgraph: SubgraphFile): GraphConfig => {
   const nodes: GraphNodeInfo[] = subgraph.elements.nodes.map((nodeWrapper) => {
     const raw = nodeWrapper.data ?? {};
     const id = String(raw.id);
-    const label = toTitle(String(raw.label ?? raw.id));
+    const label = String(raw.label ?? raw.id);
     const rawType = String(raw.type ?? 'agency').toLowerCase();
     const branch = deriveSubgraphBranch(rawType, typeof raw.branch === 'string' ? raw.branch : undefined);
 

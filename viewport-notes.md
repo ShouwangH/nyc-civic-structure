@@ -9,8 +9,9 @@
 - Fall back to a `'preset'` layout by computing node coordinates relative to the viewport center if ELK alignment proves unreliable.
 
 ## Attempt Log
-- **2025-??-??** — tried feeding ELK a viewport-derived `boundingBox`. Result: didn’t behave as expected in practice, so the change was rolled back.
+- **2025-??-??** — tried feeding ELK a viewport-derived `boundingBox`. Result: didn't behave as expected in practice, so the change was rolled back.
 - **2025-??-??** — prototyped preset positions: assign radial coordinates around the viewport center for all process nodes and skip ELK. Current behavior: nodes sit in a circle; needs UX review before ship.
+- **2025-10-31** — identified root cause: ephemeral nodes were positioned manually but never participated in layout, appearing "locked". Solution implemented: run ELK layered layout with viewport-anchored transform (mirroring `activateSubgraph` pattern). Nodes now initialize at viewport center, then animate into hierarchical flow based on edges. See [controller.ts:387-524](src/graph/controller.ts#L387-L524).
 
 ## Open Threads
 - Verify whether Cytoscape’s `extent` values give us a stable rectangle while animations are running (might need to snapshot before layout).

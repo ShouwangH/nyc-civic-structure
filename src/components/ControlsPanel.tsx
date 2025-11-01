@@ -21,6 +21,16 @@ type ControlsPanelProps = {
   onToggleOpen: () => void;
 };
 
+const getButtonClasses = (isActive: boolean, size: 'default' | 'small' = 'default'): string => {
+  const baseClasses = 'w-full rounded-md px-3 py-2 text-left transition border';
+  const sizeClasses = size === 'small' ? 'text-lg' : 'text-xl';
+  const stateClasses = isActive
+    ? 'bg-blue-600 text-white border-blue-600 shadow-xl'
+    : 'bg-white text-slate-700 hover:bg-slate-200 border-slate-200';
+
+  return `${baseClasses} ${sizeClasses} ${stateClasses}`;
+};
+
 const ControlsPanel = ({
   scopes,
   activeScope,
@@ -34,6 +44,10 @@ const ControlsPanel = ({
   isOpen,
   onToggleOpen,
 }: ControlsPanelProps) => {
+  const activeProcess = activeProcessId
+    ? processes.find((process) => process.id === activeProcessId) ?? null
+    : null;
+
   return (
     <aside
       className={`relative flex flex-shrink-0 flex-col border-slate-200 bg-slate-50 transition-all duration-200 ${
@@ -61,11 +75,7 @@ const ControlsPanel = ({
                   key={scope.id}
                   type="button"
                   onClick={() => onScopeChange(scope.id)}
-                  className={`w-full rounded-md px-3 py-2 text-left text-xl transition border ${
-                    activeScope === scope.id
-                      ? 'bg-blue-600 text-white border-blue-600 shadow-xl'
-                      : 'bg-white text-slate-800 border-slate-200 hover:bg-slate-200'
-                  }`}
+                  className={getButtonClasses(activeScope === scope.id)}
                 >
                   {scope.label}
                 </button>
@@ -92,11 +102,7 @@ const ControlsPanel = ({
                       onClick={() => {
                         void onSubgraphToggle(config.meta.id);
                       }}
-                      className={`w-full rounded-md px-3 py-2 text-left text-xl transition ${
-                        isActive
-                          ? 'bg-blue-600 text-white shadow-xl'
-                          : 'bg-white text-slate-700 hover:bg-slate-200 border border-slate-200'
-                      }`}
+                      className={getButtonClasses(isActive)}
                     >
                       {config.meta.label}
                     </button>
@@ -125,11 +131,7 @@ const ControlsPanel = ({
                       onClick={() => {
                         void onProcessToggle(process.id);
                       }}
-                      className={`w-full rounded-md px-3 py-2 text-left text-lg transition ${
-                        isActive
-                          ? 'bg-blue-600 text-white shadow-xl'
-                          : 'bg-white text-slate-700 hover:bg-slate-200 border border-slate-200'
-                      }`}
+                      className={getButtonClasses(isActive, 'small')}
                     >
                       {process.label}
                     </button>
@@ -137,20 +139,10 @@ const ControlsPanel = ({
                 })}
               </div>
             )}
-            {activeProcessId && (
+            {activeProcess && (
               <div className="rounded-md bg-slate-100 px-3 py-2 text-lg text-slate-600">
-                {(() => {
-                  const activeProcess = processes.find((process) => process.id === activeProcessId);
-                  if (!activeProcess) {
-                    return null;
-                  }
-                  return (
-                    <>
-                      <p className="font-semibold text-slate-700">{activeProcess.label}</p>
-                      <p className="mt-1">{activeProcess.description}</p>
-                    </>
-                  );
-                })()}
+                <p className="font-semibold text-slate-700">{activeProcess.label}</p>
+                <p className="mt-1">{activeProcess.description}</p>
               </div>
             )}
           </section>

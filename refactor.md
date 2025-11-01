@@ -66,6 +66,26 @@
 - **Incremental rollout complexity:** Maintaining adapters during Phase A/B introduces temporary duplication, but it guarantees a working tracer bullet and reduces regression risk.
 - **Testing scope:** Functional modules make unit testing easier; however, investing in tests up front may slow Phase B slightly. Benefit outweighs cost by catching regressions early.
 
+## Post-Refactor Improvements (2025-10-31)
+
+### Process Layout Enhancement
+- **Issue**: Ephemeral process nodes were positioned manually near the viewport but never participated in a layout algorithm, causing them to appear "locked" in place.
+- **Solution**: Replaced manual radial positioning with an ELK layered layout approach (mirroring the `activateSubgraph` pattern):
+  - Nodes are initialized at viewport center (`getViewportMetrics`)
+  - ELK layered algorithm (`'elk.direction': 'RIGHT'`) runs with viewport-anchored transform
+  - Layout animates process nodes into hierarchical flow based on edge relationships
+- **Code location**: [controller.ts:387-524](src/graph/controller.ts#L387-L524)
+- **Alignment**: Maintains Phase C functional architecture; layout logic stays within `createGraphController` closure.
+
+### Clarity Improvements
+Extracted helper functions from `showProcess` to improve readability and maintain single-responsibility principle:
+- `applyProcessHighlightClasses(nodeIdSet, edgeIdSet)` — Applies dimming/highlight classes to distinguish process-active nodes/edges
+- `createProcessLayoutOptions(centerX, centerY)` — Builds ELK layered layout config with viewport-relative transform
+
+These helpers follow the pattern established in the controller (e.g., `animateFitToCollection`, `runMainGraphLayout`) and make the process activation flow easier to trace during debugging.
+
+**Trade-off**: Slight increase in closure complexity, but improved testability (helpers can be extracted for unit testing if needed).
+
 ## Open Questions
 - Should we expose the entire `cy` core to React consumers or restrict it to debug hooks only? (Recommended: keep access behind `GraphRuntime.getCy()` to avoid leaking concerns.)
 - Do we want to co-locate debug tracing with the new functional runtime or keep it in `debug/`? Decision affects how factories receive logger dependencies.

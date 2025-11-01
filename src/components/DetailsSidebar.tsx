@@ -15,6 +15,36 @@ type DetailsSidebarProps = {
   onMouseLeave: () => void;
 };
 
+const deriveTitle = (props: {
+  activeNode: GraphNodeInfo | null;
+  activeEdge: GraphEdgeInfo | null;
+  edgeSourceNode: GraphNodeInfo | null;
+  edgeTargetNode: GraphNodeInfo | null;
+  activeProcess: ProcessDefinition | null;
+  isSubgraphActive: boolean;
+  subgraphLabel: string | null;
+}): string => {
+  if (props.activeNode) {
+    return props.activeNode.label;
+  }
+
+  if (props.activeEdge) {
+    const sourceLabel = props.edgeSourceNode?.label ?? props.activeEdge.source;
+    const targetLabel = props.edgeTargetNode?.label ?? props.activeEdge.target;
+    return `${sourceLabel} → ${targetLabel}`;
+  }
+
+  if (props.activeProcess) {
+    return `${props.activeProcess.label} process`;
+  }
+
+  if (props.isSubgraphActive) {
+    return props.subgraphLabel ?? 'Details';
+  }
+
+  return 'Details';
+};
+
 const DetailsSidebar = ({
   activeNode,
   activeEdge,
@@ -28,23 +58,15 @@ const DetailsSidebar = ({
   onMouseEnter,
   onMouseLeave,
 }: DetailsSidebarProps) => {
-  const title = (() => {
-    if (activeNode) {
-      return activeNode.label;
-    }
-    if (activeEdge) {
-      const sourceLabel = edgeSourceNode?.label ?? activeEdge.source;
-      const targetLabel = edgeTargetNode?.label ?? activeEdge.target;
-      return `${sourceLabel} → ${targetLabel}`;
-    }
-    if (activeProcess) {
-      return `${activeProcess.label} process`;
-    }
-    if (isSubgraphActive) {
-      return subgraphLabel ?? 'Details';
-    }
-    return 'Details';
-  })();
+  const title = deriveTitle({
+    activeNode,
+    activeEdge,
+    edgeSourceNode,
+    edgeTargetNode,
+    activeProcess,
+    isSubgraphActive,
+    subgraphLabel,
+  });
 
   return (
     <aside
