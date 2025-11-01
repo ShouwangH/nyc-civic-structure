@@ -60,34 +60,6 @@ const getViewportMetrics = (cy: Core) => {
   };
 };
 
-const computeRadialPositions = (cy: Core, nodes: GraphNodeInfo[]) => {
-  const { centerX, centerY, width, height } = getViewportMetrics(cy);
-  const positions = new Map<string, { x: number; y: number }>();
-  const count = nodes.length;
-
-  if (count === 0) {
-    return positions;
-  }
-
-  const radius = Math.max(Math.min(width, height) * 0.35, 240);
-
-  if (count === 1) {
-    positions.set(nodes[0].id, { x: centerX, y: centerY });
-    return positions;
-  }
-
-  const angleStep = (2 * Math.PI) / count;
-  nodes.forEach((node, index) => {
-    const angle = -Math.PI / 2 + index * angleStep;
-    positions.set(node.id, {
-      x: centerX + radius * Math.cos(angle),
-      y: centerY + radius * Math.sin(angle),
-    });
-  });
-
-  return positions;
-};
-
 export type GraphController = {
   captureInitialPositions: () => void;
   focusNodes: (nodeIds: string[]) => Promise<void>;
@@ -434,7 +406,7 @@ const createGraphController = (cy: Core, mainGraph: GraphConfig): GraphControlle
 
     const nodeIdSet = new Set(nodeInfos.map((node) => node.id));
     const edgeIdSet = new Set(edgeInfos.map((edge) => edge.id));
-    const desiredPositions = computeRadialPositions(cy, nodeInfos);
+    const { centerX, centerY } = getViewportMetrics(cy);
 
     cy.batch(() => {
       nodeInfos.forEach((nodeInfo) => {
@@ -442,12 +414,15 @@ const createGraphController = (cy: Core, mainGraph: GraphConfig): GraphControlle
         if (existing.length > 0) {
           return;
         }
-        cy.add({
+        const added = cy.add({
           group: 'nodes',
           data: nodeInfo,
-          position: desiredPositions.get(nodeInfo.id),
+          position: { x: centerX, y: centerY },
         });
         tempNodeIds.add(nodeInfo.id);
+        added.removeData('orgPos');
+        added.removeScratch('_positions');
+        added.unlock();
       });
 
       edgeInfos.forEach((edgeInfo) => {
@@ -464,6 +439,14 @@ const createGraphController = (cy: Core, mainGraph: GraphConfig): GraphControlle
     });
 
     const processNodes = cy.nodes().filter((node) => nodeIdSet.has(node.id()));
+    const processEdges = cy.collection();
+    edgeInfos.forEach((edge) => {
+      const cyEdge = cy.getElementById(edge.id);
+      if (cyEdge && cyEdge.length > 0) {
+        processEdges.merge(cyEdge);
+      }
+    });
+
     cy.batch(() => {
       cy.nodes().removeClass('dimmed process-active');
       cy.edges().removeClass('dimmed process-active-edge');
@@ -483,14 +466,36 @@ const createGraphController = (cy: Core, mainGraph: GraphConfig): GraphControlle
           edge.addClass('dimmed');
         }
       });
-
-      processNodes.forEach((node) => {
-        const target = desiredPositions.get(node.id());
-        if (target) {
-          node.position(copyPosition(target));
-        }
-      });
     });
+
+    const layoutOptions = cloneLayoutOptions(
+      {
+        name: 'elk',
+        fit: false,
+        nodeDimensionsIncludeLabels: true,
+        elk: {
+          algorithm: 'layered',
+          'elk.direction': 'RIGHT',
+          'elk.spacing.nodeNode': 80,
+          'elk.layered.spacing.nodeNodeBetweenLayers': 100,
+        },
+      } as LayoutOptions,
+      {
+        animate: true,
+        animationDuration: ANIMATION_DURATION,
+        animationEasing: ANIMATION_EASING,
+        transform: (_node: any, pos: { x: number; y: number }) => ({
+          x: pos.x + centerX,
+          y: pos.y + centerY,
+        }),
+      },
+    );
+
+    const layoutElements = processNodes.union(processEdges);
+    const layout = layoutElements.layout(layoutOptions);
+    const layoutPromise = layout.promiseOn('layoutstop');
+    layout.run();
+    await layoutPromise;
 
     if (processNodes.length > 0) {
       await cy
