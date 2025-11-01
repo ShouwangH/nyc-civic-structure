@@ -7,11 +7,15 @@ import stateStructure from '../../data/state/structure.json';
 import stateEdges from '../../data/state/edges.json';
 import stateProcesses from '../../data/state/processes.json';
 import stateAgencies from '../../data/state/subgraphs/agencies.json';
+import stateCourts from '../../data/state/subgraphs/courts.json';
 
 import federalStructure from '../../data/federal/structure.json';
 import federalEdges from '../../data/federal/edges.json';
 import federalProcesses from '../../data/federal/processes.json';
 import federalAgencies from '../../data/federal/subgraphs/agencies.json';
+
+import regionalStructure from '../../data/regional/structure.json';
+import regionalEdges from '../../data/regional/edges.json';
 
 import type {
   EdgesData,
@@ -32,6 +36,8 @@ export type GovernmentDataset = {
   processes: ProcessDefinition[];
   subgraphs: SubgraphFile[];
 };
+
+const emptyProcesses: { processes: ProcessDefinition[] } = { processes: [] };
 
 const normalizeDataset = (
   scope: GovernmentScope,
@@ -65,7 +71,15 @@ export const governmentDatasets: Record<GovernmentScope, GovernmentDataset> = {
     stateStructure,
     stateEdges,
     stateProcesses,
-    [stateAgencies],
+    [stateAgencies, stateCourts],
+  ),
+  regional: normalizeDataset(
+    'regional',
+    'Regional Authorities',
+    regionalStructure,
+    regionalEdges,
+    emptyProcesses,
+    [],
   ),
   federal: normalizeDataset(
     'federal',
@@ -78,7 +92,8 @@ export const governmentDatasets: Record<GovernmentScope, GovernmentDataset> = {
 };
 
 export const governmentScopes: Array<{ id: GovernmentScope; label: string }> = [
-  { id: 'city', label: 'City' },
-  { id: 'state', label: 'State' },
   { id: 'federal', label: 'Federal' },
+  { id: 'state', label: 'State' },
+  { id: 'regional', label: 'Regional' },
+  { id: 'city', label: 'City' },
 ];

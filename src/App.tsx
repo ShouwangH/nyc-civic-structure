@@ -8,10 +8,11 @@ import { GraphCanvas, type GraphCanvasHandle } from './components/GraphCanvas';
 import { buildMainGraph, buildSubgraphGraph } from './graph/data';
 import type { GraphEdgeInfo, GraphNodeInfo } from './graph/types';
 import { governmentDatasets, governmentScopes } from './data/datasets';
-import type { GovernmentDataset } from './data/datasets';
+import type { GovernmentDataset, GovernmentScope } from './data/datasets';
 import type { ProcessDefinition } from './data/types';
 import type { SubgraphConfig } from './graph/subgraphs';
 import { useVisualizationState } from './state/useVisualizationState';
+import { buildUnifiedDataset } from './data/unifiedDataset';
 
 cytoscape.use(cytoscapeElk);
 
@@ -39,55 +40,31 @@ function App() {
       setActiveProcess,
       setActiveSubgraph,
       setSidebarHover,
+      clearFocus,
       clearSelections,
     },
   } = useVisualizationState();
 
-  const combinedDataset = useMemo<GovernmentDataset>(() => {
-    const federal = governmentDatasets.federal;
-    const state = governmentDatasets.state;
-    const city = governmentDatasets.city;
-
-    const combinedStructure = {
-      meta: {
-        title: 'Federal, State, and City Government Overview',
-        description:
-          'Unified canvas showing U.S. federal structure alongside New York State and City governance.',
-      },
-      nodes: [...federal.structure.nodes, ...state.structure.nodes, ...city.structure.nodes],
-    } satisfies GovernmentDataset['structure'];
-
-    const combinedEdges = {
-      edges: [...federal.edges.edges, ...state.edges.edges, ...city.edges.edges],
-    } satisfies GovernmentDataset['edges'];
-
-    const combinedProcesses = [...federal.processes, ...state.processes, ...city.processes];
-    const combinedSubgraphs = [
-      ...(federal.subgraphs ?? []),
-      ...(state.subgraphs ?? []),
-      ...(city.subgraphs ?? []),
-    ];
-
-    return {
-      scope: 'city',
-      label: 'Federal • State • City',
-      description: combinedStructure.meta.description,
-      structure: combinedStructure,
-      edges: combinedEdges,
-      processes: combinedProcesses,
-      subgraphs: combinedSubgraphs,
-    } as GovernmentDataset;
-  }, []);
+  const { dataset: combinedDataset, scopeNodeIds } = useMemo(() => buildUnifiedDataset(), []);
 
   const dataset = combinedDataset;
-  const processes = useMemo(() => processesForDataset(dataset), [dataset]);
+  const allProcesses = useMemo(() => processesForDataset(dataset), [dataset]);
   const mainGraph = useMemo(() => buildMainGraph(dataset.structure, dataset.edges), [dataset]);
 
-  const scopeNodeIds = useMemo<Record<GovernmentScope, string[]>>(() => ({
-    federal: governmentDatasets.federal.structure.nodes.map((node) => node.id),
-    state: governmentDatasets.state.structure.nodes.map((node) => node.id),
-    city: governmentDatasets.city.structure.nodes.map((node) => node.id),
-  }), []);
+  const processesByScope = useMemo<Record<GovernmentScope, ProcessDefinition[]>>(
+    () => ({
+      federal: governmentDatasets.federal.processes,
+      state: governmentDatasets.state.processes,
+      regional: governmentDatasets.regional.processes,
+      city: governmentDatasets.city.processes,
+    }),
+    [],
+  );
+
+  const visibleProcesses = useMemo<ProcessDefinition[]>(
+    () => (activeScope ? processesByScope[activeScope] ?? [] : []),
+    [activeScope, processesByScope],
+  );
 
   const subgraphConfigs = useMemo<SubgraphConfig[]>(() => {
     return (dataset.subgraphs ?? []).map((subgraph) => ({
@@ -95,6 +72,45 @@ function App() {
       graph: buildSubgraphGraph(subgraph),
     }));
   }, [dataset]);
+
+  const nodeScopeIndex = useMemo(() => {
+    const map = new Map<string, GovernmentScope>();
+    (Object.entries(scopeNodeIds) as Array<[GovernmentScope, string[]]>).forEach(([scope, ids]) => {
+      ids.forEach((id) => {
+        if (!map.has(id)) {
+          map.set(id, scope);
+        }
+      });
+    });
+    return map;
+  }, [scopeNodeIds]);
+
+  const scopedSubgraphConfigs = useMemo(
+    () =>
+      subgraphConfigs.map((config) => ({
+        config,
+        scope: nodeScopeIndex.get(config.meta.entryNodeId) ?? null,
+      })),
+    [subgraphConfigs, nodeScopeIndex],
+  );
+
+  const visibleSubgraphConfigs = useMemo<SubgraphConfig[]>(() => {
+    if (!activeScope) {
+      return [];
+    }
+    return scopedSubgraphConfigs
+      .filter((entry) => entry.scope === activeScope)
+      .map((entry) => entry.config);
+  }, [activeScope, scopedSubgraphConfigs]);
+
+  const subgraphScopeById = useMemo(() => {
+    const map = new Map<string, GovernmentScope | null>();
+    scopedSubgraphConfigs.forEach(({ config, scope }) => {
+      map.set(config.meta.id, scope);
+      map.set(config.meta.entryNodeId, scope);
+    });
+    return map;
+  }, [scopedSubgraphConfigs]);
 
   const subgraphByEntryId = useMemo(() => {
     const map = new Map<string, SubgraphConfig>();
@@ -141,12 +157,11 @@ function App() {
   const handleScopeFocus = useCallback(
     async (scope: GovernmentScope) => {
       setActiveScope(scope);
+      clearFocus();
+      setSidebarHover(false);
 
       const nodeIds = scopeNodeIds[scope] ?? [];
       const graphHandle = graphRef.current;
-
-      clearSelections();
-      setSidebarHover(false);
 
       if (!graphHandle || nodeIds.length === 0) {
         return;
@@ -157,13 +172,19 @@ function App() {
       graphHandle.clearNodeFocus();
       await graphHandle.focusNodes(nodeIds);
     },
-    [clearSelections, scopeNodeIds, setActiveScope, setSidebarHover],
+    [clearFocus, scopeNodeIds, setActiveScope, setSidebarHover],
   );
 
   const handleProcessToggle = useCallback(
     async (processId: string) => {
       const graphHandle = graphRef.current;
       if (!graphHandle) {
+        return;
+      }
+
+      const isProcessVisible = visibleProcesses.some((process) => process.id === processId);
+      if (!isProcessVisible) {
+        console.warn('[Process] Not available for active scope', { processId, activeScope });
         return;
       }
 
@@ -179,7 +200,7 @@ function App() {
         return;
       }
 
-      if (!processes.find((process) => process.id === processId)) {
+      if (!allProcesses.find((process) => process.id === processId)) {
         console.warn('[Process] Definition not found for process', processId);
         return;
       }
@@ -187,13 +208,32 @@ function App() {
       await graphHandle.highlightProcess(processId);
       setSidebarHover(true);
     },
-    [activeProcessId, activeSubgraphId, processes, selectedEdgeId, selectedNodeId, setSidebarHover],
+    [
+      activeProcessId,
+      activeScope,
+      activeSubgraphId,
+      allProcesses,
+      selectedEdgeId,
+      selectedNodeId,
+      setSidebarHover,
+      visibleProcesses,
+    ],
   );
 
   const handleSubgraphToggle = useCallback(
     async (subgraphId: string) => {
       const graphHandle = graphRef.current;
       if (!graphHandle) {
+        return;
+      }
+
+      const scopeForSubgraph = subgraphScopeById.get(subgraphId);
+      if (activeScope && scopeForSubgraph && scopeForSubgraph !== activeScope) {
+        console.warn('[Subgraph] Not available for active scope', {
+          subgraphId,
+          activeScope,
+          scopeForSubgraph,
+        });
         return;
       }
 
@@ -216,7 +256,7 @@ function App() {
       await graphHandle.activateSubgraph(subgraphId);
       setSidebarHover(true);
     },
-    [activeProcessId, setSidebarHover, subgraphById],
+    [activeProcessId, activeScope, setSidebarHover, subgraphById, subgraphScopeById],
   );
 
   const handleClearSelection = useCallback(async () => {
@@ -269,8 +309,8 @@ function App() {
   );
 
   const activeProcess = useMemo(
-    () => processes.find((process) => process.id === activeProcessId) ?? null,
-    [processes, activeProcessId],
+    () => allProcesses.find((process) => process.id === activeProcessId) ?? null,
+    [allProcesses, activeProcessId],
   );
 
   const selectedEdgeSource = activeEdge ? nodesById.get(activeEdge.source) ?? null : null;
@@ -278,7 +318,7 @@ function App() {
   const subgraphLabel = activeSubgraphId
     ? subgraphById.get(activeSubgraphId)?.meta.label ?? null
     : null;
-  const mainLayoutClass = 'flex flex-1 overflow-hidden bg-white';
+  const mainLayoutClass = 'flex flex-1 overflow-hidden bg-[#eceae4]';
   const graphSectionClass = shouldShowSidebar
     ? 'relative flex flex-1 flex-col gap-6 px-6 py-6 lg:min-w-0'
     : 'relative flex flex-1 flex-col gap-6 px-6 py-6';
@@ -296,10 +336,10 @@ function App() {
   );
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-white">
-      <header className="border-b border-slate-200 bg-slate-50 px-6 py-5">
+    <div className="relative flex min-h-screen flex-col bg-[#eceae4]">
+      <header className="border-b border-slate-200 bg-slate-100 px-6 py-5">
         <h1 className="text-2xl font-semibold text-slate-900">
-          {dataset.structure.meta.title}
+         <span>Maximum New York |</span><span className='text-gray-500 text-lg'> {dataset.structure.meta.title}</span>
         </h1>
         <p className="mt-1 max-w-3xl text-sm text-slate-600">
           {dataset.structure.meta.description}
@@ -313,10 +353,10 @@ function App() {
           onScopeChange={(scope) => {
             void handleScopeFocus(scope);
           }}
-          subgraphConfigs={subgraphConfigs}
+          subgraphConfigs={visibleSubgraphConfigs}
           activeSubgraphId={activeSubgraphId}
           onSubgraphToggle={handleSubgraphToggle}
-          processes={processes}
+          processes={visibleProcesses}
           activeProcessId={activeProcessId}
           onProcessToggle={handleProcessToggle}
           isOpen={controlsOpen}
@@ -324,14 +364,14 @@ function App() {
         />
 
         <section className={graphSectionClass}>
-          <div className="flex flex-1 min-h-[75vh] overflow-hidden rounded-lg border border-slate-200 bg-white shadow-sm lg:min-h-[82vh]">
+          <div className="flex flex-1 min-h-[75vh] overflow-hidden rounded-lg border border-slate-200 bg-slate-50 shadow-sm lg:min-h-[82vh]">
             <GraphCanvas
               ref={graphRef}
-              className="h-full w-full min-h-[75vh] rounded-lg bg-slate-50 lg:min-h-[82vh]"
+              className="h-full w-full min-h-[75vh] rounded-lg bg-[#eceae4] lg:min-h-[82vh]"
               mainGraph={mainGraph}
               subgraphByEntryId={subgraphByEntryId}
               subgraphById={subgraphById}
-              processes={processes}
+              processes={allProcesses}
               nodesById={nodesById}
               storeActions={graphStoreActions}
             />

@@ -9,7 +9,7 @@ type ScopeOption = {
 
 type ControlsPanelProps = {
   scopes: ScopeOption[];
-  activeScope: GovernmentScope;
+  activeScope: GovernmentScope | null;
   onScopeChange: (scope: GovernmentScope) => void;
   subgraphConfigs: SubgraphConfig[];
   activeSubgraphId: string | null;
@@ -36,8 +36,8 @@ const ControlsPanel = ({
 }: ControlsPanelProps) => {
   return (
     <aside
-      className={`relative flex flex-shrink-0 flex-col border-r border-slate-200 bg-slate-50 transition-all duration-200 ${
-        isOpen ? 'w-72' : 'w-16'
+      className={`relative flex flex-shrink-0 flex-col border-slate-200 bg-slate-50 transition-all duration-200 ${
+        isOpen ? 'w-3/12' : 'w-16'
       }`}
       aria-label="Controls menu"
     >
@@ -45,26 +45,26 @@ const ControlsPanel = ({
         type="button"
         onClick={onToggleOpen}
         aria-expanded={isOpen}
-        className="flex items-center justify-between gap-2 border-b border-slate-200 px-4 py-3 text-sm font-medium text-slate-600 transition hover:bg-slate-100"
+        className="flex items-center justify-between gap-2 border-b border-slate-200 px-4 py-3 text-xl font-medium text-slate-600 transition hover:bg-slate-100"
       >
-        <span>{isOpen ? 'Hide Menu' : 'Show Menu'}</span>
-        <span>{isOpen ? '⟨' : '⟩'}</span>
+        <span>{isOpen ? 'Hide' : '='}</span>
+        <span>{isOpen ? '⟨' : ''}</span>
       </button>
 
       {isOpen ? (
-        <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-4 py-5 text-sm text-slate-700">
+        <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-4 py-5 text-xl text-slate-700">
           <section className="space-y-3">
-            <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">Scope</h2>
+            <h2 className="text-lg font-semibold uppercase tracking-wide text-slate-500">Scope</h2>
             <div className="space-y-2">
               {scopes.map((scope) => (
                 <button
                   key={scope.id}
                   type="button"
                   onClick={() => onScopeChange(scope.id)}
-                  className={`w-full rounded-md px-3 py-2 text-left text-sm font-medium transition border ${
+                  className={`w-full rounded-md px-3 py-2 text-left text-xl transition border ${
                     activeScope === scope.id
-                      ? 'bg-blue-600 text-white border-blue-600 shadow-sm'
-                      : 'bg-white text-slate-800 border-slate-200 hover:bg-slate-100'
+                      ? 'bg-blue-600 text-white border-blue-600 shadow-xl'
+                      : 'bg-white text-slate-800 border-slate-200 hover:bg-slate-200'
                   }`}
                 >
                   {scope.label}
@@ -74,13 +74,13 @@ const ControlsPanel = ({
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">
-              Subgraphs
+            <h2 className="text-lg font-semibold uppercase tracking-wide text-slate-500">
+              Departments and Agencies
             </h2>
-            {subgraphConfigs.length === 0 ? (
-              <p className="text-xs text-slate-500">
-                No focused subgraphs available yet for this scope.
-              </p>
+            {activeScope === null ? (
+              <p className="text-lg text-slate-500">Select a scope to view agencies and departments</p>
+            ) : subgraphConfigs.length === 0 ? (
+              <p className="text-lg text-slate-500">No agencies available for this scope.</p>
             ) : (
               <div className="space-y-2">
                 {subgraphConfigs.map((config) => {
@@ -92,10 +92,10 @@ const ControlsPanel = ({
                       onClick={() => {
                         void onSubgraphToggle(config.meta.id);
                       }}
-                      className={`w-full rounded-md px-3 py-2 text-left text-sm font-medium transition ${
+                      className={`w-full rounded-md px-3 py-2 text-left text-xl transition ${
                         isActive
-                          ? 'bg-blue-600 text-white shadow-sm'
-                          : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                          ? 'bg-blue-600 text-white shadow-xl'
+                          : 'bg-white text-slate-700 hover:bg-slate-200 border border-slate-200'
                       }`}
                     >
                       {config.meta.label}
@@ -107,11 +107,13 @@ const ControlsPanel = ({
           </section>
 
           <section className="space-y-3">
-            <h2 className="text-xs font-semibold uppercase tracking-wide text-slate-500">
+            <h2 className="text-lg font-semibold uppercase tracking-wide text-slate-500">
               Processes
             </h2>
-            {processes.length === 0 ? (
-              <p className="text-xs text-slate-500">No spotlight processes yet.</p>
+            {activeScope === null ? (
+              <p className="text-lg text-slate-500">Select a scope to view processes.</p>
+            ) : processes.length === 0 ? (
+              <p className="text-lg text-slate-500">No processes yet for this scope.</p>
             ) : (
               <div className="space-y-2">
                 {processes.map((process) => {
@@ -123,10 +125,10 @@ const ControlsPanel = ({
                       onClick={() => {
                         void onProcessToggle(process.id);
                       }}
-                      className={`w-full rounded-md px-3 py-2 text-left text-sm font-semibold transition ${
+                      className={`w-full rounded-md px-3 py-2 text-left text-lg transition ${
                         isActive
-                          ? 'bg-blue-600 text-white shadow-sm'
-                          : 'bg-white text-slate-700 hover:bg-slate-100 border border-slate-200'
+                          ? 'bg-blue-600 text-white shadow-xl'
+                          : 'bg-white text-slate-700 hover:bg-slate-200 border border-slate-200'
                       }`}
                     >
                       {process.label}
@@ -136,7 +138,7 @@ const ControlsPanel = ({
               </div>
             )}
             {activeProcessId && (
-              <div className="rounded-md bg-slate-100 px-3 py-2 text-xs text-slate-600">
+              <div className="rounded-md bg-slate-100 px-3 py-2 text-lg text-slate-600">
                 {(() => {
                   const activeProcess = processes.find((process) => process.id === activeProcessId);
                   if (!activeProcess) {
@@ -154,7 +156,7 @@ const ControlsPanel = ({
           </section>
         </div>
       ) : (
-        <div className="flex flex-1 items-center justify-center text-xs font-semibold uppercase tracking-wide text-slate-500">
+        <div className="flex flex-1 items-center justify-center text-lg font-semibold uppercase tracking-wide text-slate-500">
           Menu
         </div>
       )}

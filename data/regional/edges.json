@@ -1,0 +1,16 @@
+{
+  "edges": [
+    { "source": "public_authorities_law", "target": "mta", "relation": "establishes" },
+    { "source": "public_authorities_law", "target": "nycha", "relation": "enables" },
+    { "source": "public_authorities_law", "target": "port_authority", "relation": "authorizes" },
+    { "source": "public_authorities_law", "target": "nys_thruway", "relation": "establishes" },
+    { "source": "public_authorities_law", "target": "esd", "relation": "establishes" },
+    { "source": "public_authorities_law", "target": "battery_park_city_authority", "relation": "establishes" },
+    { "source": "public_authorities_law", "target": "roosevelt_island", "relation": "establishes" },
+
+
+    { "source": "port_authority", "target": "mta", "relation": "coordinates_infrastructure" },
+    { "source": "mta", "target": "nycha", "relation": "coordinates_transit_and_housing" },
+    { "source": "esd", "target": "battery_park_city_authority", "relation": "coordinates_projects" }
+  ]
+}

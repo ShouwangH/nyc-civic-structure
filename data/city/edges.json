@@ -10,6 +10,7 @@
     { "source": "public_advocate", "target": "city_council" },
     { "source": "mayor", "target": "nyc_budget" },
     { "source": "city_council", "target": "nyc_budget" },
+    { "source": "comptroller", "target": "nyc_budget" },
     { "source": "borough_manhattan", "target": "community_boards" },
     { "source": "borough_brooklyn", "target": "community_boards" },
     { "source": "borough_bronx", "target": "community_boards" },

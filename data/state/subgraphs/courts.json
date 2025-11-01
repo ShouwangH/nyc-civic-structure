@@ -1,0 +1,46 @@
+{
+  "id": "state_judiciary",
+  "label": "State Judicial System",
+  "entryNodeId": "state_judiciary",
+  "layoutType": "elk-mrtree",
+  "description": "High-level view of the New York State Unified Court System as established under Article VI of the State Constitution.",
+  "elements": {
+    "nodes": [
+      { "data": { "id": "ny_state_constitution", "label": "NY State Constitution", "type": "law" } },
+      { "data": { "id": "state_judiciary", "label": "State Judicial System", "type": "category" } },
+
+      { "data": { "id": "court_of_appeals", "label": "Court of Appeals", "type": "court_high" } },
+      { "data": { "id": "appellate_divisions", "label": "Appellate Divisions (1st–4th Departments)", "type": "court_appellate" } },
+      { "data": { "id": "appellate_terms", "label": "Appellate Terms (1st & 2nd Departments)", "type": "court_appellate" } },
+
+      { "data": { "id": "supreme_court_trial", "label": "Supreme Court (Trial Level)", "type": "court_trial" } },
+      { "data": { "id": "county_court", "label": "County Court (Outside NYC)", "type": "court_trial" } },
+      { "data": { "id": "family_court", "label": "Family Court", "type": "court_specialized" } },
+      { "data": { "id": "surrogate_court", "label": "Surrogate’s Court", "type": "court_specialized" } },
+      { "data": { "id": "court_of_claims", "label": "Court of Claims", "type": "court_specialized" } },
+
+      { "data": { "id": "nyc_courts", "label": "NYC Civil & Criminal Courts", "type": "court_local" } },
+      { "data": { "id": "district_courts", "label": "District Courts (Nassau & Suffolk)", "type": "court_local" } },
+      { "data": { "id": "city_courts", "label": "City Courts (Outside NYC)", "type": "court_local" } },
+      { "data": { "id": "town_village_courts", "label": "Town & Village Justice Courts", "type": "court_local" } }
+    ],
+
+    "edges": [
+      { "data": { "source": "ny_state_constitution", "target": "state_judiciary", "relation": "establishes" } },
+      { "data": { "source": "state_judiciary", "target": "court_of_appeals", "relation": "includes" } },
+
+      { "data": { "source": "court_of_appeals", "target": "appellate_divisions", "relation": "reviews_from" } },
+      { "data": { "source": "appellate_divisions", "target": "appellate_terms", "relation": "reviews_from" } },
+      { "data": { "source": "appellate_divisions", "target": "supreme_court_trial", "relation": "reviews_from" } },
+      { "data": { "source": "appellate_divisions", "target": "county_court", "relation": "reviews_from" } },
+      { "data": { "source": "appellate_divisions", "target": "family_court", "relation": "reviews_from" } },
+      { "data": { "source": "appellate_divisions", "target": "surrogate_court", "relation": "reviews_from" } },
+      { "data": { "source": "appellate_divisions", "target": "court_of_claims", "relation": "reviews_from" } },
+
+      { "data": { "source": "appellate_terms", "target": "nyc_courts", "relation": "reviews_from" } },
+      { "data": { "source": "appellate_terms", "target": "district_courts", "relation": "reviews_from" } },
+      { "data": { "source": "county_court", "target": "city_courts", "relation": "reviews_from" } },
+      { "data": { "source": "county_court", "target": "town_village_courts", "relation": "reviews_from" } }
+    ]
+  }
+}

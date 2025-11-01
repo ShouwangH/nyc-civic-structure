@@ -53,47 +53,22 @@ const DetailsSidebar = ({
       onMouseLeave={onMouseLeave}
     >
       <div className="flex items-start justify-between">
-        <h2 className="text-lg font-medium text-slate-900">{title}</h2>
+        <h2 className="text-2xl font-medium text-slate-900 hover:cursor-grab">{title}</h2>
         {hasSelection && (
           <button
             type="button"
             onClick={onClear}
-            className="text-xs font-medium text-slate-500 transition hover:text-slate-700"
+            className="text-2xl font-medium text-slate-500 transition hover:text-slate-700"
           >
-            Clear
+            X
           </button>
         )}
       </div>
 
-      <div className="mt-4 space-y-4 text-sm text-slate-600">
+      <div className="mt-4 space-y-4 text-xl text-slate-600">
         {activeNode ? (
           <>
             <p>{activeNode.factoid}</p>
-            <dl className="space-y-2">
-              <div className="flex justify-between">
-                <dt className="text-slate-500">Branch</dt>
-                <dd className="font-semibold text-slate-900">{activeNode.branch}</dd>
-              </div>
-              <div className="flex justify-between">
-                <dt className="text-slate-500">Type</dt>
-                <dd className="font-semibold text-slate-900">{activeNode.type}</dd>
-              </div>
-              {activeNode.process && activeNode.process.length > 0 && (
-                <div className="space-y-1">
-                  <dt className="text-slate-500">Processes</dt>
-                  <dd className="flex flex-wrap gap-2">
-                    {activeNode.process.map((processName) => (
-                      <span
-                        key={processName}
-                        className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-medium capitalize text-slate-700"
-                      >
-                        {processName}
-                      </span>
-                    ))}
-                  </dd>
-                </div>
-              )}
-            </dl>
           </>
         ) : activeEdge ? (
           <dl className="space-y-2">

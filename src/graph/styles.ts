@@ -4,9 +4,9 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
   {
     selector: 'node',
     style: {
-      'background-color': 'data(branchColor)',
-      'border-color': 'rgba(15, 23, 42, 0.18)',
-      'border-width': '2px',
+      'background-color': '#eceae4',
+      'border-color': 'data(branchColor)',
+      'border-width': '5px',
       'width': 'data(width)',
       'height': 'data(height)',
       label: 'data(label)',
@@ -24,10 +24,8 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
   {
     selector: 'node[system = "borough"]',
     style: {
-      'background-color': '#fb923c',
-      color: '#7f1d1d',
       'border-color': '#ea580c',
-      'border-width': '4px',
+      'border-width': '5px',
     },
   },
   {
@@ -77,6 +75,18 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
       'text-rotation': 'autorotate',
     },
   },
+{
+  selector: 'node[type = "anchor"]',
+  style: {
+    display: 'none',
+  },
+},
+{
+  selector: 'edge[?isAnchorEdge]',
+  style: {
+    display: 'none',
+  },
+},
   {
     selector: 'edge[label = ""]',
     style: {
@@ -101,7 +111,7 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
   {
     selector: '.process-active',
     style: {
-      'background-color': '#bfdbfe',
+      'background-color': 'data(branchColor)',
       'border-color': '#2563eb',
       'border-width': '3px',
     },
@@ -120,6 +130,8 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
     style: {
       'border-color': '#0f172a',
       'border-width': '3px',
+      'background-color': 'data(branchColor)',
+      color:'white'
     },
   },
   {
@@ -140,6 +152,8 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
     style: {
       'border-color': '#0284c7',
       'border-width': '4px',
+      'background-color': 'data(branchColor)',
+      color:'white'
     },
   },
 ];

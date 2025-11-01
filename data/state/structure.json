@@ -1,7 +1,7 @@
 {
   "meta": {
     "title": "New York State Government",
-    "description": "High-level structure of New York State government as defined by the State Constitution."
+    "description": "High-level structure of New York State government as defined by the State Constitution and related laws."
   },
   "nodes": [
     {
@@ -9,15 +9,15 @@
       "label": "NY State Constitution",
       "type": "law",
       "branch": "law",
-      "factoid": "Governing document outlining the structure and powers of New York State's government."
+      "factoid": "The foundational document defining the structure, powers, and limits of New York State's government."
     },
     {
       "id": "governor_ny",
       "label": "Governor of New York",
       "type": "office",
       "branch": "executive",
-      "process": ["budget", "legislative"],
-      "factoid": "The elected chief executive who proposes the state budget and oversees statewide agencies."
+      "process": ["budget", "legislative", "appointments"],
+      "factoid": "Elected chief executive responsible for enforcing state laws, proposing the budget, and appointing officials."
     },
     {
       "id": "state_legislature",
@@ -25,14 +25,21 @@
       "type": "body",
       "branch": "legislative",
       "process": ["legislative", "budget"],
-      "factoid": "Bicameral legislature made up of the Assembly and Senate. Crafts state laws and adopts the budget."
+      "factoid": "Bicameral body composed of the Assembly and Senate. Enacts laws and adopts the state budget."
     },
     {
-      "id": "state_agencies",
-      "label": "State Agencies",
-      "type": "agency",
-      "branch": "administrative",
-      "factoid": "Departments that implement state policy across transportation, health, education, and more."
+      "id": "state_judiciary",
+      "label": "State Judicial System",
+      "type": "body",
+      "branch": "judicial",
+      "factoid": "Unified court system led by the Chief Judge and Court of Appeals, interpreting the Constitution and laws of New York."
+    },
+    {
+      "id": "state_comptroller",
+      "label": "State Comptroller",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Independent fiscal officer overseeing state finances, audits, and the public pension system."
     },
     {
       "id": "state_budget",
@@ -40,7 +47,42 @@
       "type": "process",
       "branch": "financial",
       "process": ["budget"],
-      "factoid": "Annual fiscal plan that allocates funding to statewide priorities and agencies."
+      "factoid": "Annual fiscal plan developed by the Governor and enacted by the Legislature to fund state operations."
+    },    
+    {
+      "id": "state_assembly",
+      "label": "NY State Assembly",
+      "type": "body",
+      "branch": "legislative",
+      "factoid": "Lower chamber of the State Legislature, representing districts proportionally by population."
+    },
+    {
+      "id": "state_senate",
+      "label": "NY State Senate",
+      "type": "body",
+      "branch": "legislative",
+      "factoid": "Upper chamber of the State Legislature, representing districts by region."
+    },
+        {
+      "id": "ny_consolidated_laws",
+      "label": "NY Consolidated Laws",
+      "type": "law",
+      "branch": "law",
+      "factoid": "Compilation of permanent laws organized by subject, enacted by the State Legislature."
+    },
+    {
+      "id": "nycrr",
+      "label": "NY Codes, Rules & Regulations (NYCRR)",
+      "type": "law",
+      "branch": "administrative",
+      "factoid": "Detailed regulations issued by state agencies to implement state laws."
+    },
+    {
+      "id": "state_agencies",
+      "label": "State Agencies",
+      "type": "agency",
+      "branch": "administrative",
+      "factoid": "Departments that implement laws and deliver services in areas like health, education, and transportation."
     }
   ]
 }

@@ -4,13 +4,13 @@
       "id": "state_budget",
       "label": "State Budget Process",
       "description": "How New York State prepares and enacts its annual budget.",
-      "nodes": ["agencies", "division_of_budget", "governor", "legislature", "comptroller"],
+      "nodes": ["agencies", "division_of_budget", "governor", "legislature", "state_comptroller"],
       "edges": [
         { "source": "agencies", "target": "division_of_budget" },
         { "source": "division_of_budget", "target": "governor" },
         { "source": "governor", "target": "legislature" },
         { "source": "legislature", "target": "governor" },
-        { "source": "governor", "target": "comptroller" }
+        { "source": "governor", "target": "state_comptroller" }
       ],
       "steps": [
         { "id": "requests", "title": "Agency Requests", "description": "Agencies propose funding levels to DOB." },
@@ -24,10 +24,10 @@
       "id": "judicial_appointment",
       "label": "Judicial Appointment (Court of Appeals)",
       "description": "Process for selecting and confirming New York’s highest court judges.",
-      "nodes": ["commission_on_judicial_nomination", "governor", "senate"],
+      "nodes": ["commission_on_judicial_nomination", "governor", "state_senate"],
       "edges": [
         { "source": "commission_on_judicial_nomination", "target": "governor" },
-        { "source": "governor", "target": "senate" }
+        { "source": "governor", "target": "state_senate" }
       ],
       "steps": [
         { "id": "nomination_pool", "title": "Nomination Pool", "description": "Commission submits list of qualified candidates to Governor." },

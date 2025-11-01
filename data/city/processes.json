@@ -4,56 +4,202 @@
       "id": "ulurp",
       "label": "ULURP",
       "description": "Uniform Land Use Review Procedure for zoning and land use applications in NYC.",
-      "nodes": ["city_planning_commission", "community_boards", "borough_president", "city_council", "mayor"],
+      "nodes": [
+        "city_planning_commission",
+        "community_boards",
+        "borough_president",
+        "city_council",
+        "mayor"
+      ],
       "edges": [
-        { "source": "city_planning_commission", "target": "community_boards" },
-        { "source": "community_boards", "target": "borough_president" },
-        { "source": "borough_president", "target": "city_council" },
-        { "source": "city_council", "target": "mayor" }
+        {
+          "source": "city_planning_commission",
+          "target": "community_boards"
+        },
+        {
+          "source": "community_boards",
+          "target": "borough_president"
+        },
+        {
+          "source": "borough_president",
+          "target": "city_council"
+        },
+        {
+          "source": "city_council",
+          "target": "mayor"
+        }
       ],
       "steps": [
-        { "id": "certification", "title": "Certification", "description": "DCP certifies application as complete and begins review clock." },
-        { "id": "community", "title": "Community Review", "description": "Community Board holds hearings and issues recommendations." },
-        { "id": "borough", "title": "Borough Review", "description": "Borough President reviews and advises on proposal." },
-        { "id": "council", "title": "City Council Action", "description": "Council holds hearings and votes; may modify proposal." },
-        { "id": "mayor", "title": "Mayoral Review", "description": "Mayor approves or vetoes; veto may be overridden by Council." }
+        {
+          "id": "certification",
+          "title": "Certification",
+          "description": "DCP certifies application as complete and begins review clock."
+        },
+        {
+          "id": "community",
+          "title": "Community Review",
+          "description": "Community Board holds hearings and issues recommendations."
+        },
+        {
+          "id": "borough",
+          "title": "Borough Review",
+          "description": "Borough President reviews and advises on proposal."
+        },
+        {
+          "id": "council",
+          "title": "City Council Action",
+          "description": "Council holds hearings and votes; may modify proposal."
+        },
+        {
+          "id": "mayor",
+          "title": "Mayoral Review",
+          "description": "Mayor approves or vetoes; veto may be overridden by Council."
+        }
       ]
     },
     {
       "id": "city_budget",
       "label": "City Budget Process",
       "description": "How NYC’s annual budget is proposed, negotiated, and adopted.",
-      "nodes": ["agencies", "OMB", "mayor", "city_council", "comptroller"],
+      "nodes": [
+        "agencies",
+        "OMB",
+        "mayor",
+        "city_council",
+        "comptroller"
+      ],
       "edges": [
-        { "source": "agencies", "target": "OMB" },
-        { "source": "OMB", "target": "mayor" },
-        { "source": "mayor", "target": "city_council" },
-        { "source": "city_council", "target": "mayor" },
-        { "source": "mayor", "target": "comptroller" }
+        {
+          "source": "agencies",
+          "target": "OMB"
+        },
+        {
+          "source": "OMB",
+          "target": "mayor"
+        },
+        {
+          "source": "mayor",
+          "target": "city_council"
+        },
+        {
+          "source": "city_council",
+          "target": "mayor"
+        },
+        {
+          "source": "mayor",
+          "target": "comptroller"
+        }
       ],
       "steps": [
-        { "id": "requests", "title": "Agency Requests", "description": "Agencies submit budget proposals to OMB." },
-        { "id": "exec_budget", "title": "Executive Budget", "description": "Mayor releases proposed Executive Budget." },
-        { "id": "council_review", "title": "Council Hearings", "description": "Council holds hearings and negotiates modifications." },
-        { "id": "adoption", "title": "Adoption", "description": "Council adopts final budget; Mayor signs." },
-        { "id": "oversight", "title": "Oversight & Audit", "description": "Comptroller monitors spending and audits agencies." }
+        {
+          "id": "requests",
+          "title": "Agency Requests",
+          "description": "Agencies submit budget proposals to OMB."
+        },
+        {
+          "id": "exec_budget",
+          "title": "Executive Budget",
+          "description": "Mayor releases proposed Executive Budget."
+        },
+        {
+          "id": "council_review",
+          "title": "Council Hearings",
+          "description": "Council holds hearings and negotiates modifications."
+        },
+        {
+          "id": "adoption",
+          "title": "Adoption",
+          "description": "Council adopts final budget; Mayor signs."
+        },
+        {
+          "id": "oversight",
+          "title": "Oversight & Audit",
+          "description": "Comptroller monitors spending and audits agencies."
+        }
       ]
     },
     {
       "id": "charter_revision",
       "label": "City Charter Revision",
       "description": "Process for revising NYC's Charter through a commission and voter referendum.",
-      "nodes": ["mayor", "city_council", "charter_revision_commission", "voters"],
+      "nodes": [
+        "mayor",
+        "city_council",
+        "charter_revision_commission",
+        "voters"
+      ],
       "edges": [
-        { "source": "mayor", "target": "charter_revision_commission" },
-        { "source": "city_council", "target": "charter_revision_commission" },
-        { "source": "charter_revision_commission", "target": "voters" }
+        {
+          "source": "mayor",
+          "target": "charter_revision_commission"
+        },
+        {
+          "source": "city_council",
+          "target": "charter_revision_commission"
+        },
+        {
+          "source": "charter_revision_commission",
+          "target": "voters"
+        }
       ],
       "steps": [
-        { "id": "formation", "title": "Commission Formation", "description": "Mayor or Council creates Charter Revision Commission." },
-        { "id": "hearings", "title": "Public Hearings", "description": "Commission holds hearings and drafts proposals." },
-        { "id": "submission", "title": "Submission to Voters", "description": "Approved proposals placed on general election ballot." },
-        { "id": "ratification", "title": "Ratification", "description": "Voters approve or reject proposed changes." }
+        {
+          "id": "formation",
+          "title": "Commission Formation",
+          "description": "Mayor or Council creates Charter Revision Commission."
+        },
+        {
+          "id": "hearings",
+          "title": "Public Hearings",
+          "description": "Commission holds hearings and drafts proposals."
+        },
+        {
+          "id": "submission",
+          "title": "Submission to Voters",
+          "description": "Approved proposals placed on general election ballot."
+        },
+        {
+          "id": "ratification",
+          "title": "Ratification",
+          "description": "Voters approve or reject proposed changes."
+        }
+      ]
+    },
+    {
+      "id": "local_law",
+      "label": "Local Law Passage",
+      "description": "Process for passing local laws through the Speaker, City Council, and Mayor.",
+      "nodes": [
+        "speaker_of_city_council",
+        "city_council",
+        "mayor"
+      ],
+      "edges": [
+        {
+          "source": "speaker_of_city_council",
+          "target": "city_council"
+        },
+        {
+          "source": "city_council",
+          "target": "mayor"
+        }
+      ],
+      "steps": [
+        {
+          "id": "introduction",
+          "title": "Introduction",
+          "description": "Speaker schedules and introduces proposed legislation before the City Council."
+        },
+        {
+          "id": "council_vote",
+          "title": "City Council Vote",
+          "description": "The City Council debates and votes to approve the proposed local law."
+        },
+        {
+          "id": "mayoral_action",
+          "title": "Mayoral Action",
+          "description": "The Mayor signs the bill into law or vetoes it."
+        }
       ]
     }
   ]

@@ -49,8 +49,8 @@ const buildGraphEdge = (edge: RawEdge): GraphEdgeInfo => ({
   id: edge.id ?? `${edge.source}->${edge.target}`,
   source: edge.source,
   target: edge.target,
-  label: '',
-  type: 'relationship',
+  label: edge.label ?? '',
+  type: edge.type ?? 'relationship',
   process: edge.process ?? [],
 });
 
@@ -166,24 +166,38 @@ export const buildSubgraphGraph = (subgraph: SubgraphFile): GraphConfig => {
   const nodeElements = nodes.map((node) => ({ data: node }));
   const edgeElements = edges.map((edge) => ({ data: edge }));
 
-  const layout: LayoutOptions = {
-    name: 'concentric',
-    fit: true,
-    padding: 80,
-    animate: false,
-    minNodeSpacing: 60,
-    avoidOverlap: true,
-    concentric: (node) => {
-      if (node.id() === subgraph.entryNodeId) {
-        return 3;
-      }
-      if (String(node.data('type')).toLowerCase() === 'office') {
-        return 2;
-      }
-      return 1;
-    },
-    levelWidth: () => 1,
-  } as LayoutOptions;
+  const layout: LayoutOptions =
+    subgraph.layoutType === 'elk-mrtree'
+      ? ({
+          name: 'elk',
+          fit: true,
+          padding: 80,
+          animate: false,
+          elk: {
+          algorithm: 'mrtree',
+          'elk.direction': 'DOWN',
+          'elk.spacing.nodeNode': 80,
+          'elk.layered.spacing.nodeNodeBetweenLayers': 80,
+          },
+        } as LayoutOptions)
+      : ({
+          name: 'concentric',
+          fit: true,
+          padding: 80,
+          animate: false,
+          minNodeSpacing: 60,
+          avoidOverlap: true,
+          concentric: (node) => {
+            if (node.id() === subgraph.entryNodeId) {
+              return 3;
+            }
+            if (String(node.data('type')).toLowerCase() === 'office') {
+              return 2;
+            }
+            return 1;
+          },
+          levelWidth: () => 1,
+        } as LayoutOptions);
 
   return {
     nodes,

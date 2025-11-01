@@ -12,3 +12,15 @@ export default {
   },
   plugins: [],
 };
+
+module.exports = {
+  content: ['./index.html', './src/**/*.{ts,tsx}'],
+  theme: {
+    extend: {
+      fontFamily: {
+        sans: ['SF Pro Display', 'sans-serif'],
+      },
+    },
+  },
+  plugins: [],
+}

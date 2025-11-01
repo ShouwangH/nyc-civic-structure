@@ -6,6 +6,7 @@ export type StructureNode = {
   factoid: string;
   process?: string[];
   position?: { x: number; y: number };
+  parent?: string;
 };
 
 export type StructureData = {
@@ -58,7 +59,8 @@ export type SubgraphFile = {
   label: string;
   entryNodeId: string;
   description?: string;
+  layoutType?: 'concentric' | 'elk-mrtree' | 'elk-layered';
   elements: SubgraphElements;
 };
 
-export type GovernmentScope = 'city' | 'state' | 'federal';
+export type GovernmentScope = 'city' | 'state' | 'regional' | 'federal';
