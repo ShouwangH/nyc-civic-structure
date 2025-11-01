@@ -53,7 +53,7 @@ const createAnchorNodes = () =>
 
 const createScopedNodes = () =>
   scopeGroups.flatMap(({ scope }) => {
-    const source = governmentDatasets[scope].structure.nodes;
+    const source = governmentDatasets[scope].nodes;
     return source.map((node) => ({
       ...node,
       parent: undefined,
@@ -65,7 +65,7 @@ const createAnchorEdges = () =>
     const nextGroup = scopeGroups[index + 1];
     const dataset = governmentDatasets[group.scope];
 
-    const attachEdges = dataset.structure.nodes.map((node) => ({
+    const attachEdges = dataset.nodes.map((node) => ({
       source: group.anchorId,
       target: node.id,
       id: `${group.anchorId}-${node.id}`,
@@ -95,26 +95,21 @@ export const buildUnifiedDataset = (): UnifiedDatasetResult => {
   const scopedNodes = createScopedNodes();
   const anchorEdges = createAnchorEdges();
 
-  const structureNodes = [...anchorNodes, ...scopedNodes];
+  const combinedNodes = [...anchorNodes, ...scopedNodes];
 
-  const combinedStructure: GovernmentDataset['structure'] = {
-    meta: {
-      title: 'Government Overview',
-      description:
-        'Diagram showing U.S. federal, New York State, regional authorities, and New York City governance.',
-    },
-    nodes: structureNodes,
+  const combinedMeta = {
+    title: 'Government Overview',
+    description:
+      'Diagram showing U.S. federal, New York State, regional authorities, and New York City governance.',
   };
 
-  const combinedEdges: GovernmentDataset['edges'] = {
-    edges: [
-      ...governmentDatasets.federal.edges.edges,
-      ...governmentDatasets.state.edges.edges,
-      ...governmentDatasets.regional.edges.edges,
-      ...governmentDatasets.city.edges.edges,
-      ...anchorEdges,
-    ],
-  };
+  const combinedEdges = [
+    ...governmentDatasets.federal.edges,
+    ...governmentDatasets.state.edges,
+    ...governmentDatasets.regional.edges,
+    ...governmentDatasets.city.edges,
+    ...anchorEdges,
+  ];
 
   const combinedProcesses = [
     ...governmentDatasets.federal.processes,
@@ -133,8 +128,9 @@ export const buildUnifiedDataset = (): UnifiedDatasetResult => {
   const dataset: GovernmentDataset = {
     scope: 'city',
     label: 'Federal • State • Regional • City',
-    description: combinedStructure.meta.description,
-    structure: combinedStructure,
+    description: combinedMeta.description,
+    meta: combinedMeta,
+    nodes: combinedNodes,
     edges: combinedEdges,
     processes: combinedProcesses,
     subgraphs: combinedSubgraphs,
@@ -142,7 +138,7 @@ export const buildUnifiedDataset = (): UnifiedDatasetResult => {
 
   const scopeNodeIds: Record<GovernmentScope, string[]> = scopeGroups.reduce(
     (acc, group) => {
-      const datasetNodes = governmentDatasets[group.scope].structure.nodes.map((node) => node.id);
+      const datasetNodes = governmentDatasets[group.scope].nodes.map((node) => node.id);
       acc[group.scope] = [group.anchorId, ...datasetNodes];
       return acc;
     },

@@ -1,27 +1,25 @@
-import cityStructure from '../../data/city/structure.json';
-import cityEdges from '../../data/city/edges.json';
-import cityProcesses from '../../data/city/processes.json';
-import cityDepartments from '../../data/city/subgraphs/departments.json';
+import city from '../../data/city.json';
+import cityProcesses from '../../data/city-processes.json';
+import cityDepartments from '../../data/subgraphs/city-departments.json';
 
-import stateStructure from '../../data/state/structure.json';
-import stateEdges from '../../data/state/edges.json';
-import stateProcesses from '../../data/state/processes.json';
-import stateAgencies from '../../data/state/subgraphs/agencies.json';
-import stateCourts from '../../data/state/subgraphs/courts.json';
+import state from '../../data/state.json';
+import stateProcesses from '../../data/state-processes.json';
+import stateAgencies from '../../data/subgraphs/state-agencies.json';
+import stateCourts from '../../data/subgraphs/state-courts.json';
 
-import federalStructure from '../../data/federal/structure.json';
-import federalEdges from '../../data/federal/edges.json';
-import federalProcesses from '../../data/federal/processes.json';
-import federalAgencies from '../../data/federal/subgraphs/agencies.json';
+import federal from '../../data/federal.json';
+import federalProcesses from '../../data/federal-processes.json';
+import federalAgencies from '../../data/subgraphs/federal-agencies.json';
 
-import regionalStructure from '../../data/regional/structure.json';
-import regionalEdges from '../../data/regional/edges.json';
+import regional from '../../data/regional.json';
+import regionalProcesses from '../../data/regional-processes.json';
 
 import type {
-  EdgesData,
   GovernmentScope,
   ProcessDefinition,
-  StructureData,
+  ScopeData,
+  StructureNode,
+  RawEdge,
   SubgraphFile,
 } from './types';
 
@@ -31,27 +29,29 @@ export type GovernmentDataset = {
   scope: GovernmentScope;
   label: string;
   description: string;
-  structure: StructureData;
-  edges: EdgesData;
+  meta: {
+    title: string;
+    description: string;
+  };
+  nodes: StructureNode[];
+  edges: RawEdge[];
   processes: ProcessDefinition[];
   subgraphs: SubgraphFile[];
 };
 
-const emptyProcesses: { processes: ProcessDefinition[] } = { processes: [] };
-
 const normalizeDataset = (
   scope: GovernmentScope,
   label: string,
-  structure: StructureData,
-  edges: EdgesData,
+  scopeData: ScopeData,
   processFile: { processes: ProcessDefinition[] },
   subgraphs: SubgraphFile[],
 ): GovernmentDataset => ({
   scope,
   label,
-  description: structure.meta.description,
-  structure,
-  edges,
+  description: scopeData.meta.description,
+  meta: scopeData.meta,
+  nodes: scopeData.nodes,
+  edges: scopeData.edges,
   processes: processFile.processes,
   subgraphs,
 });
@@ -60,32 +60,28 @@ export const governmentDatasets: Record<GovernmentScope, GovernmentDataset> = {
   city: normalizeDataset(
     'city',
     'New York City',
-    cityStructure,
-    cityEdges,
+    city,
     cityProcesses,
     [cityDepartments],
   ),
   state: normalizeDataset(
     'state',
     'New York State',
-    stateStructure,
-    stateEdges,
+    state,
     stateProcesses,
     [stateAgencies, stateCourts],
   ),
   regional: normalizeDataset(
     'regional',
     'Regional Authorities',
-    regionalStructure,
-    regionalEdges,
-    emptyProcesses,
+    regional,
+    regionalProcesses,
     [],
   ),
   federal: normalizeDataset(
     'federal',
     'United States',
-    federalStructure,
-    federalEdges,
+    federal,
     federalProcesses,
     [federalAgencies],
   ),

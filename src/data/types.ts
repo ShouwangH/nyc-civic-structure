@@ -30,6 +30,15 @@ export type EdgesData = {
   edges: RawEdge[];
 };
 
+export type ScopeData = {
+  meta: {
+    title: string;
+    description: string;
+  };
+  nodes: StructureNode[];
+  edges: RawEdge[];
+};
+
 export type ProcessStep = {
   id: string;
   title: string;

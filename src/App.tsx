@@ -94,10 +94,10 @@ function App() {
       <header className="border-b border-slate-200 bg-slate-100 px-6 py-5">
         <h1 className="text-2xl font-semibold text-slate-900">
           <span>Maximum New York |</span>
-          <span className="text-gray-500 text-lg"> {dataset.structure.meta.title}</span>
+          <span className="text-gray-500 text-lg"> {dataset.meta.title}</span>
         </h1>
         <p className="mt-1 max-w-3xl text-sm text-slate-600">
-          {dataset.structure.meta.description}
+          {dataset.meta.description}
         </p>
       </header>
 

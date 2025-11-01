@@ -48,7 +48,7 @@
       "branch": "financial",
       "process": ["budget"],
       "factoid": "Annual fiscal plan developed by the Governor and enacted by the Legislature to fund state operations."
-    },    
+    },
     {
       "id": "state_assembly",
       "label": "NY State Assembly",
@@ -84,5 +84,19 @@
       "branch": "administrative",
       "factoid": "Departments that implement laws and deliver services in areas like health, education, and transportation."
     }
+  ],
+  "edges": [
+    { "source": "ny_state_constitution", "target": "governor_ny", "relation": "establishes" },
+    { "source": "ny_state_constitution", "target": "state_legislature", "relation": "establishes" },
+    { "source": "ny_state_constitution", "target": "state_judiciary", "relation": "establishes" },
+    { "source": "ny_state_constitution", "target": "state_comptroller", "relation": "establishes" },
+    { "source": "state_legislature", "target": "ny_consolidated_laws", "relation": "enacts" },
+    { "source": "state_legislature", "target": "state_budget", "relation": "adopts" },
+    { "source": "state_legislature", "target": "state_assembly", "relation": "includes" },
+    { "source": "state_legislature", "target": "state_senate", "relation": "includes" },
+    { "source": "governor_ny", "target": "state_budget", "relation": "proposes" },
+    { "source": "governor_ny", "target": "state_agencies", "relation": "oversees" },
+    { "source": "state_agencies", "target": "nycrr", "relation": "issues" },
+    { "source": "state_comptroller", "target": "state_budget", "relation": "audits" }
   ]
 }
