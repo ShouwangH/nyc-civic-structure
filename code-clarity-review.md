@@ -1087,8 +1087,11 @@ The codebase has made **exceptional progress** through Phases 1-4 refactoring:
 
 **Recommended Next Steps**:
 - **Phase 5**: Add unit tests and polish (4-6 hours) - Production readiness
-- **Phase 6**: Separate state, logic, and render concerns in App.tsx (3-4 hours) - See detailed plan below
-- **Phases 7-9**: Move toward ideal "Out → In → Out" architecture (15-20 hours) - See [architecture-flow-analysis.md](architecture-flow-analysis.md)
+- ✅ **Phase 6**: Separate state, logic, and render concerns in App.tsx (COMPLETED)
+- **Phases 7-9**: Move toward ideal "Out → In → Out" architecture
+  - Full implementation: 12-15 hours - See [phase-7-9-detailed-plan.md](phase-7-9-detailed-plan.md)
+  - Lighter version: 4-6 hours (effect layer only)
+  - Architecture analysis: [architecture-flow-analysis.md](architecture-flow-analysis.md)
 
 **Overall Code Quality**: ⭐⭐⭐⭐⭐ (5/5)
 - Strong: Clean architecture, type safety, functional patterns, separated concerns, modular design
