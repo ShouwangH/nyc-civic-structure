@@ -68,7 +68,10 @@ export const buildGraphData = (): GraphData => {
 
   // Step 2: Extract processes and build main graph
   const allProcesses = dataset.processes ?? [];
-  const mainGraph = buildMainGraph(dataset.structure, dataset.edges);
+  const mainGraph = buildMainGraph(
+    { meta: dataset.meta, nodes: dataset.nodes },
+    { edges: dataset.edges }
+  );
 
   // Step 3: Organize processes by scope (static reference)
   const processesByScope: Record<GovernmentScope, ProcessDefinition[]> = {

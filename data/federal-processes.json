@@ -14,7 +14,7 @@
       ],
       "steps": [
         { "id": "agency_prep", "title": "Agency Requests", "description": "Agencies submit funding requests to OMB." },
-        { "id": "pres_budget", "title": "President’s Budget", "description": "OMB compiles and President submits budget to Congress." },
+        { "id": "pres_budget", "title": "President's Budget", "description": "OMB compiles and President submits budget to Congress." },
         { "id": "hearings", "title": "Congressional Hearings", "description": "Committees hold hearings and draft appropriations bills." },
         { "id": "passage", "title": "Appropriations Passage", "description": "Both chambers pass bills; differences reconciled." },
         { "id": "signature", "title": "Presidential Action", "description": "President signs or vetoes appropriations bills." }
@@ -55,6 +55,26 @@
         { "id": "impeachment", "title": "House Vote", "description": "Full House votes to impeach (majority required)." },
         { "id": "trial", "title": "Senate Trial", "description": "Senate conducts trial; Chief Justice presides if President." },
         { "id": "verdict", "title": "Verdict", "description": "Senate votes to convict or acquit (two-thirds required)." }
+      ]
+    },
+    {
+      "id": "federal_grant",
+      "label": "Federal Grant Application",
+      "description": "Process for state and local governments to apply for and manage federal funding.",
+      "nodes": ["federal_agency", "state_local_agency", "omb_federal", "oversight"],
+      "edges": [
+        { "source": "federal_agency", "target": "state_local_agency" },
+        { "source": "state_local_agency", "target": "omb_federal" },
+        { "source": "omb_federal", "target": "federal_agency" },
+        { "source": "federal_agency", "target": "state_local_agency" },
+        { "source": "state_local_agency", "target": "oversight" }
+      ],
+      "steps": [
+        { "id": "nofo", "title": "Notice of Funding Opportunity", "description": "Federal agency publishes grant opportunity on Grants.gov." },
+        { "id": "application", "title": "Grant Application", "description": "State or local agency prepares and submits application." },
+        { "id": "review", "title": "Federal Review", "description": "Federal agency reviews applications and awards grants." },
+        { "id": "award", "title": "Grant Award", "description": "Federal agency issues grant award; funds allocated." },
+        { "id": "management", "title": "Grant Management", "description": "Recipient implements program; submits periodic reports and undergoes audits." }
       ]
     }
   ]
