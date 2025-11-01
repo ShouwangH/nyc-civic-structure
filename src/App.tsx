@@ -10,36 +10,26 @@ import { governmentScopes } from './data/datasets';
 import type { GovernmentScope } from './data/datasets';
 import { useVisualizationState } from './state/useVisualizationState';
 import { GRAPH_DATA } from './data/graphDataPipeline';
-import { focusScope, toggleProcess, toggleSubgraph, clearSelection } from './app/userActions';
+import { useGraphEffects } from './hooks/useGraphEffects';
 
 cytoscape.use(cytoscapeElk);
+
+// Feature flag: Enable reactive effect layer
+const ENABLE_EFFECT_LAYER = true;
 
 function App() {
   const graphRef = useRef<GraphCanvasHandle | null>(null);
 
   const {
-    state: {
-      controlsOpen,
-      activeScope,
-      selectedNodeId,
-      selectedEdgeId,
-      activeProcessId,
-      activeSubgraphId,
-    },
+    state,
     actions: {
       toggleControlsOpen,
-      setActiveScope,
-      setSelectedNode,
-      setSelectedEdge,
-      setActiveProcess,
-      setActiveSubgraph,
       setSidebarHover,
-      clearFocus,
       clearSelections,
     },
     derived: {
-      visibleProcesses,
-      visibleSubgraphConfigs,
+      visibleProcesses, // Used by ControlsPanel
+      visibleSubgraphConfigs, // Used by ControlsPanel
       activeNode,
       activeEdge,
       activeProcess,
@@ -49,81 +39,49 @@ function App() {
       selectionActive,
       shouldShowSidebar,
     },
+    dispatch,
   } = useVisualizationState();
 
+  const { controlsOpen, activeScope, activeProcessId, activeSubgraphId } = state;
+
+  // Reactive effect layer - syncs graph operations with state changes
+  useGraphEffects(state, graphRef, { enabled: ENABLE_EFFECT_LAYER });
+
   // Static graph data - computed once at module load
-  const { dataset, scopeNodeIds, mainGraph, allProcesses, indexes, maps } = GRAPH_DATA;
-  const { nodesById, subgraphScopeById } = indexes;
+  const { dataset, mainGraph, allProcesses, indexes, maps } = GRAPH_DATA;
+  const { nodesById } = indexes;
   const { subgraphByEntryId, subgraphById } = maps;
 
   const handleScopeFocus = useCallback(
-    async (scope: GovernmentScope) => {
-      await focusScope({
-        scope,
-        graphHandle: graphRef.current,
-        scopeNodeIds,
-        actions: { setActiveScope, clearFocus, setSidebarHover },
-      });
+    (scope: GovernmentScope) => {
+      dispatch({ type: 'SET_ACTIVE_SCOPE', scope });
     },
-    [scopeNodeIds, setActiveScope, clearFocus, setSidebarHover],
+    [dispatch],
   );
 
   const handleProcessToggle = useCallback(
-    async (processId: string) => {
-      await toggleProcess({
+    (processId: string) => {
+      dispatch({
+        type: 'PROCESS_TOGGLED',
         processId,
-        graphHandle: graphRef.current,
-        state: {
-          activeProcessId,
-          activeScope,
-          activeSubgraphId,
-          selectedNodeId,
-          selectedEdgeId,
-        },
-        visibleProcesses,
-        allProcesses,
-        actions: { setSidebarHover },
       });
     },
-    [
-      activeProcessId,
-      activeScope,
-      activeSubgraphId,
-      selectedNodeId,
-      selectedEdgeId,
-      visibleProcesses,
-      allProcesses,
-      setSidebarHover,
-    ],
+    [dispatch],
   );
 
   const handleSubgraphToggle = useCallback(
-    async (subgraphId: string) => {
-      await toggleSubgraph({
+    (subgraphId: string) => {
+      dispatch({
+        type: 'SUBGRAPH_TOGGLED',
         subgraphId,
-        graphHandle: graphRef.current,
-        state: {
-          activeProcessId,
-          activeScope,
-        },
-        subgraphScopeById,
-        subgraphById,
-        actions: { setSidebarHover },
       });
     },
-    [activeProcessId, activeScope, subgraphScopeById, subgraphById, setSidebarHover],
+    [dispatch],
   );
 
-  const handleClearSelection = useCallback(async () => {
-    await clearSelection({
-      graphHandle: graphRef.current,
-      state: {
-        activeProcessId,
-        activeSubgraphId,
-      },
-      actions: { clearSelections },
-    });
-  }, [activeProcessId, activeSubgraphId, clearSelections]);
+  const handleClearSelection = useCallback(() => {
+    clearSelections();
+  }, [clearSelections]);
 
   const handleConditionalHoverOff = useCallback(() => {
     if (!selectionActive) {
@@ -175,14 +133,7 @@ function App() {
               subgraphById={subgraphById}
               processes={allProcesses}
               nodesById={nodesById}
-              storeActions={{
-                setSelectedNode,
-                setSelectedEdge,
-                setActiveProcess,
-                setActiveSubgraph,
-                setSidebarHover,
-                clearSelections,
-              }}
+              dispatch={dispatch}
             />
           </div>
           <p className="text-xs text-slate-500">

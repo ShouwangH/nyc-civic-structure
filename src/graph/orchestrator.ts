@@ -23,7 +23,7 @@ const createGraphRuntime: GraphRuntimeFactory = (
     subgraphByEntryId,
     subgraphById,
     data,
-    store,
+    dispatch,
   }: GraphRuntimeConfig,
   dependencies: GraphRuntimeDependencies = {},
 ): GraphRuntime => {
@@ -51,7 +51,6 @@ const createGraphRuntime: GraphRuntimeFactory = (
     }
 
     await controller.clearProcessHighlight();
-    store.setActiveProcess(null);
   }
 
   async function restoreMainView() {
@@ -63,20 +62,11 @@ const createGraphRuntime: GraphRuntimeFactory = (
     }
 
     await controller.restoreMainView();
-    store.setActiveSubgraph(null);
   }
 
   const clearNodeFocus = () => {
     controller?.clearNodeFocus();
   };
-
-  async function resetView() {
-    store.clearSelections();
-
-    await clearProcessHighlight();
-    await restoreMainView();
-    clearNodeFocus();
-  }
 
   async function highlightProcess(processId: string) {
     if (!controller) {
@@ -96,12 +86,7 @@ const createGraphRuntime: GraphRuntimeFactory = (
     );
     const edgeInfos = process.edges.map((edge) => createProcessEdgeInfo(process.id, edge));
 
-    store.setSelectedNode(null);
-    store.setSelectedEdge(null);
-
     await controller.showProcess(process, nodeInfos, edgeInfos);
-    store.setActiveProcess(processId);
-    store.setSidebarHover(true);
   }
 
   const focusNodes = async (nodeIds: string[]) => {
@@ -110,11 +95,6 @@ const createGraphRuntime: GraphRuntimeFactory = (
     }
 
     await controller.focusNodes(nodeIds);
-
-    store.setSelectedNode(null);
-    store.setSelectedEdge(null);
-    store.setActiveProcess(null);
-    store.setActiveSubgraph(null);
   };
 
   async function activateSubgraphInternal(config: SubgraphConfig) {
@@ -124,25 +104,11 @@ const createGraphRuntime: GraphRuntimeFactory = (
 
     await clearProcessHighlight();
 
-    store.setSelectedNode(null);
-    store.setSelectedEdge(null);
-
     await controller.activateSubgraph(config.graph, {
       id: config.meta.id,
       entryNodeId: config.meta.entryNodeId,
     });
-
-    store.setActiveSubgraph(config.meta.id);
-    store.setSidebarHover(true);
   }
-
-  const activateSubgraphByEntry = async (entryNodeId: string) => {
-    const config = subgraphByEntryId.get(entryNodeId);
-    if (!config) {
-      return;
-    }
-    await activateSubgraphInternal(config);
-  };
 
   const activateSubgraph = async (subgraphId: string) => {
     const config = subgraphById.get(subgraphId);
@@ -154,24 +120,23 @@ const createGraphRuntime: GraphRuntimeFactory = (
   };
 
   const handleNodeTap = (nodeId: string) => {
-    if (subgraphByEntryId.has(nodeId)) {
-      void activateSubgraphByEntry(nodeId);
-      return;
-    }
-
-    store.setSelectedEdge(null);
-    store.setSelectedNode(nodeId);
-    store.setSidebarHover(true);
+    const isSubgraphEntry = subgraphByEntryId.has(nodeId);
+    dispatch({
+      type: 'NODE_CLICKED',
+      nodeId,
+      isSubgraphEntry,
+    });
   };
 
   const handleEdgeTap = (edgeId: string) => {
-    store.setSelectedNode(null);
-    store.setSelectedEdge(edgeId);
-    store.setSidebarHover(true);
+    dispatch({
+      type: 'EDGE_CLICKED',
+      edgeId,
+    });
   };
 
   const handleBackgroundTap = () => {
-    void resetView();
+    dispatch({ type: 'BACKGROUND_CLICKED' });
   };
 
   const handleZoom = () => {

@@ -33,15 +33,14 @@ export type ScopeSelectedAction = {
 export type ProcessToggledAction = {
   type: 'PROCESS_TOGGLED';
   processId: string;
-  isVisible: boolean;
+  // Reducer will compute visibility from state + GRAPH_DATA
 };
 
 // Subgraph interactions
 export type SubgraphToggledAction = {
   type: 'SUBGRAPH_TOGGLED';
   subgraphId: string;
-  isActive: boolean;
-  isValidForScope: boolean;
+  // Reducer will compute isActive and isValidForScope from state + GRAPH_DATA
 };
 
 // UI interactions
@@ -59,29 +58,8 @@ export type SelectionClearedAction = {
 };
 
 /**
- * Internal state mutation actions - for imperative APIs
- * These are kept for backwards compatibility with GraphRuntime
+ * Internal state mutation actions - for specific use cases
  */
-export type SetSelectedNodeAction = {
-  type: 'SET_SELECTED_NODE';
-  id: string | null;
-};
-
-export type SetSelectedEdgeAction = {
-  type: 'SET_SELECTED_EDGE';
-  id: string | null;
-};
-
-export type SetActiveProcessAction = {
-  type: 'SET_ACTIVE_PROCESS';
-  id: string | null;
-};
-
-export type SetActiveSubgraphAction = {
-  type: 'SET_ACTIVE_SUBGRAPH';
-  id: string | null;
-};
-
 export type SetActiveScopeAction = {
   type: 'SET_ACTIVE_SCOPE';
   scope: GovernmentScope | null;
@@ -92,10 +70,6 @@ export type SetSidebarHoverAction = {
   value: boolean;
 };
 
-export type ClearFocusAction = {
-  type: 'CLEAR_FOCUS';
-};
-
 export type ClearSelectionsAction = {
   type: 'CLEAR_SELECTIONS';
 };
@@ -103,11 +77,6 @@ export type ClearSelectionsAction = {
 export type SetControlsOpenAction = {
   type: 'SET_CONTROLS_OPEN';
   value: boolean;
-};
-
-export type ResetAllAction = {
-  type: 'RESET_ALL';
-  scopeOverride?: GovernmentScope | null;
 };
 
 /**
@@ -125,16 +94,10 @@ export type VisualizationAction =
   | SidebarHoverChangedAction
   | SelectionClearedAction
   // Internal state mutation actions
-  | SetSelectedNodeAction
-  | SetSelectedEdgeAction
-  | SetActiveProcessAction
-  | SetActiveSubgraphAction
   | SetActiveScopeAction
   | SetSidebarHoverAction
-  | ClearFocusAction
   | ClearSelectionsAction
-  | SetControlsOpenAction
-  | ResetAllAction;
+  | SetControlsOpenAction;
 
 /**
  * Action creators - pure functions that create action objects
@@ -161,24 +124,14 @@ export const actions = {
     scope,
   }),
 
-  processToggled: (
-    processId: string,
-    isVisible: boolean,
-  ): ProcessToggledAction => ({
+  processToggled: (processId: string): ProcessToggledAction => ({
     type: 'PROCESS_TOGGLED',
     processId,
-    isVisible,
   }),
 
-  subgraphToggled: (
-    subgraphId: string,
-    isActive: boolean,
-    isValidForScope: boolean,
-  ): SubgraphToggledAction => ({
+  subgraphToggled: (subgraphId: string): SubgraphToggledAction => ({
     type: 'SUBGRAPH_TOGGLED',
     subgraphId,
-    isActive,
-    isValidForScope,
   }),
 
   controlsToggled: (): ControlsToggledAction => ({
@@ -195,26 +148,6 @@ export const actions = {
   }),
 
   // Internal state mutation actions
-  setSelectedNode: (id: string | null): SetSelectedNodeAction => ({
-    type: 'SET_SELECTED_NODE',
-    id,
-  }),
-
-  setSelectedEdge: (id: string | null): SetSelectedEdgeAction => ({
-    type: 'SET_SELECTED_EDGE',
-    id,
-  }),
-
-  setActiveProcess: (id: string | null): SetActiveProcessAction => ({
-    type: 'SET_ACTIVE_PROCESS',
-    id,
-  }),
-
-  setActiveSubgraph: (id: string | null): SetActiveSubgraphAction => ({
-    type: 'SET_ACTIVE_SUBGRAPH',
-    id,
-  }),
-
   setActiveScope: (scope: GovernmentScope | null): SetActiveScopeAction => ({
     type: 'SET_ACTIVE_SCOPE',
     scope,
@@ -225,10 +158,6 @@ export const actions = {
     value,
   }),
 
-  clearFocus: (): ClearFocusAction => ({
-    type: 'CLEAR_FOCUS',
-  }),
-
   clearSelections: (): ClearSelectionsAction => ({
     type: 'CLEAR_SELECTIONS',
   }),
@@ -236,10 +165,5 @@ export const actions = {
   setControlsOpen: (value: boolean): SetControlsOpenAction => ({
     type: 'SET_CONTROLS_OPEN',
     value,
-  }),
-
-  resetAll: (scopeOverride?: GovernmentScope | null): ResetAllAction => ({
-    type: 'RESET_ALL',
-    scopeOverride,
   }),
 };

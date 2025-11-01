@@ -28,16 +28,30 @@ const initialState: VisualizationState = {
 const reducer = (state: VisualizationState, action: VisualizationAction): VisualizationState => {
   switch (action.type) {
     // User interaction actions - contain business logic
-    case 'NODE_CLICKED':
-      // If it's a subgraph entry node, mark for subgraph activation
+    case 'NODE_CLICKED': {
+      // If it's a subgraph entry node, activate the subgraph
+      if (action.isSubgraphEntry) {
+        const subgraphId = GRAPH_DATA.maps.subgraphByEntryId.get(action.nodeId)?.meta.id;
+        if (subgraphId) {
+          return {
+            ...state,
+            selectedNodeId: null,
+            selectedEdgeId: null,
+            activeProcessId: null,
+            activeSubgraphId: subgraphId,
+            isSidebarHover: true,
+          };
+        }
+      }
+
       // Otherwise, just select the node
       return {
         ...state,
         selectedEdgeId: null,
         selectedNodeId: action.nodeId,
         isSidebarHover: true,
-        // Note: Subgraph activation will be handled by effect layer
       };
+    }
 
     case 'EDGE_CLICKED':
       return {
@@ -71,10 +85,19 @@ const reducer = (state: VisualizationState, action: VisualizationAction): Visual
         isSidebarHover: false,
       };
 
-    case 'PROCESS_TOGGLED':
+    case 'PROCESS_TOGGLED': {
+      // Compute visibility from current scope
+      const visibleProcesses = state.activeScope
+        ? (GRAPH_DATA.processesByScope[state.activeScope] ?? [])
+        : [];
+      const isVisible = visibleProcesses.some((p) => p.id === action.processId);
+
       // If process not visible, warn and do nothing
-      if (!action.isVisible) {
-        console.warn('[Process] Not available for active scope', { processId: action.processId });
+      if (!isVisible) {
+        console.warn('[Process] Not available for active scope', {
+          processId: action.processId,
+          activeScope: state.activeScope,
+        });
         return state;
       }
 
@@ -88,22 +111,39 @@ const reducer = (state: VisualizationState, action: VisualizationAction): Visual
         };
       }
 
-      // Otherwise activate the process
+      // Otherwise activate the process and clear any active subgraph (mutual exclusivity)
       return {
         ...state,
         activeProcessId: action.processId,
+        activeSubgraphId: null,
         isSidebarHover: true,
       };
+    }
 
-    case 'SUBGRAPH_TOGGLED':
+    case 'SUBGRAPH_TOGGLED': {
+      // Compute scope validity
+      const subgraphScopeMap = new Map(
+        GRAPH_DATA.scopedSubgraphConfigs.map((entry) => [entry.config.meta.id, entry.scope])
+      );
+      const scopeForSubgraph = subgraphScopeMap.get(action.subgraphId);
+      const isValidForScope =
+        !state.activeScope || !scopeForSubgraph || scopeForSubgraph === state.activeScope;
+
       // If subgraph not valid for scope, warn and do nothing
-      if (!action.isValidForScope) {
-        console.warn('[Subgraph] Not available for active scope', { subgraphId: action.subgraphId });
+      if (!isValidForScope) {
+        console.warn('[Subgraph] Not available for active scope', {
+          subgraphId: action.subgraphId,
+          activeScope: state.activeScope,
+          scopeForSubgraph,
+        });
         return state;
       }
 
+      // Compute if this subgraph is currently active
+      const isActive = state.activeSubgraphId === action.subgraphId;
+
       // If clicking same subgraph, clear it
-      if (action.isActive) {
+      if (isActive) {
         return {
           ...state,
           activeSubgraphId: null,
@@ -111,12 +151,14 @@ const reducer = (state: VisualizationState, action: VisualizationAction): Visual
         };
       }
 
-      // Otherwise activate the subgraph
+      // Otherwise activate the subgraph and clear any active process (mutual exclusivity)
       return {
         ...state,
         activeSubgraphId: action.subgraphId,
+        activeProcessId: null,
         isSidebarHover: true,
       };
+    }
 
     case 'CONTROLS_TOGGLED':
       return {
@@ -141,7 +183,7 @@ const reducer = (state: VisualizationState, action: VisualizationAction): Visual
         isSidebarHover: false,
       };
 
-    // Internal state mutation actions - for backwards compatibility
+    // Internal state mutation actions - kept for specific use cases
     case 'SET_CONTROLS_OPEN':
       return { ...state, controlsOpen: action.value };
 
@@ -156,30 +198,8 @@ const reducer = (state: VisualizationState, action: VisualizationAction): Visual
         isSidebarHover: false,
       };
 
-    case 'SET_SELECTED_NODE':
-      return { ...state, selectedNodeId: action.id };
-
-    case 'SET_SELECTED_EDGE':
-      return { ...state, selectedEdgeId: action.id };
-
-    case 'SET_ACTIVE_PROCESS':
-      return { ...state, activeProcessId: action.id };
-
-    case 'SET_ACTIVE_SUBGRAPH':
-      return { ...state, activeSubgraphId: action.id };
-
     case 'SET_SIDEBAR_HOVER':
       return { ...state, isSidebarHover: action.value };
-
-    case 'CLEAR_FOCUS':
-      return {
-        ...state,
-        selectedNodeId: null,
-        selectedEdgeId: null,
-        activeProcessId: null,
-        activeSubgraphId: null,
-        isSidebarHover: false,
-      };
 
     case 'CLEAR_SELECTIONS':
       return {
@@ -190,12 +210,6 @@ const reducer = (state: VisualizationState, action: VisualizationAction): Visual
         activeProcessId: null,
         activeSubgraphId: null,
         isSidebarHover: false,
-      };
-
-    case 'RESET_ALL':
-      return {
-        ...initialState,
-        activeScope: action.scopeOverride ?? null,
       };
 
     default:
@@ -218,66 +232,27 @@ export const useVisualizationState = () => {
     [],
   );
 
-  const setSelectedNode = useCallback(
-    (id: string | null) => dispatch({ type: 'SET_SELECTED_NODE', id }),
-    [],
-  );
-
-  const setSelectedEdge = useCallback(
-    (id: string | null) => dispatch({ type: 'SET_SELECTED_EDGE', id }),
-    [],
-  );
-
-  const setActiveProcess = useCallback(
-    (id: string | null) => dispatch({ type: 'SET_ACTIVE_PROCESS', id }),
-    [],
-  );
-
-  const setActiveSubgraph = useCallback(
-    (id: string | null) => dispatch({ type: 'SET_ACTIVE_SUBGRAPH', id }),
-    [],
-  );
-
   const setSidebarHover = useCallback(
     (value: boolean) => dispatch({ type: 'SET_SIDEBAR_HOVER', value }),
     [],
   );
 
-  const clearFocus = useCallback(() => dispatch({ type: 'CLEAR_FOCUS' }), []);
-
   const clearSelections = useCallback(() => dispatch({ type: 'CLEAR_SELECTIONS' }), []);
-
-  const resetAll = useCallback(
-    (scopeOverride?: GovernmentScope) => dispatch({ type: 'RESET_ALL', scopeOverride }),
-    [],
-  );
 
   const actions = useMemo(
     () => ({
       setControlsOpen,
       toggleControlsOpen,
       setActiveScope,
-      setSelectedNode,
-      setSelectedEdge,
-      setActiveProcess,
-      setActiveSubgraph,
       setSidebarHover,
-      clearFocus,
       clearSelections,
-      resetAll,
     }),
     [
       setControlsOpen,
       toggleControlsOpen,
       setActiveScope,
-      setSelectedNode,
-      setSelectedEdge,
-      setActiveProcess,
-      setActiveSubgraph,
       setSidebarHover,
-      clearFocus,
       clearSelections,
-      resetAll,
     ],
   );
 
@@ -363,6 +338,7 @@ export const useVisualizationState = () => {
     state,
     actions,
     derived,
+    dispatch, // Expose dispatch for semantic actions
   };
 };
 

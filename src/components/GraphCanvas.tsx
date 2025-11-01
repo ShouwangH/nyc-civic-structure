@@ -1,9 +1,10 @@
-import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import type { GraphConfig, GraphNodeInfo } from '../graph/types';
 import type { ProcessDefinition } from '../data/types';
 import type { SubgraphConfig } from '../graph/subgraphs';
 import { createGraphRuntime } from '../graph/orchestrator';
-import type { GraphRuntime, GraphRuntimeStore } from '../graph/runtimeTypes';
+import type { GraphRuntime } from '../graph/runtimeTypes';
+import type { VisualizationAction } from '../state/actions';
 
 export type GraphCanvasHandle = {
   highlightProcess: GraphRuntime['highlightProcess'];
@@ -22,35 +23,17 @@ type GraphCanvasProps = {
   subgraphById: Map<string, SubgraphConfig>;
   processes: ProcessDefinition[];
   nodesById: Map<string, GraphNodeInfo>;
-  storeActions: GraphRuntimeStore;
+  dispatch: React.Dispatch<VisualizationAction>;
   className?: string;
 };
 
 const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
   (
-    { mainGraph, subgraphByEntryId, subgraphById, processes, nodesById, storeActions, className },
+    { mainGraph, subgraphByEntryId, subgraphById, processes, nodesById, dispatch, className },
     ref,
   ) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
     const orchestratorRef = useRef<GraphRuntime | null>(null);
-    const store = useMemo(
-      () => ({
-        setSelectedNode: storeActions.setSelectedNode,
-        setSelectedEdge: storeActions.setSelectedEdge,
-        setActiveProcess: storeActions.setActiveProcess,
-        setActiveSubgraph: storeActions.setActiveSubgraph,
-        setSidebarHover: storeActions.setSidebarHover,
-        clearSelections: storeActions.clearSelections,
-      }),
-      [
-        storeActions.setSelectedNode,
-        storeActions.setSelectedEdge,
-        storeActions.setActiveProcess,
-        storeActions.setActiveSubgraph,
-        storeActions.setSidebarHover,
-        storeActions.clearSelections,
-      ],
-    );
 
     useEffect(() => {
       if (!containerRef.current) {
@@ -63,7 +46,7 @@ const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
         subgraphByEntryId,
         subgraphById,
         data: { processes, nodesById },
-        store,
+        dispatch,
       });
 
       orchestrator.initialize();
@@ -73,7 +56,7 @@ const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
         orchestrator.destroy();
         orchestratorRef.current = null;
       };
-    }, [mainGraph, processes, nodesById, store, subgraphByEntryId, subgraphById]);
+    }, [mainGraph, processes, nodesById, dispatch, subgraphByEntryId, subgraphById]);
 
     useImperativeHandle(
       ref,

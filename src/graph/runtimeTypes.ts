@@ -4,15 +4,7 @@ import type { ProcessDefinition } from '../data/types';
 import type { GraphNodeInfo, GraphConfig } from './types';
 import type { SubgraphConfig } from './subgraphs';
 import type { GraphController } from './controller';
-
-export type GraphRuntimeStore = {
-  setSelectedNode: (id: string | null) => void;
-  setSelectedEdge: (id: string | null) => void;
-  setActiveProcess: (id: string | null) => void;
-  setActiveSubgraph: (id: string | null) => void;
-  setSidebarHover: (value: boolean) => void;
-  clearSelections: () => void;
-};
+import type { VisualizationAction } from '../state/actions';
 
 export type GraphRuntimeData = {
   processes: ProcessDefinition[];
@@ -25,7 +17,7 @@ export type GraphRuntimeConfig = {
   subgraphByEntryId: Map<string, SubgraphConfig>;
   subgraphById: Map<string, SubgraphConfig>;
   data: GraphRuntimeData;
-  store: GraphRuntimeStore;
+  dispatch: React.Dispatch<VisualizationAction>;
 };
 
 export type GraphRuntimeCommands = {
