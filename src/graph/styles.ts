@@ -114,6 +114,7 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
       'background-color': 'data(branchColor)',
       'border-color': '#2563eb',
       'border-width': '3px',
+      color:'white'
     },
   },
   {
