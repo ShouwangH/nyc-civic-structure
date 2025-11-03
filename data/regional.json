@@ -5,32 +5,11 @@
   },
   "nodes": [
     {
-      "id": "regional_authority_laws",
-      "label": "Regional Public Authority Laws",
+      "id": "public_authorities",
+      "label": "Public Authorities",
       "type": "category",
       "branch": "law",
       "factoid": "Legal frameworks establishing public authorities across city, state, and interstate jurisdictions."
-    },
-    {
-      "id": "public_authorities_law",
-      "label": "Public Authorities Law",
-      "type": "law",
-      "branch": "law",
-      "factoid": "NY State law (Chapter 43-A) establishing and regulating state public benefit corporations."
-    },
-    {
-      "id": "public_housing_law",
-      "label": "NY Public Housing Law",
-      "type": "law",
-      "branch": "law",
-      "factoid": "State law enabling cities to create local housing authorities."
-    },
-    {
-      "id": "interstate_compact_1921",
-      "label": "Port Authority Interstate Compact (1921)",
-      "type": "law",
-      "branch": "law",
-      "factoid": "Interstate compact between NY and NJ, ratified by Congress, creating the Port Authority."
     },
     {
       "id": "mta",
@@ -98,70 +77,55 @@
   ],
   "edges": [
     {
-      "source": "regional_authority_laws",
-      "target": "public_authorities_law",
-      "relation": "includes"
-    },
-    {
-      "source": "regional_authority_laws",
-      "target": "public_housing_law",
-      "relation": "includes"
-    },
-    {
-      "source": "regional_authority_laws",
-      "target": "interstate_compact_1921",
-      "relation": "includes"
-    },
-    {
-      "source": "public_authorities_law",
+      "source": "public_authorities",
       "target": "mta",
       "relation": "establishes",
       "detail": "Article 5, Title 11"
     },
     {
-      "source": "public_authorities_law",
+      "source": "public_authorities",
       "target": "nys_thruway",
       "relation": "establishes",
       "detail": "Article 2, Title 9"
     },
     {
-      "source": "public_authorities_law",
+      "source": "public_authorities",
       "target": "nypa",
       "relation": "establishes",
       "detail": "Article 5, Title 1"
     },
     {
-      "source": "public_authorities_law",
+      "source": "public_authorities",
       "target": "dasny",
       "relation": "establishes",
       "detail": "Article 8, Title 4"
     },
     {
-      "source": "public_authorities_law",
+      "source": "public_authorities",
       "target": "esd",
       "relation": "establishes",
       "detail": "Article 10-A"
     },
     {
-      "source": "public_authorities_law",
+      "source": "public_authorities",
       "target": "battery_park_city_authority",
       "relation": "establishes",
       "detail": "Article 8, Title 12"
     },
     {
-      "source": "public_authorities_law",
+      "source": "public_authorities",
       "target": "roosevelt_island",
       "relation": "establishes",
       "detail": "Article 8, Title 8"
     },
     {
-      "source": "interstate_compact_1921",
+      "source": "public_authorities",
       "target": "port_authority",
       "relation": "creates",
       "detail": "Congressional approval 1921"
     },
     {
-      "source": "public_housing_law",
+      "source": "public_authorities",
       "target": "nycha",
       "relation": "enables",
       "detail": "Article 3"

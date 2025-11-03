@@ -72,4 +72,4 @@ export type SubgraphFile = {
   elements: SubgraphElements;
 };
 
-export type GovernmentScope = 'city' | 'state' | 'regional' | 'federal';
+export type GovernmentScope = 'city' | 'state' | 'federal';

@@ -16,7 +16,12 @@
       "label": "President of the United States",
       "type": "office",
       "branch": "executive",
-      "process": ["legislative", "appointments", "foreign_policy", "budget"],
+      "process": [
+        "legislative",
+        "appointments",
+        "foreign_policy",
+        "budget"
+      ],
       "factoid": "The head of the Executive Branch responsible for enforcing federal laws, directing foreign policy, and serving as Commander-in-Chief."
     },
     {
@@ -24,7 +29,10 @@
       "label": "U.S. Congress",
       "type": "body",
       "branch": "legislative",
-      "process": ["legislative", "budget"],
+      "process": [
+        "legislative",
+        "budget"
+      ],
       "factoid": "Bicameral legislature composed of the Senate and House of Representatives. Enacts federal laws and controls appropriations."
     },
     {
@@ -60,7 +68,9 @@
       "label": "Federal Budget",
       "type": "process",
       "branch": "financial",
-      "process": ["budget"],
+      "process": [
+        "budget"
+      ],
       "factoid": "Annual fiscal plan proposed by the President and enacted by Congress to fund federal operations and programs."
     },
     {
@@ -69,18 +79,88 @@
       "type": "agency",
       "branch": "administrative",
       "factoid": "Departments and independent agencies implementing federal laws and programs across areas like defense, health, and environment."
+    },
+    {
+      "id": "us_code",
+      "label": "United States Code",
+      "type": "law",
+      "branch": "law",
+      "factoid": "Compilation of permanent federal statutes organized by subject, enacted by Congress."
+    },
+    {
+      "id": "cfr",
+      "label": "Code of Federal Regulations (CFR)",
+      "type": "law",
+      "branch": "administrative",
+      "factoid": "Detailed regulations issued by federal agencies to implement federal statutes."
     }
   ],
   "edges": [
-    { "source": "us_constitution", "target": "president", "relation": "establishes" },
-    { "source": "us_constitution", "target": "congress", "relation": "establishes" },
-    { "source": "us_constitution", "target": "supreme_court", "relation": "establishes" },
-    { "source": "congress", "target": "senate", "relation": "includes" },
-    { "source": "congress", "target": "house_of_representatives", "relation": "includes" },
-    { "source": "president", "target": "federal_agencies", "relation": "oversees" },
-    { "source": "president", "target": "federal_budget", "relation": "proposes" },
-    { "source": "congress", "target": "federal_budget", "relation": "enacts" },
-    { "source": "congress", "target": "federal_agencies", "relation": "funds" },
-    { "source": "supreme_court", "target": "federal_courts", "relation": "oversees" }
+    {
+      "source": "us_constitution",
+      "target": "president",
+      "relation": "establishes"
+    },
+    {
+      "source": "us_constitution",
+      "target": "congress",
+      "relation": "establishes"
+    },
+    {
+      "source": "us_constitution",
+      "target": "supreme_court",
+      "relation": "establishes"
+    },
+    {
+      "source": "congress",
+      "target": "senate",
+      "relation": "includes"
+    },
+    {
+      "source": "congress",
+      "target": "house_of_representatives",
+      "relation": "includes"
+    },
+    {
+      "source": "president",
+      "target": "federal_agencies",
+      "relation": "oversees"
+    },
+    {
+      "source": "president",
+      "target": "federal_budget",
+      "relation": "proposes"
+    },
+    {
+      "source": "congress",
+      "target": "federal_budget",
+      "relation": "enacts"
+    },
+    {
+      "source": "supreme_court",
+      "target": "federal_courts",
+      "relation": "oversees"
+    },
+    {
+      "source": "senate",
+      "target": "us_code",
+      "relation": "enacts",
+      "category": "legal",
+      "hierarchical": true
+    },
+        {
+      "source": "house_of_representatives",
+      "target": "us_code",
+      "relation": "enacts",
+      "category": "legal",
+      "hierarchical": true
+    },
+    {
+      "source": "federal_agencies",
+      "target": "cfr",
+      "relation": "promulgates",
+      "category": "administrative",
+      "hierarchical": true
+    }
   ]
 }

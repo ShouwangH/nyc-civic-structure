@@ -28,12 +28,6 @@ const scopeGroups: ScopeGroup[] = [
     label: 'State Anchor',
   },
   {
-    scope: 'regional',
-    groupId: 'regional-group',
-    anchorId: 'regional-group-anchor',
-    label: 'Regional Anchor',
-  },
-  {
     scope: 'city',
     groupId: 'city-group',
     anchorId: 'city-group-anchor',
@@ -100,13 +94,12 @@ export const buildUnifiedDataset = (): UnifiedDatasetResult => {
   const combinedMeta = {
     title: 'Government Overview',
     description:
-      'Diagram showing U.S. federal, New York State, regional authorities, and New York City governance.',
+      'Diagram showing U.S. federal, New York State, and New York City governance.',
   };
 
   const combinedEdges = [
     ...governmentDatasets.federal.edges,
     ...governmentDatasets.state.edges,
-    ...governmentDatasets.regional.edges,
     ...governmentDatasets.city.edges,
     ...anchorEdges,
   ];
@@ -114,14 +107,12 @@ export const buildUnifiedDataset = (): UnifiedDatasetResult => {
   const combinedProcesses = [
     ...governmentDatasets.federal.processes,
     ...governmentDatasets.state.processes,
-    ...governmentDatasets.regional.processes,
     ...governmentDatasets.city.processes,
   ];
 
   const combinedSubgraphs = [
     ...(governmentDatasets.federal.subgraphs ?? []),
     ...(governmentDatasets.state.subgraphs ?? []),
-    ...(governmentDatasets.regional.subgraphs ?? []),
     ...(governmentDatasets.city.subgraphs ?? []),
   ];
 
@@ -145,7 +136,6 @@ export const buildUnifiedDataset = (): UnifiedDatasetResult => {
     {
       federal: [] as string[],
       state: [] as string[],
-      regional: [] as string[],
       city: [] as string[],
     },
   );

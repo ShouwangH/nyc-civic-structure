@@ -7,18 +7,68 @@ import { scopes, nodes, edges, processes, subgraphs } from './schema';
 import { eq } from 'drizzle-orm';
 import fs from 'fs/promises';
 import path from 'path';
-import type { GovernmentScope } from '../../../src/data/types';
+
+type GovernmentScope = 'federal' | 'state' | 'regional' | 'city';
 
 // When running from api directory: process.cwd() = /path/to/project/api
 // We need to go up one level to get to project root, then into data
 const PROJECT_ROOT = path.join(process.cwd(), '..');
 const DATA_DIR = path.join(PROJECT_ROOT, 'data');
 const SUBGRAPHS_DIR = path.join(DATA_DIR, 'subgraphs');
+const BACKUP_DIR = path.join(PROJECT_ROOT, '.backups');
+
+async function backupExistingData() {
+  const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, -5);
+  const backupPath = path.join(BACKUP_DIR, timestamp);
+
+  try {
+    // Check if data directory exists
+    await fs.access(DATA_DIR);
+
+    // Create backup directory
+    await fs.mkdir(backupPath, { recursive: true });
+
+    // Copy data directory contents
+    const files = await fs.readdir(DATA_DIR, { withFileTypes: true });
+    let fileCount = 0;
+
+    for (const file of files) {
+      const srcPath = path.join(DATA_DIR, file.name);
+      const destPath = path.join(backupPath, file.name);
+
+      if (file.isDirectory() && file.name === 'subgraphs') {
+        // Copy subgraphs directory
+        await fs.mkdir(destPath, { recursive: true });
+        const subgraphFiles = await fs.readdir(srcPath);
+        for (const subFile of subgraphFiles) {
+          await fs.copyFile(
+            path.join(srcPath, subFile),
+            path.join(destPath, subFile)
+          );
+          fileCount++;
+        }
+      } else if (file.isFile() && file.name.endsWith('.json')) {
+        await fs.copyFile(srcPath, destPath);
+        fileCount++;
+      }
+    }
+
+    console.log(`💾 Backed up ${fileCount} files to .backups/${timestamp}\n`);
+  } catch (error) {
+    // If data directory doesn't exist, no backup needed
+    if ((error as NodeJS.ErrnoException).code !== 'ENOENT') {
+      console.warn('⚠️  Warning: Could not create backup:', error);
+    }
+  }
+}
 
 async function exportData() {
   console.log('📤 Starting database export to JSON...\n');
 
   try {
+    // Backup existing data before export
+    await backupExistingData();
+
     // Ensure directories exist
     await fs.mkdir(DATA_DIR, { recursive: true });
     await fs.mkdir(SUBGRAPHS_DIR, { recursive: true });

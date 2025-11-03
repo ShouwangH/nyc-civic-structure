@@ -77,7 +77,6 @@ export const buildGraphData = (): GraphData => {
   const processesByScope: Record<GovernmentScope, ProcessDefinition[]> = {
     federal: governmentDatasets.federal.processes,
     state: governmentDatasets.state.processes,
-    regional: governmentDatasets.regional.processes,
     city: governmentDatasets.city.processes,
   };
 
