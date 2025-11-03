@@ -63,7 +63,7 @@
       "branch": "legislative",
       "factoid": "Upper chamber of the State Legislature, representing districts by region."
     },
-        {
+    {
       "id": "ny_consolidated_laws",
       "label": "NY Consolidated Laws",
       "type": "law",
@@ -83,6 +83,76 @@
       "type": "agency",
       "branch": "administrative",
       "factoid": "Departments that implement laws and deliver services in areas like health, education, and transportation."
+    },
+    {
+      "id": "public_authorities",
+      "label": "Public Authorities",
+      "type": "category",
+      "branch": "law",
+      "factoid": "Legal frameworks establishing public authorities across city, state, and interstate jurisdictions."
+    },
+    {
+      "id": "mta",
+      "label": "Metropolitan Transportation Authority (MTA)",
+      "type": "authority",
+      "branch": "transportation",
+      "factoid": "State authority managing NYC subway, buses, and regional commuter rail systems."
+    },
+    {
+      "id": "nys_thruway",
+      "label": "New York State Thruway Authority",
+      "type": "authority",
+      "branch": "transportation",
+      "factoid": "State authority operating the Thruway highway system across New York."
+    },
+    {
+      "id": "nypa",
+      "label": "New York Power Authority (NYPA)",
+      "type": "authority",
+      "branch": "energy",
+      "factoid": "State authority providing electric power generation and transmission."
+    },
+    {
+      "id": "dasny",
+      "label": "Dormitory Authority (DASNY)",
+      "type": "authority",
+      "branch": "finance",
+      "factoid": "State authority financing construction of schools, hospitals, and public facilities."
+    },
+    {
+      "id": "esd",
+      "label": "Empire State Development (ESD)",
+      "type": "authority",
+      "branch": "economic",
+      "factoid": "State authority for economic development and business incentives."
+    },
+    {
+      "id": "battery_park_city_authority",
+      "label": "Battery Park City Authority (BPCA)",
+      "type": "authority",
+      "branch": "development",
+      "factoid": "State authority managing Battery Park City neighborhood in Manhattan."
+    },
+    {
+      "id": "roosevelt_island",
+      "label": "Roosevelt Island Operating Corporation (RIOC)",
+      "type": "authority",
+      "branch": "development",
+      "factoid": "State authority overseeing Roosevelt Island operations."
+    },
+    {
+      "id": "port_authority",
+      "label": "Port Authority of New York and New Jersey",
+      "type": "bi_state_authority",
+      "branch": "infrastructure",
+      "factoid": "Bi-state agency managing bridges, tunnels, airports, and seaports in the NY-NJ region."
+    },
+    {
+      "id": "nycha",
+      "label": "New York City Housing Authority (NYCHA)",
+      "type": "city_authority",
+      "branch": "housing",
+      "factoid": "City public authority providing affordable housing for NYC residents."
     }
   ],
   "edges": [
@@ -90,13 +160,25 @@
     { "source": "ny_state_constitution", "target": "state_legislature", "relation": "establishes" },
     { "source": "ny_state_constitution", "target": "state_judiciary", "relation": "establishes" },
     { "source": "ny_state_constitution", "target": "state_comptroller", "relation": "establishes" },
-    { "source": "state_legislature", "target": "ny_consolidated_laws", "relation": "enacts" },
+    { "source": "state_senate", "target": "ny_consolidated_laws", "relation": "enacts" },
+    { "source": "state_assembly", "target": "ny_consolidated_laws", "relation": "enacts" },
     { "source": "state_legislature", "target": "state_budget", "relation": "adopts" },
     { "source": "state_legislature", "target": "state_assembly", "relation": "includes" },
     { "source": "state_legislature", "target": "state_senate", "relation": "includes" },
     { "source": "governor_ny", "target": "state_budget", "relation": "proposes" },
     { "source": "governor_ny", "target": "state_agencies", "relation": "oversees" },
     { "source": "state_agencies", "target": "nycrr", "relation": "issues" },
-    { "source": "state_comptroller", "target": "state_budget", "relation": "audits" }
+    { "source": "state_comptroller", "target": "state_budget", "relation": "audits" },
+    
+    { "source": "state_legislature", "target": "public_authorities", "relation": "creates" },
+    { "source": "public_authorities", "target": "mta", "relation": "includes" },
+    { "source": "public_authorities", "target": "nys_thruway", "relation": "includes" },
+    { "source": "public_authorities", "target": "nypa", "relation": "includes" },
+    { "source": "public_authorities", "target": "dasny", "relation": "includes" },
+    { "source": "public_authorities", "target": "esd", "relation": "includes" },
+    { "source": "public_authorities", "target": "battery_park_city_authority", "relation": "includes" },
+    { "source": "public_authorities", "target": "roosevelt_island", "relation": "includes" },
+    { "source": "public_authorities", "target": "port_authority", "relation": "includes" },
+    { "source": "public_authorities", "target": "nycha", "relation": "includes" }
   ]
 }

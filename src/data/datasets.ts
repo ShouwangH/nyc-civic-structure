@@ -11,8 +11,6 @@ import federal from '../../data/federal.json';
 import federalProcesses from '../../data/federal-processes.json';
 import federalAgencies from '../../data/subgraphs/federal-agencies.json';
 
-import regional from '../../data/regional.json';
-import regionalProcesses from '../../data/regional-processes.json';
 
 import type {
   GovernmentScope,
@@ -71,13 +69,6 @@ export const governmentDatasets: Record<GovernmentScope, GovernmentDataset> = {
     stateProcesses,
     [stateAgencies, stateCourts],
   ),
-  regional: normalizeDataset(
-    'regional',
-    'Regional Authorities',
-    regional,
-    regionalProcesses,
-    [],
-  ),
   federal: normalizeDataset(
     'federal',
     'United States',
@@ -90,6 +81,5 @@ export const governmentDatasets: Record<GovernmentScope, GovernmentDataset> = {
 export const governmentScopes: Array<{ id: GovernmentScope; label: string }> = [
   { id: 'federal', label: 'Federal' },
   { id: 'state', label: 'State' },
-  { id: 'regional', label: 'Regional' },
   { id: 'city', label: 'City' },
 ];
