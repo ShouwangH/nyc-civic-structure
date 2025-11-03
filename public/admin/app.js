@@ -208,6 +208,11 @@ function openEditModal(entity) {
     nodeFields.forEach(field => field.style.display = 'block');
     processFields.forEach(field => field.style.display = 'none');
 
+    // Enable required validation for node fields
+    document.getElementById('nodeType').required = true;
+    document.getElementById('nodeBranch').required = true;
+    document.getElementById('processDescription').required = false;
+
     document.getElementById('nodeType').value = entity.type;
     document.getElementById('nodeBranch').value = entity.branch;
     document.getElementById('nodeFactoid').value = entity.factoid || '';
@@ -215,6 +220,11 @@ function openEditModal(entity) {
     modalTitle.textContent = 'Edit Process';
     nodeFields.forEach(field => field.style.display = 'none');
     processFields.forEach(field => field.style.display = 'block');
+
+    // Enable required validation for process fields
+    document.getElementById('nodeType').required = false;
+    document.getElementById('nodeBranch').required = false;
+    document.getElementById('processDescription').required = true;
 
     document.getElementById('processDescription').value = entity.description || '';
   }
