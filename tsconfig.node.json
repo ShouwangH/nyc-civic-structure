@@ -27,7 +27,12 @@
   "include": [
     "vite.config.ts",
     "api/**/*",
-    "admin/**/*",
-    "api/node_modules"
+    "admin/**/*"
+  ],
+  "exclude": [
+    "api/admin/_drizzle/seed.ts",
+    "api/admin/_drizzle/export.ts",
+    "api/node_modules",
+    "node_modules"
   ]
 }
