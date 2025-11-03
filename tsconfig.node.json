@@ -25,14 +25,11 @@
     "noUncheckedSideEffectImports": true
   },
   "include": [
-    "vite.config.ts",
-    "api/**/*",
-    "admin/**/*"
+    "vite.config.ts"
   ],
   "exclude": [
-    "api/admin/_drizzle/seed.ts",
-    "api/admin/_drizzle/export.ts",
-    "api/node_modules",
+    "api",
+    "admin",
     "node_modules"
   ]
 }
