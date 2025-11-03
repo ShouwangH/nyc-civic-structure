@@ -54,7 +54,7 @@ async function handleLogin() {
 
   try {
     // Test auth by calling API
-    const response = await fetch('/admin/api/nodes', {
+    const response = await fetch('/api/admin/nodes', {
       headers: { 'Authorization': `Bearer ${password}` }
     });
 
@@ -92,8 +92,8 @@ function showMainContent() {
 async function loadNodes(scopeFilter = '') {
   try {
     const url = scopeFilter
-      ? `/admin/api/nodes?scope=${scopeFilter}`
-      : '/admin/api/nodes';
+      ? `/api/admin/nodes?scope=${scopeFilter}`
+      : '/api/admin/nodes';
 
     const response = await fetch(url);
 
@@ -208,7 +208,7 @@ editForm.addEventListener('submit', async (e) => {
   saveBtn.textContent = 'Saving...';
 
   try {
-    const response = await fetch(`/admin/api/nodes/${currentNode.id}`, {
+    const response = await fetch(`/api/admin/nodes/${currentNode.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

@@ -1,8 +1,8 @@
 // ABOUTME: API endpoint for listing all nodes
 // ABOUTME: GET endpoint for frontend to show editable nodes
 
-import { db } from '../../lib/db';
-import { nodes } from '../../drizzle/schema';
+import { db } from '../_lib/db';
+import { nodes } from '../_drizzle/schema';
 import { eq, asc } from 'drizzle-orm';
 
 export async function GET(request: Request) {

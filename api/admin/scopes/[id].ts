@@ -1,10 +1,10 @@
 // ABOUTME: API endpoint for updating scope metadata (title, description)
 // ABOUTME: Handles PUT requests with authentication and validation
 
-import { db } from '../../lib/db';
-import { scopes, auditLog } from '../../drizzle/schema';
-import { verifyAuth } from '../../lib/auth';
-import { UpdateScopeSchema } from '../../lib/validation';
+import { db } from '../_lib/db';
+import { scopes, auditLog } from '../_drizzle/schema';
+import { verifyAuth } from '../_lib/auth';
+import { UpdateScopeSchema } from '../_lib/validation';
 import { eq } from 'drizzle-orm';
 
 export async function PUT(request: Request) {
@@ -36,7 +36,7 @@ export async function PUT(request: Request) {
     if (!validation.success) {
       return Response.json({
         error: 'Validation failed',
-        details: validation.error.errors,
+        details: validation.error.issues,
       }, { status: 400 });
     }
 
