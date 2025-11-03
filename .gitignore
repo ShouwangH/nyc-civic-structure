@@ -31,3 +31,5 @@ architecture-flow-analysis.md
 AGENTS.md
 /.claude
 *Claude.md
+.vercel
+.env*.local

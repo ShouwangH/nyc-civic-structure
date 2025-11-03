@@ -1,46 +1,53 @@
 // ABOUTME: API endpoint for updating process metadata (label, description)
 // ABOUTME: Handles PUT requests with authentication and validation
 
-import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { db } from '../../lib/db';
-import { processes, auditLog } from '../../drizzle/schema';
-import { verifyAuth } from '../../lib/auth';
-import { UpdateProcessSchema } from '../../lib/validation';
+import { db } from '../_lib/db';
+import { processes, auditLog } from '../_drizzle/schema';
+import { verifyAuth } from '../_lib/auth';
+import { UpdateProcessSchema } from '../_lib/validation';
 import { eq } from 'drizzle-orm';
 
-export default async function handler(req: VercelRequest, res: VercelResponse) {
-  // Only allow PUT method
-  if (req.method !== 'PUT') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
+export async function PUT(request: Request) {
   // Verify authentication
-  const authResult = verifyAuth(req.headers.authorization);
+  const authResult = verifyAuth(request.headers.get('authorization'));
   if (!authResult.authenticated) {
-    return res.status(401).json({ error: authResult.error || 'Unauthorized' });
+    return Response.json(
+      { error: authResult.error || 'Unauthorized' },
+      { status: 401 }
+    );
   }
 
-  const { id } = req.query;
+  // Extract ID from URL path
+  const url = new URL(request.url);
+  const pathParts = url.pathname.split('/');
+  const id = pathParts[pathParts.length - 1];
 
-  if (!id || typeof id !== 'string') {
-    return res.status(400).json({ error: 'Process ID is required' });
+  if (!id) {
+    return Response.json(
+      { error: 'Process ID is required' },
+      { status: 400 }
+    );
   }
 
   try {
-    // Validate request body
-    const validation = UpdateProcessSchema.safeParse(req.body);
+    // Parse and validate request body
+    const body = await request.json();
+    const validation = UpdateProcessSchema.safeParse(body);
     if (!validation.success) {
-      return res.status(400).json({
+      return Response.json({
         error: 'Validation failed',
-        details: validation.error.errors,
-      });
+        details: validation.error.issues,
+      }, { status: 400 });
     }
 
     // Get old data for audit log
     const oldProcess = await db.select().from(processes).where(eq(processes.id, id)).limit(1);
 
     if (oldProcess.length === 0) {
-      return res.status(404).json({ error: 'Process not found' });
+      return Response.json(
+        { error: 'Process not found' },
+        { status: 404 }
+      );
     }
 
     // Update process
@@ -54,7 +61,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .returning();
 
     if (updatedProcess.length === 0) {
-      return res.status(404).json({ error: 'Failed to update process' });
+      return Response.json(
+        { error: 'Failed to update process' },
+        { status: 404 }
+      );
     }
 
     // Create audit log entry
@@ -66,15 +76,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       newData: updatedProcess[0],
     });
 
-    return res.status(200).json({
+    return Response.json({
       success: true,
       data: updatedProcess[0],
     });
   } catch (error) {
     console.error('Error updating process:', error);
-    return res.status(500).json({
+    return Response.json({
       error: 'Internal server error',
       message: error instanceof Error ? error.message : 'Unknown error',
-    });
+    }, { status: 500 });
   }
 }

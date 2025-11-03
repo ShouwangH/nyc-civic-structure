@@ -3,8 +3,9 @@
 
 // State
 let authToken = sessionStorage.getItem('adminToken') || '';
-let nodes = [];
-let currentNode = null;
+let entities = [];
+let currentEntity = null;
+let currentEntityType = 'nodes';
 
 // DOM Elements
 const authSection = document.getElementById('authSection');
@@ -13,10 +14,12 @@ const passwordInput = document.getElementById('passwordInput');
 const loginBtn = document.getElementById('loginBtn');
 const logoutBtn = document.getElementById('logoutBtn');
 const authError = document.getElementById('authError');
+const entityTypeFilter = document.getElementById('entityTypeFilter');
 const scopeFilter = document.getElementById('scopeFilter');
 const searchInput = document.getElementById('searchInput');
-const nodeList = document.getElementById('nodeList');
+const entityList = document.getElementById('entityList');
 const editModal = document.getElementById('editModal');
+const modalTitle = document.getElementById('modalTitle');
 const closeModal = document.getElementById('closeModal');
 const editForm = document.getElementById('editForm');
 const cancelBtn = document.getElementById('cancelBtn');
@@ -26,7 +29,7 @@ const formSuccess = document.getElementById('formSuccess');
 // Initialize
 if (authToken) {
   showMainContent();
-  loadNodes();
+  loadEntities();
 }
 
 // Auth
@@ -54,7 +57,7 @@ async function handleLogin() {
 
   try {
     // Test auth by calling API
-    const response = await fetch('/admin/api/nodes', {
+    const response = await fetch('/api/admin/nodes', {
       headers: { 'Authorization': `Bearer ${password}` }
     });
 
@@ -62,7 +65,7 @@ async function handleLogin() {
       authToken = password;
       sessionStorage.setItem('adminToken', password);
       showMainContent();
-      await loadNodes();
+      await loadEntities();
     } else {
       authError.textContent = 'Invalid password';
     }
@@ -88,89 +91,134 @@ function showMainContent() {
   logoutBtn.classList.remove('hidden');
 }
 
-// Load Nodes
-async function loadNodes(scopeFilter = '') {
+// Load Entities (nodes or processes)
+async function loadEntities(scopeFilterValue = '') {
   try {
-    const url = scopeFilter
-      ? `/admin/api/nodes?scope=${scopeFilter}`
-      : '/admin/api/nodes';
+    const url = scopeFilterValue
+      ? `/api/admin/${currentEntityType}?scope=${scopeFilterValue}`
+      : `/api/admin/${currentEntityType}`;
 
     const response = await fetch(url);
 
     if (!response.ok) {
-      throw new Error('Failed to load nodes');
+      throw new Error(`Failed to load ${currentEntityType}`);
     }
 
     const result = await response.json();
-    nodes = result.data || [];
-    renderNodes();
+    entities = result.data || [];
+    renderEntities();
   } catch (error) {
-    console.error('Error loading nodes:', error);
-    nodeList.innerHTML = '<p style="text-align: center; color: #dc2626;">Failed to load nodes. Please refresh.</p>';
+    console.error(`Error loading ${currentEntityType}:`, error);
+    entityList.innerHTML = `<p style="text-align: center; color: #dc2626;">Failed to load ${currentEntityType}. Please refresh.</p>`;
   }
 }
 
-// Render Nodes
-function renderNodes() {
+// Render Entities
+function renderEntities() {
   const searchTerm = searchInput.value.toLowerCase();
-  const filteredNodes = nodes.filter(node => {
+  const filteredEntities = entities.filter(entity => {
     const matchesSearch =
-      node.label.toLowerCase().includes(searchTerm) ||
-      node.factoid.toLowerCase().includes(searchTerm) ||
-      node.id.toLowerCase().includes(searchTerm);
+      entity.label.toLowerCase().includes(searchTerm) ||
+      entity.id.toLowerCase().includes(searchTerm) ||
+      (entity.factoid && entity.factoid.toLowerCase().includes(searchTerm)) ||
+      (entity.description && entity.description.toLowerCase().includes(searchTerm));
     return matchesSearch;
   });
 
-  if (filteredNodes.length === 0) {
-    nodeList.innerHTML = '<p style="text-align: center; color: #6b7280;">No nodes found</p>';
+  if (filteredEntities.length === 0) {
+    entityList.innerHTML = `<p style="text-align: center; color: #6b7280;">No ${currentEntityType} found</p>`;
     return;
   }
 
-  nodeList.innerHTML = filteredNodes
-    .map(node => `
-      <div class="node-card" data-id="${node.id}">
-        <div class="node-card-header">
-          <div class="node-label">${escapeHtml(node.label)}</div>
-          <div class="node-meta">
-            <span class="badge">${escapeHtml(node.scopeId)}</span>
-            <span class="badge">${escapeHtml(node.type)}</span>
+  if (currentEntityType === 'nodes') {
+    entityList.innerHTML = filteredEntities
+      .map(node => `
+        <div class="node-card" data-id="${node.id}">
+          <div class="node-card-header">
+            <div class="node-label">${escapeHtml(node.label)}</div>
+            <div class="node-meta">
+              <span class="badge">${escapeHtml(node.scopeId)}</span>
+              <span class="badge">${escapeHtml(node.type)}</span>
+            </div>
+          </div>
+          <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">
+            ${escapeHtml(node.branch)}
+          </div>
+          <div class="node-factoid">
+            ${escapeHtml(node.factoid || '(No factoid)')}
           </div>
         </div>
-        <div style="font-size: 12px; color: #6b7280; margin-bottom: 4px;">
-          ${escapeHtml(node.branch)}
+      `)
+      .join('');
+  } else {
+    // Render processes
+    entityList.innerHTML = filteredEntities
+      .map(process => `
+        <div class="node-card" data-id="${process.id}">
+          <div class="node-card-header">
+            <div class="node-label">${escapeHtml(process.label)}</div>
+            <div class="node-meta">
+              <span class="badge">${escapeHtml(process.scopeId)}</span>
+            </div>
+          </div>
+          <div class="node-factoid">
+            ${escapeHtml(process.description || '(No description)')}
+          </div>
         </div>
-        <div class="node-factoid">
-          ${escapeHtml(node.factoid || '(No factoid)')}
-        </div>
-      </div>
-    `)
-    .join('');
+      `)
+      .join('');
+  }
 
   // Add click handlers
   document.querySelectorAll('.node-card').forEach(card => {
     card.addEventListener('click', () => {
-      const nodeId = card.dataset.id;
-      const node = nodes.find(n => n.id === nodeId);
-      if (node) openEditModal(node);
+      const entityId = card.dataset.id;
+      const entity = entities.find(e => e.id === entityId);
+      if (entity) openEditModal(entity);
     });
   });
 }
 
 // Filters
-scopeFilter.addEventListener('change', (e) => {
-  loadNodes(e.target.value);
+entityTypeFilter.addEventListener('change', (e) => {
+  currentEntityType = e.target.value;
+  loadEntities(scopeFilter.value);
 });
 
-searchInput.addEventListener('input', renderNodes);
+scopeFilter.addEventListener('change', (e) => {
+  loadEntities(e.target.value);
+});
+
+searchInput.addEventListener('input', renderEntities);
 
 // Edit Modal
-function openEditModal(node) {
-  currentNode = node;
-  document.getElementById('nodeId').value = node.id;
-  document.getElementById('nodeLabel').value = node.label;
-  document.getElementById('nodeType').value = node.type;
-  document.getElementById('nodeBranch').value = node.branch;
-  document.getElementById('nodeFactoid').value = node.factoid || '';
+function openEditModal(entity) {
+  currentEntity = entity;
+
+  // Set common fields
+  document.getElementById('entityId').value = entity.id;
+  document.getElementById('entityLabel').value = entity.label;
+
+  // Show/hide fields based on entity type
+  const nodeFields = document.querySelectorAll('.node-field');
+  const processFields = document.querySelectorAll('.process-field');
+
+  if (currentEntityType === 'nodes') {
+    modalTitle.textContent = 'Edit Node';
+    nodeFields.forEach(field => field.style.display = 'block');
+    processFields.forEach(field => field.style.display = 'none');
+
+    document.getElementById('nodeType').value = entity.type;
+    document.getElementById('nodeBranch').value = entity.branch;
+    document.getElementById('nodeFactoid').value = entity.factoid || '';
+  } else {
+    modalTitle.textContent = 'Edit Process';
+    nodeFields.forEach(field => field.style.display = 'none');
+    processFields.forEach(field => field.style.display = 'block');
+
+    document.getElementById('processDescription').value = entity.description || '';
+  }
+
   formError.textContent = '';
   formSuccess.textContent = '';
   editModal.classList.add('active');
@@ -178,7 +226,7 @@ function openEditModal(node) {
 
 function closeEditModal() {
   editModal.classList.remove('active');
-  currentNode = null;
+  currentEntity = null;
 }
 
 closeModal.addEventListener('click', closeEditModal);
@@ -192,14 +240,22 @@ editModal.addEventListener('click', (e) => {
 editForm.addEventListener('submit', async (e) => {
   e.preventDefault();
 
-  if (!currentNode) return;
+  if (!currentEntity) return;
 
-  const data = {
-    label: document.getElementById('nodeLabel').value.trim(),
-    type: document.getElementById('nodeType').value.trim(),
-    branch: document.getElementById('nodeBranch').value.trim(),
-    factoid: document.getElementById('nodeFactoid').value.trim(),
-  };
+  let data;
+  if (currentEntityType === 'nodes') {
+    data = {
+      label: document.getElementById('entityLabel').value.trim(),
+      type: document.getElementById('nodeType').value.trim(),
+      branch: document.getElementById('nodeBranch').value.trim(),
+      factoid: document.getElementById('nodeFactoid').value.trim(),
+    };
+  } else {
+    data = {
+      label: document.getElementById('entityLabel').value.trim(),
+      description: document.getElementById('processDescription').value.trim(),
+    };
+  }
 
   formError.textContent = '';
   formSuccess.textContent = '';
@@ -208,7 +264,7 @@ editForm.addEventListener('submit', async (e) => {
   saveBtn.textContent = 'Saving...';
 
   try {
-    const response = await fetch(`/admin/api/nodes/${currentNode.id}`, {
+    const response = await fetch(`/api/admin/${currentEntityType}/${currentEntity.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -226,10 +282,10 @@ editForm.addEventListener('submit', async (e) => {
     formSuccess.textContent = 'Saved successfully!';
 
     // Update local data
-    const index = nodes.findIndex(n => n.id === currentNode.id);
+    const index = entities.findIndex(e => e.id === currentEntity.id);
     if (index !== -1) {
-      nodes[index] = { ...nodes[index], ...data };
-      renderNodes();
+      entities[index] = { ...entities[index], ...data };
+      renderEntities();
     }
 
     setTimeout(() => {

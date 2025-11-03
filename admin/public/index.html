@@ -326,6 +326,10 @@
     <!-- Main Content (hidden until authenticated) -->
     <div class="content hidden" id="mainContent">
       <div class="filters">
+        <select id="entityTypeFilter">
+          <option value="nodes">Nodes</option>
+          <option value="processes">Processes</option>
+        </select>
         <select id="scopeFilter">
           <option value="">All Scopes</option>
           <option value="federal">Federal</option>
@@ -333,11 +337,11 @@
           <option value="regional">Regional</option>
           <option value="city">City</option>
         </select>
-        <input type="search" id="searchInput" placeholder="Search nodes..." style="flex: 1;">
+        <input type="search" id="searchInput" placeholder="Search..." style="flex: 1;">
       </div>
 
-      <div id="nodeList" class="node-list">
-        <!-- Nodes will be loaded here -->
+      <div id="entityList" class="node-list">
+        <!-- Nodes or processes will be loaded here -->
       </div>
     </div>
   </div>
@@ -346,34 +350,41 @@
   <div class="modal" id="editModal">
     <div class="modal-content">
       <div class="modal-header">
-        <h2>Edit Node</h2>
+        <h2 id="modalTitle">Edit</h2>
         <button class="close-btn" id="closeModal">&times;</button>
       </div>
 
       <form id="editForm">
         <div class="form-group">
           <label>ID</label>
-          <input type="text" id="nodeId" disabled>
+          <input type="text" id="entityId" disabled>
         </div>
 
         <div class="form-group">
           <label>Label *</label>
-          <input type="text" id="nodeLabel" required>
+          <input type="text" id="entityLabel" required>
         </div>
 
-        <div class="form-group">
+        <!-- Node-specific fields -->
+        <div class="form-group node-field">
           <label>Type *</label>
           <input type="text" id="nodeType" required>
         </div>
 
-        <div class="form-group">
+        <div class="form-group node-field">
           <label>Branch *</label>
           <input type="text" id="nodeBranch" required>
         </div>
 
-        <div class="form-group">
+        <div class="form-group node-field">
           <label>Factoid</label>
           <textarea id="nodeFactoid"></textarea>
+        </div>
+
+        <!-- Process-specific fields -->
+        <div class="form-group process-field">
+          <label>Description *</label>
+          <textarea id="processDescription" required></textarea>
         </div>
 
         <div id="formError" class="error"></div>
@@ -387,6 +398,6 @@
     </div>
   </div>
 
-  <script src="./app.js"></script>
+  <script src="/admin/app.js"></script>
 </body>
 </html>

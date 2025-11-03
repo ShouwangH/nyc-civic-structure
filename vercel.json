@@ -12,10 +12,5 @@
       "source": "/admin/app.js",
       "destination": "/admin/public/app.js"
     }
-  ],
-  "functions": {
-    "admin/api/**/*.ts": {
-      "runtime": "nodejs18.x"
-    }
-  }
+  ]
 }

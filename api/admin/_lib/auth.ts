@@ -10,7 +10,7 @@ export interface AuthResult {
  * Verifies Bearer token from Authorization header
  * Compares against EDIT_PASSWORD environment variable
  */
-export function verifyAuth(authHeader: string | undefined): AuthResult {
+export function verifyAuth(authHeader: string | null | undefined): AuthResult {
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return { authenticated: false, error: 'Missing or invalid Authorization header' };
   }
