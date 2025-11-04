@@ -267,20 +267,9 @@ export const useVisualizationState = () => {
       ? (GRAPH_DATA.processesByScope[state.activeScope] ?? [])
       : ([] as ProcessDefinition[]);
 
-    // Temporarily hide overwhelming category views from menu (still accessible via click)
-    const hiddenSubviewIds = new Set([
-      'city:departments',
-      'state:state_agencies',
-      'state:state_judiciary',
-      'federal:federal_agencies',
-    ]);
-
-    const visibleSubgraphConfigs = state.activeScope
-      ? GRAPH_DATA.scopedSubgraphConfigs
-          .filter((entry) => entry.scope === state.activeScope)
-          .map((entry) => entry.config)
-          .filter((config) => !hiddenSubviewIds.has(config.meta.id))
-      : ([] as SubgraphConfig[]);
+    // Temporarily hide all subviews from menu (still accessible via node clicks)
+    // Will be accessible via sidebar-based multi-view selector in future
+    const visibleSubgraphConfigs: SubgraphConfig[] = [];
 
     // Entity lookups
     const activeNode = state.selectedNodeId
