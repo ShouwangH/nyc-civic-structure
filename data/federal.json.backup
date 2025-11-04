@@ -1,0 +1,166 @@
+{
+  "meta": {
+    "title": "United States Federal Government",
+    "description": "High-level structure of the U.S. federal government as defined by the Constitution."
+  },
+  "nodes": [
+    {
+      "id": "us_constitution",
+      "label": "U.S. Constitution",
+      "type": "law",
+      "branch": "law",
+      "factoid": "The supreme law of the United States that establishes the federal government and divides powers among its branches."
+    },
+    {
+      "id": "president",
+      "label": "President of the United States",
+      "type": "office",
+      "branch": "executive",
+      "process": [
+        "legislative",
+        "appointments",
+        "foreign_policy",
+        "budget"
+      ],
+      "factoid": "The head of the Executive Branch responsible for enforcing federal laws, directing foreign policy, and serving as Commander-in-Chief."
+    },
+    {
+      "id": "congress",
+      "label": "U.S. Congress",
+      "type": "body",
+      "branch": "legislative",
+      "process": [
+        "legislative",
+        "budget"
+      ],
+      "factoid": "Bicameral legislature composed of the Senate and House of Representatives. Enacts federal laws and controls appropriations."
+    },
+    {
+      "id": "senate",
+      "label": "U.S. Senate",
+      "type": "body",
+      "branch": "legislative",
+      "factoid": "Upper chamber of Congress that confirms appointments, ratifies treaties, and participates in lawmaking."
+    },
+    {
+      "id": "house_of_representatives",
+      "label": "U.S. House of Representatives",
+      "type": "body",
+      "branch": "legislative",
+      "factoid": "Lower chamber of Congress that introduces revenue bills and represents districts proportionally by population."
+    },
+    {
+      "id": "supreme_court",
+      "label": "Supreme Court of the United States",
+      "type": "body",
+      "branch": "judicial",
+      "factoid": "The highest court in the federal judiciary, interprets the Constitution and resolves disputes under federal law."
+    },
+    {
+      "id": "federal_courts",
+      "label": "Federal Court System",
+      "type": "body",
+      "branch": "judicial",
+      "factoid": "Composed of U.S. Courts of Appeals and District Courts that handle federal cases nationwide."
+    },
+    {
+      "id": "federal_budget",
+      "label": "Federal Budget",
+      "type": "process",
+      "branch": "financial",
+      "process": [
+        "budget"
+      ],
+      "factoid": "Annual fiscal plan proposed by the President and enacted by Congress to fund federal operations and programs."
+    },
+    {
+      "id": "federal_agencies",
+      "label": "Federal Agencies",
+      "type": "agency",
+      "branch": "administrative",
+      "factoid": "Departments and independent agencies implementing federal laws and programs across areas like defense, health, and environment."
+    },
+    {
+      "id": "us_code",
+      "label": "United States Code",
+      "type": "law",
+      "branch": "law",
+      "factoid": "Compilation of permanent federal statutes organized by subject, enacted by Congress."
+    },
+    {
+      "id": "cfr",
+      "label": "Code of Federal Regulations (CFR)",
+      "type": "law",
+      "branch": "administrative",
+      "factoid": "Detailed regulations issued by federal agencies to implement federal statutes."
+    }
+  ],
+  "edges": [
+    {
+      "source": "us_constitution",
+      "target": "president",
+      "relation": "establishes"
+    },
+    {
+      "source": "us_constitution",
+      "target": "congress",
+      "relation": "establishes"
+    },
+    {
+      "source": "us_constitution",
+      "target": "supreme_court",
+      "relation": "establishes"
+    },
+    {
+      "source": "congress",
+      "target": "senate",
+      "relation": "includes"
+    },
+    {
+      "source": "congress",
+      "target": "house_of_representatives",
+      "relation": "includes"
+    },
+    {
+      "source": "president",
+      "target": "federal_agencies",
+      "relation": "oversees"
+    },
+    {
+      "source": "president",
+      "target": "federal_budget",
+      "relation": "proposes"
+    },
+    {
+      "source": "congress",
+      "target": "federal_budget",
+      "relation": "enacts"
+    },
+    {
+      "source": "supreme_court",
+      "target": "federal_courts",
+      "relation": "oversees"
+    },
+    {
+      "source": "senate",
+      "target": "us_code",
+      "relation": "enacts",
+      "category": "legal",
+      "hierarchical": true
+    },
+        {
+      "source": "house_of_representatives",
+      "target": "us_code",
+      "relation": "enacts",
+      "category": "legal",
+      "hierarchical": true
+    },
+    {
+      "source": "federal_agencies",
+      "target": "cfr",
+      "relation": "promulgates",
+      "category": "administrative",
+      "hierarchical": true
+    }
+  ]
+}

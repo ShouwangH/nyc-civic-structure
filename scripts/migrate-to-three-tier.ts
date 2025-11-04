@@ -3,6 +3,10 @@
 
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 type Node = {
   id: string;
@@ -60,7 +64,7 @@ const MAIN_TIER_CRITERIA = {
     'governor',
     'lieutenant_governor',
     'attorney_general',
-    'comptroller_ny',
+    'state_comptroller',
     'state_legislature',
     'senate',
     'assembly',
@@ -149,21 +153,38 @@ function migrateJurisdiction(jurisdiction: typeof JURISDICTIONS[number]) {
   return { mainNodes, mainEdges, intraNodes, intraEdges, oldToNew };
 }
 
-function loadGeneratedAgencyNodes(): Node[] {
-  const agencyPath = path.join(__dirname, '../.claude/generated/city-agency-nodes.json');
-  if (!fs.existsSync(agencyPath)) {
-    console.log('  ⚠️  No generated agency nodes found');
-    return [];
+function loadGeneratedNodes(jurisdiction: string): Node[] {
+  const generatedPath = path.join(__dirname, `../.claude/generated/${jurisdiction}-generated-nodes.json`);
+  const agencyPath = path.join(__dirname, `../.claude/generated/${jurisdiction}-agency-nodes.json`);
+
+  const allNodes: Node[] = [];
+
+  // Load main generated nodes (parent agencies like NYPD, DOE, etc.)
+  if (fs.existsSync(generatedPath)) {
+    const nodes: Node[] = JSON.parse(fs.readFileSync(generatedPath, 'utf-8'));
+    // Add namespace prefix
+    const namespacedNodes = nodes.map(node => ({
+      ...node,
+      id: node.id.startsWith(`${jurisdiction}:`) ? node.id : `${jurisdiction}:${node.id}`
+    }));
+    allNodes.push(...namespacedNodes);
+    console.log(`  Loaded ${namespacedNodes.length} generated nodes (parent agencies)`);
   }
-  const nodes: Node[] = JSON.parse(fs.readFileSync(agencyPath, 'utf-8'));
-  console.log(`  Loaded ${nodes.length} generated agency nodes`);
-  return nodes;
+
+  // Load agency internal nodes (bureaus, divisions, etc. - already have namespace)
+  if (fs.existsSync(agencyPath)) {
+    const nodes: Node[] = JSON.parse(fs.readFileSync(agencyPath, 'utf-8'));
+    allNodes.push(...nodes);
+    console.log(`  Loaded ${nodes.length} agency internal nodes`);
+  }
+
+  return allNodes;
 }
 
-function loadGeneratedSubviews(): Subview[] {
-  const subviewsPath = path.join(__dirname, '../.claude/generated/city-intra-subviews.json');
+function loadGeneratedSubviews(jurisdiction: string): Subview[] {
+  const subviewsPath = path.join(__dirname, `../.claude/generated/${jurisdiction}-intra-subviews.json`);
   if (!fs.existsSync(subviewsPath)) {
-    console.log('  ⚠️  No generated subviews found');
+    console.log('  ℹ️  No generated subviews found');
     return [];
   }
   const subviews: Subview[] = JSON.parse(fs.readFileSync(subviewsPath, 'utf-8'));
@@ -172,15 +193,15 @@ function loadGeneratedSubviews(): Subview[] {
   subviews.forEach(subview => {
     subview.edges = subview.edges.map(edge => ({
       ...edge,
-      source: edge.source.startsWith('city:') ? edge.source : `city:${edge.source}`,
-      target: edge.target.startsWith('city:') ? edge.target : `city:${edge.target}`,
+      source: edge.source.startsWith(`${jurisdiction}:`) ? edge.source : `${jurisdiction}:${edge.source}`,
+      target: edge.target.startsWith(`${jurisdiction}:`) ? edge.target : `${jurisdiction}:${edge.target}`,
     }));
 
     // Fix anchor nodeId if present
     if ('nodeId' in subview.anchor) {
       const anchorId = subview.anchor.nodeId;
-      if (!anchorId.startsWith('city:')) {
-        subview.anchor.nodeId = `city:${anchorId}`;
+      if (!anchorId.startsWith(`${jurisdiction}:`)) {
+        subview.anchor.nodeId = `${jurisdiction}:${anchorId}`;
       }
     }
   });
@@ -239,29 +260,23 @@ console.log('='.repeat(60));
 console.log('MIGRATING TO THREE-TIER STRUCTURE');
 console.log('='.repeat(60));
 
-// Process City (with generated data)
-console.log('\n🏙️  CITY (with generated agency data)');
-const cityResult = migrateJurisdiction('city');
-const generatedAgencyNodes = loadGeneratedAgencyNodes();
-const generatedSubviews = loadGeneratedSubviews();
-
-// Merge generated nodes into intra tier
-const allCityIntraNodes = [...cityResult.intraNodes, ...generatedAgencyNodes];
-console.log(`  Total intra nodes: ${allCityIntraNodes.length}`);
-
-// Load original meta
-const cityData: DataFile = JSON.parse(fs.readFileSync(path.join(__dirname, '../data/city.json'), 'utf-8'));
-writeMainFile('city', cityResult.mainNodes, cityResult.mainEdges, cityData.meta);
-writeIntraFile('city', allCityIntraNodes, cityResult.intraEdges, generatedSubviews, cityData.meta);
-
-// Process State and Federal (no generated data yet)
-for (const jurisdiction of ['state', 'federal'] as const) {
+// Process all jurisdictions (with generated data where available)
+for (const jurisdiction of JURISDICTIONS) {
   console.log(`\n📍 ${jurisdiction.toUpperCase()}`);
+
   const result = migrateJurisdiction(jurisdiction);
+  const generatedNodes = loadGeneratedNodes(jurisdiction);
+  const generatedSubviews = loadGeneratedSubviews(jurisdiction);
+
+  // Merge generated nodes into intra tier
+  const allIntraNodes = [...result.intraNodes, ...generatedNodes];
+  console.log(`  Total intra nodes: ${allIntraNodes.length} (${result.intraNodes.length} from split + ${generatedNodes.length} generated)`);
+
+  // Load original meta
   const data: DataFile = JSON.parse(fs.readFileSync(path.join(__dirname, `../data/${jurisdiction}.json`), 'utf-8'));
 
   writeMainFile(jurisdiction, result.mainNodes, result.mainEdges, data.meta);
-  writeIntraFile(jurisdiction, result.intraNodes, result.intraEdges, [], data.meta);
+  writeIntraFile(jurisdiction, allIntraNodes, result.intraEdges, generatedSubviews, data.meta);
 }
 
 console.log('\n' + '='.repeat(60));

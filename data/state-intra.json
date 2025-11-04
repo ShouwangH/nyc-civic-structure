@@ -1,0 +1,1441 @@
+{
+  "meta": {
+    "jurisdiction": "state",
+    "tier": "intra",
+    "version": "1.0.0",
+    "description": "state agencies, departments, and intra-agency subviews"
+  },
+  "nodes": [
+    {
+      "id": "state:ny_state_constitution",
+      "label": "NY State Constitution",
+      "type": "law",
+      "branch": "law",
+      "factoid": "The foundational document defining the structure, powers, and limits of New York State's government."
+    },
+    {
+      "id": "state:governor_ny",
+      "label": "Governor of New York",
+      "type": "office",
+      "branch": "executive",
+      "process": [
+        "budget",
+        "legislative",
+        "appointments"
+      ],
+      "factoid": "Elected chief executive responsible for enforcing state laws, proposing the budget, and appointing officials."
+    },
+    {
+      "id": "state:state_judiciary",
+      "label": "State Judicial System",
+      "type": "body",
+      "branch": "judicial",
+      "factoid": "Unified court system led by the Chief Judge and Court of Appeals, interpreting the Constitution and laws of New York."
+    },
+    {
+      "id": "state:state_budget",
+      "label": "State Budget",
+      "type": "process",
+      "branch": "financial",
+      "process": [
+        "budget"
+      ],
+      "factoid": "Annual fiscal plan developed by the Governor and enacted by the Legislature to fund state operations."
+    },
+    {
+      "id": "state:state_assembly",
+      "label": "NY State Assembly",
+      "type": "body",
+      "branch": "legislative",
+      "factoid": "Lower chamber of the State Legislature, representing districts proportionally by population."
+    },
+    {
+      "id": "state:state_senate",
+      "label": "NY State Senate",
+      "type": "body",
+      "branch": "legislative",
+      "factoid": "Upper chamber of the State Legislature, representing districts by region."
+    },
+    {
+      "id": "state:ny_consolidated_laws",
+      "label": "NY Consolidated Laws",
+      "type": "law",
+      "branch": "law",
+      "factoid": "Compilation of permanent laws organized by subject, enacted by the State Legislature."
+    },
+    {
+      "id": "state:nycrr",
+      "label": "NY Codes, Rules & Regulations (NYCRR)",
+      "type": "law",
+      "branch": "administrative",
+      "factoid": "Detailed regulations issued by state agencies to implement state laws."
+    },
+    {
+      "id": "state:state_agencies",
+      "label": "State Agencies",
+      "type": "agency",
+      "branch": "administrative",
+      "factoid": "Departments that implement laws and deliver services in areas like health, education, and transportation."
+    },
+    {
+      "id": "state:public_authorities",
+      "label": "Public Authorities",
+      "type": "category",
+      "branch": "law",
+      "factoid": "Legal frameworks establishing public authorities across city, state, and interstate jurisdictions."
+    },
+    {
+      "id": "state:mta",
+      "label": "Metropolitan Transportation Authority (MTA)",
+      "type": "authority",
+      "branch": "transportation",
+      "factoid": "State authority managing NYC subway, buses, and regional commuter rail systems."
+    },
+    {
+      "id": "state:nys_thruway",
+      "label": "New York State Thruway Authority",
+      "type": "authority",
+      "branch": "transportation",
+      "factoid": "State authority operating the Thruway highway system across New York."
+    },
+    {
+      "id": "state:nypa",
+      "label": "New York Power Authority (NYPA)",
+      "type": "authority",
+      "branch": "energy",
+      "factoid": "State authority providing electric power generation and transmission."
+    },
+    {
+      "id": "state:dasny",
+      "label": "Dormitory Authority (DASNY)",
+      "type": "authority",
+      "branch": "finance",
+      "factoid": "State authority financing construction of schools, hospitals, and public facilities."
+    },
+    {
+      "id": "state:esd",
+      "label": "Empire State Development (ESD)",
+      "type": "authority",
+      "branch": "economic",
+      "factoid": "State authority for economic development and business incentives."
+    },
+    {
+      "id": "state:battery_park_city_authority",
+      "label": "Battery Park City Authority (BPCA)",
+      "type": "authority",
+      "branch": "development",
+      "factoid": "State authority managing Battery Park City neighborhood in Manhattan."
+    },
+    {
+      "id": "state:roosevelt_island",
+      "label": "Roosevelt Island Operating Corporation (RIOC)",
+      "type": "authority",
+      "branch": "development",
+      "factoid": "State authority overseeing Roosevelt Island operations."
+    },
+    {
+      "id": "state:port_authority",
+      "label": "Port Authority of New York and New Jersey",
+      "type": "bi_state_authority",
+      "branch": "infrastructure",
+      "factoid": "Bi-state agency managing bridges, tunnels, airports, and seaports in the NY-NJ region."
+    },
+    {
+      "id": "state:nycha",
+      "label": "New York City Housing Authority (NYCHA)",
+      "type": "city_authority",
+      "branch": "housing",
+      "factoid": "City public authority providing affordable housing for NYC residents."
+    },
+    {
+      "id": "state:court_of_appeals",
+      "label": "Court of Appeals",
+      "type": "court_high",
+      "branch": "judicial",
+      "factoid": "New York's highest court with seven judges serving as final interpreter of state constitution and law."
+    },
+    {
+      "id": "state:appellate_divisions",
+      "label": "Appellate Divisions",
+      "type": "court_appellate",
+      "branch": "judicial",
+      "factoid": "Four intermediate appellate courts covering different regions that hear appeals from trial courts statewide."
+    },
+    {
+      "id": "state:appellate_terms",
+      "label": "Appellate Terms",
+      "type": "court_appellate",
+      "branch": "judicial",
+      "factoid": "Specialized appellate courts in First and Second Departments hearing appeals from lower courts in NYC metro area."
+    },
+    {
+      "id": "state:supreme_court_trial",
+      "label": "Supreme Court",
+      "type": "court_trial",
+      "branch": "judicial",
+      "factoid": "Trial-level court of general jurisdiction handling major civil cases, felonies, and matrimonial matters."
+    },
+    {
+      "id": "state:county_court",
+      "label": "County Court",
+      "type": "court_trial",
+      "branch": "judicial",
+      "factoid": "Trial courts outside NYC with jurisdiction over felonies, civil cases, and appeals from local courts."
+    },
+    {
+      "id": "state:family_court",
+      "label": "Family Court",
+      "type": "court_specialized",
+      "branch": "judicial",
+      "factoid": "Handles family law matters including custody, support, paternity, juvenile delinquency, and child welfare cases."
+    },
+    {
+      "id": "state:surrogate_court",
+      "label": "Surrogate's Court",
+      "type": "court_specialized",
+      "branch": "judicial",
+      "factoid": "Specialized court managing wills, estates, trusts, adoptions, and guardianship proceedings."
+    },
+    {
+      "id": "state:court_of_claims",
+      "label": "Court of Claims",
+      "type": "court_specialized",
+      "branch": "judicial",
+      "factoid": "Exclusive jurisdiction over monetary claims and lawsuits against New York State government."
+    },
+    {
+      "id": "state:nyc_courts",
+      "label": "NYC Civil and Criminal Courts",
+      "type": "court_local",
+      "branch": "judicial",
+      "factoid": "Local courts handling misdemeanors, violations, small claims, housing disputes, and civil matters up to $50,000."
+    },
+    {
+      "id": "state:district_courts",
+      "label": "District Courts",
+      "type": "court_local",
+      "branch": "judicial",
+      "factoid": "Local trial courts in Nassau and Suffolk counties handling civil, criminal, and housing matters."
+    },
+    {
+      "id": "state:city_courts",
+      "label": "City Courts",
+      "type": "court_local",
+      "branch": "judicial",
+      "factoid": "Local courts in 61 cities outside NYC with jurisdiction over misdemeanors, violations, and small civil claims."
+    },
+    {
+      "id": "state:town_village_courts",
+      "label": "Town and Village Justice Courts",
+      "type": "court_local",
+      "branch": "judicial",
+      "factoid": "Local courts handling traffic violations, minor criminal matters, and small claims in towns and villages statewide."
+    },
+    {
+      "id": "state:dos_ny",
+      "label": "Department of State",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Maintains business records, oversees licensing programs, and provides technical assistance to local governments."
+    },
+    {
+      "id": "state:dot_ny",
+      "label": "Department of Transportation",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Maintains state highways, bridges, and public transportation infrastructure across New York."
+    },
+    {
+      "id": "state:doh_ny",
+      "label": "Department of Health",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Protects public health through disease prevention, hospital oversight, and health policy development."
+    },
+    {
+      "id": "state:sed_ny",
+      "label": "State Education Department",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Oversees K-12 education, SUNY system, professional licensing, and cultural institutions statewide."
+    },
+    {
+      "id": "state:dec_ny",
+      "label": "Department of Environmental Conservation",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Protects natural resources and environment through regulation, conservation, and enforcement programs."
+    },
+    {
+      "id": "state:dol_ny",
+      "label": "Department of Labor",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Administers unemployment insurance, enforces labor standards, and promotes workforce development."
+    },
+    {
+      "id": "state:dtf_ny",
+      "label": "Department of Taxation and Finance",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Collects state taxes, administers tax policy, and enforces tax compliance across New York."
+    },
+    {
+      "id": "state:doccs_ny",
+      "label": "Department of Corrections and Community Supervision",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Operates state prisons and supervises individuals on parole throughout New York."
+    },
+    {
+      "id": "state:dcjs_ny",
+      "label": "Division of Criminal Justice Services",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Provides criminal justice data, training, and grant funding to law enforcement and courts statewide."
+    },
+    {
+      "id": "state:dmv_ny",
+      "label": "Department of Motor Vehicles",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Issues driver licenses and vehicle registrations while enforcing traffic safety regulations."
+    },
+    {
+      "id": "state:agm_ny",
+      "label": "Department of Agriculture and Markets",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Supports agriculture industry, ensures food safety, and regulates weights and measures."
+    },
+    {
+      "id": "state:dfs_ny",
+      "label": "Department of Financial Services",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Regulates banking, insurance, and financial services industries to protect consumers."
+    },
+    {
+      "id": "state:otda_ny",
+      "label": "Office of Temporary and Disability Assistance",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Administers public assistance programs, emergency aid, and disability benefits across New York."
+    },
+    {
+      "id": "state:ocfs_ny",
+      "label": "Office of Children and Family Services",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Oversees child welfare system, youth programs, and child care licensing statewide."
+    },
+    {
+      "id": "state:omh_ny",
+      "label": "Office of Mental Health",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Operates psychiatric facilities and coordinates mental health services and policy throughout New York."
+    },
+    {
+      "id": "state:oasas_ny",
+      "label": "Office of Addiction Services and Supports",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Provides substance abuse treatment, prevention programs, and recovery support services statewide."
+    },
+    {
+      "id": "state:opwdd_ny",
+      "label": "Office for People With Developmental Disabilities",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Delivers services and supports for individuals with developmental disabilities across New York."
+    },
+    {
+      "id": "state:dhses_ny",
+      "label": "Division of Homeland Security and Emergency Services",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Coordinates emergency management, disaster preparedness, and homeland security initiatives statewide."
+    },
+    {
+      "id": "state:state_police_ny",
+      "label": "New York State Police",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Provides state law enforcement, highway patrol, and criminal investigation services across New York."
+    },
+    {
+      "id": "state:hcr_ny",
+      "label": "Division of Housing and Community Renewal",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Oversees affordable housing programs, rent regulation, and community development initiatives."
+    },
+    {
+      "id": "state:esd_ny",
+      "label": "Empire State Development",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Promotes economic development, business attraction, and job creation across New York State."
+    },
+    {
+      "id": "state:ogs_ny",
+      "label": "Office of General Services",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Manages state buildings, procurement, real estate, and administrative services for state agencies."
+    },
+    {
+      "id": "state:dcs_ny",
+      "label": "Department of Civil Service",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Administers civil service exams, manages public employee hiring, and oversees personnel policies."
+    },
+    {
+      "id": "state:parks_ny",
+      "label": "Office of Parks, Recreation and Historic Preservation",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Manages 180 state parks and 35 historic sites while preserving natural and cultural resources."
+    },
+    {
+      "id": "state:dmna_ny",
+      "label": "Division of Military and Naval Affairs",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Commands New York Army and Air National Guard while coordinating state military emergency response."
+    },
+    {
+      "id": "state:veterans_ny",
+      "label": "Division of Veterans' Services",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Provides benefits counseling, claims assistance, and support services for New York State veterans."
+    },
+    {
+      "id": "state:gaming_ny",
+      "label": "Gaming Commission",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Regulates casino gaming, horse racing, and lottery operations throughout New York State."
+    },
+    {
+      "id": "state:mta_ny",
+      "label": "Metropolitan Transportation Authority",
+      "type": "authority",
+      "branch": "executive",
+      "factoid": "Public benefit corporation operating NYC subways, buses, commuter rail, and regional transportation services."
+    },
+    {
+      "id": "state:nypa_ny",
+      "label": "New York Power Authority",
+      "type": "authority",
+      "branch": "executive",
+      "factoid": "State-owned electric utility providing hydroelectric power and managing energy infrastructure across New York."
+    },
+    {
+      "id": "state:thruway_ny",
+      "label": "New York State Thruway Authority",
+      "type": "authority",
+      "branch": "executive",
+      "factoid": "Operates and maintains the 570-mile New York State Thruway toll road system."
+    },
+    {
+      "id": "state:division_of_budget",
+      "label": "Division of the Budget",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Prepares governor's annual budget proposal and monitors state agency spending and fiscal planning."
+    },
+    {
+      "id": "state:attorney_general",
+      "label": "Attorney General",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Statewide elected chief legal officer providing consumer protection, civil enforcement, and legal representation."
+    },
+    {
+      "id": "state:commission_on_judicial_nomination",
+      "label": "Commission on Judicial Nomination",
+      "type": "commission",
+      "branch": "judicial",
+      "factoid": "Independent commission that screens and nominates candidates for New York Court of Appeals appointments."
+    },
+    {
+      "id": "state:voters_ny",
+      "label": "NY State Voters",
+      "type": "stakeholder",
+      "branch": "electoral",
+      "factoid": "Registered voters who elect state officials, legislators, and vote on statewide ballot propositions."
+    },
+    {
+      "id": "state:public_ny",
+      "label": "Public",
+      "type": "stakeholder",
+      "branch": "civic",
+      "factoid": "General public participating in state rulemaking through comment periods and public hearings."
+    },
+    {
+      "id": "state:nysp_uniformed_force",
+      "label": "Uniformed Force",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Comprises approximately 5,000 sworn troopers conducting patrol, criminal investigations, and traffic enforcement across New York State's highways and rural areas."
+    },
+    {
+      "id": "state:nysp_criminal_investigation",
+      "label": "Bureau of Criminal Investigation",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Conducts major crime investigations including homicides, organized crime, narcotics, computer crime, and forensic analysis through specialized units statewide."
+    },
+    {
+      "id": "state:nysp_field_command",
+      "label": "Field Command",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Oversees troop operations across 10 geographic troops covering all of New York State, coordinating patrol and emergency response at regional level."
+    },
+    {
+      "id": "state:dot_highway_design",
+      "label": "Office of Design",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Plans and designs highway construction projects, bridge replacements, and transportation infrastructure improvements across the state's 17,000 miles of highways."
+    },
+    {
+      "id": "state:dot_operations_maintenance",
+      "label": "Office of Operations and Asset Management",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Maintains state highways and bridges through 11 regional offices, manages snow removal operations, and conducts bridge inspections for 7,800+ state bridges."
+    },
+    {
+      "id": "state:dot_traffic_safety",
+      "label": "Office of Traffic Safety and Mobility",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Manages traffic signal systems, implements safety improvements, administers federal highway safety grants, and coordinates intelligent transportation systems."
+    },
+    {
+      "id": "state:dot_construction",
+      "label": "Office of Construction",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Oversees execution of capital construction projects, manages contractor relationships, and ensures quality control for billions in annual infrastructure spending."
+    },
+    {
+      "id": "state:dec_air_resources",
+      "label": "Division of Air Resources",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Regulates air quality, issues air pollution permits, monitors emissions from industrial facilities, and enforces Clean Air Act requirements statewide."
+    },
+    {
+      "id": "state:dec_water",
+      "label": "Division of Water",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Protects water quality through SPDES permits, manages drinking water programs, regulates wastewater treatment, and oversees wetlands protection across New York."
+    },
+    {
+      "id": "state:dec_lands_forests",
+      "label": "Division of Lands and Forests",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Manages 4.6 million acres of state forest preserve in Adirondack and Catskill Parks, administers forest rangers, and oversees recreational use."
+    },
+    {
+      "id": "state:dec_fish_wildlife",
+      "label": "Division of Fish and Wildlife",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Manages hunting and fishing programs, issues licenses, stocks waterways, conducts wildlife research, and enforces Environmental Conservation Law through ECOs."
+    },
+    {
+      "id": "state:dec_environmental_remediation",
+      "label": "Division of Environmental Remediation",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Oversees Superfund cleanup sites, brownfield redevelopment programs, petroleum spill response, and hazardous waste facility regulation across the state."
+    },
+    {
+      "id": "state:health_public_health",
+      "label": "Office of Public Health",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Conducts disease surveillance, manages immunization programs, responds to infectious disease outbreaks, and coordinates emergency preparedness for public health threats."
+    },
+    {
+      "id": "state:health_quality_patient_safety",
+      "label": "Office of Quality and Patient Safety",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Licenses and surveys hospitals, nursing homes, and healthcare facilities for compliance with state health codes and federal Medicare/Medicaid standards."
+    },
+    {
+      "id": "state:health_health_insurance",
+      "label": "Office of Health Insurance Programs",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Administers Medicaid and Child Health Plus programs serving over 7 million New Yorkers, processes eligibility, manages provider payments, and oversees managed care plans."
+    },
+    {
+      "id": "state:health_primary_care",
+      "label": "Office of Primary Care and Health Systems Management",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Oversees community health centers, rural health programs, and primary care workforce development to ensure access to healthcare across underserved areas."
+    },
+    {
+      "id": "state:education_instructional_services",
+      "label": "Office of Instructional Services",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Sets curriculum standards, develops Regents examinations, oversees teacher certification, and provides guidance on instructional programs to 700+ school districts."
+    },
+    {
+      "id": "state:education_school_operations",
+      "label": "Office of School Operations and Management Services",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Reviews district budgets, oversees school construction aid, manages transportation aid, and provides administrative guidance to school districts statewide."
+    },
+    {
+      "id": "state:education_special_education",
+      "label": "Office of Special Education",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Ensures compliance with IDEA, provides technical assistance on IEPs, manages preschool special education programs, and supports over 400,000 students with disabilities."
+    },
+    {
+      "id": "state:education_higher_education",
+      "label": "Office of Higher Education",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Oversees SUNY and CUNY systems, registers degree programs at private colleges, administers TAP financial aid, and regulates for-profit institutions."
+    },
+    {
+      "id": "state:labor_unemployment_insurance",
+      "label": "Unemployment Insurance Division",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Administers unemployment benefits to eligible workers, collects employer contributions, investigates fraud, and processes over 3 million claims during economic downturns."
+    },
+    {
+      "id": "state:labor_workforce_development",
+      "label": "Division of Employment and Workforce Solutions",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Operates career centers statewide, provides job training programs, manages federal workforce development grants, and connects employers with job seekers."
+    },
+    {
+      "id": "state:labor_safety_health",
+      "label": "Division of Safety and Health",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Enforces workplace safety standards under PESH (Public Employee Safety and Health), conducts inspections, investigates accidents, and promotes occupational safety."
+    },
+    {
+      "id": "state:labor_labor_standards",
+      "label": "Division of Labor Standards",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Enforces minimum wage, overtime, child labor laws, prevailing wage on public works, and investigates wage theft complaints from workers statewide."
+    },
+    {
+      "id": "state:ag_criminal_justice",
+      "label": "Division of Criminal Justice",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Prosecutes public corruption, organized crime, and major frauds, coordinates with local DAs, and manages special investigations including police misconduct cases."
+    },
+    {
+      "id": "state:ag_economic_justice",
+      "label": "Division of Economic Justice",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Enforces consumer protection laws, prosecutes antitrust violations, investigates deceptive business practices, and recovers restitution for defrauded consumers."
+    },
+    {
+      "id": "state:ag_social_justice",
+      "label": "Division of Social Justice",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Enforces civil rights laws, investigates discrimination, protects nonprofit organizations, and litigates environmental justice and healthcare fraud cases."
+    },
+    {
+      "id": "state:comptroller_operations_audit",
+      "label": "Office of Operations and State Audit",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Conducts performance and financial audits of state agencies, issues audit reports on program effectiveness, and identifies waste, fraud, and abuse in state operations."
+    },
+    {
+      "id": "state:comptroller_local_government",
+      "label": "Office of Local Government and School Accountability",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Audits local governments and school districts, provides fiscal oversight, reviews budgets for fiscal stress, and offers technical assistance to municipalities."
+    },
+    {
+      "id": "state:comptroller_retirement_services",
+      "label": "Office of Retirement Services",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Administers pension system for 1.1 million current and retired public employees, processes retirement applications, calculates benefits, and provides member services."
+    },
+    {
+      "id": "state:comptroller_investment",
+      "label": "Office of Investment Management",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Manages $250+ billion state pension fund investments across equities, bonds, real estate, and private equity, achieving returns to fund retirement obligations."
+    },
+    {
+      "id": "state:parks_operations",
+      "label": "Operations Division",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Maintains and operates 180 state parks and 35 historic sites, manages recreation programs, coordinates seasonal operations, and ensures visitor safety statewide."
+    },
+    {
+      "id": "state:parks_planning_development",
+      "label": "Planning and Development Division",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Plans capital improvements, designs park facilities, manages construction projects, and develops master plans for state parks and historic preservation."
+    },
+    {
+      "id": "state:parks_historic_preservation",
+      "label": "Historic Preservation Division",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Maintains historic sites, reviews development projects affecting historic resources under SEQRA, administers tax credit programs, and manages state and national registers."
+    },
+    {
+      "id": "state:agriculture_food_safety",
+      "label": "Division of Food Safety and Inspection",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Inspects food processing facilities, dairy farms, and retail food stores, enforces food safety standards, and regulates weights and measures across New York."
+    },
+    {
+      "id": "state:agriculture_animal_industry",
+      "label": "Division of Animal Industry",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Monitors animal health, controls livestock diseases, inspects slaughterhouses, administers rabies control programs, and regulates animal imports into the state."
+    },
+    {
+      "id": "state:agriculture_plant_industry",
+      "label": "Division of Plant Industry",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Protects crops from pests and diseases, inspects nurseries and greenhouses, enforces pesticide regulations, and manages agricultural pest control programs."
+    },
+    {
+      "id": "state:budget_planning",
+      "label": "Budget Planning and Review",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Prepares Governor's executive budget proposal, analyzes agency requests, develops financial plans, and monitors state spending throughout the fiscal year."
+    },
+    {
+      "id": "state:budget_operations",
+      "label": "Budget Operations and State Financial Systems",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Manages appropriation controls, processes budget amendments, maintains accounting systems, and produces financial reports on state revenues and expenditures."
+    },
+    {
+      "id": "state:budget_capital",
+      "label": "Office of Capital Programming and Management",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Develops state capital plan, reviews agency capital requests, monitors capital project execution, and manages debt issuance for infrastructure investments."
+    }
+  ],
+  "edges": [
+    {
+      "source": "state:ny_state_constitution",
+      "target": "state:governor_ny",
+      "relation": "establishes"
+    },
+    {
+      "source": "state:ny_state_constitution",
+      "target": "state:state_legislature",
+      "relation": "establishes"
+    },
+    {
+      "source": "state:ny_state_constitution",
+      "target": "state:state_judiciary",
+      "relation": "establishes"
+    },
+    {
+      "source": "state:ny_state_constitution",
+      "target": "state:state_comptroller",
+      "relation": "establishes"
+    },
+    {
+      "source": "state:state_senate",
+      "target": "state:ny_consolidated_laws",
+      "relation": "enacts"
+    },
+    {
+      "source": "state:state_assembly",
+      "target": "state:ny_consolidated_laws",
+      "relation": "enacts"
+    },
+    {
+      "source": "state:state_legislature",
+      "target": "state:state_budget",
+      "relation": "adopts"
+    },
+    {
+      "source": "state:state_legislature",
+      "target": "state:state_assembly",
+      "relation": "includes"
+    },
+    {
+      "source": "state:state_legislature",
+      "target": "state:state_senate",
+      "relation": "includes"
+    },
+    {
+      "source": "state:governor_ny",
+      "target": "state:state_budget",
+      "relation": "proposes"
+    },
+    {
+      "source": "state:governor_ny",
+      "target": "state:state_agencies",
+      "relation": "oversees"
+    },
+    {
+      "source": "state:state_agencies",
+      "target": "state:nycrr",
+      "relation": "issues"
+    },
+    {
+      "source": "state:state_comptroller",
+      "target": "state:state_budget",
+      "relation": "audits"
+    },
+    {
+      "source": "state:state_legislature",
+      "target": "state:public_authorities",
+      "relation": "creates"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:mta",
+      "relation": "includes"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:nys_thruway",
+      "relation": "includes"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:nypa",
+      "relation": "includes"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:dasny",
+      "relation": "includes"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:esd",
+      "relation": "includes"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:battery_park_city_authority",
+      "relation": "includes"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:roosevelt_island",
+      "relation": "includes"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:port_authority",
+      "relation": "includes"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:nycha",
+      "relation": "includes"
+    }
+  ],
+  "subviews": [
+    {
+      "id": "nysp_internal",
+      "label": "State Police Internal Structure",
+      "description": "Major operational divisions within the New York State Police managing uniformed patrol, criminal investigations, and field operations",
+      "type": "intra",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:state_police_ny"
+      },
+      "nodes": [
+        "state:state_police_ny",
+        "state:nysp_uniformed_force",
+        "state:nysp_criminal_investigation",
+        "state:nysp_field_command"
+      ],
+      "edges": [
+        {
+          "source": "state:state_police_ny",
+          "target": "state:nysp_uniformed_force",
+          "id": "state_police_ny→nysp_uniformed_force:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:state_police_ny",
+          "target": "state:nysp_criminal_investigation",
+          "id": "state_police_ny→nysp_criminal_investigation:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:state_police_ny",
+          "target": "state:nysp_field_command",
+          "id": "state_police_ny→nysp_field_command:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "state_dot_internal",
+      "label": "State DOT Internal Structure",
+      "description": "Major operational offices within NYS Department of Transportation managing highway design, maintenance, construction, and safety programs",
+      "type": "intra",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:dot_ny"
+      },
+      "nodes": [
+        "state:dot_ny",
+        "state:dot_highway_design",
+        "state:dot_operations_maintenance",
+        "state:dot_traffic_safety",
+        "state:dot_construction"
+      ],
+      "edges": [
+        {
+          "source": "state:dot_ny",
+          "target": "state:dot_highway_design",
+          "id": "dot_ny→dot_highway_design:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:dot_ny",
+          "target": "state:dot_operations_maintenance",
+          "id": "dot_ny→dot_operations_maintenance:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:dot_ny",
+          "target": "state:dot_traffic_safety",
+          "id": "dot_ny→dot_traffic_safety:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:dot_ny",
+          "target": "state:dot_construction",
+          "id": "dot_ny→dot_construction:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "state_dec_internal",
+      "label": "State DEC Internal Structure",
+      "description": "Major operational divisions within the Department of Environmental Conservation managing air, water, forests, wildlife, and remediation programs",
+      "type": "intra",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:dec_ny"
+      },
+      "nodes": [
+        "state:dec_ny",
+        "state:dec_air_resources",
+        "state:dec_water",
+        "state:dec_lands_forests",
+        "state:dec_fish_wildlife",
+        "state:dec_environmental_remediation"
+      ],
+      "edges": [
+        {
+          "source": "state:dec_ny",
+          "target": "state:dec_air_resources",
+          "id": "dec_ny→dec_air_resources:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:dec_ny",
+          "target": "state:dec_water",
+          "id": "dec_ny→dec_water:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:dec_ny",
+          "target": "state:dec_lands_forests",
+          "id": "dec_ny→dec_lands_forests:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:dec_ny",
+          "target": "state:dec_fish_wildlife",
+          "id": "dec_ny→dec_fish_wildlife:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:dec_ny",
+          "target": "state:dec_environmental_remediation",
+          "id": "dec_ny→dec_environmental_remediation:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "state_health_internal",
+      "label": "State Health Department Internal Structure",
+      "description": "Major operational offices within NYS Department of Health managing public health, facility oversight, Medicaid, and primary care programs",
+      "type": "intra",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:doh_ny"
+      },
+      "nodes": [
+        "state:doh_ny",
+        "state:health_public_health",
+        "state:health_quality_patient_safety",
+        "state:health_health_insurance",
+        "state:health_primary_care"
+      ],
+      "edges": [
+        {
+          "source": "state:doh_ny",
+          "target": "state:health_public_health",
+          "id": "doh_ny→health_public_health:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:doh_ny",
+          "target": "state:health_quality_patient_safety",
+          "id": "doh_ny→health_quality_patient_safety:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:doh_ny",
+          "target": "state:health_health_insurance",
+          "id": "doh_ny→health_health_insurance:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:doh_ny",
+          "target": "state:health_primary_care",
+          "id": "doh_ny→health_primary_care:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "state_education_internal",
+      "label": "State Education Department Internal Structure",
+      "description": "Major operational offices within NYS Education Department managing curriculum, school operations, special education, and higher education oversight",
+      "type": "intra",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:sed_ny"
+      },
+      "nodes": [
+        "state:sed_ny",
+        "state:education_instructional_services",
+        "state:education_school_operations",
+        "state:education_special_education",
+        "state:education_higher_education"
+      ],
+      "edges": [
+        {
+          "source": "state:sed_ny",
+          "target": "state:education_instructional_services",
+          "id": "sed_ny→education_instructional_services:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:sed_ny",
+          "target": "state:education_school_operations",
+          "id": "sed_ny→education_school_operations:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:sed_ny",
+          "target": "state:education_special_education",
+          "id": "sed_ny→education_special_education:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:sed_ny",
+          "target": "state:education_higher_education",
+          "id": "sed_ny→education_higher_education:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "state_labor_internal",
+      "label": "State Labor Department Internal Structure",
+      "description": "Major operational divisions within NYS Department of Labor managing unemployment insurance, workforce development, safety, and labor standards",
+      "type": "intra",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:dol_ny"
+      },
+      "nodes": [
+        "state:dol_ny",
+        "state:labor_unemployment_insurance",
+        "state:labor_workforce_development",
+        "state:labor_safety_health",
+        "state:labor_labor_standards"
+      ],
+      "edges": [
+        {
+          "source": "state:dol_ny",
+          "target": "state:labor_unemployment_insurance",
+          "id": "dol_ny→labor_unemployment_insurance:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:dol_ny",
+          "target": "state:labor_workforce_development",
+          "id": "dol_ny→labor_workforce_development:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:dol_ny",
+          "target": "state:labor_safety_health",
+          "id": "dol_ny→labor_safety_health:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:dol_ny",
+          "target": "state:labor_labor_standards",
+          "id": "dol_ny→labor_labor_standards:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "state_ag_internal",
+      "label": "Attorney General Internal Structure",
+      "description": "Major operational divisions within the Attorney General's Office handling criminal justice, economic justice, and social justice matters",
+      "type": "intra",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:attorney_general"
+      },
+      "nodes": [
+        "state:attorney_general",
+        "state:ag_criminal_justice",
+        "state:ag_economic_justice",
+        "state:ag_social_justice"
+      ],
+      "edges": [
+        {
+          "source": "state:attorney_general",
+          "target": "state:ag_criminal_justice",
+          "id": "attorney_general→ag_criminal_justice:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:attorney_general",
+          "target": "state:ag_economic_justice",
+          "id": "attorney_general→ag_economic_justice:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:attorney_general",
+          "target": "state:ag_social_justice",
+          "id": "attorney_general→ag_social_justice:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "state_comptroller_internal",
+      "label": "State Comptroller Internal Structure",
+      "description": "Major operational offices within the State Comptroller managing state audits, local government oversight, retirement services, and pension investments",
+      "type": "intra",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:state_comptroller"
+      },
+      "nodes": [
+        "state:state_comptroller",
+        "state:comptroller_operations_audit",
+        "state:comptroller_local_government",
+        "state:comptroller_retirement_services",
+        "state:comptroller_investment"
+      ],
+      "edges": [
+        {
+          "source": "state:state_comptroller",
+          "target": "state:comptroller_operations_audit",
+          "id": "state_comptroller→comptroller_operations_audit:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:state_comptroller",
+          "target": "state:comptroller_local_government",
+          "id": "state_comptroller→comptroller_local_government:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:state_comptroller",
+          "target": "state:comptroller_retirement_services",
+          "id": "state_comptroller→comptroller_retirement_services:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:state_comptroller",
+          "target": "state:comptroller_investment",
+          "id": "state_comptroller→comptroller_investment:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "state_parks_internal",
+      "label": "State Parks Internal Structure",
+      "description": "Major operational divisions within the Office of Parks, Recreation and Historic Preservation managing park operations, planning, and historic preservation",
+      "type": "intra",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:parks_ny"
+      },
+      "nodes": [
+        "state:parks_ny",
+        "state:parks_operations",
+        "state:parks_planning_development",
+        "state:parks_historic_preservation"
+      ],
+      "edges": [
+        {
+          "source": "state:parks_ny",
+          "target": "state:parks_operations",
+          "id": "parks_ny→parks_operations:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:parks_ny",
+          "target": "state:parks_planning_development",
+          "id": "parks_ny→parks_planning_development:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:parks_ny",
+          "target": "state:parks_historic_preservation",
+          "id": "parks_ny→parks_historic_preservation:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "state_agriculture_internal",
+      "label": "State Agriculture & Markets Internal Structure",
+      "description": "Major operational divisions within the Department of Agriculture and Markets managing food safety, animal health, and plant industry programs",
+      "type": "intra",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:agm_ny"
+      },
+      "nodes": [
+        "state:agm_ny",
+        "state:agriculture_food_safety",
+        "state:agriculture_animal_industry",
+        "state:agriculture_plant_industry"
+      ],
+      "edges": [
+        {
+          "source": "state:agm_ny",
+          "target": "state:agriculture_food_safety",
+          "id": "agm_ny→agriculture_food_safety:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:agm_ny",
+          "target": "state:agriculture_animal_industry",
+          "id": "agm_ny→agriculture_animal_industry:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:agm_ny",
+          "target": "state:agriculture_plant_industry",
+          "id": "agm_ny→agriculture_plant_industry:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "state_budget_internal",
+      "label": "State Budget Division Internal Structure",
+      "description": "Major operational offices within the Division of the Budget managing budget planning, operations, and capital programming",
+      "type": "intra",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:division_of_budget"
+      },
+      "nodes": [
+        "state:division_of_budget",
+        "state:budget_planning",
+        "state:budget_operations",
+        "state:budget_capital"
+      ],
+      "edges": [
+        {
+          "source": "state:division_of_budget",
+          "target": "state:budget_planning",
+          "id": "division_of_budget→budget_planning:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:division_of_budget",
+          "target": "state:budget_operations",
+          "id": "division_of_budget→budget_operations:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:division_of_budget",
+          "target": "state:budget_capital",
+          "id": "division_of_budget→budget_capital:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    }
+  ]
+}

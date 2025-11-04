@@ -1,0 +1,1127 @@
+{
+  "meta": {
+    "jurisdiction": "federal",
+    "tier": "intra",
+    "version": "1.0.0",
+    "description": "federal agencies, departments, and intra-agency subviews"
+  },
+  "nodes": [
+    {
+      "id": "federal:senate",
+      "label": "U.S. Senate",
+      "type": "body",
+      "branch": "legislative",
+      "factoid": "Upper chamber of Congress that confirms appointments, ratifies treaties, and participates in lawmaking."
+    },
+    {
+      "id": "federal:federal_budget",
+      "label": "Federal Budget",
+      "type": "process",
+      "branch": "financial",
+      "process": [
+        "budget"
+      ],
+      "factoid": "Annual fiscal plan proposed by the President and enacted by Congress to fund federal operations and programs."
+    },
+    {
+      "id": "federal:federal_agencies",
+      "label": "Federal Agencies",
+      "type": "agency",
+      "branch": "administrative",
+      "factoid": "Departments and independent agencies implementing federal laws and programs across areas like defense, health, and environment."
+    },
+    {
+      "id": "federal:us_code",
+      "label": "United States Code",
+      "type": "law",
+      "branch": "law",
+      "factoid": "Compilation of permanent federal statutes organized by subject, enacted by Congress."
+    },
+    {
+      "id": "federal:cfr",
+      "label": "Code of Federal Regulations (CFR)",
+      "type": "law",
+      "branch": "administrative",
+      "factoid": "Detailed regulations issued by federal agencies to implement federal statutes."
+    },
+    {
+      "id": "federal:state",
+      "label": "Department of State",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Conducts foreign policy, manages diplomatic relations, and issues passports and visas."
+    },
+    {
+      "id": "federal:treasury",
+      "label": "Department of the Treasury",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Manages federal finances, collects taxes, produces currency, and enforces financial laws."
+    },
+    {
+      "id": "federal:dod",
+      "label": "Department of Defense",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Coordinates military operations and national defense through Army, Navy, Air Force, and Marines."
+    },
+    {
+      "id": "federal:doj",
+      "label": "Department of Justice",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Enforces federal law, prosecutes federal crimes, and provides legal representation for the United States."
+    },
+    {
+      "id": "federal:interior",
+      "label": "Department of the Interior",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Manages federal lands, natural resources, national parks, and Native American affairs."
+    },
+    {
+      "id": "federal:agriculture",
+      "label": "Department of Agriculture",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Supports farming industry, ensures food safety, administers nutrition programs, and manages rural development."
+    },
+    {
+      "id": "federal:commerce",
+      "label": "Department of Commerce",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Promotes economic development, conducts census, manages trade policy, and protects intellectual property."
+    },
+    {
+      "id": "federal:labor",
+      "label": "Department of Labor",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Enforces workplace standards, collects employment statistics, and protects worker rights and benefits."
+    },
+    {
+      "id": "federal:hhs",
+      "label": "Department of Health and Human Services",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Administers Medicare, Medicaid, public health programs, and social services nationwide."
+    },
+    {
+      "id": "federal:hud",
+      "label": "Department of Housing and Urban Development",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Develops housing policy, provides rental assistance, and supports urban community development."
+    },
+    {
+      "id": "federal:dot",
+      "label": "Department of Transportation",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Oversees federal highways, aviation safety, rail systems, and national transportation infrastructure."
+    },
+    {
+      "id": "federal:energy",
+      "label": "Department of Energy",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Develops energy policy, manages nuclear weapons program, and operates national research laboratories."
+    },
+    {
+      "id": "federal:education",
+      "label": "Department of Education",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Establishes federal education policy, administers student financial aid, and enforces civil rights in schools."
+    },
+    {
+      "id": "federal:va",
+      "label": "Department of Veterans Affairs",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Provides healthcare, benefits, and services to military veterans and their families."
+    },
+    {
+      "id": "federal:dhs",
+      "label": "Department of Homeland Security",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Protects borders, manages immigration enforcement, coordinates disaster response, and prevents terrorism."
+    },
+    {
+      "id": "federal:epa",
+      "label": "Environmental Protection Agency",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Protects environment and public health through regulation of air, water, and hazardous waste."
+    },
+    {
+      "id": "federal:nasa",
+      "label": "National Aeronautics and Space Administration",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Conducts space exploration, aeronautics research, and scientific discovery missions."
+    },
+    {
+      "id": "federal:ssa",
+      "label": "Social Security Administration",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Administers Social Security retirement, disability, and survivor benefits nationwide."
+    },
+    {
+      "id": "federal:cia",
+      "label": "Central Intelligence Agency",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Collects and analyzes foreign intelligence to support national security and foreign policy decisions."
+    },
+    {
+      "id": "federal:fbi",
+      "label": "Federal Bureau of Investigation",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Investigates federal crimes, conducts counterterrorism operations, and provides domestic intelligence."
+    },
+    {
+      "id": "federal:nsa",
+      "label": "National Security Agency",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Conducts signals intelligence, cryptography, and cybersecurity operations for national defense."
+    },
+    {
+      "id": "federal:fema",
+      "label": "Federal Emergency Management Agency",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Coordinates federal disaster response, recovery assistance, and emergency preparedness programs."
+    },
+    {
+      "id": "federal:sba",
+      "label": "Small Business Administration",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Provides loans, counseling, and support services to help small businesses start and grow."
+    },
+    {
+      "id": "federal:sec",
+      "label": "Securities and Exchange Commission",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Regulates securities markets, enforces securities laws, and protects investors from fraud."
+    },
+    {
+      "id": "federal:fcc",
+      "label": "Federal Communications Commission",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Regulates telecommunications, broadcast media, and internet services nationwide."
+    },
+    {
+      "id": "federal:ftc",
+      "label": "Federal Trade Commission",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Protects consumers from deceptive practices and enforces antitrust laws to promote competition."
+    },
+    {
+      "id": "federal:usps",
+      "label": "United States Postal Service",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Provides mail delivery service to every address in the United States and its territories."
+    },
+    {
+      "id": "federal:fed",
+      "label": "Federal Reserve System",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Serves as central bank managing monetary policy, financial stability, and banking system supervision."
+    },
+    {
+      "id": "federal:omb",
+      "label": "Office of Management and Budget",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Prepares president's budget proposal, oversees federal agency performance, and coordinates administration policy."
+    },
+    {
+      "id": "federal:oira",
+      "label": "Office of Information and Regulatory Affairs",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Reviews federal agency regulations, manages information policy, and coordinates regulatory reform efforts."
+    },
+    {
+      "id": "federal:appropriations_committees",
+      "label": "Appropriations Committees",
+      "type": "body",
+      "branch": "legislative",
+      "factoid": "House and Senate committees responsible for allocating federal spending through annual appropriations bills."
+    },
+    {
+      "id": "federal:house_judiciary_committee",
+      "label": "House Judiciary Committee",
+      "type": "body",
+      "branch": "legislative",
+      "factoid": "House committee with jurisdiction over impeachment, constitutional amendments, federal courts, and civil liberties."
+    },
+    {
+      "id": "federal:oversight",
+      "label": "Congressional Oversight",
+      "type": "body",
+      "branch": "legislative",
+      "factoid": "Congressional committees monitoring executive branch activities, agency performance, and program effectiveness."
+    },
+    {
+      "id": "federal:chief_justice",
+      "label": "Chief Justice",
+      "type": "office",
+      "branch": "judicial",
+      "factoid": "Head of Supreme Court and federal judiciary who presides over Court proceedings and impeachment trials."
+    },
+    {
+      "id": "federal:public",
+      "label": "Public",
+      "type": "stakeholder",
+      "branch": "civic",
+      "factoid": "General public participating in federal rulemaking through comment periods and public engagement processes."
+    },
+    {
+      "id": "federal:agencies",
+      "label": "Federal Agencies",
+      "type": "category",
+      "branch": "executive",
+      "factoid": "Collection of all federal executive branch agencies implementing laws and delivering government services."
+    },
+    {
+      "id": "federal:subnational_governments",
+      "label": "State and Local Governments",
+      "type": "stakeholder",
+      "branch": "intergovernmental",
+      "factoid": "State and local government entities interacting with federal agencies through grants, regulations, and partnerships."
+    },
+    {
+      "id": "federal:dod_army",
+      "label": "United States Army",
+      "type": "military_branch",
+      "branch": "executive",
+      "factoid": "Land warfare branch with approximately 485,000 active duty soldiers organized into divisions, brigades, and support commands, operating globally under Army command."
+    },
+    {
+      "id": "federal:dod_navy",
+      "label": "United States Navy",
+      "type": "military_branch",
+      "branch": "executive",
+      "factoid": "Naval warfare branch with approximately 350,000 active duty personnel operating 290+ ships, 11 aircraft carriers, and submarine forces across global fleets."
+    },
+    {
+      "id": "federal:dod_air_force",
+      "label": "United States Air Force",
+      "type": "military_branch",
+      "branch": "executive",
+      "factoid": "Air and space warfare branch with approximately 330,000 active duty airmen operating fighter jets, bombers, cargo aircraft, satellites, and missile systems worldwide."
+    },
+    {
+      "id": "federal:dod_marine_corps",
+      "label": "United States Marine Corps",
+      "type": "military_branch",
+      "branch": "executive",
+      "factoid": "Rapid deployment amphibious warfare force with approximately 185,000 active duty Marines organized into expeditionary units operating from naval vessels and bases."
+    },
+    {
+      "id": "federal:dod_space_force",
+      "label": "United States Space Force",
+      "type": "military_branch",
+      "branch": "executive",
+      "factoid": "Newest military branch established in 2019 with approximately 8,600 guardians operating satellites, missile warning systems, and space domain awareness globally."
+    },
+    {
+      "id": "federal:state_consular",
+      "label": "Bureau of Consular Affairs",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Issues over 20 million passports annually, provides consular services to Americans abroad through 270+ embassies and consulates, and manages visa processing."
+    },
+    {
+      "id": "federal:state_diplomatic_security",
+      "label": "Bureau of Diplomatic Security",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Protects diplomats, embassies, and classified information worldwide, conducts security clearance investigations, and coordinates security at over 275 diplomatic facilities."
+    },
+    {
+      "id": "federal:state_political_affairs",
+      "label": "Bureau of Political Affairs",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Manages bilateral political relationships, analyzes foreign political developments, and coordinates policy across regional bureaus covering every nation worldwide."
+    },
+    {
+      "id": "federal:state_economic_business",
+      "label": "Bureau of Economic and Business Affairs",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Advances U.S. economic interests abroad, negotiates trade agreements, promotes American business, and coordinates sanctions and economic policy globally."
+    },
+    {
+      "id": "federal:treasury_irs",
+      "label": "Internal Revenue Service",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Collects over $4 trillion in federal tax revenue annually, processes 150+ million individual returns, enforces tax law, and operates nationwide service centers."
+    },
+    {
+      "id": "federal:treasury_fiscal_service",
+      "label": "Bureau of the Fiscal Service",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Manages federal government's finances including payments, collections, debt issuance, and accounting for over $6 trillion in annual transactions."
+    },
+    {
+      "id": "federal:treasury_mint",
+      "label": "United States Mint",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Produces all U.S. coins for circulation and collectors, operates six facilities manufacturing billions of coins annually, and manages bullion reserves."
+    },
+    {
+      "id": "federal:treasury_engraving",
+      "label": "Bureau of Engraving and Printing",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Designs and prints U.S. currency, producing billions of Federal Reserve notes annually at facilities in Washington, D.C. and Fort Worth, Texas."
+    },
+    {
+      "id": "federal:doj_fbi",
+      "label": "Federal Bureau of Investigation",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Principal federal investigative agency with 35,000 employees conducting criminal investigations, counterterrorism, counterintelligence, and cybercrime operations nationwide."
+    },
+    {
+      "id": "federal:doj_dea",
+      "label": "Drug Enforcement Administration",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Enforces federal drug laws, combats drug trafficking organizations, coordinates with international partners, and operates in 69 countries worldwide."
+    },
+    {
+      "id": "federal:doj_atf",
+      "label": "Bureau of Alcohol, Tobacco, Firearms and Explosives",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Regulates firearms and explosives commerce, investigates gun trafficking, arson, and bombings, and enforces federal firearms laws through 25 field divisions."
+    },
+    {
+      "id": "federal:doj_usms",
+      "label": "United States Marshals Service",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Provides judicial security, apprehends fugitives, transports federal prisoners, manages witness protection program, and executes federal court orders nationwide."
+    },
+    {
+      "id": "federal:hhs_cdc",
+      "label": "Centers for Disease Control and Prevention",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Protects public health through disease surveillance, outbreak investigation, immunization programs, and health promotion serving entire U.S. population from Atlanta headquarters."
+    },
+    {
+      "id": "federal:hhs_fda",
+      "label": "Food and Drug Administration",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Regulates food safety, prescription drugs, medical devices, vaccines, and tobacco products, overseeing $2.7 trillion in products affecting American health and safety."
+    },
+    {
+      "id": "federal:hhs_cms",
+      "label": "Centers for Medicare and Medicaid Services",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Administers Medicare, Medicaid, and health insurance marketplaces serving over 150 million Americans with healthcare coverage and $1.4 trillion in annual spending."
+    },
+    {
+      "id": "federal:hhs_nih",
+      "label": "National Institutes of Health",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Primary federal biomedical research agency with $47 billion budget funding medical research through 27 institutes studying diseases, treatments, and health nationwide."
+    },
+    {
+      "id": "federal:ed_elementary_secondary",
+      "label": "Office of Elementary and Secondary Education",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Administers federal programs supporting K-12 education including Title I funding for disadvantaged students, serving 50 million public school students nationwide."
+    },
+    {
+      "id": "federal:ed_postsecondary",
+      "label": "Office of Postsecondary Education",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Manages federal student aid programs including Pell Grants and loans, accreditation oversight, and higher education initiatives serving 20 million college students."
+    },
+    {
+      "id": "federal:ed_special_education",
+      "label": "Office of Special Education and Rehabilitative Services",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Ensures IDEA compliance, provides funding for special education services, and supports 7.5 million students with disabilities in schools nationwide."
+    },
+    {
+      "id": "federal:ed_civil_rights",
+      "label": "Office for Civil Rights",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Enforces federal civil rights laws in education, investigates discrimination complaints, ensures equal access, and protects students from harassment and bias."
+    },
+    {
+      "id": "federal:dot_fhwa",
+      "label": "Federal Highway Administration",
+      "type": "administration",
+      "branch": "executive",
+      "factoid": "Provides federal funding for highways, administers $50+ billion annually for interstate and highway programs, and sets safety standards for 4 million miles of roads."
+    },
+    {
+      "id": "federal:dot_fta",
+      "label": "Federal Transit Administration",
+      "type": "administration",
+      "branch": "executive",
+      "factoid": "Funds public transportation systems, provides capital and operating grants to transit agencies, supporting subways, buses, and light rail serving millions of daily riders."
+    },
+    {
+      "id": "federal:dot_faa",
+      "label": "Federal Aviation Administration",
+      "type": "administration",
+      "branch": "executive",
+      "factoid": "Regulates civil aviation safety, manages air traffic control system handling 45,000+ daily flights, certifies aircraft and pilots, and operates nationwide airspace."
+    },
+    {
+      "id": "federal:dot_nhtsa",
+      "label": "National Highway Traffic Safety Administration",
+      "type": "administration",
+      "branch": "executive",
+      "factoid": "Sets vehicle safety standards, investigates defects, conducts crash testing, manages recalls, and works to reduce traffic fatalities on American roads."
+    },
+    {
+      "id": "federal:dhs_fema",
+      "label": "Federal Emergency Management Agency",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Coordinates federal disaster response, provides disaster relief funding, manages National Flood Insurance Program, and supports state/local emergency management nationwide."
+    },
+    {
+      "id": "federal:dhs_cbp",
+      "label": "Customs and Border Protection",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Secures borders at 328 ports of entry, processes international travelers and trade, employs 60,000+ agents and officers managing land, air, and sea borders."
+    },
+    {
+      "id": "federal:dhs_ice",
+      "label": "Immigration and Customs Enforcement",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Enforces immigration laws, investigates cross-border crime, manages detention facilities, and conducts interior immigration enforcement operations nationwide."
+    },
+    {
+      "id": "federal:dhs_uscis",
+      "label": "U.S. Citizenship and Immigration Services",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Processes immigration applications including green cards, naturalization, work permits, and asylum requests, serving millions of applicants annually through service centers."
+    },
+    {
+      "id": "federal:dhs_secret_service",
+      "label": "United States Secret Service",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Protects President, Vice President, visiting heads of state, and investigates financial crimes including counterfeiting and cybercrime with 7,000+ employees."
+    },
+    {
+      "id": "federal:epa_air_radiation",
+      "label": "Office of Air and Radiation",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Develops and enforces air quality standards, regulates emissions from vehicles and industry, manages Clean Air Act programs protecting public health nationwide."
+    },
+    {
+      "id": "federal:epa_water",
+      "label": "Office of Water",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Protects drinking water quality, regulates water pollution through Clean Water Act permits, and oversees wastewater treatment standards for 150,000+ public water systems."
+    },
+    {
+      "id": "federal:epa_land_emergency",
+      "label": "Office of Land and Emergency Management",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Manages Superfund hazardous waste cleanups, regulates waste disposal, responds to environmental emergencies, and oversees brownfield redevelopment programs."
+    },
+    {
+      "id": "federal:epa_enforcement",
+      "label": "Office of Enforcement and Compliance Assurance",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Investigates environmental violations, enforces EPA regulations, pursues civil and criminal penalties, and ensures compliance with environmental laws nationwide."
+    }
+  ],
+  "edges": [
+    {
+      "source": "federal:congress",
+      "target": "federal:senate",
+      "relation": "includes"
+    },
+    {
+      "source": "federal:president",
+      "target": "federal:federal_agencies",
+      "relation": "oversees"
+    },
+    {
+      "source": "federal:president",
+      "target": "federal:federal_budget",
+      "relation": "proposes"
+    },
+    {
+      "source": "federal:congress",
+      "target": "federal:federal_budget",
+      "relation": "enacts"
+    },
+    {
+      "source": "federal:senate",
+      "target": "federal:us_code",
+      "relation": "enacts",
+      "category": "legal",
+      "hierarchical": true
+    },
+    {
+      "source": "federal:house_of_representatives",
+      "target": "federal:us_code",
+      "relation": "enacts",
+      "category": "legal",
+      "hierarchical": true
+    },
+    {
+      "source": "federal:federal_agencies",
+      "target": "federal:cfr",
+      "relation": "promulgates",
+      "category": "administrative",
+      "hierarchical": true
+    }
+  ],
+  "subviews": [
+    {
+      "id": "dod_internal",
+      "label": "Department of Defense Internal Structure",
+      "description": "Five military service branches comprising the U.S. Armed Forces under unified Department of Defense command",
+      "type": "intra",
+      "jurisdiction": "federal",
+      "anchor": {
+        "nodeId": "federal:dod"
+      },
+      "nodes": [
+        "federal:dod",
+        "federal:dod_army",
+        "federal:dod_navy",
+        "federal:dod_air_force",
+        "federal:dod_marine_corps",
+        "federal:dod_space_force"
+      ],
+      "edges": [
+        {
+          "source": "federal:dod",
+          "target": "federal:dod_army",
+          "id": "dod→dod_army:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:dod",
+          "target": "federal:dod_navy",
+          "id": "dod→dod_navy:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:dod",
+          "target": "federal:dod_air_force",
+          "id": "dod→dod_air_force:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:dod",
+          "target": "federal:dod_marine_corps",
+          "id": "dod→dod_marine_corps:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:dod",
+          "target": "federal:dod_space_force",
+          "id": "dod→dod_space_force:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      },
+      "nesting": {
+        "allowedChildIds": [
+          "army_commands",
+          "navy_fleets",
+          "air_force_commands"
+        ]
+      }
+    },
+    {
+      "id": "state_dept_internal",
+      "label": "State Department Internal Structure",
+      "description": "Major operational bureaus within the Department of State managing diplomacy, consular services, and international affairs",
+      "type": "intra",
+      "jurisdiction": "federal",
+      "anchor": {
+        "nodeId": "federal:state"
+      },
+      "nodes": [
+        "federal:state",
+        "federal:state_consular",
+        "federal:state_diplomatic_security",
+        "federal:state_political_affairs",
+        "federal:state_economic_business"
+      ],
+      "edges": [
+        {
+          "source": "federal:state",
+          "target": "federal:state_consular",
+          "id": "state→state_consular:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:state",
+          "target": "federal:state_diplomatic_security",
+          "id": "state→state_diplomatic_security:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:state",
+          "target": "federal:state_political_affairs",
+          "id": "state→state_political_affairs:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:state",
+          "target": "federal:state_economic_business",
+          "id": "state→state_economic_business:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "treasury_internal",
+      "label": "Treasury Department Internal Structure",
+      "description": "Major operational bureaus within the Department of the Treasury managing tax collection, fiscal operations, and currency production",
+      "type": "intra",
+      "jurisdiction": "federal",
+      "anchor": {
+        "nodeId": "federal:treasury"
+      },
+      "nodes": [
+        "federal:treasury",
+        "federal:treasury_irs",
+        "federal:treasury_fiscal_service",
+        "federal:treasury_mint",
+        "federal:treasury_engraving"
+      ],
+      "edges": [
+        {
+          "source": "federal:treasury",
+          "target": "federal:treasury_irs",
+          "id": "treasury→treasury_irs:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:treasury",
+          "target": "federal:treasury_fiscal_service",
+          "id": "treasury→treasury_fiscal_service:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:treasury",
+          "target": "federal:treasury_mint",
+          "id": "treasury→treasury_mint:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:treasury",
+          "target": "federal:treasury_engraving",
+          "id": "treasury→treasury_engraving:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "doj_internal",
+      "label": "Department of Justice Internal Structure",
+      "description": "Major operational law enforcement bureaus within the Department of Justice conducting federal investigations and prosecutions",
+      "type": "intra",
+      "jurisdiction": "federal",
+      "anchor": {
+        "nodeId": "federal:doj"
+      },
+      "nodes": [
+        "federal:doj",
+        "federal:doj_fbi",
+        "federal:doj_dea",
+        "federal:doj_atf",
+        "federal:doj_usms"
+      ],
+      "edges": [
+        {
+          "source": "federal:doj",
+          "target": "federal:doj_fbi",
+          "id": "doj→doj_fbi:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:doj",
+          "target": "federal:doj_dea",
+          "id": "doj→doj_dea:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:doj",
+          "target": "federal:doj_atf",
+          "id": "doj→doj_atf:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:doj",
+          "target": "federal:doj_usms",
+          "id": "doj→doj_usms:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "hhs_internal",
+      "label": "HHS Internal Structure",
+      "description": "Major operational agencies within the Department of Health and Human Services managing public health, healthcare, and medical research",
+      "type": "intra",
+      "jurisdiction": "federal",
+      "anchor": {
+        "nodeId": "federal:hhs"
+      },
+      "nodes": [
+        "federal:hhs",
+        "federal:hhs_cdc",
+        "federal:hhs_fda",
+        "federal:hhs_cms",
+        "federal:hhs_nih"
+      ],
+      "edges": [
+        {
+          "source": "federal:hhs",
+          "target": "federal:hhs_cdc",
+          "id": "hhs→hhs_cdc:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:hhs",
+          "target": "federal:hhs_fda",
+          "id": "hhs→hhs_fda:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:hhs",
+          "target": "federal:hhs_cms",
+          "id": "hhs→hhs_cms:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:hhs",
+          "target": "federal:hhs_nih",
+          "id": "hhs→hhs_nih:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "education_internal",
+      "label": "Education Department Internal Structure",
+      "description": "Major operational offices within the Department of Education managing K-12, higher education, special education, and civil rights programs",
+      "type": "intra",
+      "jurisdiction": "federal",
+      "anchor": {
+        "nodeId": "federal:education"
+      },
+      "nodes": [
+        "federal:education",
+        "federal:ed_elementary_secondary",
+        "federal:ed_postsecondary",
+        "federal:ed_special_education",
+        "federal:ed_civil_rights"
+      ],
+      "edges": [
+        {
+          "source": "federal:education",
+          "target": "federal:ed_elementary_secondary",
+          "id": "education→ed_elementary_secondary:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:education",
+          "target": "federal:ed_postsecondary",
+          "id": "education→ed_postsecondary:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:education",
+          "target": "federal:ed_special_education",
+          "id": "education→ed_special_education:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:education",
+          "target": "federal:ed_civil_rights",
+          "id": "education→ed_civil_rights:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "dot_internal",
+      "label": "Transportation Department Internal Structure",
+      "description": "Major operational administrations within the Department of Transportation managing highways, transit, aviation, and vehicle safety",
+      "type": "intra",
+      "jurisdiction": "federal",
+      "anchor": {
+        "nodeId": "federal:dot"
+      },
+      "nodes": [
+        "federal:dot",
+        "federal:dot_fhwa",
+        "federal:dot_fta",
+        "federal:dot_faa",
+        "federal:dot_nhtsa"
+      ],
+      "edges": [
+        {
+          "source": "federal:dot",
+          "target": "federal:dot_fhwa",
+          "id": "dot→dot_fhwa:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:dot",
+          "target": "federal:dot_fta",
+          "id": "dot→dot_fta:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:dot",
+          "target": "federal:dot_faa",
+          "id": "dot→dot_faa:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:dot",
+          "target": "federal:dot_nhtsa",
+          "id": "dot→dot_nhtsa:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "dhs_internal",
+      "label": "Homeland Security Department Internal Structure",
+      "description": "Major operational agencies within the Department of Homeland Security managing emergency response, border security, immigration, and protection services",
+      "type": "intra",
+      "jurisdiction": "federal",
+      "anchor": {
+        "nodeId": "federal:dhs"
+      },
+      "nodes": [
+        "federal:dhs",
+        "federal:dhs_fema",
+        "federal:dhs_cbp",
+        "federal:dhs_ice",
+        "federal:dhs_uscis",
+        "federal:dhs_secret_service"
+      ],
+      "edges": [
+        {
+          "source": "federal:dhs",
+          "target": "federal:dhs_fema",
+          "id": "dhs→dhs_fema:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:dhs",
+          "target": "federal:dhs_cbp",
+          "id": "dhs→dhs_cbp:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:dhs",
+          "target": "federal:dhs_ice",
+          "id": "dhs→dhs_ice:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:dhs",
+          "target": "federal:dhs_uscis",
+          "id": "dhs→dhs_uscis:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:dhs",
+          "target": "federal:dhs_secret_service",
+          "id": "dhs→dhs_secret_service:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "epa_internal",
+      "label": "EPA Internal Structure",
+      "description": "Major operational offices within the Environmental Protection Agency managing air quality, water protection, waste cleanup, and enforcement",
+      "type": "intra",
+      "jurisdiction": "federal",
+      "anchor": {
+        "nodeId": "federal:epa"
+      },
+      "nodes": [
+        "federal:epa",
+        "federal:epa_air_radiation",
+        "federal:epa_water",
+        "federal:epa_land_emergency",
+        "federal:epa_enforcement"
+      ],
+      "edges": [
+        {
+          "source": "federal:epa",
+          "target": "federal:epa_air_radiation",
+          "id": "epa→epa_air_radiation:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:epa",
+          "target": "federal:epa_water",
+          "id": "epa→epa_water:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:epa",
+          "target": "federal:epa_land_emergency",
+          "id": "epa→epa_land_emergency:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:epa",
+          "target": "federal:epa_enforcement",
+          "id": "epa→epa_enforcement:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    }
+  ]
+}
