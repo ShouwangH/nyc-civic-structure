@@ -56,6 +56,14 @@ const extractMainEdges = (jurisdiction: GovernmentScope): RawEdge[] => {
   );
 };
 
+// Helper: Extract subviews for a specific jurisdiction from main.json
+const extractMainSubviews = (jurisdiction: GovernmentScope): SubviewDefinition[] => {
+  const prefix = `${jurisdiction}:`;
+  return ((mainData.subviews || []) as SubviewDefinition[]).filter(subview =>
+    subview.anchor?.nodeId?.startsWith(prefix)
+  );
+};
+
 // Helper: Merge main + intra data for a jurisdiction
 const buildDataset = (
   scope: GovernmentScope,
@@ -80,6 +88,11 @@ const buildDataset = (
     tier: 'intra' as const,
   }));
 
+  // Merge subviews from main.json and intra files
+  const mainSubviews = extractMainSubviews(scope);
+  const intraSubviews = (intraData.subviews || []) as SubviewDefinition[];
+  const allSubviews = [...mainSubviews, ...intraSubviews];
+
   return {
     scope,
     label,
@@ -92,7 +105,7 @@ const buildDataset = (
     edges: [...mainEdges, ...(intraData.edges || [])],
     processes: processFile.processes,
     subgraphs,
-    subviews: intraData.subviews as SubviewDefinition[] | undefined,
+    subviews: allSubviews.length > 0 ? allSubviews : undefined,
   };
 };
 
