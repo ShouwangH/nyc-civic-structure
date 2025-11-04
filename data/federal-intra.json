@@ -530,6 +530,202 @@
       "type": "office",
       "branch": "executive",
       "factoid": "Investigates environmental violations, enforces EPA regulations, pursues civil and criminal penalties, and ensures compliance with environmental laws nationwide."
+    },
+    {
+      "id": "federal:white_house_vice_president",
+      "label": "Vice President",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "First in line of succession to the President and serves as President of the Senate."
+    },
+    {
+      "id": "federal:white_house_chief_of_staff",
+      "label": "Chief of Staff",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Manages White House operations, controls access to the President, and coordinates senior staff."
+    },
+    {
+      "id": "federal:white_house_deputy_cos_ops",
+      "label": "Deputy Chief of Staff for Operations",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Oversees day-to-day White House operations, scheduling, and administrative functions."
+    },
+    {
+      "id": "federal:white_house_deputy_cos_policy",
+      "label": "Deputy Chief of Staff for Policy",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Coordinates domestic and economic policy development across White House councils."
+    },
+    {
+      "id": "federal:white_house_senior_advisor",
+      "label": "Senior Advisor",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Provides strategic counsel to the President on major policy and political decisions."
+    },
+    {
+      "id": "federal:white_house_national_security_advisor",
+      "label": "National Security Advisor",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Advises the President on national security and foreign policy and coordinates the National Security Council."
+    },
+    {
+      "id": "federal:white_house_counsel",
+      "label": "Counsel to the President",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Provides legal advice to the President and reviews executive orders, legislation, and presidential actions."
+    },
+    {
+      "id": "federal:white_house_press_secretary",
+      "label": "Press Secretary",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Conducts daily press briefings and serves as the primary spokesperson for the President."
+    },
+    {
+      "id": "federal:white_house_comms_director",
+      "label": "Director of Communications",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Develops and executes the President's overall communications and messaging strategy."
+    },
+    {
+      "id": "federal:eop_omb_director",
+      "label": "Director of Office of Management and Budget",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Prepares the federal budget, oversees agency spending, and reviews federal regulations."
+    },
+    {
+      "id": "federal:eop_nec_director",
+      "label": "National Economic Council Director",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Coordinates economic policy development across federal agencies and advises the President on economic matters."
+    },
+    {
+      "id": "federal:eop_dpc_director",
+      "label": "Domestic Policy Council Director",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Coordinates domestic policy development across federal agencies including health, education, and housing."
+    },
+    {
+      "id": "federal:senate_president_pro_tem",
+      "label": "President Pro Tempore of the Senate",
+      "type": "office",
+      "branch": "legislative",
+      "factoid": "Presides over the Senate when the Vice President is absent and is third in presidential succession."
+    },
+    {
+      "id": "federal:senate_majority_leader",
+      "label": "Senate Majority Leader",
+      "type": "office",
+      "branch": "legislative",
+      "factoid": "Leads the majority party, sets the legislative agenda, and manages floor proceedings in the Senate."
+    },
+    {
+      "id": "federal:senate_minority_leader",
+      "label": "Senate Minority Leader",
+      "type": "office",
+      "branch": "legislative",
+      "factoid": "Leads the minority party and serves as chief spokesperson for opposition legislative priorities."
+    },
+    {
+      "id": "federal:senate_appropriations_committee",
+      "label": "Senate Appropriations Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Controls federal spending through 12 subcommittees that fund all government operations and agencies."
+    },
+    {
+      "id": "federal:senate_finance_committee",
+      "label": "Senate Finance Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Oversees taxation, Social Security, Medicare, Medicaid, and trade policy legislation."
+    },
+    {
+      "id": "federal:senate_judiciary_committee",
+      "label": "Senate Judiciary Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Reviews federal judicial nominations and legislation on criminal justice, immigration, and civil rights."
+    },
+    {
+      "id": "federal:senate_foreign_relations_committee",
+      "label": "Senate Foreign Relations Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Reviews treaties, foreign aid, diplomatic nominations, and U.S. foreign policy."
+    },
+    {
+      "id": "federal:senate_armed_services_committee",
+      "label": "Senate Armed Services Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Oversees the Department of Defense, military operations, and the National Defense Authorization Act."
+    },
+    {
+      "id": "federal:house_speaker",
+      "label": "Speaker of the House",
+      "type": "office",
+      "branch": "legislative",
+      "factoid": "Presides over the House, sets legislative priorities, and is second in presidential succession."
+    },
+    {
+      "id": "federal:house_majority_leader",
+      "label": "House Majority Leader",
+      "type": "office",
+      "branch": "legislative",
+      "factoid": "Leads the majority party's legislative agenda and manages floor proceedings in the House."
+    },
+    {
+      "id": "federal:house_minority_leader",
+      "label": "House Minority Leader",
+      "type": "office",
+      "branch": "legislative",
+      "factoid": "Leads the minority party and serves as chief spokesperson for opposition legislative priorities."
+    },
+    {
+      "id": "federal:house_majority_whip",
+      "label": "House Majority Whip",
+      "type": "office",
+      "branch": "legislative",
+      "factoid": "Counts votes and builds support for the majority party's legislative priorities."
+    },
+    {
+      "id": "federal:house_appropriations_committee",
+      "label": "House Appropriations Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Controls federal spending through 12 subcommittees that fund all government operations and agencies."
+    },
+    {
+      "id": "federal:house_ways_means_committee",
+      "label": "House Ways and Means Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Oversees taxation, Social Security, Medicare, Medicaid, and trade policy legislation."
+    },
+    {
+      "id": "federal:house_rules_committee",
+      "label": "House Rules Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Controls which bills reach the floor and sets debate rules, giving it gatekeeping power."
+    },
+    {
+      "id": "federal:house_energy_commerce_committee",
+      "label": "House Energy and Commerce Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Oversees energy policy, healthcare, telecommunications, and consumer protection legislation."
     }
   ],
   "edges": [],
@@ -1041,321 +1237,6 @@
           "direction": "DOWN",
           "spacing": 70
         }
-      }
-    },
-    {
-      "id": "federal:federal_agencies",
-      "label": "Federal Executive Agencies",
-      "description": "Cabinet-level departments and independent agencies led by presidential appointees.",
-      "type": "intra",
-      "jurisdiction": "federal",
-      "anchor": {
-        "nodeId": "federal:federal_agencies"
-      },
-      "nodes": [
-        "federal:president",
-        "federal:federal_agencies",
-        "federal:state",
-        "federal:treasury",
-        "federal:dod",
-        "federal:doj",
-        "federal:interior",
-        "federal:agriculture",
-        "federal:commerce",
-        "federal:labor",
-        "federal:hhs",
-        "federal:hud",
-        "federal:dot",
-        "federal:energy",
-        "federal:education",
-        "federal:va",
-        "federal:dhs",
-        "federal:epa",
-        "federal:nasa",
-        "federal:ssa",
-        "federal:cia",
-        "federal:fbi",
-        "federal:sec",
-        "federal:fcc",
-        "federal:ftc",
-        "federal:usps",
-        "federal:fed",
-        "federal:nsa",
-        "federal:fema",
-        "federal:sba"
-      ],
-      "edges": [
-        {
-          "source": "federal:president",
-          "target": "federal:federal_agencies",
-          "relation": "directs"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:state",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:treasury",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:dod",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:doj",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:interior",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:agriculture",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:commerce",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:labor",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:hhs",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:hud",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:dot",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:energy",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:education",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:va",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:dhs",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:epa",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:nasa",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:ssa",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:cia",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:fbi",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:sec",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:fcc",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:ftc",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:usps",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:fed",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:nsa",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:fema",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:federal_agencies",
-          "target": "federal:sba",
-          "relation": "includes"
-        },
-        {
-          "source": "federal:doj",
-          "target": "federal:fbi",
-          "relation": "oversees"
-        },
-        {
-          "source": "federal:dhs",
-          "target": "federal:fema",
-          "relation": "oversees"
-        },
-        {
-          "source": "federal:dod",
-          "target": "federal:nsa",
-          "relation": "oversees"
-        },
-        {
-          "source": "federal:president",
-          "target": "federal:state",
-          "relation": "appoints_secretary"
-        },
-        {
-          "source": "federal:president",
-          "target": "federal:treasury",
-          "relation": "appoints_secretary"
-        },
-        {
-          "source": "federal:president",
-          "target": "federal:dod",
-          "relation": "appoints_secretary"
-        },
-        {
-          "source": "federal:president",
-          "target": "federal:doj",
-          "relation": "appoints_attorney_general"
-        },
-        {
-          "source": "federal:president",
-          "target": "federal:interior",
-          "relation": "appoints_secretary"
-        },
-        {
-          "source": "federal:president",
-          "target": "federal:agriculture",
-          "relation": "appoints_secretary"
-        },
-        {
-          "source": "federal:president",
-          "target": "federal:commerce",
-          "relation": "appoints_secretary"
-        },
-        {
-          "source": "federal:president",
-          "target": "federal:labor",
-          "relation": "appoints_secretary"
-        },
-        {
-          "source": "federal:president",
-          "target": "federal:hhs",
-          "relation": "appoints_secretary"
-        },
-        {
-          "source": "federal:president",
-          "target": "federal:hud",
-          "relation": "appoints_secretary"
-        },
-        {
-          "source": "federal:president",
-          "target": "federal:dot",
-          "relation": "appoints_secretary"
-        },
-        {
-          "source": "federal:president",
-          "target": "federal:energy",
-          "relation": "appoints_secretary"
-        },
-        {
-          "source": "federal:president",
-          "target": "federal:education",
-          "relation": "appoints_secretary"
-        },
-        {
-          "source": "federal:president",
-          "target": "federal:va",
-          "relation": "appoints_secretary"
-        },
-        {
-          "source": "federal:president",
-          "target": "federal:dhs",
-          "relation": "appoints_secretary"
-        },
-        {
-          "source": "federal:president",
-          "target": "federal:epa",
-          "relation": "appoints_administrator"
-        },
-        {
-          "source": "federal:president",
-          "target": "federal:nasa",
-          "relation": "appoints_administrator"
-        },
-        {
-          "source": "federal:president",
-          "target": "federal:ssa",
-          "relation": "appoints_commissioner"
-        },
-        {
-          "source": "federal:president",
-          "target": "federal:cia",
-          "relation": "appoints_director"
-        },
-        {
-          "source": "federal:president",
-          "target": "federal:fbi",
-          "relation": "appoints_director"
-        },
-        {
-          "source": "federal:president",
-          "target": "federal:sba",
-          "relation": "appoints_administrator"
-        }
-      ],
-      "layout": {
-        "type": "elk-mrtree",
-        "fit": true,
-        "padding": 80,
-        "animate": true
       }
     }
   ]

@@ -614,6 +614,195 @@
       "type": "office",
       "branch": "executive",
       "factoid": "Develops state capital plan, reviews agency capital requests, monitors capital project execution, and manages debt issuance for infrastructure investments."
+    },
+    {
+      "id": "state:governor_office_lt_governor",
+      "label": "Lieutenant Governor",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "First in line of succession to Governor and leads special initiatives assigned by the Governor."
+    },
+    {
+      "id": "state:governor_office_secretary",
+      "label": "Secretary to the Governor",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Serves as the Governor's chief administrative officer and coordinates executive chamber operations."
+    },
+    {
+      "id": "state:governor_office_chief_of_staff",
+      "label": "Chief of Staff",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Manages daily operations of the Governor's office and coordinates among senior staff."
+    },
+    {
+      "id": "state:governor_office_ds_public_safety",
+      "label": "Deputy Secretary for Public Safety",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Oversees state police, corrections, criminal justice, and emergency management policy."
+    },
+    {
+      "id": "state:governor_office_ds_health_hs",
+      "label": "Deputy Secretary for Health and Human Services",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Coordinates health, mental health, Medicaid, and social services agencies and policy."
+    },
+    {
+      "id": "state:governor_office_ds_econ_dev",
+      "label": "Deputy Secretary for Economic Development",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Leads economic development policy, workforce development, and business attraction initiatives."
+    },
+    {
+      "id": "state:governor_office_ds_energy_env",
+      "label": "Deputy Secretary for Energy and Environment",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Coordinates energy policy, environmental protection, and climate change initiatives."
+    },
+    {
+      "id": "state:governor_office_ds_education",
+      "label": "Deputy Secretary for Education",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Coordinates education policy across K-12, higher education, and workforce training systems."
+    },
+    {
+      "id": "state:governor_office_counsel",
+      "label": "Counsel to the Governor",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Provides legal advice to the Governor and reviews legislation, regulations, and executive orders."
+    },
+    {
+      "id": "state:governor_office_dir_state_ops",
+      "label": "Director of State Operations",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Manages administrative operations across state agencies and oversees operational efficiency."
+    },
+    {
+      "id": "state:governor_office_comms_director",
+      "label": "Communications Director",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Manages media relations, press operations, and the Governor's public messaging strategy."
+    },
+    {
+      "id": "state:assembly_speaker",
+      "label": "Speaker of the Assembly",
+      "type": "office",
+      "branch": "legislative",
+      "factoid": "Presides over the Assembly, sets legislative priorities, and appoints committee chairs."
+    },
+    {
+      "id": "state:assembly_majority_leader",
+      "label": "Majority Leader",
+      "type": "office",
+      "branch": "legislative",
+      "factoid": "Assists the Speaker in managing floor proceedings and building legislative consensus."
+    },
+    {
+      "id": "state:assembly_ways_means_committee",
+      "label": "Ways and Means Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Reviews the state budget, revenue proposals, and fiscal policy for the Assembly."
+    },
+    {
+      "id": "state:assembly_codes_committee",
+      "label": "Codes Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Reviews criminal justice legislation, penal law, and criminal procedure reforms."
+    },
+    {
+      "id": "state:assembly_rules_committee",
+      "label": "Rules Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Controls the legislative calendar and determines which bills reach the floor for votes."
+    },
+    {
+      "id": "state:assembly_judiciary_committee",
+      "label": "Judiciary Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Reviews civil law, judicial matters, and legislation affecting the court system."
+    },
+    {
+      "id": "state:assembly_education_committee",
+      "label": "Education Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Oversees K-12 education, SUNY, CUNY, and education funding policy."
+    },
+    {
+      "id": "state:assembly_health_committee",
+      "label": "Health Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Reviews health policy, Medicaid, hospital regulation, and public health programs."
+    },
+    {
+      "id": "state:senate_president_pro_tem",
+      "label": "President Pro Tempore",
+      "type": "office",
+      "branch": "legislative",
+      "factoid": "Serves as the Majority Leader and presides over the Senate in the Lieutenant Governor's absence."
+    },
+    {
+      "id": "state:senate_deputy_majority_leader",
+      "label": "Deputy Majority Leader",
+      "type": "office",
+      "branch": "legislative",
+      "factoid": "Assists the Majority Leader in managing legislative operations and building consensus."
+    },
+    {
+      "id": "state:senate_finance_committee",
+      "label": "Finance Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Reviews the state budget, revenue proposals, and fiscal policy for the Senate."
+    },
+    {
+      "id": "state:senate_codes_committee",
+      "label": "Codes Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Reviews criminal justice legislation, penal law, and criminal procedure reforms."
+    },
+    {
+      "id": "state:senate_rules_committee",
+      "label": "Rules Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Controls the legislative calendar and determines which bills reach the floor for votes."
+    },
+    {
+      "id": "state:senate_judiciary_committee",
+      "label": "Judiciary Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Reviews civil law, judicial nominations, and legislation affecting the court system."
+    },
+    {
+      "id": "state:senate_education_committee",
+      "label": "Education Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Oversees K-12 education, SUNY, CUNY, and education funding policy."
+    },
+    {
+      "id": "state:senate_health_committee",
+      "label": "Health Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Reviews health policy, Medicaid, hospital regulation, and public health programs."
     }
   ],
   "edges": [],
@@ -989,60 +1178,6 @@
       }
     },
     {
-      "id": "state_comptroller_internal",
-      "label": "State Comptroller Internal Structure",
-      "description": "Major operational offices within the State Comptroller managing state audits, local government oversight, retirement services, and pension investments",
-      "type": "intra",
-      "jurisdiction": "state",
-      "anchor": {
-        "nodeId": "state:state_comptroller"
-      },
-      "nodes": [
-        "state:state_comptroller",
-        "state:comptroller_operations_audit",
-        "state:comptroller_local_government",
-        "state:comptroller_retirement_services",
-        "state:comptroller_investment"
-      ],
-      "edges": [
-        {
-          "source": "state:state_comptroller",
-          "target": "state:comptroller_operations_audit",
-          "id": "state_comptroller→comptroller_operations_audit:contains",
-          "relation": "contains",
-          "category": "hierarchical"
-        },
-        {
-          "source": "state:state_comptroller",
-          "target": "state:comptroller_local_government",
-          "id": "state_comptroller→comptroller_local_government:contains",
-          "relation": "contains",
-          "category": "hierarchical"
-        },
-        {
-          "source": "state:state_comptroller",
-          "target": "state:comptroller_retirement_services",
-          "id": "state_comptroller→comptroller_retirement_services:contains",
-          "relation": "contains",
-          "category": "hierarchical"
-        },
-        {
-          "source": "state:state_comptroller",
-          "target": "state:comptroller_investment",
-          "id": "state_comptroller→comptroller_investment:contains",
-          "relation": "contains",
-          "category": "hierarchical"
-        }
-      ],
-      "layout": {
-        "type": "elk-mrtree",
-        "options": {
-          "direction": "DOWN",
-          "spacing": 70
-        }
-      }
-    },
-    {
       "id": "state_parks_internal",
       "label": "State Parks Internal Structure",
       "description": "Major operational divisions within the Office of Parks, Recreation and Historic Preservation managing park operations, planning, and historic preservation",
@@ -1178,429 +1313,6 @@
           "direction": "DOWN",
           "spacing": 70
         }
-      }
-    },
-    {
-      "id": "state:state_agencies",
-      "label": "Core State Agencies",
-      "description": "High-level view of statewide departments that report to the Governor.",
-      "type": "intra",
-      "jurisdiction": "state",
-      "anchor": {
-        "nodeId": "state:state_agencies"
-      },
-      "nodes": [
-        "state:governor_ny",
-        "state:state_agencies",
-        "state:dos_ny",
-        "state:dot_ny",
-        "state:doh_ny",
-        "state:sed_ny",
-        "state:dec_ny",
-        "state:dol_ny",
-        "state:dtf_ny",
-        "state:doccs_ny",
-        "state:dcjs_ny",
-        "state:dmv_ny",
-        "state:agm_ny",
-        "state:dfs_ny",
-        "state:otda_ny",
-        "state:ocfs_ny",
-        "state:omh_ny",
-        "state:oasas_ny",
-        "state:opwdd_ny",
-        "state:dhses_ny",
-        "state:state_police_ny",
-        "state:hcr_ny",
-        "state:esd_ny",
-        "state:ogs_ny",
-        "state:dcs_ny",
-        "state:parks_ny",
-        "state:mta_ny",
-        "state:nypa_ny",
-        "state:thruway_ny"
-      ],
-      "edges": [
-        {
-          "source": "state:governor_ny",
-          "target": "state:state_agencies",
-          "relation": "oversees"
-        },
-        {
-          "source": "state:state_agencies",
-          "target": "state:dos_ny",
-          "relation": "includes"
-        },
-        {
-          "source": "state:state_agencies",
-          "target": "state:dot_ny",
-          "relation": "includes"
-        },
-        {
-          "source": "state:state_agencies",
-          "target": "state:doh_ny",
-          "relation": "includes"
-        },
-        {
-          "source": "state:state_agencies",
-          "target": "state:sed_ny",
-          "relation": "includes"
-        },
-        {
-          "source": "state:state_agencies",
-          "target": "state:dec_ny",
-          "relation": "includes"
-        },
-        {
-          "source": "state:state_agencies",
-          "target": "state:dol_ny",
-          "relation": "includes"
-        },
-        {
-          "source": "state:state_agencies",
-          "target": "state:dtf_ny",
-          "relation": "includes"
-        },
-        {
-          "source": "state:state_agencies",
-          "target": "state:doccs_ny",
-          "relation": "includes"
-        },
-        {
-          "source": "state:state_agencies",
-          "target": "state:dcjs_ny",
-          "relation": "includes"
-        },
-        {
-          "source": "state:state_agencies",
-          "target": "state:dmv_ny",
-          "relation": "includes"
-        },
-        {
-          "source": "state:state_agencies",
-          "target": "state:agm_ny",
-          "relation": "includes"
-        },
-        {
-          "source": "state:state_agencies",
-          "target": "state:dfs_ny",
-          "relation": "includes"
-        },
-        {
-          "source": "state:state_agencies",
-          "target": "state:otda_ny",
-          "relation": "includes"
-        },
-        {
-          "source": "state:state_agencies",
-          "target": "state:ocfs_ny",
-          "relation": "includes"
-        },
-        {
-          "source": "state:state_agencies",
-          "target": "state:omh_ny",
-          "relation": "includes"
-        },
-        {
-          "source": "state:state_agencies",
-          "target": "state:oasas_ny",
-          "relation": "includes"
-        },
-        {
-          "source": "state:state_agencies",
-          "target": "state:opwdd_ny",
-          "relation": "includes"
-        },
-        {
-          "source": "state:state_agencies",
-          "target": "state:dhses_ny",
-          "relation": "includes"
-        },
-        {
-          "source": "state:state_agencies",
-          "target": "state:hcr_ny",
-          "relation": "includes"
-        },
-        {
-          "source": "state:state_agencies",
-          "target": "state:esd_ny",
-          "relation": "includes"
-        },
-        {
-          "source": "state:state_agencies",
-          "target": "state:ogs_ny",
-          "relation": "includes"
-        },
-        {
-          "source": "state:state_agencies",
-          "target": "state:dcs_ny",
-          "relation": "includes"
-        },
-        {
-          "source": "state:state_agencies",
-          "target": "state:parks_ny",
-          "relation": "includes"
-        },
-        {
-          "source": "state:state_agencies",
-          "target": "state:mta_ny",
-          "relation": "includes"
-        },
-        {
-          "source": "state:state_agencies",
-          "target": "state:nypa_ny",
-          "relation": "includes"
-        },
-        {
-          "source": "state:state_agencies",
-          "target": "state:thruway_ny",
-          "relation": "includes"
-        },
-        {
-          "source": "state:dhses_ny",
-          "target": "state:state_police_ny",
-          "relation": "oversees"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:dos_ny",
-          "relation": "appoints_secretary"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:dot_ny",
-          "relation": "appoints_commissioner"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:doh_ny",
-          "relation": "appoints_commissioner"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:sed_ny",
-          "relation": "appoints_regents"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:dec_ny",
-          "relation": "appoints_commissioner"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:dol_ny",
-          "relation": "appoints_commissioner"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:dtf_ny",
-          "relation": "appoints_commissioner"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:doccs_ny",
-          "relation": "appoints_commissioner"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:dcjs_ny",
-          "relation": "appoints_commissioner"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:dmv_ny",
-          "relation": "appoints_commissioner"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:agm_ny",
-          "relation": "appoints_commissioner"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:dfs_ny",
-          "relation": "appoints_superintendent"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:otda_ny",
-          "relation": "appoints_commissioner"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:ocfs_ny",
-          "relation": "appoints_commissioner"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:omh_ny",
-          "relation": "appoints_commissioner"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:oasas_ny",
-          "relation": "appoints_commissioner"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:opwdd_ny",
-          "relation": "appoints_commissioner"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:dhses_ny",
-          "relation": "appoints_commissioner"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:state_police_ny",
-          "relation": "appoints_superintendent"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:hcr_ny",
-          "relation": "appoints_commissioner"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:esd_ny",
-          "relation": "appoints_commissioner"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:ogs_ny",
-          "relation": "appoints_commissioner"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:dcs_ny",
-          "relation": "appoints_president"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:parks_ny",
-          "relation": "appoints_commissioner"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:mta_ny",
-          "relation": "appoints_chair"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:nypa_ny",
-          "relation": "appoints_trustees"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:thruway_ny",
-          "relation": "appoints_chair"
-        }
-      ],
-      "layout": {
-        "type": "elk-mrtree",
-        "fit": true,
-        "padding": 80,
-        "animate": true
-      }
-    },
-    {
-      "id": "state:state_judiciary",
-      "label": "State Judicial System",
-      "description": "High-level view of the New York State Unified Court System as established under Article VI of the State Constitution.",
-      "type": "intra",
-      "jurisdiction": "state",
-      "anchor": {
-        "nodeId": "state:state_judiciary"
-      },
-      "nodes": [
-        "state:ny_state_constitution",
-        "state:state_judiciary",
-        "state:court_of_appeals",
-        "state:appellate_divisions",
-        "state:appellate_terms",
-        "state:supreme_court_trial",
-        "state:county_court",
-        "state:family_court",
-        "state:surrogate_court",
-        "state:court_of_claims",
-        "state:nyc_courts",
-        "state:district_courts",
-        "state:city_courts",
-        "state:town_village_courts"
-      ],
-      "edges": [
-        {
-          "source": "state:ny_state_constitution",
-          "target": "state:state_judiciary",
-          "relation": "establishes"
-        },
-        {
-          "source": "state:state_judiciary",
-          "target": "state:court_of_appeals",
-          "relation": "includes"
-        },
-        {
-          "source": "state:court_of_appeals",
-          "target": "state:appellate_divisions",
-          "relation": "reviews_from"
-        },
-        {
-          "source": "state:appellate_divisions",
-          "target": "state:appellate_terms",
-          "relation": "reviews_from"
-        },
-        {
-          "source": "state:appellate_divisions",
-          "target": "state:supreme_court_trial",
-          "relation": "reviews_from"
-        },
-        {
-          "source": "state:appellate_divisions",
-          "target": "state:county_court",
-          "relation": "reviews_from"
-        },
-        {
-          "source": "state:appellate_divisions",
-          "target": "state:family_court",
-          "relation": "reviews_from"
-        },
-        {
-          "source": "state:appellate_divisions",
-          "target": "state:surrogate_court",
-          "relation": "reviews_from"
-        },
-        {
-          "source": "state:appellate_divisions",
-          "target": "state:court_of_claims",
-          "relation": "reviews_from"
-        },
-        {
-          "source": "state:appellate_terms",
-          "target": "state:nyc_courts",
-          "relation": "reviews_from"
-        },
-        {
-          "source": "state:appellate_terms",
-          "target": "state:district_courts",
-          "relation": "reviews_from"
-        },
-        {
-          "source": "state:county_court",
-          "target": "state:city_courts",
-          "relation": "reviews_from"
-        },
-        {
-          "source": "state:county_court",
-          "target": "state:town_village_courts",
-          "relation": "reviews_from"
-        }
-      ],
-      "layout": {
-        "type": "elk-mrtree",
-        "fit": true,
-        "padding": 80,
-        "animate": true
       }
     }
   ]
