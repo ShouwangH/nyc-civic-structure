@@ -98,6 +98,9 @@ function rebuildMain() {
   const federalBackup: Backup = JSON.parse(
     fs.readFileSync(path.join(dataDir, 'federal.json.backup'), 'utf-8')
   );
+  const regionalData: Backup = JSON.parse(
+    fs.readFileSync(path.join(dataDir, 'regional.json'), 'utf-8')
+  );
 
   // Extract and namespace main tier nodes
   const mainNodes: Node[] = [];
@@ -128,6 +131,16 @@ function rebuildMain() {
       mainNodes.push({
         ...node,
         id: addNamespacePrefix(node.id, 'federal'),
+      });
+    }
+  }
+
+  // Regional authorities (all except 'public_authorities' which is already in state)
+  for (const node of regionalData.nodes) {
+    if (node.id !== 'public_authorities') {
+      mainNodes.push({
+        ...node,
+        id: addNamespacePrefix(node.id, 'state'),
       });
     }
   }
@@ -172,6 +185,21 @@ function rebuildMain() {
         ...edge,
         source: addNamespacePrefix(edge.source, 'federal'),
         target: addNamespacePrefix(edge.target, 'federal'),
+      });
+    }
+  }
+
+  // Regional authority edges (connect to state:public_authorities)
+  for (const edge of regionalData.edges || []) {
+    const namespacedSource = addNamespacePrefix(edge.source, 'state');
+    const namespacedTarget = addNamespacePrefix(edge.target, 'state');
+
+    // Only include if both nodes are in mainNodeIds
+    if (mainNodeIds.has(namespacedSource) && mainNodeIds.has(namespacedTarget)) {
+      mainEdges.push({
+        ...edge,
+        source: namespacedSource,
+        target: namespacedTarget,
       });
     }
   }
