@@ -59,15 +59,17 @@ const createAnchorEdges = () =>
     const nextGroup = scopeGroups[index + 1];
     const dataset = governmentDatasets[group.scope];
 
-    const attachEdges = dataset.nodes.map((node) => ({
-      source: group.anchorId,
-      target: node.id,
-      id: `${group.anchorId}-${node.id}`,
-      type: 'relationship',
-      label: '',
-      process: [],
-      isAnchorEdge: true,
-    }));
+    const attachEdges = dataset.nodes
+      .filter(node => node.tier === 'main' || node.tier === undefined)
+      .map((node) => ({
+        source: group.anchorId,
+        target: node.id,
+        id: `${group.anchorId}-${node.id}`,
+        type: 'relationship',
+        label: '',
+        process: [],
+        isAnchorEdge: true,
+      }));
 
     if (nextGroup) {
       attachEdges.push({
