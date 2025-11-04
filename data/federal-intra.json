@@ -7,44 +7,6 @@
   },
   "nodes": [
     {
-      "id": "federal:senate",
-      "label": "U.S. Senate",
-      "type": "body",
-      "branch": "legislative",
-      "factoid": "Upper chamber of Congress that confirms appointments, ratifies treaties, and participates in lawmaking."
-    },
-    {
-      "id": "federal:federal_budget",
-      "label": "Federal Budget",
-      "type": "process",
-      "branch": "financial",
-      "process": [
-        "budget"
-      ],
-      "factoid": "Annual fiscal plan proposed by the President and enacted by Congress to fund federal operations and programs."
-    },
-    {
-      "id": "federal:federal_agencies",
-      "label": "Federal Agencies",
-      "type": "agency",
-      "branch": "administrative",
-      "factoid": "Departments and independent agencies implementing federal laws and programs across areas like defense, health, and environment."
-    },
-    {
-      "id": "federal:us_code",
-      "label": "United States Code",
-      "type": "law",
-      "branch": "law",
-      "factoid": "Compilation of permanent federal statutes organized by subject, enacted by Congress."
-    },
-    {
-      "id": "federal:cfr",
-      "label": "Code of Federal Regulations (CFR)",
-      "type": "law",
-      "branch": "administrative",
-      "factoid": "Detailed regulations issued by federal agencies to implement federal statutes."
-    },
-    {
       "id": "federal:state",
       "label": "Department of State",
       "type": "agency",
@@ -570,49 +532,7 @@
       "factoid": "Investigates environmental violations, enforces EPA regulations, pursues civil and criminal penalties, and ensures compliance with environmental laws nationwide."
     }
   ],
-  "edges": [
-    {
-      "source": "federal:congress",
-      "target": "federal:senate",
-      "relation": "includes"
-    },
-    {
-      "source": "federal:president",
-      "target": "federal:federal_agencies",
-      "relation": "oversees"
-    },
-    {
-      "source": "federal:president",
-      "target": "federal:federal_budget",
-      "relation": "proposes"
-    },
-    {
-      "source": "federal:congress",
-      "target": "federal:federal_budget",
-      "relation": "enacts"
-    },
-    {
-      "source": "federal:senate",
-      "target": "federal:us_code",
-      "relation": "enacts",
-      "category": "legal",
-      "hierarchical": true
-    },
-    {
-      "source": "federal:house_of_representatives",
-      "target": "federal:us_code",
-      "relation": "enacts",
-      "category": "legal",
-      "hierarchical": true
-    },
-    {
-      "source": "federal:federal_agencies",
-      "target": "federal:cfr",
-      "relation": "promulgates",
-      "category": "administrative",
-      "hierarchical": true
-    }
-  ],
+  "edges": [],
   "subviews": [
     {
       "id": "dod_internal",
@@ -1121,6 +1041,321 @@
           "direction": "DOWN",
           "spacing": 70
         }
+      }
+    },
+    {
+      "id": "federal:federal_agencies",
+      "label": "Federal Executive Agencies",
+      "description": "Cabinet-level departments and independent agencies led by presidential appointees.",
+      "type": "intra",
+      "jurisdiction": "federal",
+      "anchor": {
+        "nodeId": "federal:federal_agencies"
+      },
+      "nodes": [
+        "federal:president",
+        "federal:federal_agencies",
+        "federal:state",
+        "federal:treasury",
+        "federal:dod",
+        "federal:doj",
+        "federal:interior",
+        "federal:agriculture",
+        "federal:commerce",
+        "federal:labor",
+        "federal:hhs",
+        "federal:hud",
+        "federal:dot",
+        "federal:energy",
+        "federal:education",
+        "federal:va",
+        "federal:dhs",
+        "federal:epa",
+        "federal:nasa",
+        "federal:ssa",
+        "federal:cia",
+        "federal:fbi",
+        "federal:sec",
+        "federal:fcc",
+        "federal:ftc",
+        "federal:usps",
+        "federal:fed",
+        "federal:nsa",
+        "federal:fema",
+        "federal:sba"
+      ],
+      "edges": [
+        {
+          "source": "federal:president",
+          "target": "federal:federal_agencies",
+          "relation": "directs"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:state",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:treasury",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:dod",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:doj",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:interior",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:agriculture",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:commerce",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:labor",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:hhs",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:hud",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:dot",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:energy",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:education",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:va",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:dhs",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:epa",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:nasa",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:ssa",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:cia",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:fbi",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:sec",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:fcc",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:ftc",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:usps",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:fed",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:nsa",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:fema",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:sba",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:doj",
+          "target": "federal:fbi",
+          "relation": "oversees"
+        },
+        {
+          "source": "federal:dhs",
+          "target": "federal:fema",
+          "relation": "oversees"
+        },
+        {
+          "source": "federal:dod",
+          "target": "federal:nsa",
+          "relation": "oversees"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:state",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:treasury",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:dod",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:doj",
+          "relation": "appoints_attorney_general"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:interior",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:agriculture",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:commerce",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:labor",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:hhs",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:hud",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:dot",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:energy",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:education",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:va",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:dhs",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:epa",
+          "relation": "appoints_administrator"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:nasa",
+          "relation": "appoints_administrator"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:ssa",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:cia",
+          "relation": "appoints_director"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:fbi",
+          "relation": "appoints_director"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:sba",
+          "relation": "appoints_administrator"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "fit": true,
+        "padding": 80,
+        "animate": true
       }
     }
   ]

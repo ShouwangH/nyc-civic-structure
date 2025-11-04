@@ -7,104 +7,6 @@
   },
   "nodes": [
     {
-      "id": "city:departments",
-      "label": "NYC Departments & Agencies",
-      "type": "agency",
-      "branch": "administrative",
-      "factoid": "Agencies implementing city policies across health, housing, planning, and services."
-    },
-    {
-      "id": "city:rules_of_city",
-      "label": "Rules of the City of New York",
-      "type": "law",
-      "branch": "law",
-      "factoid": "Regulations issued by city agencies to implement the Administrative Code."
-    },
-    {
-      "id": "city:nyc_budget",
-      "label": "NYC Budget",
-      "type": "process",
-      "branch": "financial",
-      "factoid": "Annual financial plan allocating funds across city agencies and boroughs."
-    },
-    {
-      "id": "city:borough_structure",
-      "label": "Borough Advisory Structure",
-      "type": "category",
-      "branch": "community",
-      "factoid": "Advisory and coordinating bodies at the borough level with NO legislative or executive power. Provide community input on land use, budgets, and services."
-    },
-    {
-      "id": "city:bp_manhattan",
-      "label": "Manhattan Borough President",
-      "type": "office",
-      "branch": "community",
-      "factoid": "Elected borough executive with advisory role. Appoints Community Board members."
-    },
-    {
-      "id": "city:bp_brooklyn",
-      "label": "Brooklyn Borough President",
-      "type": "office",
-      "branch": "community",
-      "factoid": "Elected borough executive with advisory role. Appoints Community Board members."
-    },
-    {
-      "id": "city:bp_bronx",
-      "label": "Bronx Borough President",
-      "type": "office",
-      "branch": "community",
-      "factoid": "Elected borough executive with advisory role. Appoints Community Board members."
-    },
-    {
-      "id": "city:bp_queens",
-      "label": "Queens Borough President",
-      "type": "office",
-      "branch": "community",
-      "factoid": "Elected borough executive with advisory role. Appoints Community Board members."
-    },
-    {
-      "id": "city:bp_staten_island",
-      "label": "Staten Island Borough President",
-      "type": "office",
-      "branch": "community",
-      "factoid": "Elected borough executive with advisory role. Appoints Community Board members."
-    },
-    {
-      "id": "city:cb_manhattan",
-      "label": "Manhattan Community Boards (12)",
-      "type": "body",
-      "branch": "community",
-      "factoid": "12 advisory boards with up to 50 appointed members each. Review land use and budget proposals."
-    },
-    {
-      "id": "city:cb_brooklyn",
-      "label": "Brooklyn Community Boards (18)",
-      "type": "body",
-      "branch": "community",
-      "factoid": "18 advisory boards with up to 50 appointed members each. Review land use and budget proposals."
-    },
-    {
-      "id": "city:cb_bronx",
-      "label": "Bronx Community Boards (12)",
-      "type": "body",
-      "branch": "community",
-      "factoid": "12 advisory boards with up to 50 appointed members each. Review land use and budget proposals."
-    },
-    {
-      "id": "city:cb_queens",
-      "label": "Queens Community Boards (14)",
-      "type": "body",
-      "branch": "community",
-      "factoid": "14 advisory boards with up to 50 appointed members each. Review land use and budget proposals."
-    },
-    {
-      "id": "city:cb_staten_island",
-      "label": "Staten Island Community Boards (3)",
-      "type": "body",
-      "branch": "community",
-      "factoid": "3 advisory boards with up to 50 appointed members each. Review land use and budget proposals."
-    },
-    {
       "id": "city:NYPD",
       "label": "New York Police Department",
       "type": "agency",
@@ -798,83 +700,7 @@
       "factoid": "Enforces health code regulations for restaurants and food establishments, conducts inspections, manages letter grading system, and investigates foodborne illness complaints."
     }
   ],
-  "edges": [
-    {
-      "source": "city:borough_structure",
-      "target": "city:bp_manhattan",
-      "relation": "includes"
-    },
-    {
-      "source": "city:borough_structure",
-      "target": "city:bp_brooklyn",
-      "relation": "includes"
-    },
-    {
-      "source": "city:borough_structure",
-      "target": "city:bp_bronx",
-      "relation": "includes"
-    },
-    {
-      "source": "city:borough_structure",
-      "target": "city:bp_queens",
-      "relation": "includes"
-    },
-    {
-      "source": "city:borough_structure",
-      "target": "city:bp_staten_island",
-      "relation": "includes"
-    },
-    {
-      "source": "city:bp_manhattan",
-      "target": "city:cb_manhattan",
-      "relation": "appoints_members"
-    },
-    {
-      "source": "city:bp_brooklyn",
-      "target": "city:cb_brooklyn",
-      "relation": "appoints_members"
-    },
-    {
-      "source": "city:bp_bronx",
-      "target": "city:cb_bronx",
-      "relation": "appoints_members"
-    },
-    {
-      "source": "city:bp_queens",
-      "target": "city:cb_queens",
-      "relation": "appoints_members"
-    },
-    {
-      "source": "city:bp_staten_island",
-      "target": "city:cb_staten_island",
-      "relation": "appoints_members"
-    },
-    {
-      "source": "city:mayor_nyc",
-      "target": "city:departments",
-      "relation": "appoints_commissioners"
-    },
-    {
-      "source": "city:mayor_nyc",
-      "target": "city:nyc_budget",
-      "relation": "proposes"
-    },
-    {
-      "source": "city:city_council",
-      "target": "city:nyc_budget",
-      "relation": "approves"
-    },
-    {
-      "source": "city:departments",
-      "target": "city:rules_of_city",
-      "relation": "promulgates"
-    },
-    {
-      "source": "city:comptroller",
-      "target": "city:nyc_budget",
-      "relation": "audits"
-    }
-  ],
+  "edges": [],
   "subviews": [
     {
       "id": "nypd_internal",
@@ -1506,6 +1332,495 @@
           "direction": "DOWN",
           "spacing": 70
         }
+      }
+    },
+    {
+      "id": "city:departments",
+      "label": "NYC Departments & Agencies",
+      "description": "Complete list of major NYC executive agencies and departments appointed by the Mayor.",
+      "type": "intra",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:departments"
+      },
+      "nodes": [
+        "city:mayor_nyc",
+        "city:departments",
+        "city:DFTA",
+        "city:DOB",
+        "city:BIC",
+        "city:ACS",
+        "city:DCP",
+        "city:DCAS",
+        "city:DCWP",
+        "city:DOC",
+        "city:DCLA",
+        "city:DDC",
+        "city:DOE",
+        "city:NYCEM",
+        "city:DEP",
+        "city:DOF",
+        "city:Sheriff",
+        "city:FDNY",
+        "city:DOHMH",
+        "city:DHS",
+        "city:HPD",
+        "city:HRA",
+        "city:DOI",
+        "city:LPC",
+        "city:Law",
+        "city:Parks",
+        "city:NYPD",
+        "city:DOP",
+        "city:DoRIS",
+        "city:DSNY",
+        "city:SBS",
+        "city:OTI",
+        "city:DOT",
+        "city:DVS",
+        "city:DYCD",
+        "city:OCME",
+        "city:OMB",
+        "city:TLC",
+        "city:OATH",
+        "city:CCRB",
+        "city:CFB",
+        "city:BSA",
+        "city:COIB",
+        "city:EEPC"
+      ],
+      "edges": [
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:departments",
+          "relation": "oversees"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DFTA",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DOB",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:BIC",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:ACS",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DCP",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DCAS",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DCWP",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DOC",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DCLA",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DDC",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DOE",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:NYCEM",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DEP",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DOF",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:Sheriff",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:FDNY",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DOHMH",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DHS",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:HPD",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:HRA",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DOI",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:LPC",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:Law",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:Parks",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:NYPD",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DOP",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DoRIS",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DSNY",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:SBS",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:OTI",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DOT",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DVS",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DYCD",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:OCME",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:OMB",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:TLC",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:OATH",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:CCRB",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:CFB",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:BSA",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:COIB",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:EEPC",
+          "relation": "includes"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DFTA",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DOB",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:BIC",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:ACS",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DCP",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DCAS",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DCWP",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DOC",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DCLA",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DDC",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DOE",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:NYCEM",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DEP",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DOF",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:Sheriff",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:FDNY",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DOHMH",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DHS",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:HPD",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:HRA",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DOI",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:LPC",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:Law",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:Parks",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:NYPD",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DOP",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DoRIS",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DSNY",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:SBS",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:OTI",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DOT",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DVS",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DYCD",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:OCME",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:OMB",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:TLC",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:OATH",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:CCRB",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:CFB",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:BSA",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:COIB",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:EEPC",
+          "relation": "appoints_head"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "fit": true,
+        "padding": 80,
+        "animate": true
       }
     }
   ]

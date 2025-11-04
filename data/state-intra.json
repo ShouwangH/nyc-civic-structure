@@ -7,147 +7,6 @@
   },
   "nodes": [
     {
-      "id": "state:ny_state_constitution",
-      "label": "NY State Constitution",
-      "type": "law",
-      "branch": "law",
-      "factoid": "The foundational document defining the structure, powers, and limits of New York State's government."
-    },
-    {
-      "id": "state:governor_ny",
-      "label": "Governor of New York",
-      "type": "office",
-      "branch": "executive",
-      "process": [
-        "budget",
-        "legislative",
-        "appointments"
-      ],
-      "factoid": "Elected chief executive responsible for enforcing state laws, proposing the budget, and appointing officials."
-    },
-    {
-      "id": "state:state_judiciary",
-      "label": "State Judicial System",
-      "type": "body",
-      "branch": "judicial",
-      "factoid": "Unified court system led by the Chief Judge and Court of Appeals, interpreting the Constitution and laws of New York."
-    },
-    {
-      "id": "state:state_budget",
-      "label": "State Budget",
-      "type": "process",
-      "branch": "financial",
-      "process": [
-        "budget"
-      ],
-      "factoid": "Annual fiscal plan developed by the Governor and enacted by the Legislature to fund state operations."
-    },
-    {
-      "id": "state:state_assembly",
-      "label": "NY State Assembly",
-      "type": "body",
-      "branch": "legislative",
-      "factoid": "Lower chamber of the State Legislature, representing districts proportionally by population."
-    },
-    {
-      "id": "state:state_senate",
-      "label": "NY State Senate",
-      "type": "body",
-      "branch": "legislative",
-      "factoid": "Upper chamber of the State Legislature, representing districts by region."
-    },
-    {
-      "id": "state:ny_consolidated_laws",
-      "label": "NY Consolidated Laws",
-      "type": "law",
-      "branch": "law",
-      "factoid": "Compilation of permanent laws organized by subject, enacted by the State Legislature."
-    },
-    {
-      "id": "state:nycrr",
-      "label": "NY Codes, Rules & Regulations (NYCRR)",
-      "type": "law",
-      "branch": "administrative",
-      "factoid": "Detailed regulations issued by state agencies to implement state laws."
-    },
-    {
-      "id": "state:state_agencies",
-      "label": "State Agencies",
-      "type": "agency",
-      "branch": "administrative",
-      "factoid": "Departments that implement laws and deliver services in areas like health, education, and transportation."
-    },
-    {
-      "id": "state:public_authorities",
-      "label": "Public Authorities",
-      "type": "category",
-      "branch": "law",
-      "factoid": "Legal frameworks establishing public authorities across city, state, and interstate jurisdictions."
-    },
-    {
-      "id": "state:mta",
-      "label": "Metropolitan Transportation Authority (MTA)",
-      "type": "authority",
-      "branch": "transportation",
-      "factoid": "State authority managing NYC subway, buses, and regional commuter rail systems."
-    },
-    {
-      "id": "state:nys_thruway",
-      "label": "New York State Thruway Authority",
-      "type": "authority",
-      "branch": "transportation",
-      "factoid": "State authority operating the Thruway highway system across New York."
-    },
-    {
-      "id": "state:nypa",
-      "label": "New York Power Authority (NYPA)",
-      "type": "authority",
-      "branch": "energy",
-      "factoid": "State authority providing electric power generation and transmission."
-    },
-    {
-      "id": "state:dasny",
-      "label": "Dormitory Authority (DASNY)",
-      "type": "authority",
-      "branch": "finance",
-      "factoid": "State authority financing construction of schools, hospitals, and public facilities."
-    },
-    {
-      "id": "state:esd",
-      "label": "Empire State Development (ESD)",
-      "type": "authority",
-      "branch": "economic",
-      "factoid": "State authority for economic development and business incentives."
-    },
-    {
-      "id": "state:battery_park_city_authority",
-      "label": "Battery Park City Authority (BPCA)",
-      "type": "authority",
-      "branch": "development",
-      "factoid": "State authority managing Battery Park City neighborhood in Manhattan."
-    },
-    {
-      "id": "state:roosevelt_island",
-      "label": "Roosevelt Island Operating Corporation (RIOC)",
-      "type": "authority",
-      "branch": "development",
-      "factoid": "State authority overseeing Roosevelt Island operations."
-    },
-    {
-      "id": "state:port_authority",
-      "label": "Port Authority of New York and New Jersey",
-      "type": "bi_state_authority",
-      "branch": "infrastructure",
-      "factoid": "Bi-state agency managing bridges, tunnels, airports, and seaports in the NY-NJ region."
-    },
-    {
-      "id": "state:nycha",
-      "label": "New York City Housing Authority (NYCHA)",
-      "type": "city_authority",
-      "branch": "housing",
-      "factoid": "City public authority providing affordable housing for NYC residents."
-    },
-    {
       "id": "state:court_of_appeals",
       "label": "Court of Appeals",
       "type": "court_high",
@@ -254,7 +113,7 @@
     },
     {
       "id": "state:sed_ny",
-      "label": "State Education Department",
+      "label": "Department of Education",
       "type": "agency",
       "branch": "executive",
       "factoid": "Oversees K-12 education, SUNY system, professional licensing, and cultural institutions statewide."
@@ -757,123 +616,7 @@
       "factoid": "Develops state capital plan, reviews agency capital requests, monitors capital project execution, and manages debt issuance for infrastructure investments."
     }
   ],
-  "edges": [
-    {
-      "source": "state:ny_state_constitution",
-      "target": "state:governor_ny",
-      "relation": "establishes"
-    },
-    {
-      "source": "state:ny_state_constitution",
-      "target": "state:state_legislature",
-      "relation": "establishes"
-    },
-    {
-      "source": "state:ny_state_constitution",
-      "target": "state:state_judiciary",
-      "relation": "establishes"
-    },
-    {
-      "source": "state:ny_state_constitution",
-      "target": "state:state_comptroller",
-      "relation": "establishes"
-    },
-    {
-      "source": "state:state_senate",
-      "target": "state:ny_consolidated_laws",
-      "relation": "enacts"
-    },
-    {
-      "source": "state:state_assembly",
-      "target": "state:ny_consolidated_laws",
-      "relation": "enacts"
-    },
-    {
-      "source": "state:state_legislature",
-      "target": "state:state_budget",
-      "relation": "adopts"
-    },
-    {
-      "source": "state:state_legislature",
-      "target": "state:state_assembly",
-      "relation": "includes"
-    },
-    {
-      "source": "state:state_legislature",
-      "target": "state:state_senate",
-      "relation": "includes"
-    },
-    {
-      "source": "state:governor_ny",
-      "target": "state:state_budget",
-      "relation": "proposes"
-    },
-    {
-      "source": "state:governor_ny",
-      "target": "state:state_agencies",
-      "relation": "oversees"
-    },
-    {
-      "source": "state:state_agencies",
-      "target": "state:nycrr",
-      "relation": "issues"
-    },
-    {
-      "source": "state:state_comptroller",
-      "target": "state:state_budget",
-      "relation": "audits"
-    },
-    {
-      "source": "state:state_legislature",
-      "target": "state:public_authorities",
-      "relation": "creates"
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:mta",
-      "relation": "includes"
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:nys_thruway",
-      "relation": "includes"
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:nypa",
-      "relation": "includes"
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:dasny",
-      "relation": "includes"
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:esd",
-      "relation": "includes"
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:battery_park_city_authority",
-      "relation": "includes"
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:roosevelt_island",
-      "relation": "includes"
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:port_authority",
-      "relation": "includes"
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:nycha",
-      "relation": "includes"
-    }
-  ],
+  "edges": [],
   "subviews": [
     {
       "id": "nysp_internal",
@@ -1435,6 +1178,429 @@
           "direction": "DOWN",
           "spacing": 70
         }
+      }
+    },
+    {
+      "id": "state:state_agencies",
+      "label": "Core State Agencies",
+      "description": "High-level view of statewide departments that report to the Governor.",
+      "type": "intra",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:state_agencies"
+      },
+      "nodes": [
+        "state:governor_ny",
+        "state:state_agencies",
+        "state:dos_ny",
+        "state:dot_ny",
+        "state:doh_ny",
+        "state:sed_ny",
+        "state:dec_ny",
+        "state:dol_ny",
+        "state:dtf_ny",
+        "state:doccs_ny",
+        "state:dcjs_ny",
+        "state:dmv_ny",
+        "state:agm_ny",
+        "state:dfs_ny",
+        "state:otda_ny",
+        "state:ocfs_ny",
+        "state:omh_ny",
+        "state:oasas_ny",
+        "state:opwdd_ny",
+        "state:dhses_ny",
+        "state:state_police_ny",
+        "state:hcr_ny",
+        "state:esd_ny",
+        "state:ogs_ny",
+        "state:dcs_ny",
+        "state:parks_ny",
+        "state:mta_ny",
+        "state:nypa_ny",
+        "state:thruway_ny"
+      ],
+      "edges": [
+        {
+          "source": "state:governor_ny",
+          "target": "state:state_agencies",
+          "relation": "oversees"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:dos_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:dot_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:doh_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:sed_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:dec_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:dol_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:dtf_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:doccs_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:dcjs_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:dmv_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:agm_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:dfs_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:otda_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:ocfs_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:omh_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:oasas_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:opwdd_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:dhses_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:hcr_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:esd_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:ogs_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:dcs_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:parks_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:mta_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:nypa_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:thruway_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:dhses_ny",
+          "target": "state:state_police_ny",
+          "relation": "oversees"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:dos_ny",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:dot_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:doh_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:sed_ny",
+          "relation": "appoints_regents"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:dec_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:dol_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:dtf_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:doccs_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:dcjs_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:dmv_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:agm_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:dfs_ny",
+          "relation": "appoints_superintendent"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:otda_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:ocfs_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:omh_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:oasas_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:opwdd_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:dhses_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:state_police_ny",
+          "relation": "appoints_superintendent"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:hcr_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:esd_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:ogs_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:dcs_ny",
+          "relation": "appoints_president"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:parks_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:mta_ny",
+          "relation": "appoints_chair"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:nypa_ny",
+          "relation": "appoints_trustees"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:thruway_ny",
+          "relation": "appoints_chair"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "fit": true,
+        "padding": 80,
+        "animate": true
+      }
+    },
+    {
+      "id": "state:state_judiciary",
+      "label": "State Judicial System",
+      "description": "High-level view of the New York State Unified Court System as established under Article VI of the State Constitution.",
+      "type": "intra",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:state_judiciary"
+      },
+      "nodes": [
+        "state:ny_state_constitution",
+        "state:state_judiciary",
+        "state:court_of_appeals",
+        "state:appellate_divisions",
+        "state:appellate_terms",
+        "state:supreme_court_trial",
+        "state:county_court",
+        "state:family_court",
+        "state:surrogate_court",
+        "state:court_of_claims",
+        "state:nyc_courts",
+        "state:district_courts",
+        "state:city_courts",
+        "state:town_village_courts"
+      ],
+      "edges": [
+        {
+          "source": "state:ny_state_constitution",
+          "target": "state:state_judiciary",
+          "relation": "establishes"
+        },
+        {
+          "source": "state:state_judiciary",
+          "target": "state:court_of_appeals",
+          "relation": "includes"
+        },
+        {
+          "source": "state:court_of_appeals",
+          "target": "state:appellate_divisions",
+          "relation": "reviews_from"
+        },
+        {
+          "source": "state:appellate_divisions",
+          "target": "state:appellate_terms",
+          "relation": "reviews_from"
+        },
+        {
+          "source": "state:appellate_divisions",
+          "target": "state:supreme_court_trial",
+          "relation": "reviews_from"
+        },
+        {
+          "source": "state:appellate_divisions",
+          "target": "state:county_court",
+          "relation": "reviews_from"
+        },
+        {
+          "source": "state:appellate_divisions",
+          "target": "state:family_court",
+          "relation": "reviews_from"
+        },
+        {
+          "source": "state:appellate_divisions",
+          "target": "state:surrogate_court",
+          "relation": "reviews_from"
+        },
+        {
+          "source": "state:appellate_divisions",
+          "target": "state:court_of_claims",
+          "relation": "reviews_from"
+        },
+        {
+          "source": "state:appellate_terms",
+          "target": "state:nyc_courts",
+          "relation": "reviews_from"
+        },
+        {
+          "source": "state:appellate_terms",
+          "target": "state:district_courts",
+          "relation": "reviews_from"
+        },
+        {
+          "source": "state:county_court",
+          "target": "state:city_courts",
+          "relation": "reviews_from"
+        },
+        {
+          "source": "state:county_court",
+          "target": "state:town_village_courts",
+          "relation": "reviews_from"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "fit": true,
+        "padding": 80,
+        "animate": true
       }
     }
   ]

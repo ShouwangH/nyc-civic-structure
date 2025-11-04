@@ -1,0 +1,406 @@
+{
+  "city": [
+    {
+      "id": "city:mayor_office_internal",
+      "label": "Mayor's Office Internal Structure",
+      "description": "Executive office hierarchy including Chief of Staff, Deputy Mayors, and senior advisors reporting to the Mayor",
+      "type": "intra",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:mayor_nyc"
+      },
+      "nodes": [
+        "city:mayor_nyc",
+        "city:mayor_office_chief_of_staff",
+        "city:mayor_office_first_deputy",
+        "city:mayor_office_dm_strategic_policy",
+        "city:mayor_office_dm_health_hs",
+        "city:mayor_office_dm_housing_econ",
+        "city:mayor_office_dm_public_safety",
+        "city:mayor_office_dm_operations",
+        "city:mayor_office_counsel",
+        "city:mayor_office_dir_operations",
+        "city:mayor_office_press_secretary",
+        "city:mayor_office_dir_intergov"
+      ],
+      "edges": [],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "city:council_internal",
+      "label": "City Council Leadership Structure",
+      "description": "Legislative leadership including Speaker, Majority Leader, and major committee chairs",
+      "type": "intra",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:city_council"
+      },
+      "nodes": [
+        "city:city_council",
+        "city:council_speaker",
+        "city:council_majority_leader",
+        "city:council_finance_committee",
+        "city:council_land_use_committee",
+        "city:council_public_safety_committee",
+        "city:council_transportation_committee",
+        "city:council_education_committee",
+        "city:council_health_committee",
+        "city:council_general_welfare_committee"
+      ],
+      "edges": [],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "city:charter_home_rule",
+      "label": "NYC Charter and Home Rule",
+      "description": "Legal relationship between NYS Constitution and NYC Charter under home rule law",
+      "type": "inter",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:nyc_charter"
+      },
+      "nodes": [
+        "state:ny_state_constitution",
+        "city:nyc_charter"
+      ],
+      "edges": [
+        {
+          "source": "state:ny_state_constitution",
+          "target": "city:nyc_charter",
+          "relation": "enables",
+          "detail": "Article IX - Home Rule"
+        }
+      ],
+      "layout": {
+        "type": "elk-layered",
+        "options": {
+          "direction": "DOWN"
+        }
+      }
+    },
+    {
+      "id": "city:public_advocate_relationships",
+      "label": "Public Advocate Role and Relationships",
+      "description": "Public Advocate's unique ombudsman role, Council membership, and succession position",
+      "type": "inter",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:public_advocate"
+      },
+      "nodes": [
+        "city:public_advocate",
+        "city:city_council",
+        "city:mayor_nyc",
+        "city:departments"
+      ],
+      "edges": [
+        {
+          "source": "city:public_advocate",
+          "target": "city:city_council",
+          "relation": "non-voting member"
+        },
+        {
+          "source": "city:public_advocate",
+          "target": "city:departments",
+          "relation": "ombudsman oversight"
+        },
+        {
+          "source": "city:public_advocate",
+          "target": "city:mayor_nyc",
+          "relation": "succession",
+          "detail": "Second in line of succession"
+        }
+      ],
+      "layout": {
+        "type": "elk-force"
+      }
+    }
+  ],
+  "state": [
+    {
+      "id": "state:governor_office_internal",
+      "label": "Governor's Office Internal Structure",
+      "description": "Executive office hierarchy including Secretary, Chief of Staff, and Deputy Secretaries",
+      "type": "intra",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:governor_ny"
+      },
+      "nodes": [
+        "state:governor_ny",
+        "state:governor_office_lt_governor",
+        "state:governor_office_secretary",
+        "state:governor_office_chief_of_staff",
+        "state:governor_office_ds_public_safety",
+        "state:governor_office_ds_health_hs",
+        "state:governor_office_ds_econ_dev",
+        "state:governor_office_ds_energy_env",
+        "state:governor_office_ds_education",
+        "state:governor_office_counsel",
+        "state:governor_office_dir_state_ops",
+        "state:governor_office_comms_director"
+      ],
+      "edges": [],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "state:assembly_internal",
+      "label": "State Assembly Leadership Structure",
+      "description": "Legislative leadership including Speaker, Majority Leader, and major committee chairs",
+      "type": "intra",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:state_assembly"
+      },
+      "nodes": [
+        "state:state_assembly",
+        "state:assembly_speaker",
+        "state:assembly_majority_leader",
+        "state:assembly_ways_means_committee",
+        "state:assembly_codes_committee",
+        "state:assembly_rules_committee",
+        "state:assembly_judiciary_committee",
+        "state:assembly_education_committee",
+        "state:assembly_health_committee"
+      ],
+      "edges": [],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "state:senate_internal",
+      "label": "State Senate Leadership Structure",
+      "description": "Legislative leadership including President Pro Tem, Majority Leader, and major committee chairs",
+      "type": "intra",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:state_senate"
+      },
+      "nodes": [
+        "state:state_senate",
+        "state:senate_president_pro_tem",
+        "state:senate_deputy_majority_leader",
+        "state:senate_finance_committee",
+        "state:senate_codes_committee",
+        "state:senate_rules_committee",
+        "state:senate_judiciary_committee",
+        "state:senate_education_committee",
+        "state:senate_health_committee"
+      ],
+      "edges": [],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "state:public_authorities_governance",
+      "label": "Public Authorities Governance Structure",
+      "description": "Complex governance of public authorities by State Legislature, Governor, and NYC Mayor",
+      "type": "inter",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:public_authorities"
+      },
+      "nodes": [
+        "state:state_legislature",
+        "state:governor_ny",
+        "city:mayor_nyc",
+        "state:public_authorities",
+        "state:mta",
+        "state:port_authority",
+        "state:nycha"
+      ],
+      "edges": [
+        {
+          "source": "state:state_legislature",
+          "target": "state:public_authorities",
+          "relation": "creates",
+          "detail": "Public Authorities Law"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:mta",
+          "relation": "appoints_board_members"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:port_authority",
+          "relation": "appoints_board_members",
+          "detail": "6 of 12 commissioners"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "state:mta",
+          "relation": "appoints_board_members",
+          "detail": "4 NYC members"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "state:nycha",
+          "relation": "appoints_board_chair"
+        }
+      ],
+      "layout": {
+        "type": "elk-force"
+      }
+    },
+    {
+      "id": "state:comptroller_oversight",
+      "label": "State Comptroller Oversight Relationships",
+      "description": "Comptroller's audit and oversight authority over state agencies, local governments, and NYC Charter",
+      "type": "inter",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:state_comptroller"
+      },
+      "nodes": [
+        "state:state_comptroller",
+        "state:state_budget",
+        "state:state_agencies",
+        "city:nyc_charter"
+      ],
+      "edges": [
+        {
+          "source": "state:state_comptroller",
+          "target": "state:state_budget",
+          "relation": "audits"
+        },
+        {
+          "source": "state:state_comptroller",
+          "target": "state:state_agencies",
+          "relation": "audits"
+        },
+        {
+          "source": "state:state_comptroller",
+          "target": "city:nyc_charter",
+          "relation": "audits",
+          "detail": "Local government oversight"
+        }
+      ],
+      "layout": {
+        "type": "elk-force"
+      }
+    }
+  ],
+  "federal": [
+    {
+      "id": "federal:white_house_internal",
+      "label": "White House Internal Structure",
+      "description": "Executive Office of the President including Chief of Staff, senior advisors, and policy councils",
+      "type": "intra",
+      "jurisdiction": "federal",
+      "anchor": {
+        "nodeId": "federal:president"
+      },
+      "nodes": [
+        "federal:president",
+        "federal:white_house_vice_president",
+        "federal:white_house_chief_of_staff",
+        "federal:white_house_deputy_cos_ops",
+        "federal:white_house_deputy_cos_policy",
+        "federal:white_house_senior_advisor",
+        "federal:white_house_national_security_advisor",
+        "federal:white_house_counsel",
+        "federal:white_house_press_secretary",
+        "federal:white_house_comms_director",
+        "federal:eop_omb_director",
+        "federal:eop_nec_director",
+        "federal:eop_dpc_director"
+      ],
+      "edges": [],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "federal:senate_internal",
+      "label": "U.S. Senate Leadership Structure",
+      "description": "Senate leadership including President Pro Tem, party leaders, and major committee chairs",
+      "type": "intra",
+      "jurisdiction": "federal",
+      "anchor": {
+        "nodeId": "federal:senate"
+      },
+      "nodes": [
+        "federal:senate",
+        "federal:senate_president_pro_tem",
+        "federal:senate_majority_leader",
+        "federal:senate_minority_leader",
+        "federal:senate_appropriations_committee",
+        "federal:senate_finance_committee",
+        "federal:senate_judiciary_committee",
+        "federal:senate_foreign_relations_committee",
+        "federal:senate_armed_services_committee"
+      ],
+      "edges": [],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "federal:house_internal",
+      "label": "U.S. House Leadership Structure",
+      "description": "House leadership including Speaker, party leaders, and major committee chairs",
+      "type": "intra",
+      "jurisdiction": "federal",
+      "anchor": {
+        "nodeId": "federal:house_of_representatives"
+      },
+      "nodes": [
+        "federal:house_of_representatives",
+        "federal:house_speaker",
+        "federal:house_majority_leader",
+        "federal:house_minority_leader",
+        "federal:house_majority_whip",
+        "federal:house_appropriations_committee",
+        "federal:house_ways_means_committee",
+        "federal:house_rules_committee",
+        "federal:house_judiciary_committee",
+        "federal:house_energy_commerce_committee"
+      ],
+      "edges": [],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    }
+  ]
+}
