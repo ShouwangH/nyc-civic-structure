@@ -12,6 +12,7 @@ export type VisualizationState = {
   selectedEdgeId: string | null;
   activeProcessId: string | null;
   activeSubgraphId: string | null;
+  activeSubviewId: string | null; // NEW: Unified subview ID (will replace above two)
   isSidebarHover: boolean;
 };
 
@@ -22,6 +23,7 @@ const initialState: VisualizationState = {
   selectedEdgeId: null,
   activeProcessId: null,
   activeSubgraphId: null,
+  activeSubviewId: null,
   isSidebarHover: false,
 };
 
