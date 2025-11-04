@@ -42,11 +42,58 @@
       "factoid": "51-member legislative body that passes local laws and approves the budget."
     },
     {
+      "id": "city:departments",
+      "label": "NYC Departments & Agencies",
+      "type": "agency",
+      "branch": "administrative",
+      "factoid": "Agencies implementing city policies across health, housing, planning, and services."
+    },
+    {
       "id": "city:administrative_code",
       "label": "Administrative Code",
       "type": "law",
       "branch": "law",
       "factoid": "Compilation of permanent local laws enacted by the City Council."
+    },
+    {
+      "id": "city:rules_of_city",
+      "label": "Rules of the City of New York",
+      "type": "law",
+      "branch": "law",
+      "factoid": "Regulations issued by city agencies to implement the Administrative Code."
+    },
+    {
+      "id": "city:nyc_budget",
+      "label": "NYC Budget",
+      "type": "process",
+      "branch": "financial",
+      "factoid": "Annual financial plan allocating funds across city agencies and boroughs."
+    },
+    {
+      "id": "city:borough_structure",
+      "label": "Borough Advisory Structure",
+      "type": "category",
+      "branch": "community",
+      "factoid": "Advisory and coordinating bodies at the borough level with NO legislative or executive power. Provide community input on land use, budgets, and services."
+    },
+    {
+      "id": "state:ny_state_constitution",
+      "label": "NY State Constitution",
+      "type": "law",
+      "branch": "law",
+      "factoid": "The foundational document defining the structure, powers, and limits of New York State's government."
+    },
+    {
+      "id": "state:governor_ny",
+      "label": "Governor of New York",
+      "type": "office",
+      "branch": "executive",
+      "process": [
+        "budget",
+        "legislative",
+        "appointments"
+      ],
+      "factoid": "Elected chief executive responsible for enforcing state laws, proposing the budget, and appointing officials."
     },
     {
       "id": "state:state_legislature",
@@ -60,11 +107,70 @@
       "factoid": "Bicameral body composed of the Assembly and Senate. Enacts laws and adopts the state budget."
     },
     {
+      "id": "state:state_judiciary",
+      "label": "State Judicial System",
+      "type": "body",
+      "branch": "judicial",
+      "factoid": "Unified court system led by the Chief Judge and Court of Appeals, interpreting the Constitution and laws of New York."
+    },
+    {
       "id": "state:state_comptroller",
       "label": "State Comptroller",
       "type": "office",
       "branch": "executive",
       "factoid": "Independent fiscal officer overseeing state finances, audits, and the public pension system."
+    },
+    {
+      "id": "state:state_budget",
+      "label": "State Budget",
+      "type": "process",
+      "branch": "financial",
+      "process": [
+        "budget"
+      ],
+      "factoid": "Annual fiscal plan developed by the Governor and enacted by the Legislature to fund state operations."
+    },
+    {
+      "id": "state:state_assembly",
+      "label": "NY State Assembly",
+      "type": "body",
+      "branch": "legislative",
+      "factoid": "Lower chamber of the State Legislature, representing districts proportionally by population."
+    },
+    {
+      "id": "state:state_senate",
+      "label": "NY State Senate",
+      "type": "body",
+      "branch": "legislative",
+      "factoid": "Upper chamber of the State Legislature, representing districts by region."
+    },
+    {
+      "id": "state:ny_consolidated_laws",
+      "label": "NY Consolidated Laws",
+      "type": "law",
+      "branch": "law",
+      "factoid": "Compilation of permanent laws organized by subject, enacted by the State Legislature."
+    },
+    {
+      "id": "state:nycrr",
+      "label": "NY Codes, Rules & Regulations (NYCRR)",
+      "type": "law",
+      "branch": "administrative",
+      "factoid": "Detailed regulations issued by state agencies to implement state laws."
+    },
+    {
+      "id": "state:state_agencies",
+      "label": "State Agencies",
+      "type": "agency",
+      "branch": "administrative",
+      "factoid": "Departments that implement laws and deliver services in areas like health, education, and transportation."
+    },
+    {
+      "id": "state:public_authorities",
+      "label": "Public Authorities",
+      "type": "category",
+      "branch": "law",
+      "factoid": "Legal frameworks establishing public authorities across city, state, and interstate jurisdictions."
     },
     {
       "id": "federal:us_constitution",
@@ -98,6 +204,13 @@
       "factoid": "Bicameral legislature composed of the Senate and House of Representatives. Enacts federal laws and controls appropriations."
     },
     {
+      "id": "federal:senate",
+      "label": "U.S. Senate",
+      "type": "body",
+      "branch": "legislative",
+      "factoid": "Upper chamber of Congress that confirms appointments, ratifies treaties, and participates in lawmaking."
+    },
+    {
       "id": "federal:house_of_representatives",
       "label": "U.S. House of Representatives",
       "type": "body",
@@ -117,6 +230,37 @@
       "type": "body",
       "branch": "judicial",
       "factoid": "Composed of U.S. Courts of Appeals and District Courts that handle federal cases nationwide."
+    },
+    {
+      "id": "federal:federal_budget",
+      "label": "Federal Budget",
+      "type": "process",
+      "branch": "financial",
+      "process": [
+        "budget"
+      ],
+      "factoid": "Annual fiscal plan proposed by the President and enacted by Congress to fund federal operations and programs."
+    },
+    {
+      "id": "federal:federal_agencies",
+      "label": "Federal Agencies",
+      "type": "agency",
+      "branch": "administrative",
+      "factoid": "Departments and independent agencies implementing federal laws and programs across areas like defense, health, and environment."
+    },
+    {
+      "id": "federal:us_code",
+      "label": "United States Code",
+      "type": "law",
+      "branch": "law",
+      "factoid": "Compilation of permanent federal statutes organized by subject, enacted by Congress."
+    },
+    {
+      "id": "federal:cfr",
+      "label": "Code of Federal Regulations (CFR)",
+      "type": "law",
+      "branch": "administrative",
+      "factoid": "Detailed regulations issued by federal agencies to implement federal statutes."
     }
   ],
   "edges": [
@@ -145,14 +289,109 @@
       "detail": "Chapter 2"
     },
     {
+      "source": "city:mayor_nyc",
+      "target": "city:departments",
+      "relation": "appoints_commissioners"
+    },
+    {
+      "source": "city:mayor_nyc",
+      "target": "city:nyc_budget",
+      "relation": "proposes"
+    },
+    {
       "source": "city:city_council",
       "target": "city:administrative_code",
       "relation": "enacts"
     },
     {
+      "source": "city:city_council",
+      "target": "city:nyc_budget",
+      "relation": "approves"
+    },
+    {
+      "source": "city:departments",
+      "target": "city:rules_of_city",
+      "relation": "promulgates"
+    },
+    {
+      "source": "city:comptroller",
+      "target": "city:nyc_budget",
+      "relation": "audits"
+    },
+    {
       "source": "city:public_advocate",
       "target": "city:city_council",
       "relation": "non-voting member"
+    },
+    {
+      "source": "state:ny_state_constitution",
+      "target": "state:governor_ny",
+      "relation": "establishes"
+    },
+    {
+      "source": "state:ny_state_constitution",
+      "target": "state:state_legislature",
+      "relation": "establishes"
+    },
+    {
+      "source": "state:ny_state_constitution",
+      "target": "state:state_judiciary",
+      "relation": "establishes"
+    },
+    {
+      "source": "state:ny_state_constitution",
+      "target": "state:state_comptroller",
+      "relation": "establishes"
+    },
+    {
+      "source": "state:state_senate",
+      "target": "state:ny_consolidated_laws",
+      "relation": "enacts"
+    },
+    {
+      "source": "state:state_assembly",
+      "target": "state:ny_consolidated_laws",
+      "relation": "enacts"
+    },
+    {
+      "source": "state:state_legislature",
+      "target": "state:state_budget",
+      "relation": "adopts"
+    },
+    {
+      "source": "state:state_legislature",
+      "target": "state:state_assembly",
+      "relation": "includes"
+    },
+    {
+      "source": "state:state_legislature",
+      "target": "state:state_senate",
+      "relation": "includes"
+    },
+    {
+      "source": "state:governor_ny",
+      "target": "state:state_budget",
+      "relation": "proposes"
+    },
+    {
+      "source": "state:governor_ny",
+      "target": "state:state_agencies",
+      "relation": "oversees"
+    },
+    {
+      "source": "state:state_agencies",
+      "target": "state:nycrr",
+      "relation": "issues"
+    },
+    {
+      "source": "state:state_comptroller",
+      "target": "state:state_budget",
+      "relation": "audits"
+    },
+    {
+      "source": "state:state_legislature",
+      "target": "state:public_authorities",
+      "relation": "creates"
     },
     {
       "source": "federal:us_constitution",
@@ -171,13 +410,54 @@
     },
     {
       "source": "federal:congress",
+      "target": "federal:senate",
+      "relation": "includes"
+    },
+    {
+      "source": "federal:congress",
       "target": "federal:house_of_representatives",
       "relation": "includes"
+    },
+    {
+      "source": "federal:president",
+      "target": "federal:federal_agencies",
+      "relation": "oversees"
+    },
+    {
+      "source": "federal:president",
+      "target": "federal:federal_budget",
+      "relation": "proposes"
+    },
+    {
+      "source": "federal:congress",
+      "target": "federal:federal_budget",
+      "relation": "enacts"
     },
     {
       "source": "federal:supreme_court",
       "target": "federal:federal_courts",
       "relation": "oversees"
+    },
+    {
+      "source": "federal:senate",
+      "target": "federal:us_code",
+      "relation": "enacts",
+      "category": "legal",
+      "hierarchical": true
+    },
+    {
+      "source": "federal:house_of_representatives",
+      "target": "federal:us_code",
+      "relation": "enacts",
+      "category": "legal",
+      "hierarchical": true
+    },
+    {
+      "source": "federal:federal_agencies",
+      "target": "federal:cfr",
+      "relation": "promulgates",
+      "category": "administrative",
+      "hierarchical": true
     }
   ]
 }
