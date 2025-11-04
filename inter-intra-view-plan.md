@@ -486,3 +486,82 @@
 4. **Layout specification** needs to be added to each subview definition:
    - `"layout": { "type": "hierarchical" }` for personnel chains
    - `"layout": { "type": "concentric" }` for parallel divisions
+
+---
+
+## Implementation Status (Updated 2025-11-04)
+
+### ✅ Completed
+
+1. **Personnel Hierarchy Generation** (All 8 views)
+   - ✅ NYC Mayor's Office - 11 nodes, hierarchical structure
+   - ✅ NYC City Council - 9 nodes, committee structure
+   - ✅ NY Governor's Office - 11 nodes, hierarchical structure
+   - ✅ NY State Assembly - 8 nodes, committee structure
+   - ✅ NY State Senate - 8 nodes, committee structure
+   - ✅ White House - 12 nodes, hierarchical structure
+   - ✅ U.S. Senate - 8 nodes, committee structure
+   - ✅ U.S. House - 9 nodes, committee structure
+
+2. **Data Migration**
+   - ✅ Subviews reorganized by anchor node location
+   - ✅ main.json now contains 17 subviews (anchored to main nodes)
+   - ✅ Intra files contain subviews anchored to intra nodes
+   - ✅ All personnel hierarchy nodes integrated into intra files
+   - ✅ All generated edges integrated into subview configs
+
+3. **Layout Optimization**
+   - ✅ Changed departments/agencies/judiciary to concentric layout (better for peer relationships)
+   - ✅ Changed legislative committees to concentric layout (equal-level committees)
+   - ✅ Kept White House as hierarchical (true hierarchy)
+   - ✅ Kept mayor/governor offices as hierarchical (chain of command)
+
+4. **Inter Views - Deferred**
+   - ✅ Removed `state:comptroller_oversight` (was the only inter view with conflict)
+   - ⚠️ Decided to defer all inter views until multi-view UI is implemented
+   - 📝 Documented in [multi-subview-analysis.md](multi-subview-analysis.md)
+
+5. **UX Refinements**
+   - ✅ All subviews hidden from left menu (cleaner interface)
+   - ✅ Subviews still activate when clicking nodes
+   - ✅ Filter applied in `visibleSubgraphConfigs` not `buildSubgraphByEntryId`
+
+### 🚧 Next Steps
+
+1. **Multi-View UI** (Future)
+   - Build sidebar-based view selector
+   - Allow multiple views per node (inter + intra)
+   - Show all available views for a selected node
+   - Implement view type filtering
+
+2. **Inter Views** (Deferred until multi-view UI)
+   - Create inter views for nodes that need both inter + intra
+   - Currently planned: mayor, comptroller, council, governor, assembly, senate, judiciary
+   - See [view-configuration-plan.md](view-configuration-plan.md) for details
+
+3. **Additional Views** (Low Priority)
+   - Appellate Divisions (4 departments) - concentric
+   - Federal Court System (circuit/district hierarchy)
+   - Individual authority internal structures
+
+### 📊 Current Subview Statistics
+
+**main.json**: 17 subviews
+- 2 City comptroller/departments
+- 6 City personnel hierarchies (mayor, council) + inter views
+- 3 State category views (agencies, judiciary)
+- 3 State personnel hierarchies (governor, assembly, senate)
+- 1 State inter view (public authorities)
+- 2 Federal personnel hierarchies (white house, senate, house)
+- Hidden from menu, accessible via click
+
+**city-intra.json**: 10 subviews (agency internal structures)
+**state-intra.json**: 10 subviews (agency internal structures)
+**federal-intra.json**: 9 subviews (agency internal structures)
+
+### 🎯 Architecture Decision
+
+**Current**: Single view per node (later view overwrites earlier in Map)
+**Future**: Multi-view support via sidebar selector
+
+For now, nodes activate their single available view when clicked. Multi-view nodes (those with both inter + intra) will be supported once sidebar UI is implemented.
