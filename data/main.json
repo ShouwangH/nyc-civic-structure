@@ -1280,7 +1280,7 @@
         }
       ],
       "layout": {
-        "type": "elk-mrtree",
+        "type": "concentric",
         "fit": true,
         "padding": 80,
         "animate": true
@@ -1658,7 +1658,7 @@
         }
       ],
       "layout": {
-        "type": "elk-mrtree",
+        "type": "concentric",
         "fit": true,
         "padding": 80,
         "animate": true
@@ -1757,7 +1757,7 @@
         }
       ],
       "layout": {
-        "type": "elk-mrtree",
+        "type": "concentric",
         "fit": true,
         "padding": 80,
         "animate": true
@@ -2072,7 +2072,7 @@
         }
       ],
       "layout": {
-        "type": "elk-mrtree",
+        "type": "concentric",
         "fit": true,
         "padding": 80,
         "animate": true
@@ -2255,7 +2255,7 @@
         }
       ],
       "layout": {
-        "type": "elk-mrtree",
+        "type": "concentric",
         "options": {
           "direction": "DOWN",
           "spacing": 70
@@ -2432,7 +2432,7 @@
         }
       ],
       "layout": {
-        "type": "elk-mrtree",
+        "type": "concentric",
         "options": {
           "direction": "DOWN",
           "spacing": 70
@@ -2510,7 +2510,7 @@
         }
       ],
       "layout": {
-        "type": "elk-mrtree",
+        "type": "concentric",
         "options": {
           "direction": "DOWN",
           "spacing": 70
@@ -2700,7 +2700,7 @@
         }
       ],
       "layout": {
-        "type": "elk-mrtree",
+        "type": "concentric",
         "options": {
           "direction": "DOWN",
           "spacing": 70
@@ -2785,7 +2785,7 @@
         }
       ],
       "layout": {
-        "type": "elk-mrtree",
+        "type": "concentric",
         "options": {
           "direction": "DOWN",
           "spacing": 70
@@ -2903,43 +2903,6 @@
           "source": "city:mayor_nyc",
           "target": "state:nycha",
           "relation": "appoints_board_chair"
-        }
-      ],
-      "layout": {
-        "type": "elk-force"
-      }
-    },
-    {
-      "id": "state:comptroller_oversight",
-      "label": "State Comptroller Oversight Relationships",
-      "description": "Comptroller's audit and oversight authority over state agencies, local governments, and NYC Charter",
-      "type": "inter",
-      "jurisdiction": "state",
-      "anchor": {
-        "nodeId": "state:state_comptroller"
-      },
-      "nodes": [
-        "state:state_comptroller",
-        "state:state_budget",
-        "state:state_agencies",
-        "city:nyc_charter"
-      ],
-      "edges": [
-        {
-          "source": "state:state_comptroller",
-          "target": "state:state_budget",
-          "relation": "audits"
-        },
-        {
-          "source": "state:state_comptroller",
-          "target": "state:state_agencies",
-          "relation": "audits"
-        },
-        {
-          "source": "state:state_comptroller",
-          "target": "city:nyc_charter",
-          "relation": "audits",
-          "detail": "Local government oversight"
         }
       ],
       "layout": {
