@@ -267,10 +267,19 @@ export const useVisualizationState = () => {
       ? (GRAPH_DATA.processesByScope[state.activeScope] ?? [])
       : ([] as ProcessDefinition[]);
 
+    // Temporarily hide overwhelming category views from menu (still accessible via click)
+    const hiddenSubviewIds = new Set([
+      'city:departments',
+      'state:state_agencies',
+      'state:state_judiciary',
+      'federal:federal_agencies',
+    ]);
+
     const visibleSubgraphConfigs = state.activeScope
       ? GRAPH_DATA.scopedSubgraphConfigs
           .filter((entry) => entry.scope === state.activeScope)
           .map((entry) => entry.config)
+          .filter((config) => !hiddenSubviewIds.has(config.meta.id))
       : ([] as SubgraphConfig[]);
 
     // Entity lookups

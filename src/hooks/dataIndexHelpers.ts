@@ -39,19 +39,9 @@ export const buildSubgraphScopeIndex = (
 export const buildSubgraphByEntryId = (
   subgraphConfigs: SubgraphConfig[]
 ): Map<string, SubgraphConfig> => {
-  // Temporarily hide overwhelming category views (will be accessible via sidebar in future)
-  const hiddenSubviewIds = new Set([
-    'city:departments',
-    'state:state_agencies',
-    'state:state_judiciary',
-    'federal:federal_agencies',
-  ]);
-
   const map = new Map<string, SubgraphConfig>();
   subgraphConfigs.forEach((config) => {
-    if (!hiddenSubviewIds.has(config.meta.id)) {
-      map.set(config.meta.entryNodeId, config);
-    }
+    map.set(config.meta.entryNodeId, config);
   });
   return map;
 };
