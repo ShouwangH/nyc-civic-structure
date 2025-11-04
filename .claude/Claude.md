@@ -42,6 +42,15 @@ When asked to do something, just do it - including obvious follow-up actions nee
 - YAGNI. The best code is no code. Don't add features we don't need right now.
 - When it doesn't conflict with YAGNI, architect for extensibility and flexibility.
 
+## Planning and Documentation
+
+- YOU MUST NOT write detailed implementation code in plans, architecture docs, or implementation guides unless you have thoroughly explored the existing codebase architecture
+- Plans should describe WHAT needs to be done and WHY, not HOW to implement it in detail
+- Type definitions and schemas are OK to include in plans
+- Task descriptions, goals, and acceptance criteria are OK
+- Detailed controller implementations, component code, hook logic, etc. are NOT OK unless you've read the existing codebase and understand the patterns
+- When in doubt, describe the goal and let implementation discovery happen during actual coding
+
 
 ## Test Driven Development  (TDD)
  
@@ -109,6 +118,18 @@ When asked to do something, just do it - including obvious follow-up actions nee
 - YOU MUST commit frequently throughout the development process, even if your high-level tasks are not yet done. Commit your journal entries.
 - NEVER SKIP, EVADE OR DISABLE A PRE-COMMIT HOOK
 - NEVER use `git add -A` unless you've just done a `git status` - Don't add random test files to the repo.
+
+## Data Safety and Backups
+
+- BEFORE running ANY script that modifies or migrates data files, YOU MUST create a git commit OR create physical backups
+- For data migrations, YOU MUST ALWAYS:
+  1. Check git status - ensure current state is committed or you understand what's uncommitted
+  2. EITHER commit current state with clear message (e.g., "Before: data migration to split main/intra"), OR
+  3. Create physical backup directory and copy files (e.g., `mkdir -p data/backup-YYYY-MM-DD && cp data/*.json data/backup-YYYY-MM-DD/`)
+  4. ONLY THEN run the migration script
+- YOU MUST NEVER assume files can be "easily recovered with git" - ALWAYS create the commit or backup explicitly
+- For destructive operations (file deletion, major restructuring), REQUIRE a git commit before proceeding
+- If unsure whether an operation is destructive, treat it as destructive
 
 ## Testing
 
