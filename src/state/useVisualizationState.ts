@@ -211,8 +211,13 @@ const reducer = (state: VisualizationState, action: VisualizationAction): Visual
         selectedEdgeId: null,
         activeProcessId: null,
         activeSubgraphId: null,
+        activeSubviewId: null,
         isSidebarHover: false,
       };
+
+    // NEW: Direct state update for imperative handlers
+    case 'STATE_UPDATED':
+      return { ...state, ...action.payload };
 
     default:
       return state;
@@ -334,11 +339,23 @@ export const useVisualizationState = () => {
     state.isSidebarHover,
   ]);
 
+  // NEW: setState wrapper for imperative handlers
+  // Allows handlers to update state directly with functional updates
+  const setState = useCallback(
+    (updater: (prev: VisualizationState) => VisualizationState) => {
+      const newState = updater(state);
+      // Dispatch a direct state update action
+      dispatch({ type: 'STATE_UPDATED', payload: newState });
+    },
+    [state],
+  );
+
   return {
     state,
     actions,
     derived,
     dispatch, // Expose dispatch for semantic actions
+    setState, // NEW: Expose setState for imperative handlers
   };
 };
 

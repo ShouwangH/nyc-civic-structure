@@ -79,6 +79,12 @@ export type SetControlsOpenAction = {
   value: boolean;
 };
 
+// NEW: Direct state update action for imperative handlers
+export type StateUpdatedAction = {
+  type: 'STATE_UPDATED';
+  payload: Partial<import('./useVisualizationState').VisualizationState>;
+};
+
 /**
  * Union of all action types
  */
@@ -97,7 +103,8 @@ export type VisualizationAction =
   | SetActiveScopeAction
   | SetSidebarHoverAction
   | ClearSelectionsAction
-  | SetControlsOpenAction;
+  | SetControlsOpenAction
+  | StateUpdatedAction; // NEW: For imperative handlers
 
 /**
  * Action creators - pure functions that create action objects

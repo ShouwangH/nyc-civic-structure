@@ -5,6 +5,8 @@ import type { SubgraphConfig } from '../graph/subgraphs';
 import { createGraphRuntime } from '../graph/orchestrator';
 import type { GraphRuntime } from '../graph/runtimeTypes';
 import type { VisualizationAction } from '../state/actions';
+import type { VisualizationState } from '../state/useVisualizationState';
+import type { GraphActionHandlers } from '../graph/actionHandlers';
 
 export type GraphCanvasHandle = {
   highlightProcess: GraphRuntime['highlightProcess'];
@@ -15,6 +17,7 @@ export type GraphCanvasHandle = {
   clearNodeFocus: GraphRuntime['clearNodeFocus'];
   getController: GraphRuntime['getController'];
   getCy: GraphRuntime['getCy'];
+  handlers: GraphActionHandlers | null; // NEW: Imperative handlers
 };
 
 type GraphCanvasProps = {
@@ -24,12 +27,13 @@ type GraphCanvasProps = {
   processes: ProcessDefinition[];
   nodesById: Map<string, GraphNodeInfo>;
   dispatch: React.Dispatch<VisualizationAction>;
+  setState?: (updater: (prev: VisualizationState) => VisualizationState) => void; // NEW: Direct state setter
   className?: string;
 };
 
 const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
   (
-    { mainGraph, subgraphByEntryId, subgraphById, processes, nodesById, dispatch, className },
+    { mainGraph, subgraphByEntryId, subgraphById, processes, nodesById, dispatch, setState, className },
     ref,
   ) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
@@ -47,6 +51,7 @@ const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
         subgraphById,
         data: { processes, nodesById },
         dispatch,
+        setState, // NEW: Pass setState for imperative handlers
       });
 
       orchestrator.initialize();
@@ -56,7 +61,7 @@ const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
         orchestrator.destroy();
         orchestratorRef.current = null;
       };
-    }, [mainGraph, processes, nodesById, dispatch, subgraphByEntryId, subgraphById]);
+    }, [mainGraph, processes, nodesById, dispatch, setState, subgraphByEntryId, subgraphById]);
 
     useImperativeHandle(
       ref,
@@ -102,6 +107,7 @@ const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
         },
         getController: () => orchestratorRef.current?.getController() ?? null,
         getCy: () => orchestratorRef.current?.getCy() ?? null,
+        handlers: orchestratorRef.current?.handlers ?? null, // NEW: Expose imperative handlers
       }),
       [],
     );

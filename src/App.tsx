@@ -40,6 +40,7 @@ function App() {
       shouldShowSidebar,
     },
     dispatch,
+    setState, // NEW: For imperative handlers
   } = useVisualizationState();
 
   const { controlsOpen, activeScope, activeProcessId, activeSubgraphId } = state;
@@ -134,6 +135,7 @@ function App() {
               processes={allProcesses}
               nodesById={nodesById}
               dispatch={dispatch}
+              setState={setState} // NEW: Pass setState for imperative handlers
             />
           </div>
           <p className="text-xs text-slate-500">
