@@ -22,6 +22,7 @@ import type {
   StructureNode,
   RawEdge,
   SubgraphFile,
+  SubviewDefinition,
 } from './types';
 
 export type { GovernmentScope } from './types';
@@ -38,6 +39,7 @@ export type GovernmentDataset = {
   edges: RawEdge[];
   processes: ProcessDefinition[];
   subgraphs: SubgraphFile[];
+  subviews?: SubviewDefinition[];
 };
 
 // Helper: Extract nodes for a specific jurisdiction from main.json
@@ -59,12 +61,24 @@ const buildDataset = (
   scope: GovernmentScope,
   label: string,
   description: string,
-  intraData: { nodes: StructureNode[]; edges?: RawEdge[] },
+  intraData: { nodes: StructureNode[]; edges?: RawEdge[]; subviews?: unknown[] },
   processFile: { processes: ProcessDefinition[] },
   subgraphs: SubgraphFile[],
 ): GovernmentDataset => {
   const mainNodes = extractMainNodes(scope);
   const mainEdges = extractMainEdges(scope);
+
+  // Annotate main nodes with tier
+  const annotatedMainNodes = mainNodes.map(node => ({
+    ...node,
+    tier: 'main' as const,
+  }));
+
+  // Annotate intra nodes with tier
+  const annotatedIntraNodes = intraData.nodes.map(node => ({
+    ...node,
+    tier: 'intra' as const,
+  }));
 
   return {
     scope,
@@ -74,10 +88,11 @@ const buildDataset = (
       title: `${label} Government Structure`,
       description,
     },
-    nodes: [...mainNodes, ...intraData.nodes],
+    nodes: [...annotatedMainNodes, ...annotatedIntraNodes],
     edges: [...mainEdges, ...(intraData.edges || [])],
     processes: processFile.processes,
     subgraphs,
+    subviews: intraData.subviews as SubviewDefinition[] | undefined,
   };
 };
 

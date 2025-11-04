@@ -7,6 +7,7 @@ export type StructureNode = {
   process?: string[];
   position?: { x: number; y: number };
   parent?: string;
+  tier?: 'main' | 'intra' | 'detailed';
 };
 
 export type StructureData = {

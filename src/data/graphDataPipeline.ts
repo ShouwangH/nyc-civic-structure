@@ -68,8 +68,14 @@ export const buildGraphData = (): GraphData => {
 
   // Step 2: Extract processes and build main graph
   const allProcesses = dataset.processes ?? [];
+
+  // Filter to only main tier nodes (default view)
+  const mainTierNodes = dataset.nodes.filter(node =>
+    node.tier === 'main' || node.tier === undefined
+  );
+
   const mainGraph = buildMainGraph(
-    { meta: dataset.meta, nodes: dataset.nodes },
+    { meta: dataset.meta, nodes: mainTierNodes },
     { edges: dataset.edges }
   );
 
