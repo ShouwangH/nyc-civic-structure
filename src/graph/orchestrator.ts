@@ -2,11 +2,13 @@ import cytoscape, { type Core } from 'cytoscape';
 
 import { graphStyles } from './styles';
 import { createGraphController, type GraphController } from './controller';
-import type { GraphNodeInfo } from './types';
-import type { ProcessDefinition } from '../data/types';
+import type { GraphNodeInfo, GraphEdgeInfo } from './types';
+import type { ProcessDefinition, SubviewDefinition } from '../data/types';
 import type { SubgraphConfig } from './subgraphs';
 import { createGraphInputHandler } from './inputHandler';
 import { createPlaceholderProcessNode, createProcessEdgeInfo } from './processUtils';
+import { createSubviewController, type SubviewController } from './subview-controller';
+import { createGraphActionHandlers, type GraphActionHandlers } from './actionHandlers';
 import type {
   GraphRuntime,
   GraphRuntimeConfig,
@@ -24,11 +26,14 @@ const createGraphRuntime: GraphRuntimeFactory = (
     subgraphById,
     data,
     dispatch,
+    setState, // NEW: Direct state setter for imperative handlers
   }: GraphRuntimeConfig,
   dependencies: GraphRuntimeDependencies = {},
 ): GraphRuntime => {
   let cy: Core | null = null;
   let controller: GraphController | null = null;
+  let subviewController: SubviewController | null = null;
+  let handlers: GraphActionHandlers | null = null;
   let inputBinding: GraphInputBinding | null = null;
 
   const {
@@ -120,6 +125,13 @@ const createGraphRuntime: GraphRuntimeFactory = (
   };
 
   const handleNodeTap = (nodeId: string) => {
+    // NEW: Use imperative handlers if available
+    if (handlers) {
+      handlers.handleNodeClick(nodeId);
+      return;
+    }
+
+    // LEGACY: Fallback to dispatch pattern
     const isSubgraphEntry = subgraphByEntryId.has(nodeId);
     dispatch({
       type: 'NODE_CLICKED',
@@ -129,6 +141,13 @@ const createGraphRuntime: GraphRuntimeFactory = (
   };
 
   const handleEdgeTap = (edgeId: string) => {
+    // NEW: Use imperative handlers if available
+    if (handlers) {
+      handlers.handleEdgeClick(edgeId);
+      return;
+    }
+
+    // LEGACY: Fallback to dispatch pattern
     dispatch({
       type: 'EDGE_CLICKED',
       edgeId,
@@ -136,6 +155,13 @@ const createGraphRuntime: GraphRuntimeFactory = (
   };
 
   const handleBackgroundTap = () => {
+    // NEW: Use imperative handlers if available
+    if (handlers) {
+      handlers.handleBackgroundClick();
+      return;
+    }
+
+    // LEGACY: Fallback to dispatch pattern
     dispatch({ type: 'BACKGROUND_CLICKED' });
   };
 
@@ -160,6 +186,8 @@ const createGraphRuntime: GraphRuntimeFactory = (
       cy = null;
     }
     controller = null;
+    subviewController = null;
+    handlers = null;
   };
 
   const initialize = () => {
@@ -176,6 +204,47 @@ const createGraphRuntime: GraphRuntimeFactory = (
 
     const controllerInstance = createControllerImpl(cyInstance, mainGraph);
     controller = controllerInstance;
+
+    // NEW: Create SubviewController if setState is provided
+    if (setState) {
+      const nodeInfosById = data.nodesById;
+      const edgeInfosById = new Map<string, GraphEdgeInfo>();
+
+      // Create SubviewController
+      subviewController = createSubviewController({
+        cy: cyInstance,
+        runMainGraphLayout: async (options) => {
+          const layout = cyInstance.layout(mainGraph.layout);
+          const layoutPromise = layout.promiseOn('layoutstop');
+          layout.run();
+          await layoutPromise;
+        },
+        nodeInfosById,
+        edgeInfosById,
+      });
+
+      // Create imperative action handlers
+      // Build subview maps from subgraph maps (temporary compatibility)
+      const subviewByAnchorId = new Map<string, SubviewDefinition>();
+      const subviewById = new Map<string, SubviewDefinition>();
+
+      // TODO: Replace with actual SubviewDefinition data from GRAPH_DATA
+      // For now, this will work with legacy subgraph data
+
+      handlers = createGraphActionHandlers({
+        subviewController,
+        setState,
+        subviewByAnchorId,
+        subviewById,
+        scopeNodeIds: {
+          city: [],
+          state: [],
+          federal: [],
+        },
+        focusNodes,
+        clearNodeFocus,
+      });
+    }
 
     cyInstance.one('layoutstop', () => {
       controllerInstance.captureInitialPositions();
@@ -206,6 +275,7 @@ const createGraphRuntime: GraphRuntimeFactory = (
     handleEdgeTap: eventHandlers.handleEdgeTap,
     handleBackgroundTap: eventHandlers.handleBackgroundTap,
     handleZoom: eventHandlers.handleZoom,
+    handlers, // NEW: Expose imperative handlers
   };
 
   return runtime;

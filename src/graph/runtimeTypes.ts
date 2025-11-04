@@ -5,6 +5,8 @@ import type { GraphNodeInfo, GraphConfig } from './types';
 import type { SubgraphConfig } from './subgraphs';
 import type { GraphController } from './controller';
 import type { VisualizationAction } from '../state/actions';
+import type { VisualizationState } from '../state/useVisualizationState';
+import type { GraphActionHandlers } from './actionHandlers';
 
 export type GraphRuntimeData = {
   processes: ProcessDefinition[];
@@ -17,7 +19,8 @@ export type GraphRuntimeConfig = {
   subgraphByEntryId: Map<string, SubgraphConfig>;
   subgraphById: Map<string, SubgraphConfig>;
   data: GraphRuntimeData;
-  dispatch: React.Dispatch<VisualizationAction>;
+  dispatch: React.Dispatch<VisualizationAction>; // Legacy - will be removed
+  setState?: (updater: (prev: VisualizationState) => VisualizationState) => void; // NEW: Direct state setter
 };
 
 export type GraphRuntimeCommands = {
@@ -60,6 +63,7 @@ export type GraphRuntime = GraphRuntimeCommands &
   GraphRuntimeEventHandlers & {
     initialize: () => void;
     destroy: () => void;
+    handlers: GraphActionHandlers | null; // NEW: Imperative action handlers
   };
 
 export type GraphRuntimeFactory = (
