@@ -43,9 +43,7 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
   {
     selector: 'edge',
     style: {
-      // TEMPORARY: Testing haystack routing (change back to 'bezier' if not preferred)
-      'curve-style': 'haystack',
-      'haystack-radius': 0,
+      'curve-style': 'bezier',
       width: '2px',
       'line-color': '#334155',
       'line-opacity': 0.9,

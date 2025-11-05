@@ -4,16 +4,16 @@
 import type { Core } from 'cytoscape';
 import type { SubviewDefinition, SubviewType } from '../data/types';
 import type { GraphNodeInfo, GraphEdgeInfo } from './types';
-import type { MainLayoutOptions } from './layout';
+import type { MainLayoutOptions} from './layout';
 import {
   copyPosition,
   getViewportMetrics,
-  createProcessLayoutOptions,
 } from './layout';
 import { ANIMATION_DURATION, ANIMATION_EASING } from './animation';
 import { applyProcessHighlightClasses, resetHighlightClasses } from './styles-application';
 import { createStructuralLayoutOptions } from './layouts';
 import type { GovernmentScope } from '../data/datasets';
+import type { GraphAction } from './actions';
 
 export type VisualizationState = {
   selectedNodeId: string | null;
@@ -27,30 +27,19 @@ export type VisualizationState = {
 export type SetState = (updater: (prev: VisualizationState) => VisualizationState) => void;
 
 export type Controller = {
-  // Subview operations
-  activateSubview: (subviewId: string) => Promise<void>;
-  deactivateAll: () => Promise<void>;
-  isSubviewActive: (id?: string) => boolean;
+  // Central dispatch - all user interactions go through this
+  dispatch: (action: GraphAction) => Promise<void>;
 
-  // Node/Edge selection
-  selectNode: (nodeId: string) => void;
-  selectEdge: (edgeId: string) => void;
-  clearSelections: () => void;
-
-  // Scope operations
-  handleScopeChange: (scope: GovernmentScope) => Promise<void>;
-
-  // Focus operations
+  // Utility methods (not user actions)
   focusNodes: (nodeIds: string[]) => Promise<void>;
   clearNodeFocus: () => void;
-
-  // Initialization
   captureInitialPositions: () => void;
 };
 
 export type ControllerConfig = {
   cy: Core;
   setState: SetState;
+  getState: () => VisualizationState;
   subviewByAnchorId: Map<string, SubviewDefinition>;
   subviewById: Map<string, SubviewDefinition>;
   scopeNodeIds: Record<GovernmentScope, string[]>;
@@ -72,6 +61,7 @@ export function createController(config: ControllerConfig): Controller {
   const {
     cy,
     setState,
+    getState,
     subviewById,
     scopeNodeIds,
     nodeInfosById,
@@ -81,16 +71,71 @@ export function createController(config: ControllerConfig): Controller {
   let activeSubview: ActiveSubviewState | null = null;
   let transitionInProgress = false;
 
-  // ============================================================================
-  // SUBVIEW OPERATIONS
-  // ============================================================================
-
-  const isSubviewActive = (id?: string): boolean => {
-    if (!activeSubview) {
-      return false;
+  /**
+   * Applies scope styling to the graph - dims nodes/edges outside the scope.
+   */
+  const applyScopeStyling = (scope: GovernmentScope): void => {
+    const nodeIds = scopeNodeIds[scope];
+    if (!nodeIds || nodeIds.length === 0) {
+      return;
     }
-    return id ? activeSubview.id === id : true;
+
+    const scopeNodeSet = new Set(nodeIds);
+    cy.batch(() => {
+      cy.elements().removeClass('dimmed faded highlighted');
+
+      cy.nodes().forEach((node) => {
+        if (!scopeNodeSet.has(node.id())) {
+          node.addClass('dimmed');
+        }
+      });
+
+      cy.edges().forEach((edge) => {
+        const source = edge.source().id();
+        const target = edge.target().id();
+        if (!scopeNodeSet.has(source) || !scopeNodeSet.has(target)) {
+          edge.addClass('faded');
+        }
+      });
+    });
   };
+
+  /**
+   * Central state transition function with business rules enforcement.
+   * Single source of truth for how VisualizationState changes are applied.
+   */
+  const transitionVisualizationState = (changes: Partial<VisualizationState>) => {
+    setState((prev) => {
+      const next = { ...prev, ...changes };
+
+      // Rule: Node and edge selections are mutually exclusive
+      if ('selectedNodeId' in changes && changes.selectedNodeId !== undefined) {
+        if (changes.selectedNodeId !== null) {
+          next.selectedEdgeId = null;
+        }
+      }
+      if ('selectedEdgeId' in changes && changes.selectedEdgeId !== undefined) {
+        if (changes.selectedEdgeId !== null) {
+          next.selectedNodeId = null;
+        }
+      }
+
+      // Rule: Sidebar visibility based on selection state
+      // Show sidebar when anything is selected, hide when explicitly cleared
+      if (next.selectedNodeId || next.selectedEdgeId || next.activeSubviewId) {
+        next.sidebarHover = true;
+      } else if ('activeSubviewId' in changes && changes.activeSubviewId === null) {
+        // Explicitly hide sidebar when clearing subview
+        next.sidebarHover = false;
+      }
+
+      return next;
+    });
+  };
+
+  // ============================================================================
+  // SUBVIEW OPERATIONS (Internal - called by dispatch)
+  // ============================================================================
 
   const activateSubview = async (subviewId: string): Promise<void> => {
     const subview = subviewById.get(subviewId);
@@ -110,7 +155,7 @@ export function createController(config: ControllerConfig): Controller {
 
     // Deactivate current if any
     if (activeSubview) {
-      await deactivateAll();
+      await deactivateSubview();
     }
 
     transitionInProgress = true;
@@ -138,7 +183,7 @@ export function createController(config: ControllerConfig): Controller {
     const nodeIdSet = new Set(nodeInfos.map(node => node.id));
     const edgeIdSet = new Set(edgeInfos.map(edge => edge.id));
 
-    // For workflows: get viewport center for initial positioning
+    // Get viewport center for workflow positioning (anchor nodes may not exist yet)
     const { centerX, centerY } = subview.type === 'workflow'
       ? getViewportMetrics(cy)
       : { centerX: 0, centerY: 0 };
@@ -154,7 +199,6 @@ export function createController(config: ControllerConfig): Controller {
         const added = cy.add({
           group: 'nodes',
           data: nodeInfo,
-          ...(subview.type === 'workflow' && { position: { x: centerX, y: centerY } }),
         });
         addedNodeIds.add(nodeInfo.id);
         added.removeData('orgPos');
@@ -202,10 +246,9 @@ export function createController(config: ControllerConfig): Controller {
       });
     }
 
-    // Run layout
-    const layoutOptions = subview.type === 'workflow'
-      ? createProcessLayoutOptions(centerX, centerY, ANIMATION_DURATION, ANIMATION_EASING)
-      : createStructuralLayoutOptions(subview, cy);
+    // Run layout (workflows: viewport center, structural: entry node)
+    const viewportCenter = subview.type === 'workflow' ? { x: centerX, y: centerY } : undefined;
+    const layoutOptions = createStructuralLayoutOptions(subview, cy, viewportCenter);
 
     const layoutElements = subviewNodes.union(subviewEdges);
     const layout = layoutElements.layout(layoutOptions);
@@ -243,26 +286,22 @@ export function createController(config: ControllerConfig): Controller {
     transitionInProgress = false;
 
     // Update React state
-    setState((prev) => ({
-      ...prev,
+    transitionVisualizationState({
       activeSubviewId: subview.id,
       selectedNodeId: null,
       selectedEdgeId: null,
-      sidebarHover: true,
-    }));
+    });
   };
 
-  const deactivateAll = async (): Promise<void> => {
+  const deactivateSubview = async (): Promise<void> => {
     const currentSubview = activeSubview;
     if (!currentSubview || transitionInProgress) {
-      setState((prev) => ({
-        ...prev,
-        activeScope: null,
+      transitionVisualizationState({
+        // Keep activeScope - only clear subview state
         activeSubviewId: null,
         selectedNodeId: null,
         selectedEdgeId: null,
-        sidebarHover: false,
-      }));
+      });
       return;
     }
 
@@ -307,30 +346,38 @@ export function createController(config: ControllerConfig): Controller {
       }
     });
 
-    // Re-run main layout
-    const fitPadding = currentSubview.type === 'workflow' ? 220 : 200;
-    await runMainGraphLayout({ animateFit: true, fitPadding });
+    // Check if we should preserve scope
+    const currentScope = getState().activeScope;
+
+    if (currentScope) {
+      // Re-apply scope styling after removing subview
+      applyScopeStyling(currentScope);
+
+      // Fit to scope nodes
+      const nodeIds = scopeNodeIds[currentScope];
+      await focusNodes(nodeIds);
+    } else {
+      // No scope - clear all styling and refit to entire graph
+      clearNodeFocus();
+      const fitPadding = currentSubview.type === 'workflow' ? 220 : 200;
+      await runMainGraphLayout({ animateFit: true, fitPadding });
+    }
 
     // Clear state
     activeSubview = null;
     transitionInProgress = false;
 
-    // Clear node focus styling
-    clearNodeFocus();
-
     // Update React state
-    setState((prev) => ({
-      ...prev,
-      activeScope: null,
+    transitionVisualizationState({
+      // Keep activeScope - only clear subview state
       activeSubviewId: null,
       selectedNodeId: null,
       selectedEdgeId: null,
-      sidebarHover: false,
-    }));
+    });
   };
 
   // ============================================================================
-  // NODE/EDGE SELECTION
+  // NODE/EDGE SELECTION (Internal - called by dispatch)
   // ============================================================================
 
   const selectNode = (nodeId: string): void => {
@@ -341,13 +388,10 @@ export function createController(config: ControllerConfig): Controller {
       node.addClass('highlighted');
     }
 
-    // Update React state
-    setState((prev) => ({
-      ...prev,
+    // Update React state (transition function handles mutual exclusivity and sidebar)
+    transitionVisualizationState({
       selectedNodeId: nodeId,
-      selectedEdgeId: null,
-      sidebarHover: true,
-    }));
+    });
   };
 
   const selectEdge = (edgeId: string): void => {
@@ -358,13 +402,10 @@ export function createController(config: ControllerConfig): Controller {
       edge.addClass('highlighted');
     }
 
-    // Update React state
-    setState((prev) => ({
-      ...prev,
+    // Update React state (transition function handles mutual exclusivity and sidebar)
+    transitionVisualizationState({
       selectedEdgeId: edgeId,
-      selectedNodeId: null,
-      sidebarHover: true,
-    }));
+    });
   };
 
   const clearSelections = (): void => {
@@ -372,21 +413,48 @@ export function createController(config: ControllerConfig): Controller {
     cy.elements().removeClass('highlighted');
 
     // Update React state
-    setState((prev) => ({
-      ...prev,
+    transitionVisualizationState({
       selectedNodeId: null,
       selectedEdgeId: null,
-    }));
+    });
   };
 
   // ============================================================================
-  // SCOPE OPERATIONS
+  // BACKGROUND CLICK (Internal - called by dispatch)
+  // ============================================================================
+
+  const handleBackgroundClick = async (): Promise<void> => {
+    const currentState = getState();
+
+    // If there's a selected node or edge, clear only selections (keep activeScope)
+    if (currentState.selectedNodeId || currentState.selectedEdgeId) {
+      clearSelections();
+      return;
+    }
+
+    // If there's an active subview, deactivate it (keep activeScope)
+    if (currentState.activeSubviewId) {
+      await deactivateSubview();
+      return;
+    }
+
+    // If there's an active scope but no selections/subview, clear the scope
+    if (currentState.activeScope) {
+      clearNodeFocus();
+      transitionVisualizationState({
+        activeScope: null,
+      });
+    }
+  };
+
+  // ============================================================================
+  // SCOPE OPERATIONS (Internal - called by dispatch)
   // ============================================================================
 
   const handleScopeChange = async (scope: GovernmentScope): Promise<void> => {
     // Deactivate any active subview first
     if (activeSubview) {
-      await deactivateAll();
+      await deactivateSubview();
     }
 
     const nodeIds = scopeNodeIds[scope];
@@ -394,41 +462,21 @@ export function createController(config: ControllerConfig): Controller {
       return;
     }
 
-    // Apply dimmed/faded styling
-    const scopeNodeSet = new Set(nodeIds);
-    cy.batch(() => {
-      cy.elements().removeClass('dimmed faded highlighted');
-
-      cy.nodes().forEach((node) => {
-        if (!scopeNodeSet.has(node.id())) {
-          node.addClass('dimmed');
-        }
-      });
-
-      cy.edges().forEach((edge) => {
-        const source = edge.source().id();
-        const target = edge.target().id();
-        if (!scopeNodeSet.has(source) || !scopeNodeSet.has(target)) {
-          edge.addClass('faded');
-        }
-      });
-    });
-
-    // Focus on scope nodes
+    // Apply scope styling and focus
+    applyScopeStyling(scope);
     await focusNodes(nodeIds);
 
     // Update React state
-    setState((prev) => ({
-      ...prev,
+    transitionVisualizationState({
       activeScope: scope,
       activeSubviewId: null,
       selectedNodeId: null,
       selectedEdgeId: null,
-    }));
+    });
   };
 
   // ============================================================================
-  // FOCUS OPERATIONS
+  // UTILITY OPERATIONS (Public API)
   // ============================================================================
 
   const focusNodes = async (nodeIds: string[]): Promise<void> => {
@@ -450,24 +498,96 @@ export function createController(config: ControllerConfig): Controller {
     cy.elements().removeClass('dimmed faded highlighted');
   };
 
-  // ============================================================================
-  // INITIALIZATION
-  // ============================================================================
-
   const captureInitialPositions = (): void => {
     cy.nodes().forEach((node) => {
       node.data('orgPos', copyPosition(node.position()));
     });
   };
 
+  // ============================================================================
+  // CENTRAL DISPATCH (Public API)
+  // ============================================================================
+
+  /**
+   * Central dispatch function - all user interactions route through here.
+   */
+  const dispatch = async (action: GraphAction): Promise<void> => {
+    // TODO: Add logging here for debugging
+    // console.log('[Controller] Action:', action.type, action);
+
+    switch (action.type) {
+      case 'NODE_CLICK': {
+        const { nodeId } = action.payload;
+        const subview = config.subviewByAnchorId.get(nodeId);
+
+        if (subview) {
+          // Node is a subview anchor
+          const isActive = activeSubview?.id === subview.id;
+          if (isActive) {
+            // Re-clicking active subview - use hierarchical clearing
+            await handleBackgroundClick();
+          } else {
+            // Activate subview
+            await activateSubview(subview.id);
+          }
+        } else {
+          // Regular node - select it
+          selectNode(nodeId);
+        }
+        break;
+      }
+
+      case 'EDGE_CLICK': {
+        const { edgeId } = action.payload;
+        selectEdge(edgeId);
+        break;
+      }
+
+      case 'BACKGROUND_CLICK': {
+        await handleBackgroundClick();
+        break;
+      }
+
+      case 'ACTIVATE_SUBVIEW': {
+        const { subviewId } = action.payload;
+        await activateSubview(subviewId);
+        break;
+      }
+
+      case 'DEACTIVATE_SUBVIEW': {
+        await deactivateSubview();
+        break;
+      }
+
+      case 'CHANGE_SCOPE': {
+        const { scope } = action.payload;
+        await handleScopeChange(scope);
+        break;
+      }
+
+      case 'CLEAR_SCOPE': {
+        clearNodeFocus();
+        transitionVisualizationState({
+          activeScope: null,
+        });
+        break;
+      }
+
+      case 'CLEAR_SELECTIONS': {
+        clearSelections();
+        break;
+      }
+
+      default: {
+        // Exhaustiveness check
+        const _exhaustive: never = action;
+        console.warn('Unknown action type:', _exhaustive);
+      }
+    }
+  };
+
   return {
-    activateSubview,
-    deactivateAll,
-    isSubviewActive,
-    selectNode,
-    selectEdge,
-    clearSelections,
-    handleScopeChange,
+    dispatch,
     focusNodes,
     clearNodeFocus,
     captureInitialPositions,

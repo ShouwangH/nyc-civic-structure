@@ -1,5 +1,4 @@
-import type { Core, LayoutOptions, NodeSingular, Position } from 'cytoscape';
-import type cytoscape from 'cytoscape';
+import type { Core, LayoutOptions } from 'cytoscape';
 
 /**
  * Layout utility module
@@ -60,39 +59,6 @@ export const getViewportMetrics = (cy: Core) => {
     height: bboxHeight,
   };
 };
-
-/**
- * Creates ELK layout options for process visualization
- * Positions the layout relative to a center point
- */
-export const createProcessLayoutOptions = (
-  centerX: number,
-  centerY: number,
-  animationDuration: number,
-  animationEasing: cytoscape.AnimationOptions['easing'],
-): LayoutOptions =>
-  cloneLayoutOptions(
-    {
-      name: 'elk',
-      fit: false,
-      nodeDimensionsIncludeLabels: true,
-      elk: {
-        algorithm: 'layered',
-        'elk.direction': 'RIGHT',
-        'elk.spacing.nodeNode': 80,
-        'elk.layered.spacing.nodeNodeBetweenLayers': 100,
-      },
-    } as LayoutOptions,
-    {
-      animate: true,
-      animationDuration,
-      animationEasing,
-      transform: (_node: NodeSingular, pos: Position): Position => ({
-        x: pos.x + centerX,
-        y: pos.y + centerY,
-      }),
-    },
-  );
 
 /**
  * Captures initial positions of all nodes

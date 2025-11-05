@@ -1,53 +1,38 @@
-// ABOUTME: Translates DOM and cytoscape events to controller actions
-// ABOUTME: Simple event wiring layer with no business logic
+// ABOUTME: Pure event translator - converts DOM events to controller actions
+// ABOUTME:  translates events and dispatches actions
 
 import type { Core } from 'cytoscape';
 import type { Controller } from './controller';
-import type { SubviewDefinition } from '../data/types';
+import { actions } from './actions';
 
 export type InputHandlerConfig = {
   cy: Core;
   controller: Controller;
-  subviewByAnchorId: Map<string, SubviewDefinition>;
 };
 
+/**
+ * Sets up pure event translation from cytoscape to controller actions.
+ * converts DOM events to action dispatches.
+ */
 export function setupInputHandler(config: InputHandlerConfig): void {
-  const { cy, controller, subviewByAnchorId } = config;
+  const { cy, controller } = config;
 
-  // Node click: select node OR activate subview
+  // Node click: dispatch nodeClick action
   cy.on('tap', 'node', (event) => {
     const nodeId = event.target.id();
-
-    // Check if this node is an anchor for a subview
-    const subview = subviewByAnchorId.get(nodeId);
-
-    if (subview) {
-      // Node is a subview anchor - check if already active
-      const isCurrentlyActive = controller.isSubviewActive(subview.id);
-
-      if (isCurrentlyActive) {
-        // Clicking same subview - deactivate
-        void controller.deactivateAll();
-      } else {
-        // Activate subview
-        void controller.activateSubview(subview.id);
-      }
-    } else {
-      // Regular node - just select it
-      controller.selectNode(nodeId);
-    }
+    void controller.dispatch(actions.nodeClick(nodeId));
   });
 
-  // Edge click: select edge
+  // Edge click: dispatch edgeClick action
   cy.on('tap', 'edge', (event) => {
     const edgeId = event.target.id();
-    controller.selectEdge(edgeId);
+    void controller.dispatch(actions.edgeClick(edgeId));
   });
 
-  // Background click: clear selections
+  // Background click: dispatch backgroundClick action
   cy.on('tap', (event) => {
     if (event.target === cy) {
-      void controller.deactivateAll();
+      void controller.dispatch(actions.backgroundClick());
     }
   });
 }

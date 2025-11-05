@@ -4,7 +4,7 @@ import type { Core } from 'cytoscape';
 import type { GraphConfig, GraphNodeInfo, GraphEdgeInfo } from '../graph/types';
 import type { SubviewDefinition } from '../data/types';
 import type { GovernmentScope } from '../data/datasets';
-import type { SetState, Controller } from '../graph/controller';
+import type { SetState, Controller, VisualizationState } from '../graph/controller';
 import { createController } from '../graph/controller';
 import { setupInputHandler } from '../graph/inputHandler';
 import { graphStyles } from '../graph/styles';
@@ -21,6 +21,7 @@ type GraphCanvasProps = {
   subviewById: Map<string, SubviewDefinition>;
   nodesById: Map<string, GraphNodeInfo>;
   scopeNodeIds: Record<GovernmentScope, string[]>;
+  state: VisualizationState;
   setState: SetState;
   onRuntimeReady?: (runtime: GraphRuntime) => void;
   className?: string;
@@ -32,11 +33,18 @@ const GraphCanvas = ({
   subviewById,
   nodesById,
   scopeNodeIds,
+  state,
   setState,
   onRuntimeReady,
   className,
 }: GraphCanvasProps) => {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const stateRef = useRef<VisualizationState>(state);
+
+  // Keep state ref updated
+  useEffect(() => {
+    stateRef.current = state;
+  }, [state]);
 
   useEffect(() => {
     if (!containerRef.current) {
@@ -57,6 +65,7 @@ const GraphCanvas = ({
     const controller = createController({
       cy,
       setState,
+      getState: () => stateRef.current,
       subviewByAnchorId,
       subviewById,
       scopeNodeIds,
@@ -70,11 +79,10 @@ const GraphCanvas = ({
       },
     });
 
-    // 3. Wire up input handler
+    // 3. Wire up input handler (pure event translation)
     setupInputHandler({
       cy,
       controller,
-      subviewByAnchorId,
     });
 
     // 4. Capture initial positions after layout (via controller)
