@@ -5,8 +5,8 @@ import type { Core } from 'cytoscape';
 import type { SubviewDefinition } from '../data/types';
 import type { GraphConfig, GraphNodeInfo, GraphEdgeInfo } from './types';
 import type { MainLayoutOptions } from './layout';
-import { createProcessController, type ProcessController } from './process-controller';
-import { createSubgraphController, type SubgraphController } from './subgraph-controller';
+import { createProcessController } from './process-controller';
+import { createSubgraphController } from './subgraph-controller';
 
 /**
  * Unified subview controller interface
@@ -34,7 +34,7 @@ type SubviewControllerDeps = {
  * - other types → SubgraphController (permanent nodes, faded/hidden styling)
  */
 export const createSubviewController = (deps: SubviewControllerDeps): SubviewController => {
-  const { cy, runMainGraphLayout, nodeInfosById, edgeInfosById } = deps;
+  const { cy, runMainGraphLayout, nodeInfosById } = deps;
 
   // Create underlying controllers
   const processController = createProcessController({ cy, runMainGraphLayout });

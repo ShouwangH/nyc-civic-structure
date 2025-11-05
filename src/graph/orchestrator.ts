@@ -3,7 +3,7 @@ import cytoscape, { type Core } from 'cytoscape';
 import { graphStyles } from './styles';
 import { createGraphController, type GraphController } from './controller';
 import type { GraphNodeInfo, GraphEdgeInfo } from './types';
-import type { ProcessDefinition, SubviewDefinition } from '../data/types';
+import type { ProcessDefinition } from '../data/types';
 import type { SubgraphConfig } from './subgraphs';
 import { createGraphInputHandler } from './inputHandler';
 import { createPlaceholderProcessNode, createProcessEdgeInfo } from './processUtils';
@@ -216,7 +216,7 @@ const createGraphRuntime: GraphRuntimeFactory = (
       // Create SubviewController
       subviewController = createSubviewController({
         cy: cyInstance,
-        runMainGraphLayout: async (options) => {
+        runMainGraphLayout: async () => {
           const layout = cyInstance.layout(mainGraph.layout);
           const layoutPromise = layout.promiseOn('layoutstop');
           layout.run();

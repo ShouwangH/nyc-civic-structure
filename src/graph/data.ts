@@ -31,7 +31,7 @@ const categorizeSystem = (node: StructureNode): SystemCategory => {
 const normalizeBranch = (branch?: string, fallback: string = 'administrative') =>
   branch ?? fallback;
 
-const buildGraphNode = (node: StructureNode): GraphNodeInfo => ({
+export const buildGraphNode = (node: StructureNode): GraphNodeInfo => ({
   id: node.id,
   label: node.label,
   branch: node.branch,

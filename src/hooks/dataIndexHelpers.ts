@@ -60,21 +60,25 @@ export const buildSubgraphById = (
 };
 
 /**
- * Builds an index of all nodes (main graph + subgraphs)
+ * Builds an index of all nodes (dataset nodes + main graph + subgraphs)
  */
 export const buildNodesIndex = (
   mainGraph: GraphConfig,
-  subgraphConfigs: SubgraphConfig[]
+  subgraphConfigs: SubgraphConfig[],
+  allNodes: GraphNodeInfo[]
 ): Map<string, GraphNodeInfo> => {
   const map = new Map<string, GraphNodeInfo>();
 
+  // Index ALL nodes from the dataset first (includes intra-tier nodes)
+  allNodes.forEach((node) => map.set(node.id, node));
+
+  // Override with mainGraph versions (may have layout-specific properties)
   mainGraph.nodes.forEach((node) => map.set(node.id, node));
 
+  // Override with subgraph versions (may have subgraph-specific properties)
   subgraphConfigs.forEach((config) => {
     config.graph.nodes.forEach((node) => {
-      if (!map.has(node.id)) {
-        map.set(node.id, node);
-      }
+      map.set(node.id, node);
     });
   });
 

@@ -29,12 +29,8 @@ data/backup-*
 *.sln
 *.sw?
 
-code-clarity-review.md
-codex_review_summary.md
-architecture-flow-analysis.md
-AGENTS.md
+
 /.claude
-*Claude.md
 .vercel
 .env*.local
 

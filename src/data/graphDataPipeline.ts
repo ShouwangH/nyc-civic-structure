@@ -2,7 +2,7 @@ import type { GovernmentScope, GovernmentDataset } from './datasets';
 import type { ProcessDefinition, SubviewDefinition } from './types';
 import type { GraphConfig, GraphEdgeInfo, GraphNodeInfo } from '../graph/types';
 import type { SubgraphConfig } from '../graph/subgraphs';
-import { buildMainGraph, buildSubgraphGraph } from '../graph/data';
+import { buildMainGraph, buildSubgraphGraph, buildGraphNode } from '../graph/data';
 import { buildUnifiedDataset } from './unifiedDataset';
 import { governmentDatasets } from './datasets';
 import { buildSubviewConfigs } from '../graph/subviews';
@@ -119,8 +119,9 @@ export const buildGraphData = (): GraphData => {
   }));
 
   // Step 7: Build all indexes
+  const allGraphNodes = dataset.nodes.map(buildGraphNode);
   const indexes = {
-    nodesById: buildNodesIndex(mainGraph, subgraphConfigs),
+    nodesById: buildNodesIndex(mainGraph, subgraphConfigs, allGraphNodes),
     edgesById: buildEdgesIndex(mainGraph, subgraphConfigs),
     nodeScopeIndex,
     subgraphScopeById: buildSubgraphScopeIndex(scopedSubgraphConfigs),
@@ -139,6 +140,7 @@ export const buildGraphData = (): GraphData => {
   const nodeTests = testNodes.map(id => ({
     id,
     exists: indexes.nodesById.has(id),
+    label: indexes.nodesById.get(id)?.label,
   }));
 
   console.log('[GraphData] Built graph data at module load', {
