@@ -1,7 +1,5 @@
 import type { Core, LayoutOptions, NodeSingular, Position } from 'cytoscape';
 import type cytoscape from 'cytoscape';
-import type { GraphConfig } from './types';
-import { animateFitToCollection, ANIMATION_DURATION, ANIMATION_EASING, type CyCollection } from './animation';
 
 /**
  * Layout utility module
@@ -12,8 +10,6 @@ export type MainLayoutOptions = {
   animateFit?: boolean;
   fitPadding?: number;
 };
-
-export type MainLayoutRunner = (options?: MainLayoutOptions) => Promise<void>;
 
 /**
  * Creates a shallow copy of a position object
@@ -106,31 +102,4 @@ export const captureInitialPositions = (cy: Core) => {
   cy.nodes().forEach((node) => {
     node.data('orgPos', copyPosition(node.position()));
   });
-};
-
-/**
- * Creates a main graph layout runner
- * Runs layout with animation and optional fit
- */
-export const createMainLayoutRunner = (cy: Core, mainGraph: GraphConfig): MainLayoutRunner => {
-  return async (options: MainLayoutOptions = {}) => {
-    const { animateFit = true, fitPadding = 200 } = options;
-    const layoutOptions = cloneLayoutOptions(mainGraph.layout, {
-      animate: true,
-      animationDuration: ANIMATION_DURATION,
-      animationEasing: ANIMATION_EASING,
-      fit: false,
-    });
-
-    const layout = cy.layout(layoutOptions);
-    const layoutPromise = layout.promiseOn('layoutstop');
-    layout.run();
-    await layoutPromise;
-
-    if (animateFit) {
-      await animateFitToCollection(cy, cy.nodes() as unknown as CyCollection, fitPadding);
-    }
-
-    captureInitialPositions(cy);
-  };
 };

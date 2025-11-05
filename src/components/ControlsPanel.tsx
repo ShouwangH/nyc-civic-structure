@@ -1,6 +1,6 @@
 import type { GovernmentScope } from '../data/datasets';
 import type { SubviewDefinition } from '../data/types';
-import type { GraphActionHandlers } from '../graph/actionHandlers';
+import type { Controller } from '../graph/controller';
 
 type ScopeOption = {
   id: GovernmentScope;
@@ -16,7 +16,7 @@ type ControlsPanelProps = {
   activeSubviewId: string | null;
   isOpen: boolean;
   onToggleOpen: () => void;
-  handlers: GraphActionHandlers | null;
+  controller: Controller | null;
 };
 
 const getButtonClasses = (isActive: boolean, size: 'default' | 'small' = 'default'): string => {
@@ -38,7 +38,7 @@ const ControlsPanel = ({
   activeSubviewId,
   isOpen,
   onToggleOpen,
-  handlers,
+  controller,
 }: ControlsPanelProps) => {
   const activeProcess = activeSubviewId
     ? processes.find((process) => process.id === activeSubviewId) ?? null
@@ -96,12 +96,12 @@ const ControlsPanel = ({
                       key={subview.id}
                       type="button"
                       onClick={() => {
-                        if (!handlers) return;
+                        if (!controller) return;
 
                         if (isActive) {
-                          void handlers.deactivateAll();
+                          void controller.deactivateAll();
                         } else {
-                          void handlers.activateSubview(subview.id);
+                          void controller.activateSubview(subview.id);
                         }
                       }}
                       className={getButtonClasses(isActive)}
@@ -131,14 +131,14 @@ const ControlsPanel = ({
                       key={process.id}
                       type="button"
                       onClick={() => {
-                        if (!handlers) {
+                        if (!controller) {
                           return;
                         }
 
                         if (isActive) {
-                          void handlers.deactivateAll();
+                          void controller.deactivateAll();
                         } else {
-                          void handlers.activateSubview(process.id);
+                          void controller.activateSubview(process.id);
                         }
                       }}
                       className={getButtonClasses(isActive, 'small')}

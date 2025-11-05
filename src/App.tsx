@@ -1,32 +1,69 @@
 import cytoscape from 'cytoscape';
 import cytoscapeElk from 'cytoscape-elk';
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import clsx from 'clsx';
 
 import { ControlsPanel } from './components/ControlsPanel';
 import { DetailsSidebar } from './components/DetailsSidebar';
-import { GraphCanvas } from './components/GraphCanvas';
-import type { GraphRuntime } from './graph/runtimeTypes';
+import { GraphCanvas, type GraphRuntime } from './components/GraphCanvas';
 import { governmentScopes } from './data/datasets';
 import type { GovernmentScope } from './data/datasets';
-import { useVisualizationState } from './state/useVisualizationState';
-import { GRAPH_DATA } from './data/graphDataPipeline';
+import type { VisualizationState } from './graph/controller';
+import { GRAPH_DATA } from './data/loader';
 
 cytoscape.use(cytoscapeElk);
 
 function App() {
   const [runtime, setRuntime] = useState<GraphRuntime | null>(null);
 
-  const {
-    state,
-    actions: {
-      toggleControlsOpen,
-      setSidebarHover,
-      clearSelections,
-    },
-    derived: {
-      visibleProcesses, // Used by ControlsPanel
-      visibleSubviews, // Used by ControlsPanel
+  // Single state object
+  const [state, setState] = useState<VisualizationState>({
+    selectedNodeId: null,
+    selectedEdgeId: null,
+    activeSubviewId: null,
+    activeScope: null,
+    controlsOpen: true,
+    sidebarHover: false,
+  });
+
+  const { selectedNodeId, selectedEdgeId, activeSubviewId, activeScope, controlsOpen, sidebarHover } = state;
+
+  // Static graph data - computed once at module load
+  const { dataset, mainGraph, indexes, maps, scopeNodeIds } = GRAPH_DATA;
+  const { nodesById, edgesById } = indexes;
+  const { subviewByAnchorId, subviewById } = maps;
+
+  // Derived values (simple lookups and filters)
+  const derived = useMemo(() => {
+    // Filter workflow subviews by scope
+    const visibleProcesses = activeScope
+      ? Array.from(subviewById.values()).filter(subview => {
+          return subview.jurisdiction === activeScope && subview.type === 'workflow';
+        })
+      : [];
+
+    // Filter non-workflow subviews by scope
+    const visibleSubviews = activeScope
+      ? Array.from(subviewById.values()).filter(subview => {
+          return subview.jurisdiction === activeScope && subview.type !== 'workflow';
+        })
+      : [];
+
+    // Entity lookups
+    const activeNode = selectedNodeId ? nodesById.get(selectedNodeId) ?? null : null;
+    const activeEdge = selectedEdgeId ? edgesById.get(selectedEdgeId) ?? null : null;
+    const activeProcess = activeSubviewId ? subviewById.get(activeSubviewId) ?? null : null;
+    const selectedEdgeSource = activeEdge ? nodesById.get(activeEdge.source) ?? null : null;
+    const selectedEdgeTarget = activeEdge ? nodesById.get(activeEdge.target) ?? null : null;
+    const subviewLabel = activeProcess?.label ?? null;
+
+    // Computed flags
+    const selectionActive = Boolean(selectedNodeId || selectedEdgeId || activeSubviewId);
+    const shouldShowSidebar = selectionActive || sidebarHover;
+
+    return {
+      visibleProcesses,
+      visibleSubviews,
       activeNode,
       activeEdge,
       activeProcess,
@@ -35,22 +72,36 @@ function App() {
       subviewLabel,
       selectionActive,
       shouldShowSidebar,
-    },
-    setState, // For imperative handlers
-  } = useVisualizationState();
+    };
+  }, [
+    activeScope,
+    selectedNodeId,
+    selectedEdgeId,
+    activeSubviewId,
+    sidebarHover,
+    nodesById,
+    edgesById,
+    subviewById,
+  ]);
 
-  const { controlsOpen, activeScope, activeSubviewId } = state;
+  // Simple action handlers
+  const toggleControlsOpen = useCallback(() => {
+    setState((prev) => ({ ...prev, controlsOpen: !prev.controlsOpen }));
+  }, []);
 
-  // Static graph data - computed once at module load
-  const { dataset, mainGraph, indexes, maps, scopeNodeIds } = GRAPH_DATA;
-  const { nodesById } = indexes;
-  const { subviewByAnchorId, subviewById } = maps;
+  const setSidebarHover = useCallback((hover: boolean) => {
+    setState((prev) => ({ ...prev, sidebarHover: hover }));
+  }, []);
+
+  const clearSelections = useCallback(() => {
+    runtime?.controller?.clearSelections();
+  }, [runtime]);
 
   const handleScopeFocus = useCallback(
     (scope: GovernmentScope) => {
-      const handlers = runtime?.handlers;
-      if (handlers) {
-        void handlers.handleScopeChange(scope);
+      const controller = runtime?.controller;
+      if (controller) {
+        void controller.handleScopeChange(scope);
       }
     },
     [runtime],
@@ -75,18 +126,18 @@ function App() {
           onScopeChange={(scope) => {
             void handleScopeFocus(scope);
           }}
-          subviews={visibleSubviews}
-          processes={visibleProcesses}
+          subviews={derived.visibleSubviews}
+          processes={derived.visibleProcesses}
           activeSubviewId={activeSubviewId}
           isOpen={controlsOpen}
           onToggleOpen={toggleControlsOpen}
-          handlers={runtime?.handlers ?? null}
+          controller={runtime?.controller ?? null}
         />
 
         <section
           className={clsx(
             'relative flex flex-1 flex-col gap-6 px-6 py-6',
-            shouldShowSidebar && 'lg:min-w-0'
+            derived.shouldShowSidebar && 'lg:min-w-0'
           )}
         >
           <div className="flex flex-1 min-h-[75vh] overflow-hidden rounded-lg border border-slate-200 bg-slate-50 shadow-sm lg:min-h-[82vh]">
@@ -107,20 +158,20 @@ function App() {
           </p>
         </section>
 
-        {shouldShowSidebar && (
+        {derived.shouldShowSidebar && (
           <DetailsSidebar
-            activeNode={activeNode}
-            activeEdge={activeEdge}
-            edgeSourceNode={selectedEdgeSource}
-            edgeTargetNode={selectedEdgeTarget}
-            activeProcess={activeProcess}
-            subviewLabel={subviewLabel}
-            hasSelection={selectionActive}
+            activeNode={derived.activeNode}
+            activeEdge={derived.activeEdge}
+            edgeSourceNode={derived.selectedEdgeSource}
+            edgeTargetNode={derived.selectedEdgeTarget}
+            activeProcess={derived.activeProcess}
+            subviewLabel={derived.subviewLabel}
+            hasSelection={derived.selectionActive}
             isSubviewActive={Boolean(activeSubviewId)}
             onClear={clearSelections}
             onMouseEnter={() => setSidebarHover(true)}
             onMouseLeave={() => {
-              if (!selectionActive) {
+              if (!derived.selectionActive) {
                 setSidebarHover(false);
               }
             }}
@@ -132,7 +183,7 @@ function App() {
         className="fixed inset-y-0 right-0 w-4 lg:w-6"
         onMouseEnter={() => setSidebarHover(true)}
         onMouseLeave={() => {
-          if (!selectionActive) {
+          if (!derived.selectionActive) {
             setSidebarHover(false);
           }
         }}

@@ -1,10 +1,19 @@
 import { useEffect, useRef } from 'react';
-import type { GraphConfig, GraphNodeInfo } from '../graph/types';
+import cytoscape from 'cytoscape';
+import type { Core } from 'cytoscape';
+import type { GraphConfig, GraphNodeInfo, GraphEdgeInfo } from '../graph/types';
 import type { SubviewDefinition } from '../data/types';
-import { createGraphRuntime } from '../graph/orchestrator';
-import type { GraphRuntime } from '../graph/runtimeTypes';
-import type { VisualizationState } from '../state/useVisualizationState';
 import type { GovernmentScope } from '../data/datasets';
+import type { SetState, Controller } from '../graph/controller';
+import { createController } from '../graph/controller';
+import { setupInputHandler } from '../graph/inputHandler';
+import { graphStyles } from '../graph/styles';
+
+export type GraphRuntime = {
+  cy: Core;
+  controller: Controller;
+  destroy: () => void;
+};
 
 type GraphCanvasProps = {
   mainGraph: GraphConfig;
@@ -12,7 +21,7 @@ type GraphCanvasProps = {
   subviewById: Map<string, SubviewDefinition>;
   nodesById: Map<string, GraphNodeInfo>;
   scopeNodeIds: Record<GovernmentScope, string[]>;
-  setState?: (updater: (prev: VisualizationState) => VisualizationState) => void;
+  setState: SetState;
   onRuntimeReady?: (runtime: GraphRuntime) => void;
   className?: string;
 };
@@ -34,19 +43,61 @@ const GraphCanvas = ({
       return;
     }
 
-    const runtime = createGraphRuntime({
+    // 1. Create cytoscape instance
+    const cy = cytoscape({
       container: containerRef.current,
-      mainGraph,
+      elements: mainGraph.elements,
+      layout: mainGraph.layout,
+      style: graphStyles,
+    });
+
+    // 2. Create controller with all dependencies
+    const edgeInfosById = new Map<string, GraphEdgeInfo>();
+
+    const controller = createController({
+      cy,
+      setState,
       subviewByAnchorId,
       subviewById,
       scopeNodeIds,
-      data: { nodesById },
-      setState,
+      nodeInfosById: nodesById,
+      edgeInfosById,
+      runMainGraphLayout: async () => {
+        const layout = cy.layout(mainGraph.layout);
+        const layoutPromise = layout.promiseOn('layoutstop');
+        layout.run();
+        await layoutPromise;
+      },
     });
 
-    runtime.initialize();
+    // 3. Wire up input handler
+    setupInputHandler({
+      cy,
+      controller,
+      subviewByAnchorId,
+    });
 
-    // Call callback when runtime is ready
+    // 4. Capture initial positions after layout (via controller)
+    cy.one('layoutstop', () => {
+      controller.captureInitialPositions();
+    });
+
+    // 5. Initialize layout
+    cy.ready(() => {
+      cy.resize();
+      const layout = cy.layout(mainGraph.layout);
+      layout.run();
+    });
+
+    // 6. Return runtime to App
+    const runtime: GraphRuntime = {
+      cy,
+      controller,
+      destroy: () => {
+        cy.destroy();
+      },
+    };
+
     onRuntimeReady?.(runtime);
 
     return () => {
