@@ -1,5 +1,5 @@
 import type { GovernmentScope } from '../data/datasets';
-import type { ProcessDefinition, SubviewDefinition } from '../data/types';
+import type { SubviewDefinition } from '../data/types';
 import type { GraphActionHandlers } from '../graph/actionHandlers';
 
 type ScopeOption = {
@@ -12,7 +12,7 @@ type ControlsPanelProps = {
   activeScope: GovernmentScope | null;
   onScopeChange: (scope: GovernmentScope) => void;
   subviews: SubviewDefinition[];
-  processes: ProcessDefinition[];
+  processes: SubviewDefinition[];
   activeSubviewId: string | null;
   isOpen: boolean;
   onToggleOpen: () => void;

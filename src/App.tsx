@@ -42,7 +42,7 @@ function App() {
   const { controlsOpen, activeScope, activeSubviewId } = state;
 
   // Static graph data - computed once at module load
-  const { dataset, mainGraph, allProcesses, indexes, maps, scopeNodeIds } = GRAPH_DATA;
+  const { dataset, mainGraph, indexes, maps, scopeNodeIds } = GRAPH_DATA;
   const { nodesById } = indexes;
   const { subviewByAnchorId, subviewById } = maps;
 
@@ -95,7 +95,6 @@ function App() {
               mainGraph={mainGraph}
               subviewByAnchorId={subviewByAnchorId}
               subviewById={subviewById}
-              processes={allProcesses}
               nodesById={nodesById}
               scopeNodeIds={scopeNodeIds}
               setState={setState}

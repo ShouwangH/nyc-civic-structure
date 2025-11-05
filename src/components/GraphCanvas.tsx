@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import type { GraphConfig, GraphNodeInfo } from '../graph/types';
-import type { ProcessDefinition, SubviewDefinition } from '../data/types';
+import type { SubviewDefinition } from '../data/types';
 import { createGraphRuntime } from '../graph/orchestrator';
 import type { GraphRuntime } from '../graph/runtimeTypes';
 import type { VisualizationState } from '../state/useVisualizationState';
@@ -10,7 +10,6 @@ type GraphCanvasProps = {
   mainGraph: GraphConfig;
   subviewByAnchorId: Map<string, SubviewDefinition>;
   subviewById: Map<string, SubviewDefinition>;
-  processes: ProcessDefinition[];
   nodesById: Map<string, GraphNodeInfo>;
   scopeNodeIds: Record<GovernmentScope, string[]>;
   setState?: (updater: (prev: VisualizationState) => VisualizationState) => void;
@@ -22,7 +21,6 @@ const GraphCanvas = ({
   mainGraph,
   subviewByAnchorId,
   subviewById,
-  processes,
   nodesById,
   scopeNodeIds,
   setState,
@@ -42,7 +40,7 @@ const GraphCanvas = ({
       subviewByAnchorId,
       subviewById,
       scopeNodeIds,
-      data: { processes, nodesById },
+      data: { nodesById },
       setState,
     });
 
@@ -54,7 +52,7 @@ const GraphCanvas = ({
     return () => {
       runtime.destroy();
     };
-  }, [mainGraph, processes, nodesById, setState, subviewByAnchorId, subviewById, scopeNodeIds, onRuntimeReady]);
+  }, [mainGraph, nodesById, setState, subviewByAnchorId, subviewById, scopeNodeIds, onRuntimeReady]);
 
   return <div ref={containerRef} className={className} role="presentation" />;
 };

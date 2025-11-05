@@ -1,5 +1,5 @@
 import type { GovernmentScope, GovernmentDataset } from './datasets';
-import type { ProcessDefinition, SubviewDefinition } from './types';
+import type { SubviewDefinition } from './types';
 import type { GraphConfig, GraphEdgeInfo, GraphNodeInfo } from '../graph/types';
 import { buildMainGraph, buildGraphNode } from '../graph/data';
 import { buildUnifiedDataset } from './unifiedDataset';
@@ -12,53 +12,11 @@ import {
   buildSubviewById,
 } from '../hooks/dataIndexHelpers';
 
-/**
- * Converts a ProcessDefinition to a workflow-type SubviewDefinition
- * This enables processes to flow through the unified subview system
- */
-function convertProcessToSubview(
-  process: ProcessDefinition,
-  jurisdiction: GovernmentScope
-): SubviewDefinition {
-  return {
-    id: process.id,
-    label: process.label,
-    description: process.description,
-    type: 'workflow',
-    jurisdiction,
-    anchor: process.nodes.length > 0
-      ? { nodeId: process.nodes[0] }
-      : undefined,
-    nodes: process.nodes,
-    edges: process.edges.map(edge => ({
-      source: edge.source,
-      target: edge.target,
-    })),
-    layout: {
-      type: 'elk-layered',
-      options: {
-        direction: 'DOWN',
-        spacing: 50,
-      },
-      fit: true,
-      padding: 50,
-      animate: true,
-    },
-    metadata: {
-      steps: process.steps,
-    },
-  };
-}
-
 export type GraphData = {
   // Core data
   dataset: GovernmentDataset;
   scopeNodeIds: Record<GovernmentScope, string[]>;
   mainGraph: GraphConfig;
-  allProcesses: ProcessDefinition[];
-
-  // Processes organized by scope
-  processesByScope: Record<GovernmentScope, ProcessDefinition[]>;
 
   // Indexes
   indexes: {
@@ -80,22 +38,17 @@ export type GraphData = {
  *
  * Data flow:
  *   1. Build unified dataset from all government scopes
- *   2. Extract processes and build main graph
- *   3. Organize processes by scope
- *   4. Build subview configurations
- *   5. Create node scope index
- *   6. Associate subviews with scopes
- *   7. Build all element indexes
- *   8. Build subview lookup maps
+ *   2. Build main graph from main-tier nodes
+ *   3. Collect all subviews from all datasets
+ *   4. Create node scope index
+ *   5. Build all element indexes
+ *   6. Build subview lookup maps
  */
 export const buildGraphData = (): GraphData => {
   // Step 1: Build unified dataset
   const { dataset, scopeNodeIds } = buildUnifiedDataset();
 
-  // Step 2: Extract processes and build main graph
-  const allProcesses = dataset.processes ?? [];
-
-  // Filter to only main tier nodes (default view)
+  // Step 2: Filter to only main tier nodes (default view)
   const mainTierNodes = dataset.nodes.filter(node =>
     node.tier === 'main' || node.tier === undefined
   );
@@ -105,31 +58,12 @@ export const buildGraphData = (): GraphData => {
     { edges: dataset.edges }
   );
 
-  // Step 3: Organize processes by scope (static reference)
-  const processesByScope: Record<GovernmentScope, ProcessDefinition[]> = {
-    federal: governmentDatasets.federal.processes,
-    state: governmentDatasets.state.processes,
-    city: governmentDatasets.city.processes,
-  };
-
-  // Step 4a: Collect all subviews from all datasets
+  // Step 3: Collect all subviews from all datasets (includes workflows)
   const allSubviews: SubviewDefinition[] = Object.values(governmentDatasets).flatMap(
     (dataset) => dataset.subviews ?? []
   );
 
-  // Step 4b: Convert processes to workflow-type subviews
-  const processSubviews: SubviewDefinition[] = [];
-  for (const [scope, processes] of Object.entries(processesByScope)) {
-    const scopeProcessSubviews = processes.map(process =>
-      convertProcessToSubview(process, scope as GovernmentScope)
-    );
-    processSubviews.push(...scopeProcessSubviews);
-  }
-
-  // Merge process subviews with existing subviews
-  const allSubviewsWithProcesses = [...allSubviews, ...processSubviews];
-
-  // Step 4c: Build node scope index
+  // Step 4: Build node scope index
   const nodeScopeIndex = buildNodeScopeIndex(scopeNodeIds);
 
   // Step 5: Build all indexes
@@ -142,16 +76,14 @@ export const buildGraphData = (): GraphData => {
 
   // Step 6: Build subview lookup maps
   const maps = {
-    subviewByAnchorId: buildSubviewByAnchorId(allSubviewsWithProcesses),
-    subviewById: buildSubviewById(allSubviewsWithProcesses),
+    subviewByAnchorId: buildSubviewByAnchorId(allSubviews),
+    subviewById: buildSubviewById(allSubviews),
   };
 
   return {
     dataset,
     scopeNodeIds,
     mainGraph,
-    allProcesses,
-    processesByScope,
     indexes,
     maps,
   };

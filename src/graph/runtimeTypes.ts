@@ -1,13 +1,12 @@
 import type { Core, CytoscapeOptions } from 'cytoscape';
 
-import type { ProcessDefinition, SubviewDefinition } from '../data/types';
+import type { SubviewDefinition } from '../data/types';
 import type { GraphNodeInfo, GraphConfig } from './types';
 import type { VisualizationState } from '../state/useVisualizationState';
 import type { GraphActionHandlers } from './actionHandlers';
 import type { GovernmentScope } from '../data/datasets';
 
 export type GraphRuntimeData = {
-  processes: ProcessDefinition[];
   nodesById: Map<string, GraphNodeInfo>;
 };
 

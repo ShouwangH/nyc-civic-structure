@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useReducer } from 'react';
 import type { GovernmentScope } from '../data/datasets';
-import type { ProcessDefinition, SubviewDefinition } from '../data/types';
+import type { SubviewDefinition } from '../data/types';
 import { GRAPH_DATA } from '../data/graphDataPipeline';
 
 export type VisualizationState = {
@@ -73,12 +73,13 @@ export const useVisualizationState = () => {
   const derived = useMemo(() => {
     const { nodesById, edgesById } = GRAPH_DATA.indexes;
     const { subviewById } = GRAPH_DATA.maps;
-    const { allProcesses } = GRAPH_DATA;
 
-    // Filter by scope
+    // Filter workflow subviews by scope
     const visibleProcesses = state.activeScope
-      ? (GRAPH_DATA.processesByScope[state.activeScope] ?? [])
-      : ([] as ProcessDefinition[]);
+      ? Array.from(GRAPH_DATA.maps.subviewById.values()).filter(subview => {
+          return subview.jurisdiction === state.activeScope && subview.type === 'workflow';
+        })
+      : [];
 
     // Show all non-workflow subviews for the current scope
     const visibleSubviews: SubviewDefinition[] = state.activeScope
@@ -97,7 +98,7 @@ export const useVisualizationState = () => {
       : null;
 
     const activeProcess = state.activeSubviewId
-      ? allProcesses.find((p) => p.id === state.activeSubviewId) ?? null
+      ? subviewById.get(state.activeSubviewId) ?? null
       : null;
 
     const selectedEdgeSource = activeEdge

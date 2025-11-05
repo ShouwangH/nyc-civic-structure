@@ -106,12 +106,6 @@ export const buildUnifiedDataset = (): UnifiedDatasetResult => {
     ...anchorEdges,
   ];
 
-  const combinedProcesses = [
-    ...governmentDatasets.federal.processes,
-    ...governmentDatasets.state.processes,
-    ...governmentDatasets.city.processes,
-  ];
-
   const combinedSubviews = [
     ...(governmentDatasets.federal.subviews ?? []),
     ...(governmentDatasets.state.subviews ?? []),
@@ -125,7 +119,6 @@ export const buildUnifiedDataset = (): UnifiedDatasetResult => {
     meta: combinedMeta,
     nodes: combinedNodes,
     edges: combinedEdges,
-    processes: combinedProcesses,
     subviews: combinedSubviews.length > 0 ? combinedSubviews : undefined,
   };
 

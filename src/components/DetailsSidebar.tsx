@@ -1,4 +1,4 @@
-import type { ProcessDefinition } from '../data/types';
+import type { SubviewDefinition, ProcessStep } from '../data/types';
 import type { GraphEdgeInfo, GraphNodeInfo } from '../graph/types';
 
 type DetailsSidebarProps = {
@@ -6,7 +6,7 @@ type DetailsSidebarProps = {
   activeEdge: GraphEdgeInfo | null;
   edgeSourceNode: GraphNodeInfo | null;
   edgeTargetNode: GraphNodeInfo | null;
-  activeProcess: ProcessDefinition | null;
+  activeProcess: SubviewDefinition | null;
   subviewLabel: string | null;
   hasSelection: boolean;
   isSubviewActive: boolean;
@@ -20,7 +20,7 @@ const deriveTitle = (props: {
   activeEdge: GraphEdgeInfo | null;
   edgeSourceNode: GraphNodeInfo | null;
   edgeTargetNode: GraphNodeInfo | null;
-  activeProcess: ProcessDefinition | null;
+  activeProcess: SubviewDefinition | null;
   isSubviewActive: boolean;
   subviewLabel: string | null;
 }): string => {
@@ -112,9 +112,9 @@ const DetailsSidebar = ({
         ) : activeProcess ? (
           <div className="space-y-3">
             <p>{activeProcess.description}</p>
-            {activeProcess.steps && (
+            {activeProcess.metadata?.steps && Array.isArray(activeProcess.metadata.steps) && (
               <ul className="space-y-2 text-x text-slate-500">
-                {activeProcess.steps.map((step) => (
+                {(activeProcess.metadata.steps as ProcessStep[]).map((step) => (
                   <li key={step.id}>
                     <span className="font-semibold text-slate-700">{step.title}:</span>{' '}
                     {step.description}

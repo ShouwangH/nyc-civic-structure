@@ -4,14 +4,13 @@ import cityIntra from '../../data/city-intra.json';
 import stateIntra from '../../data/state-intra.json';
 import federalIntra from '../../data/federal-intra.json';
 
-// Processes (unchanged)
-import cityProcesses from '../../data/city-processes.json';
-import stateProcesses from '../../data/state-processes.json';
-import federalProcesses from '../../data/federal-processes.json';
+// Workflow subviews
+import cityWorkflows from '../../data/city-workflows.json';
+import stateWorkflows from '../../data/state-workflows.json';
+import federalWorkflows from '../../data/federal-workflows.json';
 
 import type {
   GovernmentScope,
-  ProcessDefinition,
   StructureNode,
   RawEdge,
   SubviewDefinition,
@@ -29,7 +28,6 @@ export type GovernmentDataset = {
   };
   nodes: StructureNode[];
   edges: RawEdge[];
-  processes: ProcessDefinition[];
   subviews?: SubviewDefinition[];
 };
 
@@ -61,7 +59,7 @@ const buildDataset = (
   label: string,
   description: string,
   intraData: { nodes: StructureNode[]; edges?: RawEdge[]; subviews?: unknown[] },
-  processFile: { processes: ProcessDefinition[] },
+  workflowData: { subviews: unknown[] },
 ): GovernmentDataset => {
   const mainNodes = extractMainNodes(scope);
   const mainEdges = extractMainEdges(scope);
@@ -78,10 +76,11 @@ const buildDataset = (
     tier: 'intra' as const,
   }));
 
-  // Merge subviews from main.json and intra files
+  // Merge subviews from main.json, intra files, and workflow files
   const mainSubviews = extractMainSubviews(scope);
   const intraSubviews = (intraData.subviews || []) as SubviewDefinition[];
-  const allSubviews = [...mainSubviews, ...intraSubviews];
+  const workflowSubviews = workflowData.subviews as SubviewDefinition[];
+  const allSubviews = [...mainSubviews, ...intraSubviews, ...workflowSubviews];
 
   return {
     scope,
@@ -93,7 +92,6 @@ const buildDataset = (
     },
     nodes: [...annotatedMainNodes, ...annotatedIntraNodes],
     edges: [...mainEdges, ...(intraData.edges || [])],
-    processes: processFile.processes,
     subviews: allSubviews.length > 0 ? allSubviews : undefined,
   };
 };
@@ -104,21 +102,21 @@ export const governmentDatasets: Record<GovernmentScope, GovernmentDataset> = {
     'New York City',
     'Complete NYC government including city-wide governance and borough advisory structures.',
     cityIntra,
-    cityProcesses,
+    cityWorkflows,
   ),
   state: buildDataset(
     'state',
     'New York State',
     'High-level structure of New York State government as defined by the State Constitution and related laws.',
     stateIntra,
-    stateProcesses,
+    stateWorkflows,
   ),
   federal: buildDataset(
     'federal',
     'United States',
     'High-level structure of the U.S. federal government as defined by the Constitution.',
     federalIntra,
-    federalProcesses,
+    federalWorkflows,
   ),
 };
 

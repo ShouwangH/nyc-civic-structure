@@ -46,19 +46,6 @@ export type ProcessStep = {
   description: string;
 };
 
-export type ProcessDefinition = {
-  id: string;
-  label: string;
-  description: string;
-  nodes: string[];
-  edges: Array<{ source: string; target: string }>;
-  steps?: ProcessStep[];
-};
-
-export type ProcessesFile = {
-  processes: ProcessDefinition[];
-};
-
 export type GovernmentScope = 'city' | 'state' | 'federal';
 
 // Edge relationship taxonomy and visual encoding
