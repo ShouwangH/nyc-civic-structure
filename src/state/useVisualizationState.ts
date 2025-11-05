@@ -1,9 +1,8 @@
-import { useCallback, useMemo, useReducer, useRef } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import type { GovernmentScope } from '../data/datasets';
 import type { ProcessDefinition } from '../data/types';
 import type { SubgraphConfig } from '../graph/subgraphs';
 import { GRAPH_DATA } from '../data/graphDataPipeline';
-import type { VisualizationAction } from './actions';
 
 export type VisualizationState = {
   controlsOpen: boolean;
@@ -14,122 +13,57 @@ export type VisualizationState = {
   isSidebarHover: boolean;
 };
 
-const initialState: VisualizationState = {
-  controlsOpen: true,
-  activeScope: null,
-  selectedNodeId: null,
-  selectedEdgeId: null,
-  activeSubviewId: null,
-  isSidebarHover: false,
-};
-
-const reducer = (state: VisualizationState, action: VisualizationAction): VisualizationState => {
-  switch (action.type) {
-    // User interaction actions - contain business logic
-    case 'SCOPE_SELECTED':
-      // Clear all selections when scope changes
-      return {
-        ...state,
-        activeScope: action.scope,
-        selectedNodeId: null,
-        selectedEdgeId: null,
-        isSidebarHover: false,
-      };
-
-    case 'CONTROLS_TOGGLED':
-      return {
-        ...state,
-        controlsOpen: !state.controlsOpen,
-      };
-
-    case 'SIDEBAR_HOVER_CHANGED':
-      return {
-        ...state,
-        isSidebarHover: action.hover,
-      };
-
-    case 'SELECTION_CLEARED':
-      return {
-        ...state,
-        activeScope: null,
-        selectedNodeId: null,
-        selectedEdgeId: null,
-        isSidebarHover: false,
-      };
-
-    // Internal state mutation actions - kept for specific use cases
-    case 'SET_CONTROLS_OPEN':
-      return { ...state, controlsOpen: action.value };
-
-    case 'SET_ACTIVE_SCOPE':
-      return {
-        ...state,
-        activeScope: action.scope,
-        selectedNodeId: null,
-        selectedEdgeId: null,
-        isSidebarHover: false,
-      };
-
-    case 'SET_SIDEBAR_HOVER':
-      return { ...state, isSidebarHover: action.value };
-
-    case 'CLEAR_SELECTIONS':
-      return {
-        ...state,
-        activeScope: null,
-        selectedNodeId: null,
-        selectedEdgeId: null,
-        activeSubviewId: null,
-        isSidebarHover: false,
-      };
-
-    // NEW: Direct state update for imperative handlers
-    case 'STATE_UPDATED':
-      return { ...state, ...action.payload };
-
-    default:
-      return state;
-  }
-};
-
 export const useVisualizationState = () => {
-  const [state, dispatch] = useReducer(reducer, initialState);
+  const [controlsOpen, setControlsOpen] = useState(true);
+  const [activeScope, setActiveScope] = useState<GovernmentScope | null>(null);
+  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
+  const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null);
+  const [activeSubviewId, setActiveSubviewId] = useState<string | null>(null);
+  const [isSidebarHover, setIsSidebarHover] = useState(false);
 
-  const setControlsOpen = useCallback(
-    (value: boolean) => dispatch({ type: 'SET_CONTROLS_OPEN', value }),
-    [],
-  );
+  // For imperative handlers - updates multiple fields at once
+  const setState = useCallback((updater: (prev: VisualizationState) => VisualizationState) => {
+    const currentState: VisualizationState = {
+      controlsOpen,
+      activeScope,
+      selectedNodeId,
+      selectedEdgeId,
+      activeSubviewId,
+      isSidebarHover,
+    };
 
-  const toggleControlsOpen = useCallback(() => dispatch({ type: 'CONTROLS_TOGGLED' }), []);
+    const updates = updater(currentState);
 
-  const setActiveScope = useCallback(
-    (scope: GovernmentScope | null) => dispatch({ type: 'SET_ACTIVE_SCOPE', scope }),
-    [],
-  );
+    if (updates.controlsOpen !== currentState.controlsOpen) setControlsOpen(updates.controlsOpen);
+    if (updates.activeScope !== currentState.activeScope) setActiveScope(updates.activeScope);
+    if (updates.selectedNodeId !== currentState.selectedNodeId) setSelectedNodeId(updates.selectedNodeId);
+    if (updates.selectedEdgeId !== currentState.selectedEdgeId) setSelectedEdgeId(updates.selectedEdgeId);
+    if (updates.activeSubviewId !== currentState.activeSubviewId) setActiveSubviewId(updates.activeSubviewId);
+    if (updates.isSidebarHover !== currentState.isSidebarHover) setIsSidebarHover(updates.isSidebarHover);
+  }, [controlsOpen, activeScope, selectedNodeId, selectedEdgeId, activeSubviewId, isSidebarHover]);
 
-  const setSidebarHover = useCallback(
-    (value: boolean) => dispatch({ type: 'SET_SIDEBAR_HOVER', value }),
-    [],
-  );
+  // Action wrappers for common operations
+  const actions = {
+    toggleControlsOpen: () => setControlsOpen(prev => !prev),
+    setSidebarHover: setIsSidebarHover,
+    clearSelections: () => {
+      setActiveScope(null);
+      setSelectedNodeId(null);
+      setSelectedEdgeId(null);
+      setActiveSubviewId(null);
+      setIsSidebarHover(false);
+    },
+  };
 
-  const clearSelections = useCallback(() => dispatch({ type: 'CLEAR_SELECTIONS' }), []);
-
-  const actions = useMemo(
-    () => ({
-      setControlsOpen,
-      toggleControlsOpen,
-      setActiveScope,
-      setSidebarHover,
-      clearSelections,
-    }),
-    [
-      setControlsOpen,
-      toggleControlsOpen,
-      setActiveScope,
-      setSidebarHover,
-      clearSelections,
-    ],
-  );
+  // Build state object for consumers
+  const state: VisualizationState = {
+    controlsOpen,
+    activeScope,
+    selectedNodeId,
+    selectedEdgeId,
+    activeSubviewId,
+    isSidebarHover,
+  };
 
   // Derived selectors - computed based on current state
   const derived = useMemo(() => {
@@ -138,29 +72,29 @@ export const useVisualizationState = () => {
     const { allProcesses } = GRAPH_DATA;
 
     // Filter by scope
-    const visibleProcesses = state.activeScope
-      ? (GRAPH_DATA.processesByScope[state.activeScope] ?? [])
+    const visibleProcesses = activeScope
+      ? (GRAPH_DATA.processesByScope[activeScope] ?? [])
       : ([] as ProcessDefinition[]);
 
     // Show all non-workflow subviews for the current scope
-    const visibleSubgraphConfigs: SubgraphConfig[] = state.activeScope
+    const visibleSubgraphConfigs: SubgraphConfig[] = activeScope
       ? Array.from(GRAPH_DATA.maps.subgraphById.values()).filter(config => {
           const scope = GRAPH_DATA.indexes.subgraphScopeById.get(config.meta.id);
-          return scope === state.activeScope;
+          return scope === activeScope;
         })
       : [];
 
     // Entity lookups
-    const activeNode = state.selectedNodeId
-      ? nodesById.get(state.selectedNodeId) ?? null
+    const activeNode = selectedNodeId
+      ? nodesById.get(selectedNodeId) ?? null
       : null;
 
-    const activeEdge = state.selectedEdgeId
-      ? edgesById.get(state.selectedEdgeId) ?? null
+    const activeEdge = selectedEdgeId
+      ? edgesById.get(selectedEdgeId) ?? null
       : null;
 
-    const activeProcess = state.activeSubviewId
-      ? allProcesses.find((p) => p.id === state.activeSubviewId) ?? null
+    const activeProcess = activeSubviewId
+      ? allProcesses.find((p) => p.id === activeSubviewId) ?? null
       : null;
 
     const selectedEdgeSource = activeEdge
@@ -171,20 +105,20 @@ export const useVisualizationState = () => {
       ? nodesById.get(activeEdge.target) ?? null
       : null;
 
-    const subgraphLabel = state.activeSubviewId
-      ? (subgraphById.get(state.activeSubviewId)?.meta.label ??
-         GRAPH_DATA.maps.subviewById.get(state.activeSubviewId)?.label ??
+    const subgraphLabel = activeSubviewId
+      ? (subgraphById.get(activeSubviewId)?.meta.label ??
+         GRAPH_DATA.maps.subviewById.get(activeSubviewId)?.label ??
          null)
       : null;
 
     // Computed flags
     const selectionActive = Boolean(
-      state.selectedNodeId ||
-      state.selectedEdgeId ||
-      state.activeSubviewId
+      selectedNodeId ||
+      selectedEdgeId ||
+      activeSubviewId
     );
 
-    const shouldShowSidebar = selectionActive || state.isSidebarHover;
+    const shouldShowSidebar = selectionActive || isSidebarHover;
 
     return {
       // Filtered lists
@@ -204,33 +138,17 @@ export const useVisualizationState = () => {
       shouldShowSidebar,
     };
   }, [
-    state.activeScope,
-    state.selectedNodeId,
-    state.selectedEdgeId,
-    state.activeSubviewId,
-    state.isSidebarHover,
+    activeScope,
+    selectedNodeId,
+    selectedEdgeId,
+    activeSubviewId,
+    isSidebarHover,
   ]);
-
-  // NEW: setState wrapper for imperative handlers
-  // Allows handlers to update state directly with functional updates
-  // Use ref to get latest state without causing re-renders
-  const stateRef = useRef(state);
-  stateRef.current = state;
-
-  const setState = useCallback(
-    (updater: (prev: VisualizationState) => VisualizationState) => {
-      const newState = updater(stateRef.current);
-      // Dispatch a direct state update action
-      dispatch({ type: 'STATE_UPDATED', payload: newState });
-    },
-    [dispatch], // Only depend on dispatch, which is stable
-  );
 
   return {
     state,
     actions,
     derived,
-    dispatch, // Expose dispatch for semantic actions
-    setState, // NEW: Expose setState for imperative handlers
+    setState,
   };
 };
