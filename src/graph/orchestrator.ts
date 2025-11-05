@@ -2,11 +2,8 @@ import cytoscape, { type Core } from 'cytoscape';
 
 import { graphStyles } from './styles';
 import { createGraphController, type GraphController } from './controller';
-import type { GraphNodeInfo, GraphEdgeInfo } from './types';
-import type { ProcessDefinition } from '../data/types';
-import type { SubgraphConfig } from './subgraphs';
+import type { GraphEdgeInfo } from './types';
 import { createGraphInputHandler } from './inputHandler';
-import { createPlaceholderProcessNode, createProcessEdgeInfo } from './processUtils';
 import { createSubviewController, type SubviewController } from './subview-controller';
 import { createGraphActionHandlers, type GraphActionHandlers } from './actionHandlers';
 import type {
@@ -23,7 +20,7 @@ const createGraphRuntime: GraphRuntimeFactory = (
     container,
     mainGraph,
     subgraphByEntryId,
-    subgraphById,
+    subgraphById: _subgraphById,
     subviewByAnchorId,
     subviewById,
     scopeNodeIds,
@@ -46,57 +43,12 @@ const createGraphRuntime: GraphRuntimeFactory = (
     createCy = cytoscape,
   } = dependencies;
 
-  const nodesById: Map<string, GraphNodeInfo> = data.nodesById;
-  const processesById = new Map<string, ProcessDefinition>(
-    data.processes.map((process) => [process.id, process]),
-  );
-
   const getCy = () => cy;
   const getController = () => controller;
-
-  async function clearProcessHighlight() {
-    if (!controller) {
-      return;
-    }
-
-    await controller.clearProcessHighlight();
-  }
-
-  async function restoreMainView() {
-    if (!controller) {
-      return;
-    }
-    if (!controller.isSubgraphActive()) {
-      return;
-    }
-
-    await controller.restoreMainView();
-  }
 
   const clearNodeFocus = () => {
     controller?.clearNodeFocus();
   };
-
-  async function highlightProcess(processId: string) {
-    if (!controller) {
-      return;
-    }
-
-    const process = processesById.get(processId);
-    if (!process) {
-      console.warn('[GraphRuntime] Process not found', processId);
-      return;
-    }
-
-    await restoreMainView();
-
-    const nodeInfos = process.nodes.map(
-      (id) => nodesById.get(id) ?? createPlaceholderProcessNode(id),
-    );
-    const edgeInfos = process.edges.map((edge) => createProcessEdgeInfo(process.id, edge));
-
-    await controller.showProcess(process, nodeInfos, edgeInfos);
-  }
 
   const focusNodes = async (nodeIds: string[]) => {
     if (!controller) {
@@ -104,28 +56,6 @@ const createGraphRuntime: GraphRuntimeFactory = (
     }
 
     await controller.focusNodes(nodeIds);
-  };
-
-  async function activateSubgraphInternal(config: SubgraphConfig) {
-    if (!controller) {
-      return;
-    }
-
-    await clearProcessHighlight();
-
-    await controller.activateSubgraph(config.graph, {
-      id: config.meta.id,
-      entryNodeId: config.meta.entryNodeId,
-    });
-  }
-
-  const activateSubgraph = async (subgraphId: string) => {
-    const config = subgraphById.get(subgraphId);
-    if (!config) {
-      console.warn('[GraphRuntime] Subgraph not found', subgraphId);
-      return;
-    }
-    await activateSubgraphInternal(config);
   };
 
   const handleNodeTap = (nodeId: string) => {
@@ -256,10 +186,6 @@ const createGraphRuntime: GraphRuntimeFactory = (
   const runtime: GraphRuntime = {
     initialize,
     destroy,
-    highlightProcess,
-    clearProcessHighlight,
-    activateSubgraph,
-    restoreMainView,
     focusNodes,
     clearNodeFocus,
     getController,

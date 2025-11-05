@@ -28,10 +28,6 @@ export type GraphRuntimeConfig = {
 };
 
 export type GraphRuntimeCommands = {
-  highlightProcess: (processId: string) => Promise<void>;
-  clearProcessHighlight: () => Promise<void>;
-  activateSubgraph: (subgraphId: string) => Promise<void>;
-  restoreMainView: () => Promise<void>;
   focusNodes: (nodeIds: string[]) => Promise<void>;
   clearNodeFocus: () => void;
 };

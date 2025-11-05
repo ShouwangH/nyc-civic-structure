@@ -10,16 +10,12 @@ import type { GraphActionHandlers } from '../graph/actionHandlers';
 import type { GovernmentScope } from '../data/datasets';
 
 export type GraphCanvasHandle = {
-  highlightProcess: GraphRuntime['highlightProcess'];
-  clearProcessHighlight: GraphRuntime['clearProcessHighlight'];
-  activateSubgraph: GraphRuntime['activateSubgraph'];
-  restoreMainView: GraphRuntime['restoreMainView'];
   focusNodes: GraphRuntime['focusNodes'];
   clearNodeFocus: GraphRuntime['clearNodeFocus'];
   getController: GraphRuntime['getController'];
   getCy: GraphRuntime['getCy'];
-  getHandlers: () => GraphActionHandlers | null; // NEW: Imperative handlers accessor
-  handlers: GraphActionHandlers | null; // NEW: Deprecated, use getHandlers()
+  getHandlers: () => GraphActionHandlers | null;
+  handlers: GraphActionHandlers | null;
 };
 
 type GraphCanvasProps = {
@@ -74,34 +70,6 @@ const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
     useImperativeHandle(
       ref,
       () => ({
-        highlightProcess: async (processId: string) => {
-          const orchestrator = orchestratorRef.current;
-          if (!orchestrator) {
-            return;
-          }
-          await orchestrator.highlightProcess(processId);
-        },
-        clearProcessHighlight: async () => {
-          const orchestrator = orchestratorRef.current;
-          if (!orchestrator) {
-            return;
-          }
-          await orchestrator.clearProcessHighlight();
-        },
-        activateSubgraph: async (subgraphId: string) => {
-          const orchestrator = orchestratorRef.current;
-          if (!orchestrator) {
-            return;
-          }
-          await orchestrator.activateSubgraph(subgraphId);
-        },
-        restoreMainView: async () => {
-          const orchestrator = orchestratorRef.current;
-          if (!orchestrator) {
-            return;
-          }
-          await orchestrator.restoreMainView();
-        },
         focusNodes: async (nodeIds: string[]) => {
           const orchestrator = orchestratorRef.current;
           if (!orchestrator) {
