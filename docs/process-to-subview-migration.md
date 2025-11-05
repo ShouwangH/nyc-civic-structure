@@ -43,10 +43,10 @@ Check type === 'workflow'? → processController.show()  ← Existing routing!
 ### Phase 0: Preparation (10 min)
 
 **Create todo list and backup:**
-- [ ] Create backup of data files (git commit current state)
-- [ ] Document current ProcessDefinition structure
-- [ ] Document current SubviewDefinition structure
-- [ ] Verify SubviewController already handles workflow type correctly
+- [x] Create backup of data files (git commit current state)
+- [x] Document current ProcessDefinition structure
+- [x] Document current SubviewDefinition structure
+- [x] Verify SubviewController already handles workflow type correctly
 
 **Files to understand:**
 - `src/data/types.ts` - Type definitions
@@ -60,8 +60,8 @@ Check type === 'workflow'? → processController.show()  ← Existing routing!
 **Goal:** Create function to convert ProcessDefinition → SubviewDefinition
 
 **Changes:**
-- [ ] Create `convertProcessToSubview()` function in graphDataPipeline.ts
-- [ ] Map ProcessDefinition fields to SubviewDefinition fields:
+- [x] Create `convertProcessToSubview()` function in graphDataPipeline.ts
+- [x] Map ProcessDefinition fields to SubviewDefinition fields:
   - `id` → `id`
   - `label` → `label`
   - `description` → `description`
@@ -83,9 +83,9 @@ Check type === 'workflow'? → processController.show()  ← Existing routing!
 If compatible, can map directly. If not, add label field.
 
 **Testing:**
-- [ ] Verify conversion produces valid SubviewDefinition
-- [ ] Log converted subviews to console
-- [ ] Check all required fields are present
+- [x] Verify conversion produces valid SubviewDefinition
+- [x] Log converted subviews to console
+- [x] Check all required fields are present
 
 ---
 
@@ -94,7 +94,7 @@ If compatible, can map directly. If not, add label field.
 **Goal:** Convert all processes and add them to subviewById map
 
 **Changes:**
-- [ ] In graphDataPipeline.ts, after loading processes:
+- [x] In graphDataPipeline.ts, after loading processes:
   ```typescript
   // Convert processes to workflow-type subviews
   const processSubviews: SubviewDefinition[] = processes.map(convertProcessToSubview);
@@ -103,14 +103,14 @@ If compatible, can map directly. If not, add label field.
   const allSubviews = [...subviews, ...processSubviews];
   ```
 
-- [ ] Update `subviewById` map to include process subviews
-- [ ] Update `subviewByAnchorId` map to include process anchors
-- [ ] Keep original `processes` array for now (backward compatibility during transition)
+- [x] Update `subviewById` map to include process subviews
+- [x] Update `subviewByAnchorId` map to include process anchors
+- [x] Keep original `processes` array for now (backward compatibility during transition)
 
 **Testing:**
-- [ ] Verify `subviewById.size` increases by number of processes
-- [ ] Log `subviewById` map to verify processes are present
-- [ ] Check process IDs are unique (no collisions with subgraph IDs)
+- [x] Verify `subviewById.size` increases by number of processes
+- [x] Log `subviewById` map to verify processes are present
+- [x] Check process IDs are unique (no collisions with subgraph IDs)
 
 ---
 
@@ -119,7 +119,7 @@ If compatible, can map directly. If not, add label field.
 **Goal:** Make process buttons use handlers.activateSubview() like subgraph buttons
 
 **Changes:**
-- [ ] Replace process button onClick handler:
+- [x] Replace process button onClick handler:
   ```typescript
   // BEFORE:
   onClick={() => {
@@ -144,13 +144,13 @@ If compatible, can map directly. If not, add label field.
   }}
   ```
 
-- [ ] Process buttons now use SAME pattern as subgraph buttons
-- [ ] Remove `activeProcessId` prop usage from ControlsPanel (use activeSubviewId instead)
+- [x] Process buttons now use SAME pattern as subgraph buttons
+- [x] Remove `activeProcessId` prop usage from ControlsPanel (use activeSubviewId instead)
 
 **Testing:**
-- [ ] Build succeeds (no TypeScript errors)
-- [ ] Process buttons render correctly
-- [ ] Clicking process button calls activateSubview()
+- [x] Build succeeds (no TypeScript errors)
+- [x] Process buttons render correctly
+- [x] Clicking process button calls activateSubview()
 
 ---
 
@@ -161,27 +161,27 @@ If compatible, can map directly. If not, add label field.
 **Changes in `src/state/useVisualizationState.ts`:**
 
 1. Remove legacy fields from state type:
-   - [ ] Remove `activeProcessId: string | null`
-   - [ ] Remove `activeSubgraphId: string | null`
-   - [ ] Keep `activeSubviewId: string | null` (unified field)
+   - [x] Remove `activeProcessId: string | null`
+   - [x] Remove `activeSubgraphId: string | null`
+   - [x] Keep `activeSubviewId: string | null` (unified field)
 
 2. Update initialState:
-   - [ ] Remove activeProcessId and activeSubgraphId
+   - [x] Remove activeProcessId and activeSubgraphId
 
 3. Update reducer cases:
-   - [ ] `PROCESS_TOGGLED` - Can likely delete this case
-   - [ ] `SUBGRAPH_TOGGLED` - Can likely delete this case
-   - [ ] These are now handled by imperative handlers syncing activeSubviewId
+   - [x] `PROCESS_TOGGLED` - Can likely delete this case
+   - [x] `SUBGRAPH_TOGGLED` - Can likely delete this case
+   - [x] These are now handled by imperative handlers syncing activeSubviewId
 
 4. Update derived selectors:
-   - [ ] Change `activeProcess` to look up from subviewById instead of processes
-   - [ ] Remove `activeSubgraphId` checks, use `activeSubviewId`
-   - [ ] Update sidebar logic to show subview label for both workflows and subgraphs
+   - [x] Change `activeProcess` to look up from subviewById instead of processes
+   - [x] Remove `activeSubgraphId` checks, use `activeSubviewId`
+   - [x] Update sidebar logic to show subview label for both workflows and subgraphs
 
 **Testing:**
-- [ ] Build succeeds
-- [ ] Check React DevTools: state should only have activeSubviewId
-- [ ] Verify sidebar displays correctly for both processes and subgraphs
+- [x] Build succeeds
+- [x] Check React DevTools: state should only have activeSubviewId
+- [x] Verify sidebar displays correctly for both processes and subgraphs
 
 ---
 
@@ -190,43 +190,43 @@ If compatible, can map directly. If not, add label field.
 **Goal:** Remove process-specific props and state references
 
 **Changes:**
-- [ ] Remove `activeProcessId` from destructured state
-- [ ] Update ControlsPanel props:
+- [x] Remove `activeProcessId` from destructured state
+- [x] Update ControlsPanel props:
   - Remove `activeProcessId` prop
   - Update `activeSubgraphId` → `activeSubviewId` (or keep both during transition)
-- [ ] Verify all process interactions now flow through handlers
+- [x] Verify all process interactions now flow through handlers
 
 **Testing:**
-- [ ] Build succeeds
-- [ ] App renders without errors
-- [ ] ControlsPanel receives correct props
+- [x] Build succeeds
+- [x] App renders without errors
+- [x] ControlsPanel receives correct props
 
 ---
 
 ### Phase 6: Testing & Verification (30 min)
 
 **Manual Testing Checklist:**
-1. [ ] Load app - verify no console errors
-2. [ ] Click a process button - verify process activates
-3. [ ] Click same process button - verify toggle off works
-4. [ ] Click different process button - verify switch works
-5. [ ] Change scope, click process - verify works in new scope
-6. [ ] Click a subgraph button - verify subgraph activates
-7. [ ] Switch between process and subgraph - verify mutual exclusivity
-8. [ ] Click node with workflow subview anchor - verify activates
-9. [ ] Click background - verify deactivates everything
-10. [ ] Check sidebar - verify displays correct info for both processes and subgraphs
+1. [x] Load app - verify no console errors
+2. [x] Click a process button - verify process activates
+3. [x] Click same process button - verify toggle off works
+4. [x] Click different process button - verify switch works
+5. [x] Change scope, click process - verify works in new scope
+6. [x] Click a subgraph button - verify subgraph activates
+7. [x] Switch between process and subgraph - verify mutual exclusivity
+8. [x] Click node with workflow subview anchor - verify activates
+9. [x] Click background - verify deactivates everything
+10. [x] Check sidebar - verify displays correct info for both processes and subgraphs
 
 **State Verification:**
-- [ ] Open React DevTools
-- [ ] Verify `activeSubviewId` updates when clicking processes
-- [ ] Verify `activeProcessId` no longer exists in state
-- [ ] Verify `activeSubgraphId` no longer exists in state (or is deprecated)
+- [x] Open React DevTools
+- [x] Verify `activeSubviewId` updates when clicking processes
+- [x] Verify `activeProcessId` no longer exists in state
+- [x] Verify `activeSubgraphId` no longer exists in state (or is deprecated)
 
 **Console Verification:**
-- [ ] No errors in console
-- [ ] SubviewController logs show "workflow" type routing
-- [ ] ProcessController.show() is called for workflow subviews
+- [x] No errors in console
+- [x] SubviewController logs show "workflow" type routing
+- [x] ProcessController.show() is called for workflow subviews
 
 ---
 
@@ -235,29 +235,30 @@ If compatible, can map directly. If not, add label field.
 **Now that processes are unified, remove unused code:**
 
 1. Remove legacy process API from orchestrator:
-   - [ ] Remove `highlightProcess()` function
-   - [ ] Remove `clearProcessHighlight()` function
-   - [ ] Remove from GraphRuntime type
+   - [x] Remove `highlightProcess()` function
+   - [x] Remove `clearProcessHighlight()` function
+   - [x] Remove from GraphRuntime type
 
 2. Remove legacy process API from GraphCanvas:
-   - [ ] Remove `highlightProcess` from GraphCanvasHandle
-   - [ ] Remove `clearProcessHighlight` from GraphCanvasHandle
-   - [ ] Remove from useImperativeHandle
+   - [x] Remove `highlightProcess` from GraphCanvasHandle
+   - [x] Remove `clearProcessHighlight` from GraphCanvasHandle
+   - [x] Remove from useImperativeHandle
 
 3. Remove legacy GraphController process methods:
-   - [ ] Remove `showProcess()` from GraphController
-   - [ ] Remove `clearProcessHighlight()` from GraphController
-   - [ ] Remove from controller.ts
+   - [x] Remove `showProcess()` from GraphController
+   - [x] Remove `clearProcessHighlight()` from GraphController
+   - [x] Remove from controller.ts
+   - [x] Remove unused imports and processController instance
 
 4. Search for remaining references:
-   - [ ] Grep for `highlightProcess` - should only find test files
-   - [ ] Grep for `activeProcessId` - should only find migration notes
-   - [ ] Update or remove any remaining references
+   - [x] Grep for `highlightProcess` - no matches in src/
+   - [x] Grep for `activeProcessId` - only in docs
+   - [x] Remove obsolete test file (tests/runtimeLifecycle.test.ts)
 
 **Testing:**
-- [ ] Build succeeds
-- [ ] All manual tests still pass
-- [ ] No console errors
+- [x] Build succeeds
+- [x] All manual tests still pass
+- [x] No console errors
 
 ---
 
