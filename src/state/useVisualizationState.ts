@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from 'react';
 import type { GovernmentScope } from '../data/datasets';
-import type { ProcessDefinition } from '../data/types';
-import type { SubgraphConfig } from '../graph/subgraphs';
+import type { ProcessDefinition, SubviewDefinition } from '../data/types';
 import { GRAPH_DATA } from '../data/graphDataPipeline';
 
 export type VisualizationState = {
@@ -79,7 +78,7 @@ export const useVisualizationState = () => {
   // Derived selectors - computed based on current state
   const derived = useMemo(() => {
     const { nodesById, edgesById } = GRAPH_DATA.indexes;
-    const { subgraphById } = GRAPH_DATA.maps;
+    const { subviewById } = GRAPH_DATA.maps;
     const { allProcesses } = GRAPH_DATA;
 
     // Filter by scope
@@ -88,10 +87,9 @@ export const useVisualizationState = () => {
       : ([] as ProcessDefinition[]);
 
     // Show all non-workflow subviews for the current scope
-    const visibleSubgraphConfigs: SubgraphConfig[] = activeScope
-      ? Array.from(GRAPH_DATA.maps.subgraphById.values()).filter(config => {
-          const scope = GRAPH_DATA.indexes.subgraphScopeById.get(config.meta.id);
-          return scope === activeScope;
+    const visibleSubviews: SubviewDefinition[] = activeScope
+      ? Array.from(GRAPH_DATA.maps.subviewById.values()).filter(subview => {
+          return subview.jurisdiction === activeScope && subview.type !== 'workflow';
         })
       : [];
 
@@ -117,9 +115,7 @@ export const useVisualizationState = () => {
       : null;
 
     const subgraphLabel = activeSubviewId
-      ? (subgraphById.get(activeSubviewId)?.meta.label ??
-         GRAPH_DATA.maps.subviewById.get(activeSubviewId)?.label ??
-         null)
+      ? (subviewById.get(activeSubviewId)?.label ?? null)
       : null;
 
     // Computed flags
@@ -134,7 +130,7 @@ export const useVisualizationState = () => {
     return {
       // Filtered lists
       visibleProcesses,
-      visibleSubgraphConfigs,
+      visibleSubviews,
 
       // Entity lookups
       activeNode,

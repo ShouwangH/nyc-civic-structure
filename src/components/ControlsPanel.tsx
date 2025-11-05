@@ -1,6 +1,5 @@
 import type { GovernmentScope } from '../data/datasets';
-import type { ProcessDefinition } from '../data/types';
-import type { SubgraphConfig } from '../graph/subgraphs';
+import type { ProcessDefinition, SubviewDefinition } from '../data/types';
 import type { GraphActionHandlers } from '../graph/actionHandlers';
 
 type ScopeOption = {
@@ -12,7 +11,7 @@ type ControlsPanelProps = {
   scopes: ScopeOption[];
   activeScope: GovernmentScope | null;
   onScopeChange: (scope: GovernmentScope) => void;
-  subgraphConfigs: SubgraphConfig[];
+  subviews: SubviewDefinition[];
   processes: ProcessDefinition[];
   activeSubviewId: string | null;
   isOpen: boolean;
@@ -34,7 +33,7 @@ const ControlsPanel = ({
   scopes,
   activeScope,
   onScopeChange,
-  subgraphConfigs,
+  subviews,
   processes,
   activeSubviewId,
   isOpen,
@@ -86,15 +85,15 @@ const ControlsPanel = ({
             </h2>
             {activeScope === null ? (
               <p className="text-lg text-slate-500">Select a scope to view agencies and departments</p>
-            ) : subgraphConfigs.length === 0 ? (
+            ) : subviews.length === 0 ? (
               <p className="text-lg text-slate-500">No agencies available for this scope.</p>
             ) : (
               <div className="space-y-2">
-                {subgraphConfigs.map((config) => {
-                  const isActive = activeSubviewId === config.meta.id;
+                {subviews.map((subview) => {
+                  const isActive = activeSubviewId === subview.id;
                   return (
                     <button
-                      key={config.meta.id}
+                      key={subview.id}
                       type="button"
                       onClick={() => {
                         if (!handlers) return;
@@ -102,12 +101,12 @@ const ControlsPanel = ({
                         if (isActive) {
                           void handlers.deactivateAll();
                         } else {
-                          void handlers.activateSubview(config.meta.id);
+                          void handlers.activateSubview(subview.id);
                         }
                       }}
                       className={getButtonClasses(isActive)}
                     >
-                      {config.meta.label}
+                      {subview.label}
                     </button>
                   );
                 })}

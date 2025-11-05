@@ -26,7 +26,7 @@ function App() {
     },
     derived: {
       visibleProcesses, // Used by ControlsPanel
-      visibleSubgraphConfigs, // Used by ControlsPanel
+      visibleSubviews, // Used by ControlsPanel
       activeNode,
       activeEdge,
       activeProcess,
@@ -75,7 +75,7 @@ function App() {
           onScopeChange={(scope) => {
             void handleScopeFocus(scope);
           }}
-          subgraphConfigs={visibleSubgraphConfigs}
+          subviews={visibleSubviews}
           processes={visibleProcesses}
           activeSubviewId={activeSubviewId}
           isOpen={controlsOpen}
