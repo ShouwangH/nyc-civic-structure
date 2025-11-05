@@ -1,11 +1,12 @@
 import cytoscape from 'cytoscape';
 import cytoscapeElk from 'cytoscape-elk';
-import { useCallback, useRef } from 'react';
+import { useCallback, useState } from 'react';
 import clsx from 'clsx';
 
 import { ControlsPanel } from './components/ControlsPanel';
 import { DetailsSidebar } from './components/DetailsSidebar';
-import { GraphCanvas, type GraphCanvasHandle } from './components/GraphCanvas';
+import { GraphCanvas } from './components/GraphCanvas';
+import type { GraphRuntime } from './graph/runtimeTypes';
 import { governmentScopes } from './data/datasets';
 import type { GovernmentScope } from './data/datasets';
 import { useVisualizationState } from './state/useVisualizationState';
@@ -14,7 +15,7 @@ import { GRAPH_DATA } from './data/graphDataPipeline';
 cytoscape.use(cytoscapeElk);
 
 function App() {
-  const graphRef = useRef<GraphCanvasHandle | null>(null);
+  const [runtime, setRuntime] = useState<GraphRuntime | null>(null);
 
   const {
     state,
@@ -47,12 +48,12 @@ function App() {
 
   const handleScopeFocus = useCallback(
     (scope: GovernmentScope) => {
-      const handlers = graphRef.current?.handlers;
+      const handlers = runtime?.handlers;
       if (handlers) {
         void handlers.handleScopeChange(scope);
       }
     },
-    [],
+    [runtime],
   );
 
   const handleClearSelection = useCallback(() => {
@@ -89,7 +90,7 @@ function App() {
           activeSubviewId={activeSubviewId}
           isOpen={controlsOpen}
           onToggleOpen={toggleControlsOpen}
-          graphRef={graphRef}
+          handlers={runtime?.handlers ?? null}
         />
 
         <section
@@ -100,7 +101,6 @@ function App() {
         >
           <div className="flex flex-1 min-h-[75vh] overflow-hidden rounded-lg border border-slate-200 bg-slate-50 shadow-sm lg:min-h-[82vh]">
             <GraphCanvas
-              ref={graphRef}
               className="h-full w-full min-h-[75vh] rounded-lg bg-[#eceae4] lg:min-h-[82vh]"
               mainGraph={mainGraph}
               subgraphById={subgraphById}
@@ -110,6 +110,7 @@ function App() {
               nodesById={nodesById}
               scopeNodeIds={scopeNodeIds}
               setState={setState}
+              onRuntimeReady={setRuntime}
             />
           </div>
           <p className="text-xs text-slate-500">

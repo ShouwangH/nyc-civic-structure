@@ -1,7 +1,7 @@
 import type { GovernmentScope } from '../data/datasets';
 import type { ProcessDefinition } from '../data/types';
 import type { SubgraphConfig } from '../graph/subgraphs';
-import type { GraphCanvasHandle } from './GraphCanvas';
+import type { GraphActionHandlers } from '../graph/actionHandlers';
 
 type ScopeOption = {
   id: GovernmentScope;
@@ -17,7 +17,7 @@ type ControlsPanelProps = {
   activeSubviewId: string | null;
   isOpen: boolean;
   onToggleOpen: () => void;
-  graphRef: React.RefObject<GraphCanvasHandle | null>;
+  handlers: GraphActionHandlers | null;
 };
 
 const getButtonClasses = (isActive: boolean, size: 'default' | 'small' = 'default'): string => {
@@ -39,7 +39,7 @@ const ControlsPanel = ({
   activeSubviewId,
   isOpen,
   onToggleOpen,
-  graphRef,
+  handlers,
 }: ControlsPanelProps) => {
   const activeProcess = activeSubviewId
     ? processes.find((process) => process.id === activeSubviewId) ?? null
@@ -97,7 +97,6 @@ const ControlsPanel = ({
                       key={config.meta.id}
                       type="button"
                       onClick={() => {
-                        const handlers = graphRef.current?.handlers;
                         if (!handlers) return;
 
                         if (isActive) {
@@ -133,7 +132,6 @@ const ControlsPanel = ({
                       key={process.id}
                       type="button"
                       onClick={() => {
-                        const handlers = graphRef.current?.handlers;
                         if (!handlers) {
                           return;
                         }
