@@ -1,3 +1,4 @@
+import type cytoscape from 'cytoscape';
 import type { Core } from 'cytoscape';
 
 /**
@@ -49,5 +50,39 @@ export const applyProcessHighlightClasses = (
         edge.addClass('dimmed');
       }
     });
+  });
+};
+
+/**
+ * Removes process-related classes from all elements
+ * Removes: process-active, process-active-edge, dimmed
+ */
+export const resetProcessClasses = (cy: Core): void => {
+  cy.batch(() => {
+    cy.nodes().removeClass('process-active dimmed');
+    cy.edges().removeClass('process-active-edge dimmed');
+  });
+};
+
+/**
+ * Applies structural subview highlight classes
+ * - Subview elements get 'highlighted'
+ * - Other nodes get 'faded'
+ * - Other edges get 'hidden'
+ */
+export const applyStructuralSubviewClasses = (
+  cy: Core,
+  subviewNodes: cytoscape.NodeCollection,
+  subviewEdges: cytoscape.EdgeCollection,
+): void => {
+  const otherNodes = cy.nodes().not(subviewNodes);
+  const otherEdges = cy.edges().not(subviewEdges);
+
+  cy.batch(() => {
+    cy.elements().removeClass('highlighted faded hidden dimmed');
+    subviewNodes.addClass('highlighted');
+    subviewEdges.addClass('highlighted');
+    otherNodes.addClass('faded');
+    otherEdges.addClass('hidden');
   });
 };

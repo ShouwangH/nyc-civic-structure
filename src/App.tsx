@@ -42,10 +42,29 @@ function App() {
         })
       : [];
 
-    // Filter non-workflow subviews by scope
+    // Filter non-workflow subviews by scope and anchor node visibility
     const visibleSubviews = activeScope
       ? Array.from(subviewById.values()).filter(subview => {
-          return subview.jurisdiction === activeScope && subview.type !== 'workflow';
+          const matchesScope = subview.jurisdiction === activeScope && subview.type !== 'workflow';
+          if (!matchesScope) return false;
+
+          // Get the anchor node for this subview
+          const anchorNodeId = subview.anchor?.nodeId;
+          if (!anchorNodeId) return false;
+
+          // Get the anchor node info
+          const anchorNode = nodesById.get(anchorNodeId);
+          if (!anchorNode) return false;
+
+          if (activeSubviewId) {
+            // If a subview is active, show only subviews whose anchor is in the active subview
+            const activeSubview = subviewById.get(activeSubviewId);
+            const visibleNodeIds = activeSubview?.nodes || [];
+            return visibleNodeIds.includes(anchorNodeId);
+          } else {
+            // If only scope is active, show only subviews with main-tier anchor nodes
+            return anchorNode.tier === 'main';
+          }
         })
       : [];
 
