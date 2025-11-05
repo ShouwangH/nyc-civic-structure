@@ -274,9 +274,13 @@ export const useVisualizationState = () => {
       ? (GRAPH_DATA.processesByScope[state.activeScope] ?? [])
       : ([] as ProcessDefinition[]);
 
-    // Temporarily hide all subviews from menu (still accessible via node clicks)
-    // Will be accessible via sidebar-based multi-view selector in future
-    const visibleSubgraphConfigs: SubgraphConfig[] = [];
+    // Show all non-workflow subviews for the current scope
+    const visibleSubgraphConfigs: SubgraphConfig[] = state.activeScope
+      ? Array.from(GRAPH_DATA.maps.subgraphById.values()).filter(config => {
+          const scope = GRAPH_DATA.indexes.subgraphScopeById.get(config.meta.id);
+          return scope === state.activeScope;
+        })
+      : [];
 
     // Entity lookups
     const activeNode = state.selectedNodeId
