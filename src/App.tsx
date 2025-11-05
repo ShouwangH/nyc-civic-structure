@@ -60,26 +60,6 @@ function App() {
     [dispatch],
   );
 
-  const handleProcessToggle = useCallback(
-    (processId: string) => {
-      dispatch({
-        type: 'PROCESS_TOGGLED',
-        processId,
-      });
-    },
-    [dispatch],
-  );
-
-  const handleSubgraphToggle = useCallback(
-    (subgraphId: string) => {
-      dispatch({
-        type: 'SUBGRAPH_TOGGLED',
-        subgraphId,
-      });
-    },
-    [dispatch],
-  );
-
   const handleClearSelection = useCallback(() => {
     clearSelections();
   }, [clearSelections]);
@@ -111,12 +91,11 @@ function App() {
           }}
           subgraphConfigs={visibleSubgraphConfigs}
           activeSubgraphId={activeSubgraphId}
-          onSubgraphToggle={handleSubgraphToggle}
           processes={visibleProcesses}
           activeProcessId={activeProcessId}
-          onProcessToggle={handleProcessToggle}
           isOpen={controlsOpen}
           onToggleOpen={toggleControlsOpen}
+          graphRef={graphRef}
         />
 
         <section

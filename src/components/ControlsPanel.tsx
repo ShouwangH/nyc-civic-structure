@@ -1,6 +1,7 @@
 import type { GovernmentScope } from '../data/datasets';
 import type { ProcessDefinition } from '../data/types';
 import type { SubgraphConfig } from '../graph/subgraphs';
+import type { GraphCanvasHandle } from './GraphCanvas';
 
 type ScopeOption = {
   id: GovernmentScope;
@@ -13,12 +14,11 @@ type ControlsPanelProps = {
   onScopeChange: (scope: GovernmentScope) => void;
   subgraphConfigs: SubgraphConfig[];
   activeSubgraphId: string | null;
-  onSubgraphToggle: (subgraphId: string) => void;
   processes: ProcessDefinition[];
   activeProcessId: string | null;
-  onProcessToggle: (processId: string) => void | Promise<void>;
   isOpen: boolean;
   onToggleOpen: () => void;
+  graphRef: React.RefObject<GraphCanvasHandle | null>;
 };
 
 const getButtonClasses = (isActive: boolean, size: 'default' | 'small' = 'default'): string => {
@@ -37,12 +37,11 @@ const ControlsPanel = ({
   onScopeChange,
   subgraphConfigs,
   activeSubgraphId,
-  onSubgraphToggle,
   processes,
   activeProcessId,
-  onProcessToggle,
   isOpen,
   onToggleOpen,
+  graphRef,
 }: ControlsPanelProps) => {
   const activeProcess = activeProcessId
     ? processes.find((process) => process.id === activeProcessId) ?? null
@@ -100,7 +99,14 @@ const ControlsPanel = ({
                       key={config.meta.id}
                       type="button"
                       onClick={() => {
-                        void onSubgraphToggle(config.meta.id);
+                        const handlers = graphRef.current?.handlers;
+                        if (!handlers) return;
+
+                        if (isActive) {
+                          void handlers.deactivateAll();
+                        } else {
+                          void handlers.activateSubview(config.meta.id);
+                        }
                       }}
                       className={getButtonClasses(isActive)}
                     >
@@ -129,7 +135,14 @@ const ControlsPanel = ({
                       key={process.id}
                       type="button"
                       onClick={() => {
-                        void onProcessToggle(process.id);
+                        const handlers = graphRef.current?.handlers;
+                        if (!handlers) return;
+
+                        if (isActive) {
+                          void handlers.deactivateAll();
+                        } else {
+                          void handlers.activateSubview(process.id);
+                        }
                       }}
                       className={getButtonClasses(isActive, 'small')}
                     >
