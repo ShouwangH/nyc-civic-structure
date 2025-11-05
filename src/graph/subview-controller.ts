@@ -14,11 +14,21 @@ import { ANIMATION_DURATION, ANIMATION_EASING } from './animation';
 import { applyProcessHighlightClasses, resetHighlightClasses } from './styles-application';
 
 /**
+ * State changes returned by controller operations
+ */
+export type SubviewStateChanges = {
+  activeSubviewId: string | null;
+  selectedNodeId: string | null;
+  selectedEdgeId: string | null;
+  isSidebarHover: boolean;
+};
+
+/**
  * Unified subview controller interface
  */
 export type SubviewController = {
-  activate: (subview: SubviewDefinition) => Promise<void>;
-  deactivate: () => Promise<void>;
+  activate: (subview: SubviewDefinition) => Promise<SubviewStateChanges>;
+  deactivate: () => Promise<SubviewStateChanges>;
   isActive: (id?: string) => boolean;
   getActiveId: () => string | null;
 };
@@ -64,15 +74,25 @@ export const createSubviewController = (deps: SubviewControllerDeps): SubviewCon
     return activeSubview?.id ?? null;
   };
 
-  const activate = async (subview: SubviewDefinition): Promise<void> => {
+  const activate = async (subview: SubviewDefinition): Promise<SubviewStateChanges> => {
     // Guard: check transition lock
     if (transitionInProgress) {
-      return;
+      return {
+        activeSubviewId: activeSubview?.id ?? null,
+        selectedNodeId: null,
+        selectedEdgeId: null,
+        isSidebarHover: activeSubview ? true : false,
+      };
     }
 
     // Guard: check duplicate activation
     if (activeSubview?.id === subview.id) {
-      return;
+      return {
+        activeSubviewId: subview.id,
+        selectedNodeId: null,
+        selectedEdgeId: null,
+        isSidebarHover: true,
+      };
     }
 
     // Deactivate current if any
@@ -210,12 +230,25 @@ export const createSubviewController = (deps: SubviewControllerDeps): SubviewCon
     };
 
     transitionInProgress = false;
+
+    // Return state changes for React state
+    return {
+      activeSubviewId: subview.id,
+      selectedNodeId: null,
+      selectedEdgeId: null,
+      isSidebarHover: true,
+    };
   };
 
-  const deactivate = async (): Promise<void> => {
+  const deactivate = async (): Promise<SubviewStateChanges> => {
     const currentSubview = activeSubview;
     if (!currentSubview || transitionInProgress) {
-      return;
+      return {
+        activeSubviewId: null,
+        selectedNodeId: null,
+        selectedEdgeId: null,
+        isSidebarHover: false,
+      };
     }
 
     transitionInProgress = true;
@@ -266,6 +299,14 @@ export const createSubviewController = (deps: SubviewControllerDeps): SubviewCon
     // Clear state
     activeSubview = null;
     transitionInProgress = false;
+
+    // Return state changes for React state
+    return {
+      activeSubviewId: null,
+      selectedNodeId: null,
+      selectedEdgeId: null,
+      isSidebarHover: false,
+    };
   };
 
   return {
@@ -450,7 +491,6 @@ function calculateConcentricLevels(
  * Creates placeholder node for missing nodes in workflows
  */
 function createPlaceholderNode(id: string): GraphNodeInfo {
-  console.warn('[SubviewController] Creating placeholder for missing node:', id);
   return {
     id,
     label: id.split(':')[1] || id,

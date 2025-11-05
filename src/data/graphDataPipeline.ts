@@ -129,12 +129,6 @@ export const buildGraphData = (): GraphData => {
   // Merge process subviews with existing subviews
   const allSubviewsWithProcesses = [...allSubviews, ...processSubviews];
 
-  console.log('[GraphData] Converted processes to subviews', {
-    originalProcessCount: allProcesses.length,
-    processSubviewsCreated: processSubviews.length,
-    totalSubviews: allSubviewsWithProcesses.length,
-  });
-
   // Step 4c: Build node scope index
   const nodeScopeIndex = buildNodeScopeIndex(scopeNodeIds);
 
@@ -151,30 +145,6 @@ export const buildGraphData = (): GraphData => {
     subviewByAnchorId: buildSubviewByAnchorId(allSubviewsWithProcesses),
     subviewById: buildSubviewById(allSubviewsWithProcesses),
   };
-
-  // Test specific intra-tier nodes
-  const testNodes = ['city:vendors', 'city:MOCS', 'city:city_council_member', 'federal:oira'];
-  const nodeTests = testNodes.map(id => ({
-    id,
-    exists: indexes.nodesById.has(id),
-    label: indexes.nodesById.get(id)?.label,
-  }));
-
-  console.log('[GraphData] Built graph data at module load', {
-    totalSubviews: allSubviewsWithProcesses.length,
-    processSubviews: processSubviews.length,
-    regularSubviews: allSubviews.length,
-    subviewByAnchorIdSize: maps.subviewByAnchorId.size,
-    subviewByIdSize: maps.subviewById.size,
-    nodeIndexSize: indexes.nodesById.size,
-    mainGraphNodeCount: mainGraph.nodes.length,
-    scopeNodeIds: {
-      city: scopeNodeIds.city.length,
-      state: scopeNodeIds.state.length,
-      federal: scopeNodeIds.federal.length
-    },
-    testIntraNodes: nodeTests,
-  });
 
   return {
     dataset,
