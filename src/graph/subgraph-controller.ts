@@ -1,6 +1,5 @@
 import type { Core } from 'cytoscape';
 import type { GraphConfig } from './types';
-import { runSubgraphConcentricDebug } from './utils/debugHarness';
 import {
   copyPosition,
   cloneLayoutOptions,
@@ -23,7 +22,6 @@ type ActiveSubgraph = {
   graph: GraphConfig;
 };
 
-const DEBUG_SUBGRAPH_CONCENTRIC = false;
 
 export type SubgraphController = {
   activate: (subgraph: GraphConfig, meta: { id: string; entryNodeId: string }) => Promise<void>;
@@ -71,15 +69,6 @@ export const createSubgraphController = (deps: SubgraphControllerDeps): Subgraph
     }
 
     transitionInProgress = true;
-
-    if (DEBUG_SUBGRAPH_CONCENTRIC) {
-      await runSubgraphConcentricDebug(cy, meta, subgraph, {
-        duration: ANIMATION_DURATION,
-        easing: ANIMATION_EASING,
-      });
-      transitionInProgress = false;
-      return;
-    }
 
     const existingNodeIds = new Set(cy.nodes().map((node) => node.id()));
 

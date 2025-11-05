@@ -1,7 +1,8 @@
 import cytoscape, { type Core } from 'cytoscape';
 
 import { graphStyles } from './styles';
-import { createGraphController, type GraphController } from './controller';
+import { captureInitialPositions } from './layout';
+import { createNodeFocusController, type NodeFocusController } from './node-focus-controller';
 import type { GraphEdgeInfo } from './types';
 import { createGraphInputHandler } from './inputHandler';
 import { createSubviewController, type SubviewController } from './subview-controller';
@@ -30,30 +31,28 @@ const createGraphRuntime: GraphRuntimeFactory = (
 ): GraphRuntime => {
 
   let cy: Core | null = null;
-  let controller: GraphController | null = null;
+  let nodeFocusController: NodeFocusController | null = null;
   let subviewController: SubviewController | null = null;
   let handlers: GraphActionHandlers | null = null;
   let inputBinding: GraphInputBinding | null = null;
 
   const {
-    createController: createControllerImpl = createGraphController,
     createInputHandler: createInputHandlerImpl = createGraphInputHandler,
     createCy = cytoscape,
   } = dependencies;
 
   const getCy = () => cy;
-  const getController = () => controller;
 
   const clearNodeFocus = () => {
-    controller?.clearNodeFocus();
+    nodeFocusController?.clear();
   };
 
   const focusNodes = async (nodeIds: string[]) => {
-    if (!controller) {
+    if (!nodeFocusController) {
       return;
     }
 
-    await controller.focusNodes(nodeIds);
+    await nodeFocusController.focus(nodeIds);
   };
 
   const handleNodeTap = (nodeId: string) => {
@@ -88,7 +87,7 @@ const createGraphRuntime: GraphRuntimeFactory = (
       cy.destroy();
       cy = null;
     }
-    controller = null;
+    nodeFocusController = null;
     subviewController = null;
     handlers = null;
   };
@@ -105,8 +104,8 @@ const createGraphRuntime: GraphRuntimeFactory = (
 
     cy = cyInstance;
 
-    const controllerInstance = createControllerImpl(cyInstance, mainGraph);
-    controller = controllerInstance;
+    // Create node focus controller
+    nodeFocusController = createNodeFocusController({ cy: cyInstance });
 
     // NEW: Create SubviewController if setState is provided
     if (setState) {
@@ -139,7 +138,7 @@ const createGraphRuntime: GraphRuntimeFactory = (
     }
 
     cyInstance.one('layoutstop', () => {
-      controllerInstance.captureInitialPositions();
+      captureInitialPositions(cyInstance);
     });
 
     cyInstance.ready(() => {
@@ -157,7 +156,6 @@ const createGraphRuntime: GraphRuntimeFactory = (
     destroy,
     focusNodes,
     clearNodeFocus,
-    getController,
     getCy,
     handleNodeTap: eventHandlers.handleNodeTap,
     handleEdgeTap: eventHandlers.handleEdgeTap,

@@ -11,7 +11,6 @@ import type { GovernmentScope } from '../data/datasets';
 export type GraphCanvasHandle = {
   focusNodes: GraphRuntime['focusNodes'];
   clearNodeFocus: GraphRuntime['clearNodeFocus'];
-  getController: GraphRuntime['getController'];
   getCy: GraphRuntime['getCy'];
   getHandlers: () => GraphActionHandlers | null;
   handlers: GraphActionHandlers | null;
@@ -76,7 +75,6 @@ const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
           const orchestrator = orchestratorRef.current;
           orchestrator?.clearNodeFocus();
         },
-        getController: () => orchestratorRef.current?.getController() ?? null,
         getCy: () => orchestratorRef.current?.getCy() ?? null,
         getHandlers: () => orchestratorRef.current?.handlers ?? null,
         get handlers() {

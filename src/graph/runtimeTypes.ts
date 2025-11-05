@@ -3,7 +3,6 @@ import type { Core, CytoscapeOptions } from 'cytoscape';
 import type { ProcessDefinition, SubviewDefinition } from '../data/types';
 import type { GraphNodeInfo, GraphConfig } from './types';
 import type { SubgraphConfig } from './subgraphs';
-import type { GraphController } from './controller';
 import type { VisualizationState } from '../state/useVisualizationState';
 import type { GraphActionHandlers } from './actionHandlers';
 import type { GovernmentScope } from '../data/datasets';
@@ -30,7 +29,6 @@ export type GraphRuntimeCommands = {
 };
 
 export type GraphRuntimeAccessors = {
-  getController: () => GraphController | null;
   getCy: () => Core | null;
 };
 
@@ -40,7 +38,6 @@ export type GraphInputBinding = {
 };
 
 export type GraphRuntimeDependencies = {
-  createController?: (cy: Core, mainGraph: GraphConfig) => GraphController;
   createInputHandler?: (
     cy: Core,
     runtimeHandlers: GraphRuntimeEventHandlers,
