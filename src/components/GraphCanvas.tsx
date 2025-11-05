@@ -5,15 +5,9 @@ import type { SubgraphConfig } from '../graph/subgraphs';
 import { createGraphRuntime } from '../graph/orchestrator';
 import type { GraphRuntime } from '../graph/runtimeTypes';
 import type { VisualizationState } from '../state/useVisualizationState';
-import type { GraphActionHandlers } from '../graph/actionHandlers';
 import type { GovernmentScope } from '../data/datasets';
 
-export type GraphCanvasHandle = {
-  focusNodes: GraphRuntime['focusNodes'];
-  clearNodeFocus: GraphRuntime['clearNodeFocus'];
-  getCy: GraphRuntime['getCy'];
-  handlers: GraphActionHandlers | null;
-};
+export type GraphCanvasHandle = GraphRuntime;
 
 type GraphCanvasProps = {
   mainGraph: GraphConfig;
@@ -63,20 +57,23 @@ const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
     useImperativeHandle(
       ref,
       () => ({
-        focusNodes: async (nodeIds: string[]) => {
-          const orchestrator = orchestratorRef.current;
-          if (!orchestrator) {
-            return;
-          }
-          await orchestrator.focusNodes(nodeIds);
-        },
-        clearNodeFocus: () => {
-          const orchestrator = orchestratorRef.current;
-          orchestrator?.clearNodeFocus();
-        },
-        getCy: () => orchestratorRef.current?.getCy() ?? null,
         get handlers() {
           return orchestratorRef.current?.handlers ?? null;
+        },
+        focusNodes: async (nodeIds: string[]) => {
+          await orchestratorRef.current?.focusNodes(nodeIds);
+        },
+        clearNodeFocus: () => {
+          orchestratorRef.current?.clearNodeFocus();
+        },
+        getCy: () => {
+          return orchestratorRef.current?.getCy() ?? null;
+        },
+        initialize: () => {
+          orchestratorRef.current?.initialize();
+        },
+        destroy: () => {
+          orchestratorRef.current?.destroy();
         },
       }),
       [],

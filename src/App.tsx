@@ -35,8 +35,7 @@ function App() {
       selectionActive,
       shouldShowSidebar,
     },
-    dispatch,
-    setState, // NEW: For imperative handlers
+    setState, // For imperative handlers
   } = useVisualizationState();
 
   const { controlsOpen, activeScope, activeSubviewId } = state;
@@ -48,9 +47,12 @@ function App() {
 
   const handleScopeFocus = useCallback(
     (scope: GovernmentScope) => {
-      dispatch({ type: 'SET_ACTIVE_SCOPE', scope });
+      const handlers = graphRef.current?.handlers;
+      if (handlers) {
+        void handlers.handleScopeChange(scope);
+      }
     },
-    [dispatch],
+    [],
   );
 
   const handleClearSelection = useCallback(() => {
