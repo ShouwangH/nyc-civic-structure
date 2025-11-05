@@ -1,0 +1,466 @@
+{
+  "meta": {
+    "jurisdiction": "state",
+    "version": "1.0",
+    "description": "Workflow subviews for state processes"
+  },
+  "subviews": [
+    {
+      "id": "nys_budget",
+      "label": "NYS Budget Process",
+      "description": "New York State's annual budget process, including state aid to NYC, MTA funding, and education funding.",
+      "type": "workflow",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:state_agencies"
+      },
+      "nodes": [
+        "state:state_agencies",
+        "state:division_of_budget",
+        "state:governor_ny",
+        "state:state_assembly",
+        "state:state_senate",
+        "state:state_comptroller"
+      ],
+      "edges": [
+        {
+          "source": "state:state_agencies",
+          "target": "state:division_of_budget"
+        },
+        {
+          "source": "state:division_of_budget",
+          "target": "state:governor_ny"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:state_assembly"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:state_senate"
+        },
+        {
+          "source": "state:state_assembly",
+          "target": "state:governor_ny"
+        },
+        {
+          "source": "state:state_senate",
+          "target": "state:governor_ny"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:state_comptroller"
+        }
+      ],
+      "layout": {
+        "type": "elk-layered",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 50
+        },
+        "fit": true,
+        "padding": 50,
+        "animate": true
+      },
+      "metadata": {
+        "steps": [
+          {
+            "id": "requests",
+            "title": "Agency Requests",
+            "description": "State agencies submit funding requests to Division of Budget."
+          },
+          {
+            "id": "exec_budget",
+            "title": "Executive Budget",
+            "description": "Governor releases Executive Budget proposal (by January 15)."
+          },
+          {
+            "id": "hearings",
+            "title": "Legislative Hearings",
+            "description": "Assembly and Senate hold budget hearings; NYC officials testify on city needs."
+          },
+          {
+            "id": "one_house_bills",
+            "title": "One-House Budget Bills",
+            "description": "Assembly and Senate each pass their own budget proposals."
+          },
+          {
+            "id": "negotiation",
+            "title": "Three-Way Negotiation",
+            "description": "Governor, Assembly Speaker, and Senate Majority Leader negotiate final budget."
+          },
+          {
+            "id": "adoption",
+            "title": "Budget Adoption",
+            "description": "Legislature passes final budget bills; Governor signs (by April 1 deadline)."
+          },
+          {
+            "id": "oversight",
+            "title": "Comptroller Oversight",
+            "description": "State Comptroller monitors spending compliance."
+          }
+        ]
+      }
+    },
+    {
+      "id": "judicial_appointment",
+      "label": "Judicial Appointment (Court of Appeals)",
+      "description": "Process for selecting and confirming New York's highest court judges.",
+      "type": "workflow",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:commission_on_judicial_nomination"
+      },
+      "nodes": [
+        "state:commission_on_judicial_nomination",
+        "state:governor_ny",
+        "state:state_senate"
+      ],
+      "edges": [
+        {
+          "source": "state:commission_on_judicial_nomination",
+          "target": "state:governor_ny"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:state_senate"
+        }
+      ],
+      "layout": {
+        "type": "elk-layered",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 50
+        },
+        "fit": true,
+        "padding": 50,
+        "animate": true
+      },
+      "metadata": {
+        "steps": [
+          {
+            "id": "nomination_pool",
+            "title": "Nomination Pool",
+            "description": "Commission submits list of qualified candidates to Governor."
+          },
+          {
+            "id": "selection",
+            "title": "Governor Selection",
+            "description": "Governor selects one nominee from the list."
+          },
+          {
+            "id": "confirmation",
+            "title": "Senate Confirmation",
+            "description": "Senate confirms or rejects nominee."
+          },
+          {
+            "id": "appointment",
+            "title": "Appointment",
+            "description": "Confirmed nominee takes office as Judge of the Court of Appeals."
+          }
+        ]
+      }
+    },
+    {
+      "id": "bond_act",
+      "label": "State Bond Act / Ballot Proposition",
+      "description": "Process for proposing and approving large state borrowing measures.",
+      "type": "workflow",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:state_legislature"
+      },
+      "nodes": [
+        "state:state_legislature",
+        "state:governor_ny",
+        "state:attorney_general",
+        "state:voters"
+      ],
+      "edges": [
+        {
+          "source": "state:state_legislature",
+          "target": "state:governor_ny"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:attorney_general"
+        },
+        {
+          "source": "state:attorney_general",
+          "target": "state:voters"
+        }
+      ],
+      "layout": {
+        "type": "elk-layered",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 50
+        },
+        "fit": true,
+        "padding": 50,
+        "animate": true
+      },
+      "metadata": {
+        "steps": [
+          {
+            "id": "proposal",
+            "title": "Legislative Proposal",
+            "description": "Legislature passes bond act bill."
+          },
+          {
+            "id": "approval",
+            "title": "Executive Review",
+            "description": "Governor approves; Attorney General reviews ballot language."
+          },
+          {
+            "id": "referendum",
+            "title": "Voter Referendum",
+            "description": "Voters approve or reject bond act at general election."
+          },
+          {
+            "id": "issuance",
+            "title": "Implementation",
+            "description": "State issues bonds and allocates funds to approved projects."
+          }
+        ]
+      }
+    },
+    {
+      "id": "home_rule",
+      "label": "Home Rule Request",
+      "description": "Process for NYC to request state legislation enabling local powers beyond current charter authority.",
+      "type": "workflow",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "city:city_council"
+      },
+      "nodes": [
+        "city:city_council",
+        "city:mayor_nyc",
+        "state:state_assembly",
+        "state:state_senate",
+        "state:governor_ny"
+      ],
+      "edges": [
+        {
+          "source": "city:city_council",
+          "target": "city:mayor_nyc"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "state:state_assembly"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "state:state_senate"
+        },
+        {
+          "source": "state:state_assembly",
+          "target": "state:state_senate"
+        },
+        {
+          "source": "state:state_senate",
+          "target": "state:governor_ny"
+        }
+      ],
+      "layout": {
+        "type": "elk-layered",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 50
+        },
+        "fit": true,
+        "padding": 50,
+        "animate": true
+      },
+      "metadata": {
+        "steps": [
+          {
+            "id": "request",
+            "title": "Home Rule Request",
+            "description": "City Council passes resolution requesting state enabling legislation."
+          },
+          {
+            "id": "mayoral_approval",
+            "title": "Mayoral Approval",
+            "description": "Mayor signs home rule request and transmits to State Legislature."
+          },
+          {
+            "id": "legislative_sponsorship",
+            "title": "Legislative Sponsorship",
+            "description": "State legislators sponsor enabling bill in Assembly and Senate."
+          },
+          {
+            "id": "state_passage",
+            "title": "State Legislative Passage",
+            "description": "Both houses pass enabling legislation."
+          },
+          {
+            "id": "gubernatorial_approval",
+            "title": "Gubernatorial Approval",
+            "description": "Governor signs bill into law, granting NYC requested authority."
+          }
+        ]
+      }
+    },
+    {
+      "id": "mayoral_control_schools",
+      "label": "Mayoral Control of Schools Renewal",
+      "description": "Periodic state legislative process to renew or modify Mayor's authority over NYC Department of Education.",
+      "type": "workflow",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:governor_ny"
+      },
+      "nodes": [
+        "state:governor_ny",
+        "state:state_assembly",
+        "state:state_senate",
+        "city:mayor_nyc",
+        "city:DOE"
+      ],
+      "edges": [
+        {
+          "source": "state:governor_ny",
+          "target": "state:state_assembly"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:state_senate"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "state:state_assembly"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "state:state_senate"
+        },
+        {
+          "source": "state:state_assembly",
+          "target": "state:governor_ny"
+        },
+        {
+          "source": "state:state_senate",
+          "target": "state:governor_ny"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "city:DOE"
+        }
+      ],
+      "layout": {
+        "type": "elk-layered",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 50
+        },
+        "fit": true,
+        "padding": 50,
+        "animate": true
+      },
+      "metadata": {
+        "steps": [
+          {
+            "id": "expiration",
+            "title": "Approaching Expiration",
+            "description": "Mayoral control authority approaches statutory expiration date."
+          },
+          {
+            "id": "proposal",
+            "title": "Renewal Proposal",
+            "description": "Governor proposes extension legislation; Mayor advocates for renewal."
+          },
+          {
+            "id": "debate",
+            "title": "Legislative Debate",
+            "description": "State Assembly and Senate hold hearings and debate renewal terms."
+          },
+          {
+            "id": "passage",
+            "title": "Legislative Passage",
+            "description": "Both houses pass renewal legislation, often with modifications to oversight."
+          },
+          {
+            "id": "signing",
+            "title": "Gubernatorial Approval",
+            "description": "Governor signs bill, extending mayoral control for specified period."
+          }
+        ]
+      }
+    },
+    {
+      "id": "state_rulemaking",
+      "label": "State Agency Rulemaking (SAPA)",
+      "description": "How NYS agencies create regulations under the State Administrative Procedure Act.",
+      "type": "workflow",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:state_agencies"
+      },
+      "nodes": [
+        "state:state_agencies",
+        "state:governor_ny",
+        "state:public",
+        "state:state_legislature"
+      ],
+      "edges": [
+        {
+          "source": "state:state_agencies",
+          "target": "state:governor_ny"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:public"
+        },
+        {
+          "source": "state:public",
+          "target": "state:state_agencies"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:state_legislature"
+        }
+      ],
+      "layout": {
+        "type": "elk-layered",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 50
+        },
+        "fit": true,
+        "padding": 50,
+        "animate": true
+      },
+      "metadata": {
+        "steps": [
+          {
+            "id": "draft",
+            "title": "Draft Proposed Rule",
+            "description": "State agency drafts proposed regulation."
+          },
+          {
+            "id": "notice",
+            "title": "Public Notice",
+            "description": "Notice of Proposed Rulemaking published in State Register with 45-60 day comment period."
+          },
+          {
+            "id": "comment",
+            "title": "Public Comment & Hearings",
+            "description": "Public submits comments; agency may hold hearings."
+          },
+          {
+            "id": "review",
+            "title": "Regulatory Impact Statement",
+            "description": "Agency prepares impact analysis; Governor's office may review."
+          },
+          {
+            "id": "adoption",
+            "title": "Final Adoption",
+            "description": "Agency adopts final rule; published in State Register and compiled in NYCRR."
+          }
+        ]
+      }
+    }
+  ]
+}

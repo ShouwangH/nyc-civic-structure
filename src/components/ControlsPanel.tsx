@@ -1,6 +1,6 @@
 import type { GovernmentScope } from '../data/datasets';
-import type { ProcessDefinition } from '../data/types';
-import type { SubgraphConfig } from '../graph/subgraphs';
+import type { SubviewDefinition } from '../data/types';
+import type { Controller } from '../graph/controller';
 
 type ScopeOption = {
   id: GovernmentScope;
@@ -11,14 +11,12 @@ type ControlsPanelProps = {
   scopes: ScopeOption[];
   activeScope: GovernmentScope | null;
   onScopeChange: (scope: GovernmentScope) => void;
-  subgraphConfigs: SubgraphConfig[];
-  activeSubgraphId: string | null;
-  onSubgraphToggle: (subgraphId: string) => void;
-  processes: ProcessDefinition[];
-  activeProcessId: string | null;
-  onProcessToggle: (processId: string) => void | Promise<void>;
+  subviews: SubviewDefinition[];
+  processes: SubviewDefinition[];
+  activeSubviewId: string | null;
   isOpen: boolean;
   onToggleOpen: () => void;
+  controller: Controller | null;
 };
 
 const getButtonClasses = (isActive: boolean, size: 'default' | 'small' = 'default'): string => {
@@ -35,17 +33,15 @@ const ControlsPanel = ({
   scopes,
   activeScope,
   onScopeChange,
-  subgraphConfigs,
-  activeSubgraphId,
-  onSubgraphToggle,
+  subviews,
   processes,
-  activeProcessId,
-  onProcessToggle,
+  activeSubviewId,
   isOpen,
   onToggleOpen,
+  controller,
 }: ControlsPanelProps) => {
-  const activeProcess = activeProcessId
-    ? processes.find((process) => process.id === activeProcessId) ?? null
+  const activeProcess = activeSubviewId
+    ? processes.find((process) => process.id === activeSubviewId) ?? null
     : null;
 
   return (
@@ -89,22 +85,28 @@ const ControlsPanel = ({
             </h2>
             {activeScope === null ? (
               <p className="text-lg text-slate-500">Select a scope to view agencies and departments</p>
-            ) : subgraphConfigs.length === 0 ? (
+            ) : subviews.length === 0 ? (
               <p className="text-lg text-slate-500">No agencies available for this scope.</p>
             ) : (
               <div className="space-y-2">
-                {subgraphConfigs.map((config) => {
-                  const isActive = activeSubgraphId === config.meta.id;
+                {subviews.map((subview) => {
+                  const isActive = activeSubviewId === subview.id;
                   return (
                     <button
-                      key={config.meta.id}
+                      key={subview.id}
                       type="button"
                       onClick={() => {
-                        void onSubgraphToggle(config.meta.id);
+                        if (!controller) return;
+
+                        if (isActive) {
+                          void controller.deactivateAll();
+                        } else {
+                          void controller.activateSubview(subview.id);
+                        }
                       }}
                       className={getButtonClasses(isActive)}
                     >
-                      {config.meta.label}
+                      {subview.label}
                     </button>
                   );
                 })}
@@ -123,13 +125,21 @@ const ControlsPanel = ({
             ) : (
               <div className="space-y-2">
                 {processes.map((process) => {
-                  const isActive = process.id === activeProcessId;
+                  const isActive = activeSubviewId === process.id;
                   return (
                     <button
                       key={process.id}
                       type="button"
                       onClick={() => {
-                        void onProcessToggle(process.id);
+                        if (!controller) {
+                          return;
+                        }
+
+                        if (isActive) {
+                          void controller.deactivateAll();
+                        } else {
+                          void controller.activateSubview(process.id);
+                        }
                       }}
                       className={getButtonClasses(isActive, 'small')}
                     >

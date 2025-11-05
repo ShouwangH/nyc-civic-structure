@@ -1,24 +1,19 @@
-import city from '../../data/city.json';
-import cityProcesses from '../../data/city-processes.json';
-import cityDepartments from '../../data/subgraphs/city-departments.json';
+// Three-tier data architecture: main.json + {jurisdiction}-intra.json
+import mainData from '../../data/main.json';
+import cityIntra from '../../data/city-intra.json';
+import stateIntra from '../../data/state-intra.json';
+import federalIntra from '../../data/federal-intra.json';
 
-import state from '../../data/state.json';
-import stateProcesses from '../../data/state-processes.json';
-import stateAgencies from '../../data/subgraphs/state-agencies.json';
-import stateCourts from '../../data/subgraphs/state-courts.json';
-
-import federal from '../../data/federal.json';
-import federalProcesses from '../../data/federal-processes.json';
-import federalAgencies from '../../data/subgraphs/federal-agencies.json';
-
+// Workflow subviews
+import cityWorkflows from '../../data/city-workflows.json';
+import stateWorkflows from '../../data/state-workflows.json';
+import federalWorkflows from '../../data/federal-workflows.json';
 
 import type {
   GovernmentScope,
-  ProcessDefinition,
-  ScopeData,
   StructureNode,
   RawEdge,
-  SubgraphFile,
+  SubviewDefinition,
 } from './types';
 
 export type { GovernmentScope } from './types';
@@ -33,48 +28,95 @@ export type GovernmentDataset = {
   };
   nodes: StructureNode[];
   edges: RawEdge[];
-  processes: ProcessDefinition[];
-  subgraphs: SubgraphFile[];
+  subviews?: SubviewDefinition[];
 };
 
-const normalizeDataset = (
+// Helper: Extract nodes for a specific jurisdiction from main.json
+const extractMainNodes = (jurisdiction: GovernmentScope): StructureNode[] => {
+  const prefix = `${jurisdiction}:`;
+  return mainData.nodes.filter(node => node.id.startsWith(prefix));
+};
+
+// Helper: Extract edges for a specific jurisdiction from main.json
+const extractMainEdges = (jurisdiction: GovernmentScope): RawEdge[] => {
+  const prefix = `${jurisdiction}:`;
+  return (mainData.edges || []).filter(edge =>
+    edge.source.startsWith(prefix) || edge.target.startsWith(prefix)
+  );
+};
+
+// Helper: Extract subviews for a specific jurisdiction from main.json
+const extractMainSubviews = (jurisdiction: GovernmentScope): SubviewDefinition[] => {
+  const prefix = `${jurisdiction}:`;
+  return ((mainData.subviews || []) as SubviewDefinition[]).filter(subview =>
+    subview.anchor?.nodeId?.startsWith(prefix)
+  );
+};
+
+// Helper: Merge main + intra data for a jurisdiction
+const buildDataset = (
   scope: GovernmentScope,
   label: string,
-  scopeData: ScopeData,
-  processFile: { processes: ProcessDefinition[] },
-  subgraphs: SubgraphFile[],
-): GovernmentDataset => ({
-  scope,
-  label,
-  description: scopeData.meta.description,
-  meta: scopeData.meta,
-  nodes: scopeData.nodes,
-  edges: scopeData.edges,
-  processes: processFile.processes,
-  subgraphs,
-});
+  description: string,
+  intraData: { nodes: StructureNode[]; edges?: RawEdge[]; subviews?: unknown[] },
+  workflowData: { subviews: unknown[] },
+): GovernmentDataset => {
+  const mainNodes = extractMainNodes(scope);
+  const mainEdges = extractMainEdges(scope);
+
+  // Annotate main nodes with tier
+  const annotatedMainNodes = mainNodes.map(node => ({
+    ...node,
+    tier: 'main' as const,
+  }));
+
+  // Annotate intra nodes with tier
+  const annotatedIntraNodes = intraData.nodes.map(node => ({
+    ...node,
+    tier: 'intra' as const,
+  }));
+
+  // Merge subviews from main.json, intra files, and workflow files
+  const mainSubviews = extractMainSubviews(scope);
+  const intraSubviews = (intraData.subviews || []) as SubviewDefinition[];
+  const workflowSubviews = workflowData.subviews as SubviewDefinition[];
+  const allSubviews = [...mainSubviews, ...intraSubviews, ...workflowSubviews];
+
+  return {
+    scope,
+    label,
+    description,
+    meta: {
+      title: `${label} Government Structure`,
+      description,
+    },
+    nodes: [...annotatedMainNodes, ...annotatedIntraNodes],
+    edges: [...mainEdges, ...(intraData.edges || [])],
+    subviews: allSubviews.length > 0 ? allSubviews : undefined,
+  };
+};
 
 export const governmentDatasets: Record<GovernmentScope, GovernmentDataset> = {
-  city: normalizeDataset(
+  city: buildDataset(
     'city',
     'New York City',
-    city,
-    cityProcesses,
-    [cityDepartments],
+    'Complete NYC government including city-wide governance and borough advisory structures.',
+    cityIntra,
+    cityWorkflows,
   ),
-  state: normalizeDataset(
+  state: buildDataset(
     'state',
     'New York State',
-    state,
-    stateProcesses,
-    [stateAgencies, stateCourts],
+    'High-level structure of New York State government as defined by the State Constitution and related laws.',
+    stateIntra,
+    stateWorkflows,
   ),
-  federal: normalizeDataset(
+  federal: buildDataset(
     'federal',
     'United States',
-    federal,
-    federalProcesses,
-    [federalAgencies],
+    'High-level structure of the U.S. federal government as defined by the Constitution.',
+    federalIntra,
+    federalWorkflows,
   ),
 };
 

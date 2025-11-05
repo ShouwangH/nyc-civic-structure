@@ -41,20 +41,6 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
     },
   },
   {
-    selector: 'node[system = "subgraph-node"]',
-    style: {
-      color: '#0c4a6e',
-    },
-  },
-  {
-    selector: 'node[system = "subgraph-hub"], node[system = "department-hub"]',
-    style: {
-      'border-width': '4px',
-      'border-color': '#0284c7',
-      color: '#0f172a',
-    },
-  },
-  {
     selector: 'edge',
     style: {
       'curve-style': 'bezier',

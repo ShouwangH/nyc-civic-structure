@@ -19,6 +19,7 @@ export const resetHighlightClasses = (cy: Core): void => {
  * Applies process highlight classes to nodes and edges
  * - Active elements get 'process-active' or 'process-active-edge'
  * - Inactive elements get 'dimmed'
+ * - Removes scope filtering classes (hidden, faded) from active process elements
  */
 export const applyProcessHighlightClasses = (
   cy: Core,
@@ -31,6 +32,8 @@ export const applyProcessHighlightClasses = (
 
     cy.nodes().forEach((node) => {
       if (nodeIdSet.has(node.id())) {
+        // Remove scope filtering classes to ensure process nodes are visible
+        node.removeClass('hidden faded highlighted');
         node.addClass('process-active');
       } else {
         node.addClass('dimmed');
@@ -39,6 +42,8 @@ export const applyProcessHighlightClasses = (
 
     cy.edges().forEach((edge) => {
       if (edgeIdSet.has(edge.id())) {
+        // Remove scope filtering classes to ensure process edges are visible
+        edge.removeClass('hidden faded highlighted');
         edge.addClass('process-active-edge');
       } else {
         edge.addClass('dimmed');

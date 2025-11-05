@@ -16,6 +16,7 @@ dist-ssr
 
 # Data backups (created by export script)
 .backups
+data/backup-*
 
 # Editor directories and files
 .vscode/*
@@ -28,11 +29,9 @@ dist-ssr
 *.sln
 *.sw?
 
-code-clarity-review.md
-codex_review_summary.md
-architecture-flow-analysis.md
-AGENTS.md
+
 /.claude
-*Claude.md
 .vercel
 .env*.local
+
+/scripts

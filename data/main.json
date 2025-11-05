@@ -1,0 +1,2908 @@
+{
+  "meta": {
+    "title": "Main Government Structure",
+    "description": "Constitutional structures of NYC, New York State, and U.S. Federal government",
+    "tier": "main",
+    "version": "1.0.0"
+  },
+  "nodes": [
+    {
+      "id": "city:nyc_charter",
+      "label": "NYC Charter",
+      "type": "law",
+      "branch": "law",
+      "factoid": "Foundational document defining the structure and powers of New York City government."
+    },
+    {
+      "id": "city:mayor_nyc",
+      "label": "Mayor",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Elected citywide executive. Oversees agencies, prepares the budget, and enforces city laws."
+    },
+    {
+      "id": "city:comptroller",
+      "label": "Comptroller",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Fiscal watchdog and auditor. Oversees the city's financial operations and pensions."
+    },
+    {
+      "id": "city:public_advocate",
+      "label": "Public Advocate",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Monitors city agencies and acts as a public ombudsman."
+    },
+    {
+      "id": "city:city_council",
+      "label": "City Council",
+      "type": "body",
+      "branch": "legislative",
+      "factoid": "51-member legislative body that passes local laws and approves the budget."
+    },
+    {
+      "id": "city:departments",
+      "label": "NYC Departments & Agencies",
+      "type": "agency",
+      "branch": "administrative",
+      "factoid": "Agencies implementing city policies across health, housing, planning, and services."
+    },
+    {
+      "id": "city:administrative_code",
+      "label": "Administrative Code",
+      "type": "law",
+      "branch": "law",
+      "factoid": "Compilation of permanent local laws enacted by the City Council."
+    },
+    {
+      "id": "city:rules_of_city",
+      "label": "Rules of the City of New York",
+      "type": "law",
+      "branch": "law",
+      "factoid": "Regulations issued by city agencies to implement the Administrative Code."
+    },
+    {
+      "id": "city:nyc_budget",
+      "label": "NYC Budget",
+      "type": "process",
+      "branch": "financial",
+      "factoid": "Annual financial plan allocating funds across city agencies and boroughs."
+    },
+    {
+      "id": "city:borough_structure",
+      "label": "Borough Advisory Structure",
+      "type": "category",
+      "branch": "community",
+      "factoid": "Advisory and coordinating bodies at the borough level with NO legislative or executive power. Provide community input on land use, budgets, and services."
+    },
+    {
+      "id": "city:bp_manhattan",
+      "label": "Manhattan Borough President",
+      "type": "office",
+      "branch": "community",
+      "factoid": "Elected borough executive with advisory role. Appoints Community Board members."
+    },
+    {
+      "id": "city:bp_brooklyn",
+      "label": "Brooklyn Borough President",
+      "type": "office",
+      "branch": "community",
+      "factoid": "Elected borough executive with advisory role. Appoints Community Board members."
+    },
+    {
+      "id": "city:bp_bronx",
+      "label": "Bronx Borough President",
+      "type": "office",
+      "branch": "community",
+      "factoid": "Elected borough executive with advisory role. Appoints Community Board members."
+    },
+    {
+      "id": "city:bp_queens",
+      "label": "Queens Borough President",
+      "type": "office",
+      "branch": "community",
+      "factoid": "Elected borough executive with advisory role. Appoints Community Board members."
+    },
+    {
+      "id": "city:bp_staten_island",
+      "label": "Staten Island Borough President",
+      "type": "office",
+      "branch": "community",
+      "factoid": "Elected borough executive with advisory role. Appoints Community Board members."
+    },
+    {
+      "id": "city:cb_manhattan",
+      "label": "Manhattan Community Boards (12)",
+      "type": "body",
+      "branch": "community",
+      "factoid": "12 advisory boards with up to 50 appointed members each. Review land use and budget proposals."
+    },
+    {
+      "id": "city:cb_brooklyn",
+      "label": "Brooklyn Community Boards (18)",
+      "type": "body",
+      "branch": "community",
+      "factoid": "18 advisory boards with up to 50 appointed members each. Review land use and budget proposals."
+    },
+    {
+      "id": "city:cb_bronx",
+      "label": "Bronx Community Boards (12)",
+      "type": "body",
+      "branch": "community",
+      "factoid": "12 advisory boards with up to 50 appointed members each. Review land use and budget proposals."
+    },
+    {
+      "id": "city:cb_queens",
+      "label": "Queens Community Boards (14)",
+      "type": "body",
+      "branch": "community",
+      "factoid": "14 advisory boards with up to 50 appointed members each. Review land use and budget proposals."
+    },
+    {
+      "id": "city:cb_staten_island",
+      "label": "Staten Island Community Boards (3)",
+      "type": "body",
+      "branch": "community",
+      "factoid": "3 advisory boards with up to 50 appointed members each. Review land use and budget proposals."
+    },
+    {
+      "id": "state:ny_state_constitution",
+      "label": "NY State Constitution",
+      "type": "law",
+      "branch": "law",
+      "factoid": "The foundational document defining the structure, powers, and limits of New York State's government."
+    },
+    {
+      "id": "state:governor_ny",
+      "label": "Governor of New York",
+      "type": "office",
+      "branch": "executive",
+      "process": [
+        "budget",
+        "legislative",
+        "appointments"
+      ],
+      "factoid": "Elected chief executive responsible for enforcing state laws, proposing the budget, and appointing officials."
+    },
+    {
+      "id": "state:state_legislature",
+      "label": "NY State Legislature",
+      "type": "body",
+      "branch": "legislative",
+      "process": [
+        "legislative",
+        "budget"
+      ],
+      "factoid": "Bicameral body composed of the Assembly and Senate. Enacts laws and adopts the state budget."
+    },
+    {
+      "id": "state:state_judiciary",
+      "label": "State Judicial System",
+      "type": "body",
+      "branch": "judicial",
+      "factoid": "Unified court system led by the Chief Judge and Court of Appeals, interpreting the Constitution and laws of New York."
+    },
+    {
+      "id": "state:state_comptroller",
+      "label": "State Comptroller",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Independent fiscal officer overseeing state finances, audits, and the public pension system."
+    },
+    {
+      "id": "state:state_budget",
+      "label": "State Budget",
+      "type": "process",
+      "branch": "financial",
+      "process": [
+        "budget"
+      ],
+      "factoid": "Annual fiscal plan developed by the Governor and enacted by the Legislature to fund state operations."
+    },
+    {
+      "id": "state:state_assembly",
+      "label": "NY State Assembly",
+      "type": "body",
+      "branch": "legislative",
+      "factoid": "Lower chamber of the State Legislature, representing districts proportionally by population."
+    },
+    {
+      "id": "state:state_senate",
+      "label": "NY State Senate",
+      "type": "body",
+      "branch": "legislative",
+      "factoid": "Upper chamber of the State Legislature, representing districts by region."
+    },
+    {
+      "id": "state:ny_consolidated_laws",
+      "label": "NY Consolidated Laws",
+      "type": "law",
+      "branch": "law",
+      "factoid": "Compilation of permanent laws organized by subject, enacted by the State Legislature."
+    },
+    {
+      "id": "state:nycrr",
+      "label": "NY Codes, Rules & Regulations (NYCRR)",
+      "type": "law",
+      "branch": "administrative",
+      "factoid": "Detailed regulations issued by state agencies to implement state laws."
+    },
+    {
+      "id": "state:state_agencies",
+      "label": "State Agencies",
+      "type": "agency",
+      "branch": "administrative",
+      "factoid": "Departments that implement laws and deliver services in areas like health, education, and transportation."
+    },
+    {
+      "id": "state:public_authorities",
+      "label": "Public Authorities",
+      "type": "category",
+      "branch": "law",
+      "factoid": "Legal frameworks establishing public authorities across city, state, and interstate jurisdictions."
+    },
+    {
+      "id": "state:mta",
+      "label": "Metropolitan Transportation Authority (MTA)",
+      "type": "authority",
+      "branch": "transportation",
+      "factoid": "State authority managing NYC subway, buses, and regional commuter rail systems."
+    },
+    {
+      "id": "state:nys_thruway",
+      "label": "New York State Thruway Authority",
+      "type": "authority",
+      "branch": "transportation",
+      "factoid": "State authority operating the Thruway highway system across New York."
+    },
+    {
+      "id": "state:nypa",
+      "label": "New York Power Authority (NYPA)",
+      "type": "authority",
+      "branch": "energy",
+      "factoid": "State authority providing electric power generation and transmission."
+    },
+    {
+      "id": "state:dasny",
+      "label": "Dormitory Authority (DASNY)",
+      "type": "authority",
+      "branch": "finance",
+      "factoid": "State authority financing construction of schools, hospitals, and public facilities."
+    },
+    {
+      "id": "state:esd",
+      "label": "Empire State Development (ESD)",
+      "type": "authority",
+      "branch": "economic",
+      "factoid": "State authority for economic development and business incentives."
+    },
+    {
+      "id": "state:battery_park_city_authority",
+      "label": "Battery Park City Authority (BPCA)",
+      "type": "authority",
+      "branch": "development",
+      "factoid": "State authority managing Battery Park City neighborhood in Manhattan."
+    },
+    {
+      "id": "state:roosevelt_island",
+      "label": "Roosevelt Island Operating Corporation (RIOC)",
+      "type": "authority",
+      "branch": "development",
+      "factoid": "State authority overseeing Roosevelt Island operations."
+    },
+    {
+      "id": "state:port_authority",
+      "label": "Port Authority of New York and New Jersey",
+      "type": "bi_state_authority",
+      "branch": "infrastructure",
+      "factoid": "Bi-state agency managing bridges, tunnels, airports, and seaports in the NY-NJ region."
+    },
+    {
+      "id": "state:nycha",
+      "label": "New York City Housing Authority (NYCHA)",
+      "type": "city_authority",
+      "branch": "housing",
+      "factoid": "City public authority providing affordable housing for NYC residents."
+    },
+    {
+      "id": "federal:us_constitution",
+      "label": "U.S. Constitution",
+      "type": "law",
+      "branch": "law",
+      "factoid": "The supreme law of the United States that establishes the federal government and divides powers among its branches."
+    },
+    {
+      "id": "federal:president",
+      "label": "President of the United States",
+      "type": "office",
+      "branch": "executive",
+      "process": [
+        "legislative",
+        "appointments",
+        "foreign_policy",
+        "budget"
+      ],
+      "factoid": "The head of the Executive Branch responsible for enforcing federal laws, directing foreign policy, and serving as Commander-in-Chief."
+    },
+    {
+      "id": "federal:congress",
+      "label": "U.S. Congress",
+      "type": "body",
+      "branch": "legislative",
+      "process": [
+        "legislative",
+        "budget"
+      ],
+      "factoid": "Bicameral legislature composed of the Senate and House of Representatives. Enacts federal laws and controls appropriations."
+    },
+    {
+      "id": "federal:senate",
+      "label": "U.S. Senate",
+      "type": "body",
+      "branch": "legislative",
+      "factoid": "Upper chamber of Congress that confirms appointments, ratifies treaties, and participates in lawmaking."
+    },
+    {
+      "id": "federal:house_of_representatives",
+      "label": "U.S. House of Representatives",
+      "type": "body",
+      "branch": "legislative",
+      "factoid": "Lower chamber of Congress that introduces revenue bills and represents districts proportionally by population."
+    },
+    {
+      "id": "federal:supreme_court",
+      "label": "Supreme Court of the United States",
+      "type": "body",
+      "branch": "judicial",
+      "factoid": "The highest court in the federal judiciary, interprets the Constitution and resolves disputes under federal law."
+    },
+    {
+      "id": "federal:federal_courts",
+      "label": "Federal Court System",
+      "type": "body",
+      "branch": "judicial",
+      "factoid": "Composed of U.S. Courts of Appeals and District Courts that handle federal cases nationwide."
+    },
+    {
+      "id": "federal:federal_budget",
+      "label": "Federal Budget",
+      "type": "process",
+      "branch": "financial",
+      "process": [
+        "budget"
+      ],
+      "factoid": "Annual fiscal plan proposed by the President and enacted by Congress to fund federal operations and programs."
+    },
+    {
+      "id": "federal:federal_agencies",
+      "label": "Federal Agencies",
+      "type": "agency",
+      "branch": "administrative",
+      "factoid": "Departments and independent agencies implementing federal laws and programs across areas like defense, health, and environment."
+    },
+    {
+      "id": "federal:us_code",
+      "label": "United States Code",
+      "type": "law",
+      "branch": "law",
+      "factoid": "Compilation of permanent federal statutes organized by subject, enacted by Congress."
+    },
+    {
+      "id": "federal:cfr",
+      "label": "Code of Federal Regulations (CFR)",
+      "type": "law",
+      "branch": "administrative",
+      "factoid": "Detailed regulations issued by federal agencies to implement federal statutes."
+    }
+  ],
+  "edges": [
+    {
+      "source": "city:nyc_charter",
+      "target": "city:mayor_nyc",
+      "relation": "establishes",
+      "detail": "Chapter 1"
+    },
+    {
+      "source": "city:nyc_charter",
+      "target": "city:comptroller",
+      "relation": "establishes",
+      "detail": "Chapter 5"
+    },
+    {
+      "source": "city:nyc_charter",
+      "target": "city:public_advocate",
+      "relation": "establishes",
+      "detail": "Chapter 6"
+    },
+    {
+      "source": "city:nyc_charter",
+      "target": "city:city_council",
+      "relation": "establishes",
+      "detail": "Chapter 2"
+    },
+    {
+      "source": "city:borough_structure",
+      "target": "city:bp_manhattan",
+      "relation": "includes"
+    },
+    {
+      "source": "city:borough_structure",
+      "target": "city:bp_brooklyn",
+      "relation": "includes"
+    },
+    {
+      "source": "city:borough_structure",
+      "target": "city:bp_bronx",
+      "relation": "includes"
+    },
+    {
+      "source": "city:borough_structure",
+      "target": "city:bp_queens",
+      "relation": "includes"
+    },
+    {
+      "source": "city:borough_structure",
+      "target": "city:bp_staten_island",
+      "relation": "includes"
+    },
+    {
+      "source": "city:bp_manhattan",
+      "target": "city:cb_manhattan",
+      "relation": "appoints_members"
+    },
+    {
+      "source": "city:bp_brooklyn",
+      "target": "city:cb_brooklyn",
+      "relation": "appoints_members"
+    },
+    {
+      "source": "city:bp_bronx",
+      "target": "city:cb_bronx",
+      "relation": "appoints_members"
+    },
+    {
+      "source": "city:bp_queens",
+      "target": "city:cb_queens",
+      "relation": "appoints_members"
+    },
+    {
+      "source": "city:bp_staten_island",
+      "target": "city:cb_staten_island",
+      "relation": "appoints_members"
+    },
+    {
+      "source": "city:mayor_nyc",
+      "target": "city:departments",
+      "relation": "appoints_commissioners"
+    },
+    {
+      "source": "city:mayor_nyc",
+      "target": "city:nyc_budget",
+      "relation": "proposes"
+    },
+    {
+      "source": "city:city_council",
+      "target": "city:administrative_code",
+      "relation": "enacts"
+    },
+    {
+      "source": "city:city_council",
+      "target": "city:nyc_budget",
+      "relation": "approves"
+    },
+    {
+      "source": "city:departments",
+      "target": "city:rules_of_city",
+      "relation": "promulgates"
+    },
+    {
+      "source": "city:comptroller",
+      "target": "city:nyc_budget",
+      "relation": "audits"
+    },
+    {
+      "source": "city:public_advocate",
+      "target": "city:city_council",
+      "relation": "non-voting member"
+    },
+    {
+      "source": "state:ny_state_constitution",
+      "target": "state:governor_ny",
+      "relation": "establishes"
+    },
+    {
+      "source": "state:ny_state_constitution",
+      "target": "state:state_legislature",
+      "relation": "establishes"
+    },
+    {
+      "source": "state:ny_state_constitution",
+      "target": "state:state_judiciary",
+      "relation": "establishes"
+    },
+    {
+      "source": "state:ny_state_constitution",
+      "target": "state:state_comptroller",
+      "relation": "establishes"
+    },
+    {
+      "source": "state:state_senate",
+      "target": "state:ny_consolidated_laws",
+      "relation": "enacts"
+    },
+    {
+      "source": "state:state_assembly",
+      "target": "state:ny_consolidated_laws",
+      "relation": "enacts"
+    },
+    {
+      "source": "state:state_legislature",
+      "target": "state:state_budget",
+      "relation": "adopts"
+    },
+    {
+      "source": "state:state_legislature",
+      "target": "state:state_assembly",
+      "relation": "includes"
+    },
+    {
+      "source": "state:state_legislature",
+      "target": "state:state_senate",
+      "relation": "includes"
+    },
+    {
+      "source": "state:governor_ny",
+      "target": "state:state_budget",
+      "relation": "proposes"
+    },
+    {
+      "source": "state:governor_ny",
+      "target": "state:state_agencies",
+      "relation": "oversees"
+    },
+    {
+      "source": "state:state_agencies",
+      "target": "state:nycrr",
+      "relation": "issues"
+    },
+    {
+      "source": "state:state_comptroller",
+      "target": "state:state_budget",
+      "relation": "audits"
+    },
+    {
+      "source": "state:state_legislature",
+      "target": "state:public_authorities",
+      "relation": "creates"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:mta",
+      "relation": "includes"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:nys_thruway",
+      "relation": "includes"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:nypa",
+      "relation": "includes"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:dasny",
+      "relation": "includes"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:esd",
+      "relation": "includes"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:battery_park_city_authority",
+      "relation": "includes"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:roosevelt_island",
+      "relation": "includes"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:port_authority",
+      "relation": "includes"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:nycha",
+      "relation": "includes"
+    },
+    {
+      "source": "federal:us_constitution",
+      "target": "federal:president",
+      "relation": "establishes"
+    },
+    {
+      "source": "federal:us_constitution",
+      "target": "federal:congress",
+      "relation": "establishes"
+    },
+    {
+      "source": "federal:us_constitution",
+      "target": "federal:supreme_court",
+      "relation": "establishes"
+    },
+    {
+      "source": "federal:congress",
+      "target": "federal:senate",
+      "relation": "includes"
+    },
+    {
+      "source": "federal:congress",
+      "target": "federal:house_of_representatives",
+      "relation": "includes"
+    },
+    {
+      "source": "federal:president",
+      "target": "federal:federal_agencies",
+      "relation": "oversees"
+    },
+    {
+      "source": "federal:president",
+      "target": "federal:federal_budget",
+      "relation": "proposes"
+    },
+    {
+      "source": "federal:congress",
+      "target": "federal:federal_budget",
+      "relation": "enacts"
+    },
+    {
+      "source": "federal:supreme_court",
+      "target": "federal:federal_courts",
+      "relation": "oversees"
+    },
+    {
+      "source": "federal:senate",
+      "target": "federal:us_code",
+      "relation": "enacts",
+      "category": "legal",
+      "hierarchical": true
+    },
+    {
+      "source": "federal:house_of_representatives",
+      "target": "federal:us_code",
+      "relation": "enacts",
+      "category": "legal",
+      "hierarchical": true
+    },
+    {
+      "source": "federal:federal_agencies",
+      "target": "federal:cfr",
+      "relation": "promulgates",
+      "category": "administrative",
+      "hierarchical": true
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:mta",
+      "relation": "establishes",
+      "detail": "Article 5, Title 11"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:nys_thruway",
+      "relation": "establishes",
+      "detail": "Article 2, Title 9"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:nypa",
+      "relation": "establishes",
+      "detail": "Article 5, Title 1"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:dasny",
+      "relation": "establishes",
+      "detail": "Article 8, Title 4"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:esd",
+      "relation": "establishes",
+      "detail": "Article 10-A"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:battery_park_city_authority",
+      "relation": "establishes",
+      "detail": "Article 8, Title 12"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:roosevelt_island",
+      "relation": "establishes",
+      "detail": "Article 8, Title 8"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:port_authority",
+      "relation": "creates",
+      "detail": "Congressional approval 1921"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:nycha",
+      "relation": "enables",
+      "detail": "Article 3"
+    }
+  ],
+  "subviews": [
+    {
+      "id": "comptroller_internal",
+      "label": "Comptroller Internal Structure",
+      "description": "Major bureaus within the NYC Comptroller's Office managing audit, pension investments, accounting, and public finance functions",
+      "type": "intra",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:comptroller"
+      },
+      "nodes": [
+        "city:comptroller",
+        "city:comptroller_bureau_audit",
+        "city:comptroller_bureau_asset_management",
+        "city:comptroller_bureau_accountancy",
+        "city:comptroller_bureau_public_finance"
+      ],
+      "edges": [
+        {
+          "source": "city:comptroller",
+          "target": "city:comptroller_bureau_audit",
+          "id": "comptroller→comptroller_bureau_audit:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:comptroller",
+          "target": "city:comptroller_bureau_asset_management",
+          "id": "comptroller→comptroller_bureau_asset_management:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:comptroller",
+          "target": "city:comptroller_bureau_accountancy",
+          "id": "comptroller→comptroller_bureau_accountancy:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:comptroller",
+          "target": "city:comptroller_bureau_public_finance",
+          "id": "comptroller→comptroller_bureau_public_finance:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "concentric",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "city:departments",
+      "label": "NYC Departments & Agencies",
+      "description": "Complete list of major NYC executive agencies and departments appointed by the Mayor.",
+      "type": "intra",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:departments"
+      },
+      "nodes": [
+        "city:mayor_nyc",
+        "city:departments",
+        "city:DFTA",
+        "city:DOB",
+        "city:BIC",
+        "city:ACS",
+        "city:DCP",
+        "city:DCAS",
+        "city:DCWP",
+        "city:DOC",
+        "city:DCLA",
+        "city:DDC",
+        "city:DOE",
+        "city:NYCEM",
+        "city:DEP",
+        "city:DOF",
+        "city:Sheriff",
+        "city:FDNY",
+        "city:DOHMH",
+        "city:DHS",
+        "city:HPD",
+        "city:HRA",
+        "city:DOI",
+        "city:LPC",
+        "city:Law",
+        "city:Parks",
+        "city:NYPD",
+        "city:DOP",
+        "city:DoRIS",
+        "city:DSNY",
+        "city:SBS",
+        "city:OTI",
+        "city:DOT",
+        "city:DVS",
+        "city:DYCD",
+        "city:OCME",
+        "city:OMB",
+        "city:TLC",
+        "city:OATH",
+        "city:CCRB",
+        "city:CFB",
+        "city:BSA",
+        "city:COIB",
+        "city:EEPC"
+      ],
+      "edges": [
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:departments",
+          "relation": "oversees"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DFTA",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DOB",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:BIC",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:ACS",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DCP",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DCAS",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DCWP",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DOC",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DCLA",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DDC",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DOE",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:NYCEM",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DEP",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DOF",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:Sheriff",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:FDNY",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DOHMH",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DHS",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:HPD",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:HRA",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DOI",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:LPC",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:Law",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:Parks",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:NYPD",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DOP",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DoRIS",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DSNY",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:SBS",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:OTI",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DOT",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DVS",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:DYCD",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:OCME",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:OMB",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:TLC",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:OATH",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:CCRB",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:CFB",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:BSA",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:COIB",
+          "relation": "includes"
+        },
+        {
+          "source": "city:departments",
+          "target": "city:EEPC",
+          "relation": "includes"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DFTA",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DOB",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:BIC",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:ACS",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DCP",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DCAS",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DCWP",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DOC",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DCLA",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DDC",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DOE",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:NYCEM",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DEP",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DOF",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:Sheriff",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:FDNY",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DOHMH",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DHS",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:HPD",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:HRA",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DOI",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:LPC",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:Law",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:Parks",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:NYPD",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DOP",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DoRIS",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DSNY",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:SBS",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:OTI",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DOT",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DVS",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:DYCD",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:OCME",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:OMB",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:TLC",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:OATH",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:CCRB",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:CFB",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:BSA",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:COIB",
+          "relation": "appoints_head"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:EEPC",
+          "relation": "appoints_head"
+        }
+      ],
+      "layout": {
+        "type": "concentric",
+        "fit": true,
+        "padding": 80,
+        "animate": true
+      }
+    },
+    {
+      "id": "state_comptroller_internal",
+      "label": "State Comptroller Internal Structure",
+      "description": "Major operational offices within the State Comptroller managing state audits, local government oversight, retirement services, and pension investments",
+      "type": "intra",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:state_comptroller"
+      },
+      "nodes": [
+        "state:state_comptroller",
+        "state:comptroller_operations_audit",
+        "state:comptroller_local_government",
+        "state:comptroller_retirement_services",
+        "state:comptroller_investment"
+      ],
+      "edges": [
+        {
+          "source": "state:state_comptroller",
+          "target": "state:comptroller_operations_audit",
+          "id": "state_comptroller→comptroller_operations_audit:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:state_comptroller",
+          "target": "state:comptroller_local_government",
+          "id": "state_comptroller→comptroller_local_government:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:state_comptroller",
+          "target": "state:comptroller_retirement_services",
+          "id": "state_comptroller→comptroller_retirement_services:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:state_comptroller",
+          "target": "state:comptroller_investment",
+          "id": "state_comptroller→comptroller_investment:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "concentric",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "state:state_agencies",
+      "label": "Core State Agencies",
+      "description": "High-level view of statewide departments that report to the Governor.",
+      "type": "intra",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:state_agencies"
+      },
+      "nodes": [
+        "state:governor_ny",
+        "state:state_agencies",
+        "state:dos_ny",
+        "state:dot_ny",
+        "state:doh_ny",
+        "state:sed_ny",
+        "state:dec_ny",
+        "state:dol_ny",
+        "state:dtf_ny",
+        "state:doccs_ny",
+        "state:dcjs_ny",
+        "state:dmv_ny",
+        "state:agm_ny",
+        "state:dfs_ny",
+        "state:otda_ny",
+        "state:ocfs_ny",
+        "state:omh_ny",
+        "state:oasas_ny",
+        "state:opwdd_ny",
+        "state:dhses_ny",
+        "state:state_police_ny",
+        "state:hcr_ny",
+        "state:esd_ny",
+        "state:ogs_ny",
+        "state:dcs_ny",
+        "state:parks_ny",
+        "state:mta_ny",
+        "state:nypa_ny",
+        "state:thruway_ny"
+      ],
+      "edges": [
+        {
+          "source": "state:governor_ny",
+          "target": "state:state_agencies",
+          "relation": "oversees"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:dos_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:dot_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:doh_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:sed_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:dec_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:dol_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:dtf_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:doccs_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:dcjs_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:dmv_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:agm_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:dfs_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:otda_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:ocfs_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:omh_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:oasas_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:opwdd_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:dhses_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:hcr_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:esd_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:ogs_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:dcs_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:parks_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:mta_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:nypa_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:state_agencies",
+          "target": "state:thruway_ny",
+          "relation": "includes"
+        },
+        {
+          "source": "state:dhses_ny",
+          "target": "state:state_police_ny",
+          "relation": "oversees"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:dos_ny",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:dot_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:doh_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:sed_ny",
+          "relation": "appoints_regents"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:dec_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:dol_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:dtf_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:doccs_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:dcjs_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:dmv_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:agm_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:dfs_ny",
+          "relation": "appoints_superintendent"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:otda_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:ocfs_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:omh_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:oasas_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:opwdd_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:dhses_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:state_police_ny",
+          "relation": "appoints_superintendent"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:hcr_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:esd_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:ogs_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:dcs_ny",
+          "relation": "appoints_president"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:parks_ny",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:mta_ny",
+          "relation": "appoints_chair"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:nypa_ny",
+          "relation": "appoints_trustees"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:thruway_ny",
+          "relation": "appoints_chair"
+        }
+      ],
+      "layout": {
+        "type": "concentric",
+        "fit": true,
+        "padding": 80,
+        "animate": true
+      }
+    },
+    {
+      "id": "state:state_judiciary",
+      "label": "State Judicial System",
+      "description": "High-level view of the New York State Unified Court System as established under Article VI of the State Constitution.",
+      "type": "intra",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:state_judiciary"
+      },
+      "nodes": [
+        "state:ny_state_constitution",
+        "state:state_judiciary",
+        "state:court_of_appeals",
+        "state:appellate_divisions",
+        "state:appellate_terms",
+        "state:supreme_court_trial",
+        "state:county_court",
+        "state:family_court",
+        "state:surrogate_court",
+        "state:court_of_claims",
+        "state:nyc_courts",
+        "state:district_courts",
+        "state:city_courts",
+        "state:town_village_courts"
+      ],
+      "edges": [
+        {
+          "source": "state:ny_state_constitution",
+          "target": "state:state_judiciary",
+          "relation": "establishes"
+        },
+        {
+          "source": "state:state_judiciary",
+          "target": "state:court_of_appeals",
+          "relation": "includes"
+        },
+        {
+          "source": "state:court_of_appeals",
+          "target": "state:appellate_divisions",
+          "relation": "reviews_from"
+        },
+        {
+          "source": "state:appellate_divisions",
+          "target": "state:appellate_terms",
+          "relation": "reviews_from"
+        },
+        {
+          "source": "state:appellate_divisions",
+          "target": "state:supreme_court_trial",
+          "relation": "reviews_from"
+        },
+        {
+          "source": "state:appellate_divisions",
+          "target": "state:county_court",
+          "relation": "reviews_from"
+        },
+        {
+          "source": "state:appellate_divisions",
+          "target": "state:family_court",
+          "relation": "reviews_from"
+        },
+        {
+          "source": "state:appellate_divisions",
+          "target": "state:surrogate_court",
+          "relation": "reviews_from"
+        },
+        {
+          "source": "state:appellate_divisions",
+          "target": "state:court_of_claims",
+          "relation": "reviews_from"
+        },
+        {
+          "source": "state:appellate_terms",
+          "target": "state:nyc_courts",
+          "relation": "reviews_from"
+        },
+        {
+          "source": "state:appellate_terms",
+          "target": "state:district_courts",
+          "relation": "reviews_from"
+        },
+        {
+          "source": "state:county_court",
+          "target": "state:city_courts",
+          "relation": "reviews_from"
+        },
+        {
+          "source": "state:county_court",
+          "target": "state:town_village_courts",
+          "relation": "reviews_from"
+        }
+      ],
+      "layout": {
+        "type": "elk-layered",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "federal:federal_agencies",
+      "label": "Federal Executive Agencies",
+      "description": "Cabinet-level departments and independent agencies led by presidential appointees.",
+      "type": "intra",
+      "jurisdiction": "federal",
+      "anchor": {
+        "nodeId": "federal:federal_agencies"
+      },
+      "nodes": [
+        "federal:president",
+        "federal:federal_agencies",
+        "federal:state",
+        "federal:treasury",
+        "federal:dod",
+        "federal:doj",
+        "federal:interior",
+        "federal:agriculture",
+        "federal:commerce",
+        "federal:labor",
+        "federal:hhs",
+        "federal:hud",
+        "federal:dot",
+        "federal:energy",
+        "federal:education",
+        "federal:va",
+        "federal:dhs",
+        "federal:epa",
+        "federal:nasa",
+        "federal:ssa",
+        "federal:cia",
+        "federal:fbi",
+        "federal:sec",
+        "federal:fcc",
+        "federal:ftc",
+        "federal:usps",
+        "federal:fed",
+        "federal:nsa",
+        "federal:fema",
+        "federal:sba"
+      ],
+      "edges": [
+        {
+          "source": "federal:president",
+          "target": "federal:federal_agencies",
+          "relation": "directs"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:state",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:treasury",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:dod",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:doj",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:interior",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:agriculture",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:commerce",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:labor",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:hhs",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:hud",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:dot",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:energy",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:education",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:va",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:dhs",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:epa",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:nasa",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:ssa",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:cia",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:fbi",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:sec",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:fcc",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:ftc",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:usps",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:fed",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:nsa",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:fema",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:federal_agencies",
+          "target": "federal:sba",
+          "relation": "includes"
+        },
+        {
+          "source": "federal:doj",
+          "target": "federal:fbi",
+          "relation": "oversees"
+        },
+        {
+          "source": "federal:dhs",
+          "target": "federal:fema",
+          "relation": "oversees"
+        },
+        {
+          "source": "federal:dod",
+          "target": "federal:nsa",
+          "relation": "oversees"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:state",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:treasury",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:dod",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:doj",
+          "relation": "appoints_attorney_general"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:interior",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:agriculture",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:commerce",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:labor",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:hhs",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:hud",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:dot",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:energy",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:education",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:va",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:dhs",
+          "relation": "appoints_secretary"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:epa",
+          "relation": "appoints_administrator"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:nasa",
+          "relation": "appoints_administrator"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:ssa",
+          "relation": "appoints_commissioner"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:cia",
+          "relation": "appoints_director"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:fbi",
+          "relation": "appoints_director"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:sba",
+          "relation": "appoints_administrator"
+        }
+      ],
+      "layout": {
+        "type": "concentric",
+        "fit": true,
+        "padding": 80,
+        "animate": true
+      }
+    },
+    {
+      "id": "city:mayor_office_internal",
+      "label": "Mayor's Office Internal Structure",
+      "description": "Executive office hierarchy including Chief of Staff, Deputy Mayors, and senior advisors reporting to the Mayor",
+      "type": "intra",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:mayor_nyc"
+      },
+      "nodes": [
+        "city:mayor_nyc",
+        "city:mayor_office_chief_of_staff",
+        "city:mayor_office_first_deputy",
+        "city:mayor_office_dm_strategic_policy",
+        "city:mayor_office_dm_health_hs",
+        "city:mayor_office_dm_housing_econ",
+        "city:mayor_office_dm_public_safety",
+        "city:mayor_office_dm_operations",
+        "city:mayor_office_counsel",
+        "city:mayor_office_dir_operations",
+        "city:mayor_office_press_secretary",
+        "city:mayor_office_dir_intergov"
+      ],
+      "edges": [
+        {
+          "source": "city:mayor_nyc",
+          "target": "city:mayor_office_chief_of_staff",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:mayor_office_chief_of_staff",
+          "target": "city:mayor_office_first_deputy",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:mayor_office_chief_of_staff",
+          "target": "city:mayor_office_dm_strategic_policy",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:mayor_office_chief_of_staff",
+          "target": "city:mayor_office_dm_health_hs",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:mayor_office_chief_of_staff",
+          "target": "city:mayor_office_dm_housing_econ",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:mayor_office_chief_of_staff",
+          "target": "city:mayor_office_dm_public_safety",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:mayor_office_chief_of_staff",
+          "target": "city:mayor_office_dm_operations",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:mayor_office_chief_of_staff",
+          "target": "city:mayor_office_counsel",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:mayor_office_chief_of_staff",
+          "target": "city:mayor_office_dir_operations",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:mayor_office_chief_of_staff",
+          "target": "city:mayor_office_press_secretary",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:mayor_office_chief_of_staff",
+          "target": "city:mayor_office_dir_intergov",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "concentric",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "city:council_internal",
+      "label": "City Council Leadership Structure",
+      "description": "Legislative leadership including Speaker, Majority Leader, and major committee chairs",
+      "type": "intra",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:city_council"
+      },
+      "nodes": [
+        "city:city_council",
+        "city:council_speaker",
+        "city:council_majority_leader",
+        "city:council_finance_committee",
+        "city:council_land_use_committee",
+        "city:council_public_safety_committee",
+        "city:council_transportation_committee",
+        "city:council_education_committee",
+        "city:council_health_committee",
+        "city:council_general_welfare_committee"
+      ],
+      "edges": [
+        {
+          "source": "city:council_speaker",
+          "target": "city:city_council",
+          "relation": "presides_over",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:council_speaker",
+          "target": "city:council_majority_leader",
+          "relation": "oversees",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:city_council",
+          "target": "city:council_finance_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:city_council",
+          "target": "city:council_land_use_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:city_council",
+          "target": "city:council_public_safety_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:city_council",
+          "target": "city:council_transportation_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:city_council",
+          "target": "city:council_education_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:city_council",
+          "target": "city:council_health_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:city_council",
+          "target": "city:council_general_welfare_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "concentric",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "state:governor_office_internal",
+      "label": "Governor's Office Internal Structure",
+      "description": "Executive office hierarchy including Secretary, Chief of Staff, and Deputy Secretaries",
+      "type": "intra",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:governor_ny"
+      },
+      "nodes": [
+        "state:governor_ny",
+        "state:governor_office_lt_governor",
+        "state:governor_office_secretary",
+        "state:governor_office_chief_of_staff",
+        "state:governor_office_ds_public_safety",
+        "state:governor_office_ds_health_hs",
+        "state:governor_office_ds_econ_dev",
+        "state:governor_office_ds_energy_env",
+        "state:governor_office_ds_education",
+        "state:governor_office_counsel",
+        "state:governor_office_dir_state_ops",
+        "state:governor_office_comms_director"
+      ],
+      "edges": [
+        {
+          "source": "state:governor_ny",
+          "target": "state:governor_office_lt_governor",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:governor_office_secretary",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:governor_office_secretary",
+          "target": "state:governor_office_chief_of_staff",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:governor_office_secretary",
+          "target": "state:governor_office_ds_public_safety",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:governor_office_secretary",
+          "target": "state:governor_office_ds_health_hs",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:governor_office_secretary",
+          "target": "state:governor_office_ds_econ_dev",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:governor_office_secretary",
+          "target": "state:governor_office_ds_energy_env",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:governor_office_secretary",
+          "target": "state:governor_office_ds_education",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:governor_office_secretary",
+          "target": "state:governor_office_counsel",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:governor_office_secretary",
+          "target": "state:governor_office_dir_state_ops",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:governor_office_secretary",
+          "target": "state:governor_office_comms_director",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "concentric",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "state:assembly_internal",
+      "label": "State Assembly Leadership Structure",
+      "description": "Legislative leadership including Speaker, Majority Leader, and major committee chairs",
+      "type": "intra",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:state_assembly"
+      },
+      "nodes": [
+        "state:state_assembly",
+        "state:assembly_speaker",
+        "state:assembly_majority_leader",
+        "state:assembly_ways_means_committee",
+        "state:assembly_codes_committee",
+        "state:assembly_rules_committee",
+        "state:assembly_judiciary_committee",
+        "state:assembly_education_committee",
+        "state:assembly_health_committee"
+      ],
+      "edges": [
+        {
+          "source": "state:assembly_speaker",
+          "target": "state:state_assembly",
+          "relation": "presides_over",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:assembly_speaker",
+          "target": "state:assembly_majority_leader",
+          "relation": "oversees",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:state_assembly",
+          "target": "state:assembly_ways_means_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:state_assembly",
+          "target": "state:assembly_codes_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:state_assembly",
+          "target": "state:assembly_rules_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:state_assembly",
+          "target": "state:assembly_judiciary_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:state_assembly",
+          "target": "state:assembly_education_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:state_assembly",
+          "target": "state:assembly_health_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "concentric",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "state:senate_internal",
+      "label": "State Senate Leadership Structure",
+      "description": "Legislative leadership including President Pro Tem, Majority Leader, and major committee chairs",
+      "type": "intra",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:state_senate"
+      },
+      "nodes": [
+        "state:state_senate",
+        "state:senate_president_pro_tem",
+        "state:senate_deputy_majority_leader",
+        "state:senate_finance_committee",
+        "state:senate_codes_committee",
+        "state:senate_rules_committee",
+        "state:senate_judiciary_committee",
+        "state:senate_education_committee",
+        "state:senate_health_committee"
+      ],
+      "edges": [
+        {
+          "source": "state:senate_president_pro_tem",
+          "target": "state:state_senate",
+          "relation": "presides_over",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:senate_president_pro_tem",
+          "target": "state:senate_deputy_majority_leader",
+          "relation": "oversees",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:state_senate",
+          "target": "state:senate_finance_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:state_senate",
+          "target": "state:senate_codes_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:state_senate",
+          "target": "state:senate_rules_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:state_senate",
+          "target": "state:senate_judiciary_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:state_senate",
+          "target": "state:senate_education_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "state:state_senate",
+          "target": "state:senate_health_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "concentric",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "federal:white_house_internal",
+      "label": "White House Internal Structure",
+      "description": "Executive Office of the President including Chief of Staff, senior advisors, and policy councils",
+      "type": "intra",
+      "jurisdiction": "federal",
+      "anchor": {
+        "nodeId": "federal:president"
+      },
+      "nodes": [
+        "federal:president",
+        "federal:white_house_vice_president",
+        "federal:white_house_chief_of_staff",
+        "federal:white_house_deputy_cos_ops",
+        "federal:white_house_deputy_cos_policy",
+        "federal:white_house_senior_advisor",
+        "federal:white_house_national_security_advisor",
+        "federal:white_house_counsel",
+        "federal:white_house_press_secretary",
+        "federal:white_house_comms_director",
+        "federal:eop_omb_director",
+        "federal:eop_nec_director",
+        "federal:eop_dpc_director"
+      ],
+      "edges": [
+        {
+          "source": "federal:president",
+          "target": "federal:white_house_vice_president",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:president",
+          "target": "federal:white_house_chief_of_staff",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:white_house_chief_of_staff",
+          "target": "federal:white_house_deputy_cos_ops",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:white_house_chief_of_staff",
+          "target": "federal:white_house_deputy_cos_policy",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:white_house_chief_of_staff",
+          "target": "federal:white_house_senior_advisor",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:white_house_chief_of_staff",
+          "target": "federal:white_house_national_security_advisor",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:white_house_chief_of_staff",
+          "target": "federal:white_house_counsel",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:white_house_chief_of_staff",
+          "target": "federal:white_house_press_secretary",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:white_house_chief_of_staff",
+          "target": "federal:white_house_comms_director",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:white_house_chief_of_staff",
+          "target": "federal:eop_omb_director",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:white_house_chief_of_staff",
+          "target": "federal:eop_nec_director",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:white_house_chief_of_staff",
+          "target": "federal:eop_dpc_director",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "concentric",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "federal:senate_internal",
+      "label": "U.S. Senate Leadership Structure",
+      "description": "Senate leadership including President Pro Tem, party leaders, and major committee chairs",
+      "type": "intra",
+      "jurisdiction": "federal",
+      "anchor": {
+        "nodeId": "federal:senate"
+      },
+      "nodes": [
+        "federal:senate",
+        "federal:senate_president_pro_tem",
+        "federal:senate_majority_leader",
+        "federal:senate_minority_leader",
+        "federal:senate_appropriations_committee",
+        "federal:senate_finance_committee",
+        "federal:senate_judiciary_committee",
+        "federal:senate_foreign_relations_committee",
+        "federal:senate_armed_services_committee"
+      ],
+      "edges": [
+        {
+          "source": "federal:senate_president_pro_tem",
+          "target": "federal:senate",
+          "relation": "presides_over",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:senate_president_pro_tem",
+          "target": "federal:senate_majority_leader",
+          "relation": "oversees",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:senate_president_pro_tem",
+          "target": "federal:senate_minority_leader",
+          "relation": "oversees",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:senate",
+          "target": "federal:senate_appropriations_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:senate",
+          "target": "federal:senate_finance_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:senate",
+          "target": "federal:senate_judiciary_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:senate",
+          "target": "federal:senate_foreign_relations_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:senate",
+          "target": "federal:senate_armed_services_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "concentric",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "federal:house_internal",
+      "label": "U.S. House Leadership Structure",
+      "description": "House leadership including Speaker, party leaders, and major committee chairs",
+      "type": "intra",
+      "jurisdiction": "federal",
+      "anchor": {
+        "nodeId": "federal:house_of_representatives"
+      },
+      "nodes": [
+        "federal:house_of_representatives",
+        "federal:house_speaker",
+        "federal:house_majority_leader",
+        "federal:house_minority_leader",
+        "federal:house_majority_whip",
+        "federal:house_appropriations_committee",
+        "federal:house_ways_means_committee",
+        "federal:house_rules_committee",
+        "federal:house_judiciary_committee",
+        "federal:house_energy_commerce_committee"
+      ],
+      "edges": [
+        {
+          "source": "federal:house_speaker",
+          "target": "federal:house_of_representatives",
+          "relation": "presides_over",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:house_speaker",
+          "target": "federal:house_majority_leader",
+          "relation": "oversees",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:house_speaker",
+          "target": "federal:house_majority_whip",
+          "relation": "oversees",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:house_of_representatives",
+          "target": "federal:house_minority_leader",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:house_of_representatives",
+          "target": "federal:house_appropriations_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:house_of_representatives",
+          "target": "federal:house_ways_means_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:house_of_representatives",
+          "target": "federal:house_rules_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:house_of_representatives",
+          "target": "federal:house_judiciary_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "federal:house_of_representatives",
+          "target": "federal:house_energy_commerce_committee",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "concentric",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "city:charter_home_rule",
+      "label": "NYC Charter and Home Rule",
+      "description": "Legal relationship between NYS Constitution and NYC Charter under home rule law",
+      "type": "inter",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:nyc_charter"
+      },
+      "nodes": [
+        "state:ny_state_constitution",
+        "city:nyc_charter"
+      ],
+      "edges": [
+        {
+          "source": "state:ny_state_constitution",
+          "target": "city:nyc_charter",
+          "relation": "enables",
+          "detail": "Article IX - Home Rule"
+        }
+      ],
+      "layout": {
+        "type": "elk-layered",
+        "options": {
+          "direction": "DOWN"
+        }
+      }
+    },
+    {
+      "id": "city:public_advocate_relationships",
+      "label": "Public Advocate Role and Relationships",
+      "description": "Public Advocate's unique ombudsman role, Council membership, and succession position",
+      "type": "inter",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:public_advocate"
+      },
+      "nodes": [
+        "city:public_advocate",
+        "city:city_council",
+        "city:mayor_nyc",
+        "city:departments"
+      ],
+      "edges": [
+        {
+          "source": "city:public_advocate",
+          "target": "city:city_council",
+          "relation": "non-voting member"
+        },
+        {
+          "source": "city:public_advocate",
+          "target": "city:departments",
+          "relation": "ombudsman oversight"
+        },
+        {
+          "source": "city:public_advocate",
+          "target": "city:mayor_nyc",
+          "relation": "succession",
+          "detail": "Second in line of succession"
+        }
+      ],
+      "layout": {
+        "type": "elk-force"
+      }
+    },
+    {
+      "id": "state:public_authorities_governance",
+      "label": "Public Authorities Governance Structure",
+      "description": "Complex governance of public authorities by State Legislature, Governor, and NYC Mayor",
+      "type": "inter",
+      "jurisdiction": "state",
+      "anchor": {
+        "nodeId": "state:public_authorities"
+      },
+      "nodes": [
+        "state:state_legislature",
+        "state:governor_ny",
+        "city:mayor_nyc",
+        "state:public_authorities",
+        "state:mta",
+        "state:port_authority",
+        "state:nycha"
+      ],
+      "edges": [
+        {
+          "source": "state:state_legislature",
+          "target": "state:public_authorities",
+          "relation": "creates",
+          "detail": "Public Authorities Law"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:mta",
+          "relation": "appoints_board_members"
+        },
+        {
+          "source": "state:governor_ny",
+          "target": "state:port_authority",
+          "relation": "appoints_board_members",
+          "detail": "6 of 12 commissioners"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "state:mta",
+          "relation": "appoints_board_members",
+          "detail": "4 NYC members"
+        },
+        {
+          "source": "city:mayor_nyc",
+          "target": "state:nycha",
+          "relation": "appoints_board_chair"
+        }
+      ],
+      "layout": {
+        "type": "elk-force"
+      }
+    }
+  ]
+}

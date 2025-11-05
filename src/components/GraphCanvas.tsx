@@ -1,115 +1,111 @@
-import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
-import type { GraphConfig, GraphNodeInfo } from '../graph/types';
-import type { ProcessDefinition } from '../data/types';
-import type { SubgraphConfig } from '../graph/subgraphs';
-import { createGraphRuntime } from '../graph/orchestrator';
-import type { GraphRuntime } from '../graph/runtimeTypes';
-import type { VisualizationAction } from '../state/actions';
+import { useEffect, useRef } from 'react';
+import cytoscape from 'cytoscape';
+import type { Core } from 'cytoscape';
+import type { GraphConfig, GraphNodeInfo, GraphEdgeInfo } from '../graph/types';
+import type { SubviewDefinition } from '../data/types';
+import type { GovernmentScope } from '../data/datasets';
+import type { SetState, Controller } from '../graph/controller';
+import { createController } from '../graph/controller';
+import { setupInputHandler } from '../graph/inputHandler';
+import { graphStyles } from '../graph/styles';
 
-export type GraphCanvasHandle = {
-  highlightProcess: GraphRuntime['highlightProcess'];
-  clearProcessHighlight: GraphRuntime['clearProcessHighlight'];
-  activateSubgraph: GraphRuntime['activateSubgraph'];
-  restoreMainView: GraphRuntime['restoreMainView'];
-  focusNodes: GraphRuntime['focusNodes'];
-  clearNodeFocus: GraphRuntime['clearNodeFocus'];
-  getController: GraphRuntime['getController'];
-  getCy: GraphRuntime['getCy'];
+export type GraphRuntime = {
+  cy: Core;
+  controller: Controller;
+  destroy: () => void;
 };
 
 type GraphCanvasProps = {
   mainGraph: GraphConfig;
-  subgraphByEntryId: Map<string, SubgraphConfig>;
-  subgraphById: Map<string, SubgraphConfig>;
-  processes: ProcessDefinition[];
+  subviewByAnchorId: Map<string, SubviewDefinition>;
+  subviewById: Map<string, SubviewDefinition>;
   nodesById: Map<string, GraphNodeInfo>;
-  dispatch: React.Dispatch<VisualizationAction>;
+  scopeNodeIds: Record<GovernmentScope, string[]>;
+  setState: SetState;
+  onRuntimeReady?: (runtime: GraphRuntime) => void;
   className?: string;
 };
 
-const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
-  (
-    { mainGraph, subgraphByEntryId, subgraphById, processes, nodesById, dispatch, className },
-    ref,
-  ) => {
-    const containerRef = useRef<HTMLDivElement | null>(null);
-    const orchestratorRef = useRef<GraphRuntime | null>(null);
+const GraphCanvas = ({
+  mainGraph,
+  subviewByAnchorId,
+  subviewById,
+  nodesById,
+  scopeNodeIds,
+  setState,
+  onRuntimeReady,
+  className,
+}: GraphCanvasProps) => {
+  const containerRef = useRef<HTMLDivElement | null>(null);
 
-    useEffect(() => {
-      if (!containerRef.current) {
-        return;
-      }
+  useEffect(() => {
+    if (!containerRef.current) {
+      return;
+    }
 
-      const orchestrator = createGraphRuntime({
-        container: containerRef.current,
-        mainGraph,
-        subgraphByEntryId,
-        subgraphById,
-        data: { processes, nodesById },
-        dispatch,
-      });
+    // 1. Create cytoscape instance
+    const cy = cytoscape({
+      container: containerRef.current,
+      elements: mainGraph.elements,
+      layout: mainGraph.layout,
+      style: graphStyles,
+    });
 
-      orchestrator.initialize();
-      orchestratorRef.current = orchestrator;
+    // 2. Create controller with all dependencies
+    const edgeInfosById = new Map<string, GraphEdgeInfo>();
 
-      return () => {
-        orchestrator.destroy();
-        orchestratorRef.current = null;
-      };
-    }, [mainGraph, processes, nodesById, dispatch, subgraphByEntryId, subgraphById]);
+    const controller = createController({
+      cy,
+      setState,
+      subviewByAnchorId,
+      subviewById,
+      scopeNodeIds,
+      nodeInfosById: nodesById,
+      edgeInfosById,
+      runMainGraphLayout: async () => {
+        const layout = cy.layout(mainGraph.layout);
+        const layoutPromise = layout.promiseOn('layoutstop');
+        layout.run();
+        await layoutPromise;
+      },
+    });
 
-    useImperativeHandle(
-      ref,
-      () => ({
-        highlightProcess: async (processId: string) => {
-          const orchestrator = orchestratorRef.current;
-          if (!orchestrator) {
-            return;
-          }
-          await orchestrator.highlightProcess(processId);
-        },
-        clearProcessHighlight: async () => {
-          const orchestrator = orchestratorRef.current;
-          if (!orchestrator) {
-            return;
-          }
-          await orchestrator.clearProcessHighlight();
-        },
-        activateSubgraph: async (subgraphId: string) => {
-          const orchestrator = orchestratorRef.current;
-          if (!orchestrator) {
-            return;
-          }
-          await orchestrator.activateSubgraph(subgraphId);
-        },
-        restoreMainView: async () => {
-          const orchestrator = orchestratorRef.current;
-          if (!orchestrator) {
-            return;
-          }
-          await orchestrator.restoreMainView();
-        },
-        focusNodes: async (nodeIds: string[]) => {
-          const orchestrator = orchestratorRef.current;
-          if (!orchestrator) {
-            return;
-          }
-          await orchestrator.focusNodes(nodeIds);
-        },
-        clearNodeFocus: () => {
-          const orchestrator = orchestratorRef.current;
-          orchestrator?.clearNodeFocus();
-        },
-        getController: () => orchestratorRef.current?.getController() ?? null,
-        getCy: () => orchestratorRef.current?.getCy() ?? null,
-      }),
-      [],
-    );
+    // 3. Wire up input handler
+    setupInputHandler({
+      cy,
+      controller,
+      subviewByAnchorId,
+    });
 
-    return <div ref={containerRef} className={className} role="presentation" />;
-  },
-);
+    // 4. Capture initial positions after layout (via controller)
+    cy.one('layoutstop', () => {
+      controller.captureInitialPositions();
+    });
 
-GraphCanvas.displayName = 'GraphCanvas';
+    // 5. Initialize layout
+    cy.ready(() => {
+      cy.resize();
+      const layout = cy.layout(mainGraph.layout);
+      layout.run();
+    });
+
+    // 6. Return runtime to App
+    const runtime: GraphRuntime = {
+      cy,
+      controller,
+      destroy: () => {
+        cy.destroy();
+      },
+    };
+
+    onRuntimeReady?.(runtime);
+
+    return () => {
+      runtime.destroy();
+    };
+  }, [mainGraph, nodesById, setState, subviewByAnchorId, subviewById, scopeNodeIds, onRuntimeReady]);
+
+  return <div ref={containerRef} className={className} role="presentation" />;
+};
 
 export { GraphCanvas };
