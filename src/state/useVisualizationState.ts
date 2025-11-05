@@ -234,7 +234,3 @@ export const useVisualizationState = () => {
     setState, // NEW: Expose setState for imperative handlers
   };
 };
-
-export const createVisualizationStateResetter = () => ({
-  reset: () => initialState,
-});

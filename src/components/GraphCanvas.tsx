@@ -12,7 +12,6 @@ export type GraphCanvasHandle = {
   focusNodes: GraphRuntime['focusNodes'];
   clearNodeFocus: GraphRuntime['clearNodeFocus'];
   getCy: GraphRuntime['getCy'];
-  getHandlers: () => GraphActionHandlers | null;
   handlers: GraphActionHandlers | null;
 };
 
@@ -76,7 +75,6 @@ const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
           orchestrator?.clearNodeFocus();
         },
         getCy: () => orchestratorRef.current?.getCy() ?? null,
-        getHandlers: () => orchestratorRef.current?.handlers ?? null,
         get handlers() {
           return orchestratorRef.current?.handlers ?? null;
         },
