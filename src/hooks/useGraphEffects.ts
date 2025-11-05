@@ -54,10 +54,9 @@ export const useGraphEffects = (
 
     // Detect changes
     const scopeChanged = state.activeScope !== prev.activeScope;
-    const subviewChanged = state.activeSubviewId !== prev.activeSubviewId;
 
     // If nothing changed, bail early
-    if (!scopeChanged && !subviewChanged) {
+    if (!scopeChanged) {
       prevState.current = state;
       return;
     }
@@ -67,22 +66,16 @@ export const useGraphEffects = (
       isAnimating.current = true;
 
       try {
-        // Handle scope changes - clears everything and focuses on scope nodes
-        // Note: Subview activation is now handled by imperative handlers in actionHandlers.ts
-        if (scopeChanged) {
+        // Handle scope changes - clears everything when scope is deactivated
+        // Note: Scope activation and subview activation are handled by imperative handlers in actionHandlers.ts
+        if (scopeChanged && !state.activeScope) {
+          // Scope was cleared - use handlers to deactivate all
           const handlers = graphHandle.getHandlers?.();
-
-          if (state.activeScope) {
-            // Scope selected - handled by imperative handlers already
-            // This effect is redundant now, but keeping for backward compatibility
+          if (handlers) {
+            await handlers.deactivateAll();
           } else {
-            // Scope was cleared - use handlers to deactivate all
-            if (handlers) {
-              await handlers.deactivateAll();
-            } else {
-              // Fallback: clear focus if handlers not available
-              graphHandle.clearNodeFocus();
-            }
+            // Fallback: clear focus if handlers not available
+            graphHandle.clearNodeFocus();
           }
         }
 

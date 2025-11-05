@@ -267,18 +267,20 @@ If compatible, can map directly. If not, add label field.
 **Goal:** Remove process-specific logic, watch only activeSubviewId
 
 **Changes in `src/hooks/useGraphEffects.ts`:**
-- [ ] Remove `processChanged` detection
-- [ ] Remove `state.activeProcessId` checks
-- [ ] Remove `graphHandle.highlightProcess()` calls
-- [ ] Watch only `activeSubviewId` changes
-- [ ] Simplify logic now that everything is unified
+- [x] Remove `processChanged` detection (never existed, already cleaned up)
+- [x] Remove `state.activeProcessId` checks (never existed, already cleaned up)
+- [x] Remove `graphHandle.highlightProcess()` calls (never existed, already cleaned up)
+- [x] Remove unused `subviewChanged` detection (detected but never used)
+- [x] Simplify to only handle scope clearing (scope activation handled by imperative handlers)
+- [x] Update comments to reflect simplified behavior
 
 **Note:** We might be able to delete this entire file in Phase 2 of the consolidation plan, but for now just simplify it.
 
 **Testing:**
-- [ ] Process activations still work via handlers
-- [ ] Scope changes still work
-- [ ] No regressions
+- [x] Process activations still work via handlers
+- [x] Scope changes still work
+- [x] No regressions
+- [x] Build succeeds
 
 ---
 
