@@ -790,7 +790,7 @@
         }
       ],
       "layout": {
-        "type": "concentric",
+        "type": "elk-mrtree",
         "options": {
           "direction": "DOWN",
           "spacing": 70
@@ -1333,7 +1333,7 @@
         }
       ],
       "layout": {
-        "type": "concentric",
+        "type": "elk-mrtree",
         "options": {
           "direction": "DOWN",
           "spacing": 70
@@ -1757,7 +1757,7 @@
         }
       ],
       "layout": {
-        "type": "elk-layered",
+        "type": "elk-mrtree",
         "options": {
           "direction": "DOWN",
           "spacing": 70
@@ -2171,7 +2171,7 @@
         }
       ],
       "layout": {
-        "type": "concentric",
+        "type": "elk-mrtree",
         "options": {
           "direction": "DOWN",
           "spacing": 70
@@ -2256,7 +2256,7 @@
         }
       ],
       "layout": {
-        "type": "concentric",
+        "type": "elk-mrtree",
         "options": {
           "direction": "DOWN",
           "spacing": 70
@@ -2355,7 +2355,7 @@
         }
       ],
       "layout": {
-        "type": "concentric",
+        "type": "elk-mrtree",
         "options": {
           "direction": "DOWN",
           "spacing": 70
@@ -2433,7 +2433,7 @@
         }
       ],
       "layout": {
-        "type": "concentric",
+        "type": "elk-mrtree",
         "options": {
           "direction": "DOWN",
           "spacing": 70
@@ -2511,7 +2511,7 @@
         }
       ],
       "layout": {
-        "type": "concentric",
+        "type": "elk-mrtree",
         "options": {
           "direction": "DOWN",
           "spacing": 70
@@ -2617,7 +2617,7 @@
         }
       ],
       "layout": {
-        "type": "concentric",
+        "type": "elk-mrtree",
         "options": {
           "direction": "DOWN",
           "spacing": 70
@@ -2695,7 +2695,7 @@
         }
       ],
       "layout": {
-        "type": "concentric",
+        "type": "elk-mrtree",
         "options": {
           "direction": "DOWN",
           "spacing": 70
@@ -2780,7 +2780,7 @@
         }
       ],
       "layout": {
-        "type": "concentric",
+        "type": "elk-mrtree",
         "options": {
           "direction": "DOWN",
           "spacing": 70
@@ -2809,7 +2809,7 @@
         }
       ],
       "layout": {
-        "type": "elk-layered",
+        "type": "elk-mrtree",
         "options": {
           "direction": "DOWN"
         }
@@ -2849,60 +2849,165 @@
         }
       ],
       "layout": {
-        "type": "elk-force"
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
       }
     },
     {
-      "id": "state:public_authorities_governance",
-      "label": "Public Authorities Governance Structure",
-      "description": "Complex governance of public authorities by State Legislature, Governor, and NYC Mayor",
-      "type": "inter",
-      "jurisdiction": "state",
-      "anchor": {
-        "nodeId": "state:public_authorities"
-      },
-      "nodes": [
-        "state:state_legislature",
-        "state:governor_ny",
-        "city:mayor_nyc",
-        "state:public_authorities",
-        "state:mta",
-        "state:port_authority",
-        "state:nycha"
-      ],
-      "edges": [
-        {
-          "source": "state:state_legislature",
-          "target": "state:public_authorities",
-          "relation": "creates",
-          "detail": "Public Authorities Law"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:mta",
-          "relation": "appoints_board_members"
-        },
-        {
-          "source": "state:governor_ny",
-          "target": "state:port_authority",
-          "relation": "appoints_board_members",
-          "detail": "6 of 12 commissioners"
-        },
-        {
-          "source": "city:mayor_nyc",
-          "target": "state:mta",
-          "relation": "appoints_board_members",
-          "detail": "4 NYC members"
-        },
-        {
-          "source": "city:mayor_nyc",
-          "target": "state:nycha",
-          "relation": "appoints_board_chair"
-        }
-      ],
-      "layout": {
-        "type": "elk-force"
-      }
+  "id": "state:public_authorities_governance",
+  "label": "Public Authorities Governance Structure",
+  "description": "Governance of New York State public authorities through gubernatorial, legislative, and mayoral appointments, including bi-state and city-level entities.",
+  "type": "inter",
+  "jurisdiction": "state",
+  "anchor": {
+    "nodeId": "state:public_authorities"
+  },
+  "nodes": [
+    "state:governor_ny",
+    "city:mayor_nyc",
+    "state:mta",
+    "state:nys_thruway",
+    "state:nypa",
+    "state:dasny",
+    "state:esd",
+    "state:public_authorities",
+    "state:battery_park_city_authority",
+    "state:roosevelt_island",
+    "state:port_authority",
+    "state:nycha"
+  ],
+  "edges": [
+     {
+      "source": "state:public_authorities",
+      "target": "state:mta",
+      "relation": "establishes",
+      "detail": "Created under the Public Authorities Law, Title 11"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:nys_thruway",
+      "relation": "establishes",
+      "detail": "Created under the Public Authorities Law, Title 9"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:nypa",
+      "relation": "establishes",
+      "detail": "Created under the Public Authorities Law, Title 1"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:dasny",
+      "relation": "establishes",
+      "detail": "Created under the Public Authorities Law, Title 4"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:esd",
+      "relation": "establishes",
+      "detail": "Created under the Urban Development Corporation Act and related Public Authorities Law provisions"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:battery_park_city_authority",
+      "relation": "establishes",
+      "detail": "Created under the Public Authorities Law, Title 12"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:roosevelt_island",
+      "relation": "establishes",
+      "detail": "Created under the Public Authorities Law, Title 35"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:port_authority",
+      "relation": "establishes",
+      "detail": "Established under the bi-state compact ratified by the Public Authorities Law, Title 1-A"
+    },
+    {
+      "source": "state:public_authorities",
+      "target": "state:nycha",
+      "relation": "establishes",
+      "detail": "Created under the Public Housing Law, related to Public Authorities Law framework"
+    },
+    {
+      "source": "state:governor_ny",
+      "target": "state:mta",
+      "relation": "nominates_board_members",
+      "detail": "Governor nominates MTA board members with Senate confirmation; majority appointed by Governor"
+    },
+    {
+      "source": "city:mayor_nyc",
+      "target": "state:mta",
+      "relation": "recommends_board_members",
+      "detail": "Mayor recommends four NYC members to the MTA board"
+    },
+    {
+      "source": "state:governor_ny",
+      "target": "state:nys_thruway",
+      "relation": "appoints_board_members",
+      "detail": "Governor appoints seven Thruway Authority members with advice and consent of Senate"
+    },
+    {
+      "source": "state:governor_ny",
+      "target": "state:nypa",
+      "relation": "appoints_board_members",
+      "detail": "Governor appoints trustees of NYPA with Senate confirmation (structure partially verified)"
+    },
+    {
+      "source": "state:governor_ny",
+      "target": "state:dasny",
+      "relation": "appoints_board_members",
+      "detail": "Governor appoints five DASNY members with Senate confirmation"
+    },
+    {
+      "source": "state:governor_ny",
+      "target": "state:esd",
+      "relation": "appoints_board_members",
+      "detail": "Governor appoints seven members to ESD board with Senate consent"
+    },
+    {
+      "source": "state:governor_ny",
+      "target": "state:battery_park_city_authority",
+      "relation": "appoints_board_members",
+      "detail": "Governor appoints BPCA board members with Senate confirmation (seven members)"
+    },
+    {
+      "source": "state:governor_ny",
+      "target": "state:roosevelt_island",
+      "relation": "appoints_board_members",
+      "detail": "Governor appoints seven public members of RIOC board with Senate consent"
+    },
+    {
+      "source": "city:mayor_nyc",
+      "target": "state:roosevelt_island",
+      "relation": "recommends_board_members",
+      "detail": "Mayor recommends two RIOC board members (one must be a Roosevelt Island resident)"
+    },
+    {
+      "source": "state:governor_ny",
+      "target": "state:port_authority",
+      "relation": "appoints_board_members",
+      "detail": "Governor of New York appoints six of twelve commissioners to the Port Authority board"
+    },
+    {
+      "source": "city:mayor_nyc",
+      "target": "state:nycha",
+      "relation": "appoints_board_members",
+      "detail": "Mayor appoints all NYCHA board members and designates chairperson"
     }
+  ],
+        "layout": {
+        "type": "concentric",
+        "fit": true,
+        "padding": 80,
+        "animate": true
+      }
+}
+
   ]
 }
