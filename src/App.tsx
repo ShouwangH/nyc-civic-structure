@@ -51,7 +51,7 @@ function App() {
   // Static graph data - computed once at module load
   const { dataset, mainGraph, allProcesses, indexes, maps, scopeNodeIds } = GRAPH_DATA;
   const { nodesById } = indexes;
-  const { subgraphByEntryId, subgraphById, subviewByAnchorId, subviewById } = maps;
+  const { subgraphById, subviewByAnchorId, subviewById } = maps;
 
   const handleScopeFocus = useCallback(
     (scope: GovernmentScope) => {
@@ -108,15 +108,13 @@ function App() {
               ref={graphRef}
               className="h-full w-full min-h-[75vh] rounded-lg bg-[#eceae4] lg:min-h-[82vh]"
               mainGraph={mainGraph}
-              subgraphByEntryId={subgraphByEntryId}
               subgraphById={subgraphById}
               subviewByAnchorId={subviewByAnchorId}
               subviewById={subviewById}
               processes={allProcesses}
               nodesById={nodesById}
               scopeNodeIds={scopeNodeIds}
-              dispatch={dispatch}
-              setState={setState} // NEW: Pass setState for imperative handlers
+              setState={setState}
             />
           </div>
           <p className="text-xs text-slate-500">

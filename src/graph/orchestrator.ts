@@ -19,14 +19,12 @@ const createGraphRuntime: GraphRuntimeFactory = (
   {
     container,
     mainGraph,
-    subgraphByEntryId,
     subgraphById: _subgraphById,
     subviewByAnchorId,
     subviewById,
     scopeNodeIds,
     data,
-    dispatch,
-    setState, // NEW: Direct state setter for imperative handlers
+    setState,
   }: GraphRuntimeConfig,
   dependencies: GraphRuntimeDependencies = {},
 ): GraphRuntime => {
@@ -59,44 +57,15 @@ const createGraphRuntime: GraphRuntimeFactory = (
   };
 
   const handleNodeTap = (nodeId: string) => {
-    // NEW: Use imperative handlers if available
-    if (handlers) {
-      handlers.handleNodeClick(nodeId);
-      return;
-    }
-
-    // LEGACY: Fallback to dispatch pattern
-    const isSubgraphEntry = subgraphByEntryId.has(nodeId);
-    dispatch({
-      type: 'NODE_CLICKED',
-      nodeId,
-      isSubgraphEntry,
-    });
+    handlers?.handleNodeClick(nodeId);
   };
 
   const handleEdgeTap = (edgeId: string) => {
-    // NEW: Use imperative handlers if available
-    if (handlers) {
-      handlers.handleEdgeClick(edgeId);
-      return;
-    }
-
-    // LEGACY: Fallback to dispatch pattern
-    dispatch({
-      type: 'EDGE_CLICKED',
-      edgeId,
-    });
+    handlers?.handleEdgeClick(edgeId);
   };
 
   const handleBackgroundTap = () => {
-    // NEW: Use imperative handlers if available
-    if (handlers) {
-      handlers.handleBackgroundClick();
-      return;
-    }
-
-    // LEGACY: Fallback to dispatch pattern
-    dispatch({ type: 'BACKGROUND_CLICKED' });
+    handlers?.handleBackgroundClick();
   };
 
   const handleZoom = () => {

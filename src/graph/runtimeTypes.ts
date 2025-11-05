@@ -4,7 +4,6 @@ import type { ProcessDefinition, SubviewDefinition } from '../data/types';
 import type { GraphNodeInfo, GraphConfig } from './types';
 import type { SubgraphConfig } from './subgraphs';
 import type { GraphController } from './controller';
-import type { VisualizationAction } from '../state/actions';
 import type { VisualizationState } from '../state/useVisualizationState';
 import type { GraphActionHandlers } from './actionHandlers';
 import type { GovernmentScope } from '../data/datasets';
@@ -17,14 +16,12 @@ export type GraphRuntimeData = {
 export type GraphRuntimeConfig = {
   container: HTMLDivElement;
   mainGraph: GraphConfig;
-  subgraphByEntryId: Map<string, SubgraphConfig>;
   subgraphById: Map<string, SubgraphConfig>;
   subviewByAnchorId: Map<string, SubviewDefinition>;
   subviewById: Map<string, SubviewDefinition>;
   scopeNodeIds: Record<GovernmentScope, string[]>;
   data: GraphRuntimeData;
-  dispatch: React.Dispatch<VisualizationAction>; // Legacy - will be removed
-  setState?: (updater: (prev: VisualizationState) => VisualizationState) => void; // NEW: Direct state setter
+  setState?: (updater: (prev: VisualizationState) => VisualizationState) => void;
 };
 
 export type GraphRuntimeCommands = {
