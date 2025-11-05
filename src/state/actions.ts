@@ -7,40 +7,10 @@ import type { GovernmentScope } from '../data/datasets';
  * User interaction actions - represent user intentions
  */
 
-// Graph canvas interactions
-export type NodeClickedAction = {
-  type: 'NODE_CLICKED';
-  nodeId: string;
-  isSubgraphEntry: boolean;
-};
-
-export type EdgeClickedAction = {
-  type: 'EDGE_CLICKED';
-  edgeId: string;
-};
-
-export type BackgroundClickedAction = {
-  type: 'BACKGROUND_CLICKED';
-};
-
 // Scope interactions
 export type ScopeSelectedAction = {
   type: 'SCOPE_SELECTED';
   scope: GovernmentScope;
-};
-
-// Process interactions
-export type ProcessToggledAction = {
-  type: 'PROCESS_TOGGLED';
-  processId: string;
-  // Reducer will compute visibility from state + GRAPH_DATA
-};
-
-// Subgraph interactions
-export type SubgraphToggledAction = {
-  type: 'SUBGRAPH_TOGGLED';
-  subgraphId: string;
-  // Reducer will compute isActive and isValidForScope from state + GRAPH_DATA
 };
 
 // UI interactions
@@ -90,12 +60,7 @@ export type StateUpdatedAction = {
  */
 export type VisualizationAction =
   // User interaction actions
-  | NodeClickedAction
-  | EdgeClickedAction
-  | BackgroundClickedAction
   | ScopeSelectedAction
-  | ProcessToggledAction
-  | SubgraphToggledAction
   | ControlsToggledAction
   | SidebarHoverChangedAction
   | SelectionClearedAction
@@ -104,41 +69,16 @@ export type VisualizationAction =
   | SetSidebarHoverAction
   | ClearSelectionsAction
   | SetControlsOpenAction
-  | StateUpdatedAction; // NEW: For imperative handlers
+  | StateUpdatedAction;
 
 /**
  * Action creators - pure functions that create action objects
  */
 export const actions = {
   // User interaction actions
-  nodeClicked: (nodeId: string, isSubgraphEntry: boolean): NodeClickedAction => ({
-    type: 'NODE_CLICKED',
-    nodeId,
-    isSubgraphEntry,
-  }),
-
-  edgeClicked: (edgeId: string): EdgeClickedAction => ({
-    type: 'EDGE_CLICKED',
-    edgeId,
-  }),
-
-  backgroundClicked: (): BackgroundClickedAction => ({
-    type: 'BACKGROUND_CLICKED',
-  }),
-
   scopeSelected: (scope: GovernmentScope): ScopeSelectedAction => ({
     type: 'SCOPE_SELECTED',
     scope,
-  }),
-
-  processToggled: (processId: string): ProcessToggledAction => ({
-    type: 'PROCESS_TOGGLED',
-    processId,
-  }),
-
-  subgraphToggled: (subgraphId: string): SubgraphToggledAction => ({
-    type: 'SUBGRAPH_TOGGLED',
-    subgraphId,
   }),
 
   controlsToggled: (): ControlsToggledAction => ({

@@ -26,32 +26,6 @@ const initialState: VisualizationState = {
 const reducer = (state: VisualizationState, action: VisualizationAction): VisualizationState => {
   switch (action.type) {
     // User interaction actions - contain business logic
-    case 'NODE_CLICKED':
-      return {
-        ...state,
-        selectedEdgeId: null,
-        selectedNodeId: action.nodeId,
-        isSidebarHover: true,
-      };
-
-    case 'EDGE_CLICKED':
-      return {
-        ...state,
-        selectedNodeId: null,
-        selectedEdgeId: action.edgeId,
-        isSidebarHover: true,
-      };
-
-    case 'BACKGROUND_CLICKED':
-      // Clear all selections
-      return {
-        ...state,
-        activeScope: null,
-        selectedNodeId: null,
-        selectedEdgeId: null,
-        isSidebarHover: false,
-      };
-
     case 'SCOPE_SELECTED':
       // Clear all selections when scope changes
       return {
