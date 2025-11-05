@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useRef, useState } from 'react';
 import type { GovernmentScope } from '../data/datasets';
 import type { ProcessDefinition } from '../data/types';
 import type { SubgraphConfig } from '../graph/subgraphs';
@@ -21,26 +21,37 @@ export const useVisualizationState = () => {
   const [activeSubviewId, setActiveSubviewId] = useState<string | null>(null);
   const [isSidebarHover, setIsSidebarHover] = useState(false);
 
-  // For imperative handlers - updates multiple fields at once
+  // Keep a ref to current state for imperative handlers
+  const stateRef = useRef<VisualizationState>({
+    controlsOpen,
+    activeScope,
+    selectedNodeId,
+    selectedEdgeId,
+    activeSubviewId,
+    isSidebarHover,
+  });
+
+  // Update ref on every render
+  stateRef.current = {
+    controlsOpen,
+    activeScope,
+    selectedNodeId,
+    selectedEdgeId,
+    activeSubviewId,
+    isSidebarHover,
+  };
+
+  // For imperative handlers - stable reference that doesn't cause graph recreation
   const setState = useCallback((updater: (prev: VisualizationState) => VisualizationState) => {
-    const currentState: VisualizationState = {
-      controlsOpen,
-      activeScope,
-      selectedNodeId,
-      selectedEdgeId,
-      activeSubviewId,
-      isSidebarHover,
-    };
+    const updates = updater(stateRef.current);
 
-    const updates = updater(currentState);
-
-    if (updates.controlsOpen !== currentState.controlsOpen) setControlsOpen(updates.controlsOpen);
-    if (updates.activeScope !== currentState.activeScope) setActiveScope(updates.activeScope);
-    if (updates.selectedNodeId !== currentState.selectedNodeId) setSelectedNodeId(updates.selectedNodeId);
-    if (updates.selectedEdgeId !== currentState.selectedEdgeId) setSelectedEdgeId(updates.selectedEdgeId);
-    if (updates.activeSubviewId !== currentState.activeSubviewId) setActiveSubviewId(updates.activeSubviewId);
-    if (updates.isSidebarHover !== currentState.isSidebarHover) setIsSidebarHover(updates.isSidebarHover);
-  }, [controlsOpen, activeScope, selectedNodeId, selectedEdgeId, activeSubviewId, isSidebarHover]);
+    if (updates.controlsOpen !== stateRef.current.controlsOpen) setControlsOpen(updates.controlsOpen);
+    if (updates.activeScope !== stateRef.current.activeScope) setActiveScope(updates.activeScope);
+    if (updates.selectedNodeId !== stateRef.current.selectedNodeId) setSelectedNodeId(updates.selectedNodeId);
+    if (updates.selectedEdgeId !== stateRef.current.selectedEdgeId) setSelectedEdgeId(updates.selectedEdgeId);
+    if (updates.activeSubviewId !== stateRef.current.activeSubviewId) setActiveSubviewId(updates.activeSubviewId);
+    if (updates.isSidebarHover !== stateRef.current.isSidebarHover) setIsSidebarHover(updates.isSidebarHover);
+  }, []);
 
   // Action wrappers for common operations
   const actions = {
