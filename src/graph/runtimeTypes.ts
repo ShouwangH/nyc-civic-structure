@@ -2,7 +2,6 @@ import type { Core, CytoscapeOptions } from 'cytoscape';
 
 import type { ProcessDefinition, SubviewDefinition } from '../data/types';
 import type { GraphNodeInfo, GraphConfig } from './types';
-import type { SubgraphConfig } from './subgraphs';
 import type { VisualizationState } from '../state/useVisualizationState';
 import type { GraphActionHandlers } from './actionHandlers';
 import type { GovernmentScope } from '../data/datasets';
@@ -15,7 +14,6 @@ export type GraphRuntimeData = {
 export type GraphRuntimeConfig = {
   container: HTMLDivElement;
   mainGraph: GraphConfig;
-  subgraphById: Map<string, SubgraphConfig>;
   subviewByAnchorId: Map<string, SubviewDefinition>;
   subviewById: Map<string, SubviewDefinition>;
   scopeNodeIds: Record<GovernmentScope, string[]>;

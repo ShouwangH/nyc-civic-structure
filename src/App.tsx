@@ -44,7 +44,7 @@ function App() {
   // Static graph data - computed once at module load
   const { dataset, mainGraph, allProcesses, indexes, maps, scopeNodeIds } = GRAPH_DATA;
   const { nodesById } = indexes;
-  const { subgraphById, subviewByAnchorId, subviewById } = maps;
+  const { subviewByAnchorId, subviewById } = maps;
 
   const handleScopeFocus = useCallback(
     (scope: GovernmentScope) => {
@@ -93,7 +93,6 @@ function App() {
             <GraphCanvas
               className="h-full w-full min-h-[75vh] rounded-lg bg-[#eceae4] lg:min-h-[82vh]"
               mainGraph={mainGraph}
-              subgraphById={subgraphById}
               subviewByAnchorId={subviewByAnchorId}
               subviewById={subviewById}
               processes={allProcesses}

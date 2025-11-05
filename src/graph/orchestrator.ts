@@ -17,7 +17,6 @@ const createGraphRuntime: GraphRuntimeFactory = (
   {
     container,
     mainGraph,
-    subgraphById: _subgraphById,
     subviewByAnchorId,
     subviewById,
     scopeNodeIds,
