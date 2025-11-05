@@ -1,25 +1,16 @@
 import type { GovernmentScope, GovernmentDataset } from './datasets';
 import type { ProcessDefinition, SubviewDefinition } from './types';
 import type { GraphConfig, GraphEdgeInfo, GraphNodeInfo } from '../graph/types';
-import type { SubgraphConfig } from '../graph/subgraphs';
-import { buildMainGraph, buildSubgraphGraph, buildGraphNode } from '../graph/data';
+import { buildMainGraph, buildGraphNode } from '../graph/data';
 import { buildUnifiedDataset } from './unifiedDataset';
 import { governmentDatasets } from './datasets';
 import {
   buildNodeScopeIndex,
-  buildSubgraphScopeIndex,
-  buildSubgraphByEntryId,
-  buildSubgraphById,
   buildNodesIndex,
   buildEdgesIndex,
   buildSubviewByAnchorId,
   buildSubviewById,
 } from '../hooks/dataIndexHelpers';
-
-type ScopedSubgraphConfig = {
-  config: SubgraphConfig;
-  scope: GovernmentScope | null;
-};
 
 /**
  * Converts a ProcessDefinition to a workflow-type SubviewDefinition
@@ -69,22 +60,15 @@ export type GraphData = {
   // Processes organized by scope
   processesByScope: Record<GovernmentScope, ProcessDefinition[]>;
 
-  // Subgraph configurations
-  subgraphConfigs: SubgraphConfig[];
-  scopedSubgraphConfigs: ScopedSubgraphConfig[];
-
   // Indexes
   indexes: {
     nodesById: Map<string, GraphNodeInfo>;
     edgesById: Map<string, GraphEdgeInfo>;
     nodeScopeIndex: Map<string, GovernmentScope>;
-    subgraphScopeById: Map<string, GovernmentScope | null>;
   };
 
   // Maps for quick lookups
   maps: {
-    subgraphByEntryId: Map<string, SubgraphConfig>;
-    subgraphById: Map<string, SubgraphConfig>;
     subviewByAnchorId: Map<string, SubviewDefinition>;
     subviewById: Map<string, SubviewDefinition>;
   };
@@ -151,35 +135,19 @@ export const buildGraphData = (): GraphData => {
     totalSubviews: allSubviewsWithProcesses.length,
   });
 
-  // Step 4c: Build subgraph configurations (old format only)
-  // Old format subgraphs kept for backward compatibility
-  const subgraphConfigs: SubgraphConfig[] = (dataset.subgraphs ?? []).map((subgraph) => ({
-    meta: subgraph,
-    graph: buildSubgraphGraph(subgraph),
-  }));
-
-  // Step 5: Build node scope index
+  // Step 4c: Build node scope index
   const nodeScopeIndex = buildNodeScopeIndex(scopeNodeIds);
 
-  // Step 6: Associate subgraphs with their scopes
-  const scopedSubgraphConfigs: ScopedSubgraphConfig[] = subgraphConfigs.map((config) => ({
-    config,
-    scope: nodeScopeIndex.get(config.meta.entryNodeId) ?? null,
-  }));
-
-  // Step 7: Build all indexes
+  // Step 5: Build all indexes
   const allGraphNodes = dataset.nodes.map(buildGraphNode);
   const indexes = {
-    nodesById: buildNodesIndex(mainGraph, subgraphConfigs, allGraphNodes),
-    edgesById: buildEdgesIndex(mainGraph, subgraphConfigs),
+    nodesById: buildNodesIndex(mainGraph, [], allGraphNodes),
+    edgesById: buildEdgesIndex(mainGraph, []),
     nodeScopeIndex,
-    subgraphScopeById: buildSubgraphScopeIndex(scopedSubgraphConfigs),
   };
 
-  // Step 8: Build subgraph and subview lookup maps
+  // Step 6: Build subview lookup maps
   const maps = {
-    subgraphByEntryId: buildSubgraphByEntryId(subgraphConfigs),
-    subgraphById: buildSubgraphById(subgraphConfigs),
     subviewByAnchorId: buildSubviewByAnchorId(allSubviewsWithProcesses),
     subviewById: buildSubviewById(allSubviewsWithProcesses),
   };
@@ -198,7 +166,6 @@ export const buildGraphData = (): GraphData => {
     regularSubviews: allSubviews.length,
     subviewByAnchorIdSize: maps.subviewByAnchorId.size,
     subviewByIdSize: maps.subviewById.size,
-    subgraphConfigsCount: subgraphConfigs.length,
     nodeIndexSize: indexes.nodesById.size,
     mainGraphNodeCount: mainGraph.nodes.length,
     scopeNodeIds: {
@@ -215,8 +182,6 @@ export const buildGraphData = (): GraphData => {
     mainGraph,
     allProcesses,
     processesByScope,
-    subgraphConfigs,
-    scopedSubgraphConfigs,
     indexes,
     maps,
   };

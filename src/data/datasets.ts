@@ -9,19 +9,11 @@ import cityProcesses from '../../data/city-processes.json';
 import stateProcesses from '../../data/state-processes.json';
 import federalProcesses from '../../data/federal-processes.json';
 
-// Subgraphs (old format, kept for compatibility)
-import cityDepartments from '../../data/subgraphs/city-departments.json';
-import stateAgencies from '../../data/subgraphs/state-agencies.json';
-import stateCourts from '../../data/subgraphs/state-courts.json';
-import federalAgencies from '../../data/subgraphs/federal-agencies.json';
-
-
 import type {
   GovernmentScope,
   ProcessDefinition,
   StructureNode,
   RawEdge,
-  SubgraphFile,
   SubviewDefinition,
 } from './types';
 
@@ -38,7 +30,6 @@ export type GovernmentDataset = {
   nodes: StructureNode[];
   edges: RawEdge[];
   processes: ProcessDefinition[];
-  subgraphs: SubgraphFile[];
   subviews?: SubviewDefinition[];
 };
 
@@ -71,7 +62,6 @@ const buildDataset = (
   description: string,
   intraData: { nodes: StructureNode[]; edges?: RawEdge[]; subviews?: unknown[] },
   processFile: { processes: ProcessDefinition[] },
-  subgraphs: SubgraphFile[],
 ): GovernmentDataset => {
   const mainNodes = extractMainNodes(scope);
   const mainEdges = extractMainEdges(scope);
@@ -104,7 +94,6 @@ const buildDataset = (
     nodes: [...annotatedMainNodes, ...annotatedIntraNodes],
     edges: [...mainEdges, ...(intraData.edges || [])],
     processes: processFile.processes,
-    subgraphs,
     subviews: allSubviews.length > 0 ? allSubviews : undefined,
   };
 };
@@ -116,7 +105,6 @@ export const governmentDatasets: Record<GovernmentScope, GovernmentDataset> = {
     'Complete NYC government including city-wide governance and borough advisory structures.',
     cityIntra,
     cityProcesses,
-    [cityDepartments],
   ),
   state: buildDataset(
     'state',
@@ -124,7 +112,6 @@ export const governmentDatasets: Record<GovernmentScope, GovernmentDataset> = {
     'High-level structure of New York State government as defined by the State Constitution and related laws.',
     stateIntra,
     stateProcesses,
-    [stateAgencies, stateCourts],
   ),
   federal: buildDataset(
     'federal',
@@ -132,7 +119,6 @@ export const governmentDatasets: Record<GovernmentScope, GovernmentDataset> = {
     'High-level structure of the U.S. federal government as defined by the Constitution.',
     federalIntra,
     federalProcesses,
-    [federalAgencies],
   ),
 };
 
