@@ -10,7 +10,12 @@ import {
   getViewportMetrics,
 } from './layout';
 import { ANIMATION_DURATION, ANIMATION_EASING } from './animation';
-import { applyProcessHighlightClasses, resetHighlightClasses } from './styles-application';
+import {
+  applyProcessHighlightClasses,
+  resetHighlightClasses,
+  resetProcessClasses,
+  applyStructuralSubviewClasses,
+} from './styles-application';
 import { createStructuralLayoutOptions } from './layouts';
 import type { GovernmentScope } from '../data/datasets';
 import type { GraphAction } from './actions';
@@ -234,16 +239,7 @@ export function createController(config: ControllerConfig): Controller {
     if (subview.type === 'workflow') {
       applyProcessHighlightClasses(cy, nodeIdSet, edgeIdSet);
     } else {
-      const otherNodes = cy.nodes().not(subviewNodes);
-      const otherEdges = cy.edges().not(subviewEdges);
-
-      cy.batch(() => {
-        cy.elements().removeClass('highlighted faded hidden dimmed');
-        subviewNodes.addClass('highlighted');
-        subviewEdges.addClass('highlighted');
-        otherNodes.addClass('faded');
-        otherEdges.addClass('hidden');
-      });
+      applyStructuralSubviewClasses(cy, subviewNodes, subviewEdges);
     }
 
     // Run layout (workflows: viewport center, structural: entry node)
@@ -309,10 +305,7 @@ export function createController(config: ControllerConfig): Controller {
 
     // Remove CSS classes
     if (currentSubview.type === 'workflow') {
-      cy.batch(() => {
-        cy.nodes().removeClass('process-active dimmed');
-        cy.edges().removeClass('process-active-edge dimmed');
-      });
+      resetProcessClasses(cy);
     } else {
       resetHighlightClasses(cy);
     }
@@ -495,7 +488,7 @@ export function createController(config: ControllerConfig): Controller {
   };
 
   const clearNodeFocus = (): void => {
-    cy.elements().removeClass('dimmed faded highlighted');
+    resetHighlightClasses(cy);
   };
 
   const captureInitialPositions = (): void => {

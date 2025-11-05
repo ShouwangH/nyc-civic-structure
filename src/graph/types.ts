@@ -11,6 +11,7 @@ export type GraphNodeInfo = {
   system: string;
   width: number;
   height: number;
+  tier?: 'main' | 'intra' | 'detailed';
   position?: { x: number; y: number };
 };
 

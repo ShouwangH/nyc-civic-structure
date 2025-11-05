@@ -49,6 +49,7 @@ const transformNode = (node: StructureNode): GraphNodeInfo => ({
   system: categorizeSystem(node),
   width: ["city:nyc_charter","state:ny_state_constitution",'federal:us_constitution'].includes(node.id) ? NODE_WIDTH * 3 : NODE_WIDTH,
   height: NODE_HEIGHT,
+  tier: node.tier,
   position: node.position,
 });
 
