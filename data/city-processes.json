@@ -243,7 +243,7 @@
       "nodes": [
         "city:departments",
         "city:mayor_office_operations",
-        "federal:public",
+        "city:public",
         "city:city_council",
         "city:rules_of_city"
       ],
@@ -254,10 +254,10 @@
         },
         {
           "source": "city:mayor_office_operations",
-          "target": "federal:public"
+          "target": "city:public"
         },
         {
-          "source": "federal:public",
+          "source": "city:public",
           "target": "city:departments"
         },
         {

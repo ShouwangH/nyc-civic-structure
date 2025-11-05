@@ -790,7 +790,7 @@
         }
       ],
       "layout": {
-        "type": "elk-mrtree",
+        "type": "concentric",
         "options": {
           "direction": "DOWN",
           "spacing": 70
@@ -1333,7 +1333,7 @@
         }
       ],
       "layout": {
-        "type": "elk-mrtree",
+        "type": "concentric",
         "options": {
           "direction": "DOWN",
           "spacing": 70
@@ -1757,10 +1757,11 @@
         }
       ],
       "layout": {
-        "type": "concentric",
-        "fit": true,
-        "padding": 80,
-        "animate": true
+        "type": "elk-layered",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
       }
     },
     {
@@ -2170,7 +2171,7 @@
         }
       ],
       "layout": {
-        "type": "elk-mrtree",
+        "type": "concentric",
         "options": {
           "direction": "DOWN",
           "spacing": 70
@@ -2200,15 +2201,15 @@
       ],
       "edges": [
         {
-          "source": "city:city_council",
-          "target": "city:council_speaker",
-          "relation": "contains",
+          "source": "city:council_speaker",
+          "target": "city:city_council",
+          "relation": "presides_over",
           "category": "hierarchical"
         },
         {
           "source": "city:council_speaker",
           "target": "city:council_majority_leader",
-          "relation": "contains",
+          "relation": "oversees",
           "category": "hierarchical"
         },
         {
@@ -2354,7 +2355,7 @@
         }
       ],
       "layout": {
-        "type": "elk-mrtree",
+        "type": "concentric",
         "options": {
           "direction": "DOWN",
           "spacing": 70
@@ -2383,15 +2384,15 @@
       ],
       "edges": [
         {
-          "source": "state:state_assembly",
-          "target": "state:assembly_speaker",
-          "relation": "contains",
+          "source": "state:assembly_speaker",
+          "target": "state:state_assembly",
+          "relation": "presides_over",
           "category": "hierarchical"
         },
         {
           "source": "state:assembly_speaker",
           "target": "state:assembly_majority_leader",
-          "relation": "contains",
+          "relation": "oversees",
           "category": "hierarchical"
         },
         {
@@ -2461,15 +2462,15 @@
       ],
       "edges": [
         {
-          "source": "state:state_senate",
-          "target": "state:senate_president_pro_tem",
-          "relation": "contains",
+          "source": "state:senate_president_pro_tem",
+          "target": "state:state_senate",
+          "relation": "presides_over",
           "category": "hierarchical"
         },
         {
           "source": "state:senate_president_pro_tem",
           "target": "state:senate_deputy_majority_leader",
-          "relation": "contains",
+          "relation": "oversees",
           "category": "hierarchical"
         },
         {
@@ -2616,7 +2617,7 @@
         }
       ],
       "layout": {
-        "type": "elk-mrtree",
+        "type": "concentric",
         "options": {
           "direction": "DOWN",
           "spacing": 70
@@ -2645,27 +2646,27 @@
       ],
       "edges": [
         {
-          "source": "federal:senate",
-          "target": "federal:white_house_vice_president",
-          "relation": "contains",
+          "source": "federal:white_house_vice_president",
+          "target": "federal:senate",
+          "relation": "presides_over",
           "category": "hierarchical"
         },
         {
-          "source": "federal:senate",
-          "target": "federal:senate_president_pro_tem",
-          "relation": "contains",
+          "source": "federal:senate_president_pro_tem",
+          "target": "federal:senate",
+          "relation": "presides_over",
           "category": "hierarchical"
         },
         {
           "source": "federal:senate_president_pro_tem",
           "target": "federal:senate_majority_leader",
-          "relation": "contains",
+          "relation": "oversees",
           "category": "hierarchical"
         },
         {
           "source": "federal:senate_president_pro_tem",
           "target": "federal:senate_minority_leader",
-          "relation": "contains",
+          "relation": "oversees",
           "category": "hierarchical"
         },
         {
@@ -2730,21 +2731,21 @@
       ],
       "edges": [
         {
-          "source": "federal:house_of_representatives",
-          "target": "federal:house_speaker",
-          "relation": "contains",
+          "source": "federal:house_speaker",
+          "target": "federal:house_of_representatives",
+          "relation": "presides_over",
           "category": "hierarchical"
         },
         {
           "source": "federal:house_speaker",
           "target": "federal:house_majority_leader",
-          "relation": "contains",
+          "relation": "oversees",
           "category": "hierarchical"
         },
         {
           "source": "federal:house_speaker",
           "target": "federal:house_majority_whip",
-          "relation": "contains",
+          "relation": "oversees",
           "category": "hierarchical"
         },
         {
