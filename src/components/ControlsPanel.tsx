@@ -13,9 +13,8 @@ type ControlsPanelProps = {
   activeScope: GovernmentScope | null;
   onScopeChange: (scope: GovernmentScope) => void;
   subgraphConfigs: SubgraphConfig[];
-  activeSubgraphId: string | null;
   processes: ProcessDefinition[];
-  activeProcessId: string | null;
+  activeSubviewId: string | null;
   isOpen: boolean;
   onToggleOpen: () => void;
   graphRef: React.RefObject<GraphCanvasHandle | null>;
@@ -36,15 +35,14 @@ const ControlsPanel = ({
   activeScope,
   onScopeChange,
   subgraphConfigs,
-  activeSubgraphId,
   processes,
-  activeProcessId,
+  activeSubviewId,
   isOpen,
   onToggleOpen,
   graphRef,
 }: ControlsPanelProps) => {
-  const activeProcess = activeProcessId
-    ? processes.find((process) => process.id === activeProcessId) ?? null
+  const activeProcess = activeSubviewId
+    ? processes.find((process) => process.id === activeSubviewId) ?? null
     : null;
 
   return (
@@ -93,7 +91,7 @@ const ControlsPanel = ({
             ) : (
               <div className="space-y-2">
                 {subgraphConfigs.map((config) => {
-                  const isActive = activeSubgraphId === config.meta.id;
+                  const isActive = activeSubviewId === config.meta.id;
                   return (
                     <button
                       key={config.meta.id}
@@ -129,7 +127,7 @@ const ControlsPanel = ({
             ) : (
               <div className="space-y-2">
                 {processes.map((process) => {
-                  const isActive = process.id === activeProcessId;
+                  const isActive = activeSubviewId === process.id;
                   return (
                     <button
                       key={process.id}

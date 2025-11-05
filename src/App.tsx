@@ -43,7 +43,7 @@ function App() {
     setState, // NEW: For imperative handlers
   } = useVisualizationState();
 
-  const { controlsOpen, activeScope, activeProcessId, activeSubgraphId } = state;
+  const { controlsOpen, activeScope, activeSubviewId } = state;
 
   // Reactive effect layer - syncs graph operations with state changes
   useGraphEffects(state, graphRef, { enabled: ENABLE_EFFECT_LAYER });
@@ -90,9 +90,8 @@ function App() {
             void handleScopeFocus(scope);
           }}
           subgraphConfigs={visibleSubgraphConfigs}
-          activeSubgraphId={activeSubgraphId}
           processes={visibleProcesses}
-          activeProcessId={activeProcessId}
+          activeSubviewId={activeSubviewId}
           isOpen={controlsOpen}
           onToggleOpen={toggleControlsOpen}
           graphRef={graphRef}
@@ -135,7 +134,7 @@ function App() {
             activeProcess={activeProcess}
             subgraphLabel={subgraphLabel}
             hasSelection={selectionActive}
-            isSubgraphActive={Boolean(activeSubgraphId)}
+            isSubgraphActive={Boolean(activeSubviewId)}
             onClear={handleClearSelection}
             onMouseEnter={() => setSidebarHover(true)}
             onMouseLeave={handleConditionalHoverOff}
