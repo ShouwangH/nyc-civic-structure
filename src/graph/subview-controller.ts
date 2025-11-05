@@ -55,6 +55,7 @@ export const createSubviewController = (deps: SubviewControllerDeps): SubviewCon
     if (subview.type === 'workflow') {
       // Convert to ProcessDefinition and use ProcessController
       const processDefinition = convertToProcessDefinition(subview);
+
       const nodeInfos = processDefinition.nodes.map(
         (id) => nodeInfosById.get(id) ?? createPlaceholderNode(id)
       );

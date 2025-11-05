@@ -18,7 +18,8 @@ export type GraphCanvasHandle = {
   clearNodeFocus: GraphRuntime['clearNodeFocus'];
   getController: GraphRuntime['getController'];
   getCy: GraphRuntime['getCy'];
-  handlers: GraphActionHandlers | null; // NEW: Imperative handlers
+  getHandlers: () => GraphActionHandlers | null; // NEW: Imperative handlers accessor
+  handlers: GraphActionHandlers | null; // NEW: Deprecated, use getHandlers()
 };
 
 type GraphCanvasProps = {
@@ -114,7 +115,10 @@ const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
         },
         getController: () => orchestratorRef.current?.getController() ?? null,
         getCy: () => orchestratorRef.current?.getCy() ?? null,
-        handlers: orchestratorRef.current?.handlers ?? null, // NEW: Expose imperative handlers
+        getHandlers: () => orchestratorRef.current?.handlers ?? null,
+        get handlers() {
+          return orchestratorRef.current?.handlers ?? null;
+        },
       }),
       [],
     );

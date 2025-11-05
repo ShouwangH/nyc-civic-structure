@@ -33,6 +33,7 @@ const createGraphRuntime: GraphRuntimeFactory = (
   }: GraphRuntimeConfig,
   dependencies: GraphRuntimeDependencies = {},
 ): GraphRuntime => {
+
   let cy: Core | null = null;
   let controller: GraphController | null = null;
   let subviewController: SubviewController | null = null;
@@ -267,7 +268,9 @@ const createGraphRuntime: GraphRuntimeFactory = (
     handleEdgeTap: eventHandlers.handleEdgeTap,
     handleBackgroundTap: eventHandlers.handleBackgroundTap,
     handleZoom: eventHandlers.handleZoom,
-    handlers, // NEW: Expose imperative handlers
+    get handlers() {
+      return handlers;
+    },
   };
 
   return runtime;

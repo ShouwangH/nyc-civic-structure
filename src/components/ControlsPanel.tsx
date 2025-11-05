@@ -99,7 +99,7 @@ const ControlsPanel = ({
                       key={config.meta.id}
                       type="button"
                       onClick={() => {
-                        const handlers = graphRef.current?.handlers;
+                        const handlers = graphRef.current?.getHandlers?.();
                         if (!handlers) return;
 
                         if (isActive) {
@@ -135,8 +135,10 @@ const ControlsPanel = ({
                       key={process.id}
                       type="button"
                       onClick={() => {
-                        const handlers = graphRef.current?.handlers;
-                        if (!handlers) return;
+                        const handlers = graphRef.current?.getHandlers?.();
+                        if (!handlers) {
+                          return;
+                        }
 
                         if (isActive) {
                           void handlers.deactivateAll();
