@@ -10,9 +10,7 @@ export type VisualizationState = {
   activeScope: GovernmentScope | null;
   selectedNodeId: string | null;
   selectedEdgeId: string | null;
-  activeProcessId: string | null;
-  activeSubgraphId: string | null;
-  activeSubviewId: string | null; // NEW: Unified subview ID (will replace above two)
+  activeSubviewId: string | null;
   isSidebarHover: boolean;
 };
 
@@ -21,8 +19,6 @@ const initialState: VisualizationState = {
   activeScope: null,
   selectedNodeId: null,
   selectedEdgeId: null,
-  activeProcessId: null,
-  activeSubgraphId: null,
   activeSubviewId: null,
   isSidebarHover: false,
 };
@@ -30,30 +26,13 @@ const initialState: VisualizationState = {
 const reducer = (state: VisualizationState, action: VisualizationAction): VisualizationState => {
   switch (action.type) {
     // User interaction actions - contain business logic
-    case 'NODE_CLICKED': {
-      // If it's a subgraph entry node, activate the subgraph
-      if (action.isSubgraphEntry) {
-        const subgraphId = GRAPH_DATA.maps.subgraphByEntryId.get(action.nodeId)?.meta.id;
-        if (subgraphId) {
-          return {
-            ...state,
-            selectedNodeId: null,
-            selectedEdgeId: null,
-            activeProcessId: null,
-            activeSubgraphId: subgraphId,
-            isSidebarHover: true,
-          };
-        }
-      }
-
-      // Otherwise, just select the node
+    case 'NODE_CLICKED':
       return {
         ...state,
         selectedEdgeId: null,
         selectedNodeId: action.nodeId,
         isSidebarHover: true,
       };
-    }
 
     case 'EDGE_CLICKED':
       return {
@@ -70,8 +49,6 @@ const reducer = (state: VisualizationState, action: VisualizationAction): Visual
         activeScope: null,
         selectedNodeId: null,
         selectedEdgeId: null,
-        activeProcessId: null,
-        activeSubgraphId: null,
         isSidebarHover: false,
       };
 
@@ -82,85 +59,8 @@ const reducer = (state: VisualizationState, action: VisualizationAction): Visual
         activeScope: action.scope,
         selectedNodeId: null,
         selectedEdgeId: null,
-        activeProcessId: null,
-        activeSubgraphId: null,
         isSidebarHover: false,
       };
-
-    case 'PROCESS_TOGGLED': {
-      // Compute visibility from current scope
-      const visibleProcesses = state.activeScope
-        ? (GRAPH_DATA.processesByScope[state.activeScope] ?? [])
-        : [];
-      const isVisible = visibleProcesses.some((p) => p.id === action.processId);
-
-      // If process not visible, warn and do nothing
-      if (!isVisible) {
-        console.warn('[Process] Not available for active scope', {
-          processId: action.processId,
-          activeScope: state.activeScope,
-        });
-        return state;
-      }
-
-      // If clicking same process, clear it
-      if (state.activeProcessId === action.processId) {
-        const shouldClearSidebar = !state.selectedNodeId && !state.selectedEdgeId;
-        return {
-          ...state,
-          activeProcessId: null,
-          isSidebarHover: shouldClearSidebar ? false : state.isSidebarHover,
-        };
-      }
-
-      // Otherwise activate the process and clear any active subgraph (mutual exclusivity)
-      return {
-        ...state,
-        activeProcessId: action.processId,
-        activeSubgraphId: null,
-        isSidebarHover: true,
-      };
-    }
-
-    case 'SUBGRAPH_TOGGLED': {
-      // Compute scope validity
-      const subgraphScopeMap = new Map(
-        GRAPH_DATA.scopedSubgraphConfigs.map((entry) => [entry.config.meta.id, entry.scope])
-      );
-      const scopeForSubgraph = subgraphScopeMap.get(action.subgraphId);
-      const isValidForScope =
-        !state.activeScope || !scopeForSubgraph || scopeForSubgraph === state.activeScope;
-
-      // If subgraph not valid for scope, warn and do nothing
-      if (!isValidForScope) {
-        console.warn('[Subgraph] Not available for active scope', {
-          subgraphId: action.subgraphId,
-          activeScope: state.activeScope,
-          scopeForSubgraph,
-        });
-        return state;
-      }
-
-      // Compute if this subgraph is currently active
-      const isActive = state.activeSubgraphId === action.subgraphId;
-
-      // If clicking same subgraph, clear it
-      if (isActive) {
-        return {
-          ...state,
-          activeSubgraphId: null,
-          isSidebarHover: false,
-        };
-      }
-
-      // Otherwise activate the subgraph and clear any active process (mutual exclusivity)
-      return {
-        ...state,
-        activeSubgraphId: action.subgraphId,
-        activeProcessId: null,
-        isSidebarHover: true,
-      };
-    }
 
     case 'CONTROLS_TOGGLED':
       return {
@@ -180,8 +80,6 @@ const reducer = (state: VisualizationState, action: VisualizationAction): Visual
         activeScope: null,
         selectedNodeId: null,
         selectedEdgeId: null,
-        activeProcessId: null,
-        activeSubgraphId: null,
         isSidebarHover: false,
       };
 
@@ -195,8 +93,6 @@ const reducer = (state: VisualizationState, action: VisualizationAction): Visual
         activeScope: action.scope,
         selectedNodeId: null,
         selectedEdgeId: null,
-        activeProcessId: null,
-        activeSubgraphId: null,
         isSidebarHover: false,
       };
 
@@ -209,8 +105,6 @@ const reducer = (state: VisualizationState, action: VisualizationAction): Visual
         activeScope: null,
         selectedNodeId: null,
         selectedEdgeId: null,
-        activeProcessId: null,
-        activeSubgraphId: null,
         activeSubviewId: null,
         isSidebarHover: false,
       };
@@ -291,8 +185,8 @@ export const useVisualizationState = () => {
       ? edgesById.get(state.selectedEdgeId) ?? null
       : null;
 
-    const activeProcess = state.activeProcessId
-      ? allProcesses.find((p) => p.id === state.activeProcessId) ?? null
+    const activeProcess = state.activeSubviewId
+      ? allProcesses.find((p) => p.id === state.activeSubviewId) ?? null
       : null;
 
     const selectedEdgeSource = activeEdge
@@ -303,16 +197,17 @@ export const useVisualizationState = () => {
       ? nodesById.get(activeEdge.target) ?? null
       : null;
 
-    const subgraphLabel = state.activeSubgraphId
-      ? subgraphById.get(state.activeSubgraphId)?.meta.label ?? null
+    const subgraphLabel = state.activeSubviewId
+      ? (subgraphById.get(state.activeSubviewId)?.meta.label ??
+         GRAPH_DATA.maps.subviewById.get(state.activeSubviewId)?.label ??
+         null)
       : null;
 
     // Computed flags
     const selectionActive = Boolean(
       state.selectedNodeId ||
       state.selectedEdgeId ||
-      state.activeProcessId ||
-      state.activeSubgraphId
+      state.activeSubviewId
     );
 
     const shouldShowSidebar = selectionActive || state.isSidebarHover;
@@ -338,8 +233,7 @@ export const useVisualizationState = () => {
     state.activeScope,
     state.selectedNodeId,
     state.selectedEdgeId,
-    state.activeProcessId,
-    state.activeSubgraphId,
+    state.activeSubviewId,
     state.isSidebarHover,
   ]);
 
