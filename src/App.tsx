@@ -10,12 +10,8 @@ import { governmentScopes } from './data/datasets';
 import type { GovernmentScope } from './data/datasets';
 import { useVisualizationState } from './state/useVisualizationState';
 import { GRAPH_DATA } from './data/graphDataPipeline';
-import { useGraphEffects } from './hooks/useGraphEffects';
 
 cytoscape.use(cytoscapeElk);
-
-// Feature flag: Enable reactive effect layer
-const ENABLE_EFFECT_LAYER = true;
 
 function App() {
   const graphRef = useRef<GraphCanvasHandle | null>(null);
@@ -44,9 +40,6 @@ function App() {
   } = useVisualizationState();
 
   const { controlsOpen, activeScope, activeSubviewId } = state;
-
-  // Reactive effect layer - syncs graph operations with state changes
-  useGraphEffects(state, graphRef, { enabled: ENABLE_EFFECT_LAYER });
 
   // Static graph data - computed once at module load
   const { dataset, mainGraph, allProcesses, indexes, maps, scopeNodeIds } = GRAPH_DATA;
