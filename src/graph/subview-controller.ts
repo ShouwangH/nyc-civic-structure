@@ -1,7 +1,7 @@
 // ABOUTME: Unified subview controller handling all subview types
 // ABOUTME: Manages activation, styling, layout, and cleanup for workflow and structural views
 
-import type { Core, LayoutOptions, NodeSingular, Position } from 'cytoscape';
+import type { Core } from 'cytoscape';
 import type { SubviewDefinition, SubviewType } from '../data/types';
 import type { GraphNodeInfo, GraphEdgeInfo } from './types';
 import type { MainLayoutOptions } from './layout';
@@ -12,6 +12,7 @@ import {
 } from './layout';
 import { ANIMATION_DURATION, ANIMATION_EASING } from './animation';
 import { applyProcessHighlightClasses, resetHighlightClasses } from './styles-application';
+import { createStructuralLayoutOptions } from './layouts';
 
 /**
  * State changes returned by controller operations
@@ -316,176 +317,6 @@ export const createSubviewController = (deps: SubviewControllerDeps): SubviewCon
     getActiveId,
   };
 };
-
-/**
- * Creates layout options for structural subviews (non-workflow)
- * Uses SubviewDefinition.layout config, positioned relative to entry node
- */
-function createStructuralLayoutOptions(subview: SubviewDefinition, cy: Core): LayoutOptions {
-  const layoutConfig = subview.layout;
-  const entryNodeId = subview.anchor?.nodeId || subview.anchor?.nodeIds?.[0] || subview.nodes[0];
-  const entryNode = cy.getElementById(entryNodeId);
-  const entryPos = entryNode.length > 0 ? entryNode.position() : { x: 0, y: 0 };
-
-  const baseOptions = {
-    animate: layoutConfig.animate ?? true,
-    animationDuration: ANIMATION_DURATION,
-    animationEasing: ANIMATION_EASING,
-    fit: layoutConfig.fit ?? true,
-    padding: layoutConfig.padding ?? 80,
-  };
-
-  // Clone and transform layout config
-  switch (layoutConfig.type) {
-    case 'concentric':
-      return createConcentricLayout(subview, entryNodeId, baseOptions);
-
-    case 'elk-mrtree':
-      return {
-        ...baseOptions,
-        name: 'elk',
-        elk: {
-          algorithm: 'mrtree',
-          'elk.direction': layoutConfig.options?.direction || 'DOWN',
-          'elk.spacing.nodeNode': layoutConfig.options?.spacing || 60,
-          ...layoutConfig.options,
-        },
-        transform: (_node: NodeSingular, pos: Position): Position => ({
-          x: pos.x + entryPos.x,
-          y: pos.y + entryPos.y,
-        }),
-      } as LayoutOptions;
-
-    case 'elk-layered':
-      return {
-        ...baseOptions,
-        name: 'elk',
-        elk: {
-          algorithm: 'layered',
-          'elk.direction': layoutConfig.options?.direction || 'RIGHT',
-          'elk.spacing.nodeNode': layoutConfig.options?.spacing || 80,
-          ...layoutConfig.options,
-        },
-        transform: (_node: NodeSingular, pos: Position): Position => ({
-          x: pos.x + entryPos.x,
-          y: pos.y + entryPos.y,
-        }),
-      } as LayoutOptions;
-
-    case 'elk-radial':
-      return {
-        ...baseOptions,
-        name: 'elk',
-        elk: {
-          algorithm: 'radial',
-          ...layoutConfig.options,
-        },
-        transform: (_node: NodeSingular, pos: Position): Position => ({
-          x: pos.x + entryPos.x,
-          y: pos.y + entryPos.y,
-        }),
-      } as LayoutOptions;
-
-    default:
-      return {
-        ...baseOptions,
-        name: 'preset',
-      };
-  }
-}
-
-/**
- * Creates concentric layout with hierarchical level calculation
- */
-function createConcentricLayout(
-  subview: SubviewDefinition,
-  anchorNodeId: string,
-  baseOptions: Record<string, unknown>
-): LayoutOptions {
-  const nodeLevels = calculateConcentricLevels(subview.nodes, subview.edges, anchorNodeId);
-
-  return {
-    ...baseOptions,
-    name: 'concentric',
-    concentric: (node: NodeSingular): number => {
-      const nodeId = node.id();
-      const level = nodeLevels.get(nodeId) ?? 1;
-      return level;
-    },
-    levelWidth: () => 1,
-  } as LayoutOptions;
-}
-
-/**
- * Calculate concentric levels based on hierarchical graph traversal from anchor
- * Uses directional BFS: going down hierarchy (-1 level), going up hierarchy (+1 level)
- */
-function calculateConcentricLevels(
-  nodes: string[],
-  edges: SubviewDefinition['edges'],
-  anchorNodeId: string
-): Map<string, number> {
-  const levels = new Map<string, number>();
-  const BASE_LEVEL = 100;
-
-  // Build directional adjacency lists
-  const children = new Map<string, Set<string>>();
-  const parents = new Map<string, Set<string>>();
-
-  nodes.forEach(nodeId => {
-    children.set(nodeId, new Set());
-    parents.set(nodeId, new Set());
-  });
-
-  edges.forEach(edge => {
-    children.get(edge.source)?.add(edge.target);
-    parents.get(edge.target)?.add(edge.source);
-  });
-
-  // Directional BFS from anchor
-  const queue: Array<{ nodeId: string; level: number }> = [
-    { nodeId: anchorNodeId, level: BASE_LEVEL }
-  ];
-  const visited = new Set<string>();
-  visited.add(anchorNodeId);
-  levels.set(anchorNodeId, BASE_LEVEL);
-
-  while (queue.length > 0) {
-    const current = queue.shift()!;
-    const currentLevel = current.level;
-
-    // Traverse to children (DOWN hierarchy: level - 1)
-    const childNodes = children.get(current.nodeId) || new Set();
-    childNodes.forEach(childId => {
-      if (!visited.has(childId)) {
-        visited.add(childId);
-        const childLevel = currentLevel - 1;
-        levels.set(childId, childLevel);
-        queue.push({ nodeId: childId, level: childLevel });
-      }
-    });
-
-    // Traverse to parents (UP hierarchy: level + 1)
-    const parentNodes = parents.get(current.nodeId) || new Set();
-    parentNodes.forEach(parentId => {
-      if (!visited.has(parentId)) {
-        visited.add(parentId);
-        const parentLevel = currentLevel + 1;
-        levels.set(parentId, parentLevel);
-        queue.push({ nodeId: parentId, level: parentLevel });
-      }
-    });
-  }
-
-  // Handle disconnected nodes (assign lowest level)
-  nodes.forEach(nodeId => {
-    if (!levels.has(nodeId)) {
-      levels.set(nodeId, 1);
-    }
-  });
-
-  return levels;
-}
 
 /**
  * Creates placeholder node for missing nodes in workflows

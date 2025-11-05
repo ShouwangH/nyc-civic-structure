@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef, useState } from 'react';
+import { useCallback, useMemo, useReducer } from 'react';
 import type { GovernmentScope } from '../data/datasets';
 import type { ProcessDefinition, SubviewDefinition } from '../data/types';
 import { GRAPH_DATA } from '../data/graphDataPipeline';
@@ -12,67 +12,61 @@ export type VisualizationState = {
   isSidebarHover: boolean;
 };
 
+type VisualizationAction =
+  | { type: 'UPDATE'; updater: (prev: VisualizationState) => VisualizationState }
+  | { type: 'TOGGLE_CONTROLS' }
+  | { type: 'SET_SIDEBAR_HOVER'; hover: boolean }
+  | { type: 'CLEAR_SELECTIONS' };
+
+function visualizationReducer(
+  state: VisualizationState,
+  action: VisualizationAction
+): VisualizationState {
+  switch (action.type) {
+    case 'UPDATE':
+      return action.updater(state);
+
+    case 'TOGGLE_CONTROLS':
+      return { ...state, controlsOpen: !state.controlsOpen };
+
+    case 'SET_SIDEBAR_HOVER':
+      return { ...state, isSidebarHover: action.hover };
+
+    case 'CLEAR_SELECTIONS':
+      return {
+        ...state,
+        activeScope: null,
+        selectedNodeId: null,
+        selectedEdgeId: null,
+        activeSubviewId: null,
+        isSidebarHover: false,
+      };
+
+    default:
+      return state;
+  }
+}
+
+const initialState: VisualizationState = {
+  controlsOpen: true,
+  activeScope: null,
+  selectedNodeId: null,
+  selectedEdgeId: null,
+  activeSubviewId: null,
+  isSidebarHover: false,
+};
+
 export const useVisualizationState = () => {
-  const [controlsOpen, setControlsOpen] = useState(true);
-  const [activeScope, setActiveScope] = useState<GovernmentScope | null>(null);
-  const [selectedNodeId, setSelectedNodeId] = useState<string | null>(null);
-  const [selectedEdgeId, setSelectedEdgeId] = useState<string | null>(null);
-  const [activeSubviewId, setActiveSubviewId] = useState<string | null>(null);
-  const [isSidebarHover, setIsSidebarHover] = useState(false);
+  const [state, dispatch] = useReducer(visualizationReducer, initialState);
 
-  // Keep a ref to current state for imperative handlers
-  const stateRef = useRef<VisualizationState>({
-    controlsOpen,
-    activeScope,
-    selectedNodeId,
-    selectedEdgeId,
-    activeSubviewId,
-    isSidebarHover,
-  });
-
-  // Update ref on every render
-  stateRef.current = {
-    controlsOpen,
-    activeScope,
-    selectedNodeId,
-    selectedEdgeId,
-    activeSubviewId,
-    isSidebarHover,
-  };
-
-  // For imperative handlers - stable reference that doesn't cause graph recreation
   const setState = useCallback((updater: (prev: VisualizationState) => VisualizationState) => {
-    const updates = updater(stateRef.current);
-
-    if (updates.controlsOpen !== stateRef.current.controlsOpen) setControlsOpen(updates.controlsOpen);
-    if (updates.activeScope !== stateRef.current.activeScope) setActiveScope(updates.activeScope);
-    if (updates.selectedNodeId !== stateRef.current.selectedNodeId) setSelectedNodeId(updates.selectedNodeId);
-    if (updates.selectedEdgeId !== stateRef.current.selectedEdgeId) setSelectedEdgeId(updates.selectedEdgeId);
-    if (updates.activeSubviewId !== stateRef.current.activeSubviewId) setActiveSubviewId(updates.activeSubviewId);
-    if (updates.isSidebarHover !== stateRef.current.isSidebarHover) setIsSidebarHover(updates.isSidebarHover);
+    dispatch({ type: 'UPDATE', updater });
   }, []);
 
-  // Action wrappers for common operations
   const actions = {
-    toggleControlsOpen: () => setControlsOpen(prev => !prev),
-    setSidebarHover: setIsSidebarHover,
-    clearSelections: () => {
-      setActiveScope(null);
-      setSelectedNodeId(null);
-      setSelectedEdgeId(null);
-      setActiveSubviewId(null);
-      setIsSidebarHover(false);
-    },
-  };
-
-  // Build state object for consumers
-  const state: VisualizationState = {
-    controlsOpen,
-    activeScope,
-    selectedNodeId,
-    selectedEdgeId,
-    activeSubviewId,
-    isSidebarHover,
+    toggleControlsOpen: () => dispatch({ type: 'TOGGLE_CONTROLS' }),
+    setSidebarHover: (hover: boolean) => dispatch({ type: 'SET_SIDEBAR_HOVER', hover }),
+    clearSelections: () => dispatch({ type: 'CLEAR_SELECTIONS' }),
   };
 
   // Derived selectors - computed based on current state
@@ -82,28 +76,28 @@ export const useVisualizationState = () => {
     const { allProcesses } = GRAPH_DATA;
 
     // Filter by scope
-    const visibleProcesses = activeScope
-      ? (GRAPH_DATA.processesByScope[activeScope] ?? [])
+    const visibleProcesses = state.activeScope
+      ? (GRAPH_DATA.processesByScope[state.activeScope] ?? [])
       : ([] as ProcessDefinition[]);
 
     // Show all non-workflow subviews for the current scope
-    const visibleSubviews: SubviewDefinition[] = activeScope
+    const visibleSubviews: SubviewDefinition[] = state.activeScope
       ? Array.from(GRAPH_DATA.maps.subviewById.values()).filter(subview => {
-          return subview.jurisdiction === activeScope && subview.type !== 'workflow';
+          return subview.jurisdiction === state.activeScope && subview.type !== 'workflow';
         })
       : [];
 
     // Entity lookups
-    const activeNode = selectedNodeId
-      ? nodesById.get(selectedNodeId) ?? null
+    const activeNode = state.selectedNodeId
+      ? nodesById.get(state.selectedNodeId) ?? null
       : null;
 
-    const activeEdge = selectedEdgeId
-      ? edgesById.get(selectedEdgeId) ?? null
+    const activeEdge = state.selectedEdgeId
+      ? edgesById.get(state.selectedEdgeId) ?? null
       : null;
 
-    const activeProcess = activeSubviewId
-      ? allProcesses.find((p) => p.id === activeSubviewId) ?? null
+    const activeProcess = state.activeSubviewId
+      ? allProcesses.find((p) => p.id === state.activeSubviewId) ?? null
       : null;
 
     const selectedEdgeSource = activeEdge
@@ -114,18 +108,18 @@ export const useVisualizationState = () => {
       ? nodesById.get(activeEdge.target) ?? null
       : null;
 
-    const subgraphLabel = activeSubviewId
-      ? (subviewById.get(activeSubviewId)?.label ?? null)
+    const subviewLabel = state.activeSubviewId
+      ? (subviewById.get(state.activeSubviewId)?.label ?? null)
       : null;
 
     // Computed flags
     const selectionActive = Boolean(
-      selectedNodeId ||
-      selectedEdgeId ||
-      activeSubviewId
+      state.selectedNodeId ||
+      state.selectedEdgeId ||
+      state.activeSubviewId
     );
 
-    const shouldShowSidebar = selectionActive || isSidebarHover;
+    const shouldShowSidebar = selectionActive || state.isSidebarHover;
 
     return {
       // Filtered lists
@@ -138,18 +132,18 @@ export const useVisualizationState = () => {
       activeProcess,
       selectedEdgeSource,
       selectedEdgeTarget,
-      subgraphLabel,
+      subviewLabel,
 
       // Computed flags
       selectionActive,
       shouldShowSidebar,
     };
   }, [
-    activeScope,
-    selectedNodeId,
-    selectedEdgeId,
-    activeSubviewId,
-    isSidebarHover,
+    state.activeScope,
+    state.selectedNodeId,
+    state.selectedEdgeId,
+    state.activeSubviewId,
+    state.isSidebarHover,
   ]);
 
   return {

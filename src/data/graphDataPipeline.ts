@@ -82,11 +82,11 @@ export type GraphData = {
  *   1. Build unified dataset from all government scopes
  *   2. Extract processes and build main graph
  *   3. Organize processes by scope
- *   4. Build subgraph configurations
+ *   4. Build subview configurations
  *   5. Create node scope index
- *   6. Associate subgraphs with scopes
+ *   6. Associate subviews with scopes
  *   7. Build all element indexes
- *   8. Build subgraph lookup maps
+ *   8. Build subview lookup maps
  */
 export const buildGraphData = (): GraphData => {
   // Step 1: Build unified dataset

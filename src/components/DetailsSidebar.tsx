@@ -7,9 +7,9 @@ type DetailsSidebarProps = {
   edgeSourceNode: GraphNodeInfo | null;
   edgeTargetNode: GraphNodeInfo | null;
   activeProcess: ProcessDefinition | null;
-  subgraphLabel: string | null;
+  subviewLabel: string | null;
   hasSelection: boolean;
-  isSubgraphActive: boolean;
+  isSubviewActive: boolean;
   onClear: () => void;
   onMouseEnter: () => void;
   onMouseLeave: () => void;
@@ -21,8 +21,8 @@ const deriveTitle = (props: {
   edgeSourceNode: GraphNodeInfo | null;
   edgeTargetNode: GraphNodeInfo | null;
   activeProcess: ProcessDefinition | null;
-  isSubgraphActive: boolean;
-  subgraphLabel: string | null;
+  isSubviewActive: boolean;
+  subviewLabel: string | null;
 }): string => {
   if (props.activeNode) {
     return props.activeNode.label;
@@ -38,8 +38,8 @@ const deriveTitle = (props: {
     return `${props.activeProcess.label} process`;
   }
 
-  if (props.isSubgraphActive) {
-    return props.subgraphLabel ?? 'Details';
+  if (props.isSubviewActive) {
+    return props.subviewLabel ?? 'Details';
   }
 
   return 'Details';
@@ -51,9 +51,9 @@ const DetailsSidebar = ({
   edgeSourceNode,
   edgeTargetNode,
   activeProcess,
-  subgraphLabel,
+  subviewLabel,
   hasSelection,
-  isSubgraphActive,
+  isSubviewActive,
   onClear,
   onMouseEnter,
   onMouseLeave,
@@ -64,8 +64,8 @@ const DetailsSidebar = ({
     edgeSourceNode,
     edgeTargetNode,
     activeProcess,
-    isSubgraphActive,
-    subgraphLabel,
+    isSubviewActive,
+    subviewLabel,
   });
 
   return (
@@ -123,9 +123,9 @@ const DetailsSidebar = ({
               </ul>
             )}
           </div>
-        ) : isSubgraphActive ? (
+        ) : isSubviewActive ? (
           <p className="text-slate-500">
-            Use the left menu or click outside the hub to collapse this focused subgraph
+            Use the left menu or click outside the hub to collapse this focused subview
             and return to the full structure.
           </p>
         ) : (

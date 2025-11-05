@@ -32,7 +32,7 @@ function App() {
       activeProcess,
       selectedEdgeSource,
       selectedEdgeTarget,
-      subgraphLabel,
+      subviewLabel,
       selectionActive,
       shouldShowSidebar,
     },
@@ -104,7 +104,7 @@ function App() {
           </div>
           <p className="text-xs text-slate-500">
             Zoom with scroll, drag to pan, click a node or edge to inspect. Use the left menu to
-            switch scopes, spotlight processes, or explore a subgraph view.
+            switch scopes, spotlight processes, or explore a subview.
           </p>
         </section>
 
@@ -115,9 +115,9 @@ function App() {
             edgeSourceNode={selectedEdgeSource}
             edgeTargetNode={selectedEdgeTarget}
             activeProcess={activeProcess}
-            subgraphLabel={subgraphLabel}
+            subviewLabel={subviewLabel}
             hasSelection={selectionActive}
-            isSubgraphActive={Boolean(activeSubviewId)}
+            isSubviewActive={Boolean(activeSubviewId)}
             onClear={clearSelections}
             onMouseEnter={() => setSidebarHover(true)}
             onMouseLeave={() => {
