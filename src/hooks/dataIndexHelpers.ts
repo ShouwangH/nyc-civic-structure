@@ -115,7 +115,9 @@ export const buildSubviewByAnchorId = (
 ): Map<string, import('../data/types').SubviewDefinition> => {
   const map = new Map<string, import('../data/types').SubviewDefinition>();
   subviews.forEach((subview) => {
-    if (subview.anchor?.nodeId) {
+    // Exclude workflow-type subviews from anchor map
+    // Workflows (processes) should only be activated via ControlsPanel, not node clicks
+    if (subview.type !== 'workflow' && subview.anchor?.nodeId) {
       map.set(subview.anchor.nodeId, subview);
     }
   });
