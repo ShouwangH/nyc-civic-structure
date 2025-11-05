@@ -102,3 +102,31 @@ export const buildEdgesIndex = (
 
   return map;
 };
+
+/**
+ * Builds an index mapping subview anchor node IDs to their definition
+ */
+export const buildSubviewByAnchorId = (
+  subviews: import('../data/types').SubviewDefinition[]
+): Map<string, import('../data/types').SubviewDefinition> => {
+  const map = new Map<string, import('../data/types').SubviewDefinition>();
+  subviews.forEach((subview) => {
+    if (subview.anchor?.nodeId) {
+      map.set(subview.anchor.nodeId, subview);
+    }
+  });
+  return map;
+};
+
+/**
+ * Builds an index mapping subview IDs to their definition
+ */
+export const buildSubviewById = (
+  subviews: import('../data/types').SubviewDefinition[]
+): Map<string, import('../data/types').SubviewDefinition> => {
+  const map = new Map<string, import('../data/types').SubviewDefinition>();
+  subviews.forEach((subview) => {
+    map.set(subview.id, subview);
+  });
+  return map;
+};

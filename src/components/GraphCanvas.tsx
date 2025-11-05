@@ -1,12 +1,13 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 import type { GraphConfig, GraphNodeInfo } from '../graph/types';
-import type { ProcessDefinition } from '../data/types';
+import type { ProcessDefinition, SubviewDefinition } from '../data/types';
 import type { SubgraphConfig } from '../graph/subgraphs';
 import { createGraphRuntime } from '../graph/orchestrator';
 import type { GraphRuntime } from '../graph/runtimeTypes';
 import type { VisualizationAction } from '../state/actions';
 import type { VisualizationState } from '../state/useVisualizationState';
 import type { GraphActionHandlers } from '../graph/actionHandlers';
+import type { GovernmentScope } from '../data/datasets';
 
 export type GraphCanvasHandle = {
   highlightProcess: GraphRuntime['highlightProcess'];
@@ -24,8 +25,11 @@ type GraphCanvasProps = {
   mainGraph: GraphConfig;
   subgraphByEntryId: Map<string, SubgraphConfig>;
   subgraphById: Map<string, SubgraphConfig>;
+  subviewByAnchorId: Map<string, SubviewDefinition>;
+  subviewById: Map<string, SubviewDefinition>;
   processes: ProcessDefinition[];
   nodesById: Map<string, GraphNodeInfo>;
+  scopeNodeIds: Record<GovernmentScope, string[]>;
   dispatch: React.Dispatch<VisualizationAction>;
   setState?: (updater: (prev: VisualizationState) => VisualizationState) => void; // NEW: Direct state setter
   className?: string;
@@ -33,7 +37,7 @@ type GraphCanvasProps = {
 
 const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
   (
-    { mainGraph, subgraphByEntryId, subgraphById, processes, nodesById, dispatch, setState, className },
+    { mainGraph, subgraphByEntryId, subgraphById, subviewByAnchorId, subviewById, processes, nodesById, scopeNodeIds, dispatch, setState, className },
     ref,
   ) => {
     const containerRef = useRef<HTMLDivElement | null>(null);
@@ -49,6 +53,9 @@ const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
         mainGraph,
         subgraphByEntryId,
         subgraphById,
+        subviewByAnchorId,
+        subviewById,
+        scopeNodeIds,
         data: { processes, nodesById },
         dispatch,
         setState, // NEW: Pass setState for imperative handlers
@@ -61,7 +68,7 @@ const GraphCanvas = forwardRef<GraphCanvasHandle, GraphCanvasProps>(
         orchestrator.destroy();
         orchestratorRef.current = null;
       };
-    }, [mainGraph, processes, nodesById, dispatch, setState, subgraphByEntryId, subgraphById]);
+    }, [mainGraph, processes, nodesById, dispatch, setState, subgraphByEntryId, subgraphById, subviewByAnchorId, subviewById, scopeNodeIds]);
 
     useImperativeHandle(
       ref,

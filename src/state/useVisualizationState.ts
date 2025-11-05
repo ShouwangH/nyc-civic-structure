@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useReducer } from 'react';
+import { useCallback, useMemo, useReducer, useRef } from 'react';
 import type { GovernmentScope } from '../data/datasets';
 import type { ProcessDefinition } from '../data/types';
 import type { SubgraphConfig } from '../graph/subgraphs';
@@ -341,13 +341,17 @@ export const useVisualizationState = () => {
 
   // NEW: setState wrapper for imperative handlers
   // Allows handlers to update state directly with functional updates
+  // Use ref to get latest state without causing re-renders
+  const stateRef = useRef(state);
+  stateRef.current = state;
+
   const setState = useCallback(
     (updater: (prev: VisualizationState) => VisualizationState) => {
-      const newState = updater(state);
+      const newState = updater(stateRef.current);
       // Dispatch a direct state update action
       dispatch({ type: 'STATE_UPDATED', payload: newState });
     },
-    [state],
+    [dispatch], // Only depend on dispatch, which is stable
   );
 
   return {

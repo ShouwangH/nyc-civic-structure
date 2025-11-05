@@ -1,5 +1,5 @@
 import type { GovernmentScope, GovernmentDataset } from './datasets';
-import type { ProcessDefinition } from './types';
+import type { ProcessDefinition, SubviewDefinition } from './types';
 import type { GraphConfig, GraphEdgeInfo, GraphNodeInfo } from '../graph/types';
 import type { SubgraphConfig } from '../graph/subgraphs';
 import { buildMainGraph, buildSubgraphGraph } from '../graph/data';
@@ -13,6 +13,8 @@ import {
   buildSubgraphById,
   buildNodesIndex,
   buildEdgesIndex,
+  buildSubviewByAnchorId,
+  buildSubviewById,
 } from '../hooks/dataIndexHelpers';
 
 type ScopedSubgraphConfig = {
@@ -46,6 +48,8 @@ export type GraphData = {
   maps: {
     subgraphByEntryId: Map<string, SubgraphConfig>;
     subgraphById: Map<string, SubgraphConfig>;
+    subviewByAnchorId: Map<string, SubviewDefinition>;
+    subviewById: Map<string, SubviewDefinition>;
   };
 };
 
@@ -87,7 +91,12 @@ export const buildGraphData = (): GraphData => {
     city: governmentDatasets.city.processes,
   };
 
-  // Step 4: Build subgraph configurations
+  // Step 4a: Collect all subviews from all datasets
+  const allSubviews: SubviewDefinition[] = Object.values(governmentDatasets).flatMap(
+    (dataset) => dataset.subviews ?? []
+  );
+
+  // Step 4b: Build subgraph configurations
   // Old format subgraphs (from subgraphs/ directory)
   const oldSubgraphConfigs: SubgraphConfig[] = (dataset.subgraphs ?? []).map((subgraph) => ({
     meta: subgraph,
@@ -117,11 +126,35 @@ export const buildGraphData = (): GraphData => {
     subgraphScopeById: buildSubgraphScopeIndex(scopedSubgraphConfigs),
   };
 
-  // Step 8: Build subgraph lookup maps
+  // Step 8: Build subgraph and subview lookup maps
   const maps = {
     subgraphByEntryId: buildSubgraphByEntryId(subgraphConfigs),
     subgraphById: buildSubgraphById(subgraphConfigs),
+    subviewByAnchorId: buildSubviewByAnchorId(allSubviews),
+    subviewById: buildSubviewById(allSubviews),
   };
+
+  // Test specific intra-tier nodes
+  const testNodes = ['city:vendors', 'city:MOCS', 'city:city_council_member', 'federal:oira'];
+  const nodeTests = testNodes.map(id => ({
+    id,
+    exists: indexes.nodesById.has(id),
+  }));
+
+  console.log('[GraphData] Built graph data at module load', {
+    totalSubviews: allSubviews.length,
+    subviewByAnchorIdSize: maps.subviewByAnchorId.size,
+    subviewByIdSize: maps.subviewById.size,
+    subgraphConfigsCount: subgraphConfigs.length,
+    nodeIndexSize: indexes.nodesById.size,
+    mainGraphNodeCount: mainGraph.nodes.length,
+    scopeNodeIds: {
+      city: scopeNodeIds.city.length,
+      state: scopeNodeIds.state.length,
+      federal: scopeNodeIds.federal.length
+    },
+    testIntraNodes: nodeTests,
+  });
 
   return {
     dataset,

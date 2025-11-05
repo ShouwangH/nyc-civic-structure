@@ -70,7 +70,8 @@ export const createSubviewController = (deps: SubviewControllerDeps): SubviewCon
       await processController.show(processDefinition, nodeInfos, edgeInfos);
     } else {
       // Convert to SubgraphConfig and use SubgraphController
-      const subgraphConfig = convertToSubgraphConfig(subview);
+      const subgraphConfig = convertToSubgraphConfig(subview, nodeInfosById);
+
       await subgraphController.activate(subgraphConfig.graph, {
         id: subgraphConfig.meta.id,
         entryNodeId: subgraphConfig.meta.entryNodeId,
@@ -140,12 +141,32 @@ function convertToProcessDefinition(subview: SubviewDefinition) {
  * Converts SubviewDefinition to SubgraphConfig format
  * Used for intra/inter/cross-jurisdictional subviews
  */
-function convertToSubgraphConfig(subview: SubviewDefinition): {
+function convertToSubgraphConfig(
+  subview: SubviewDefinition,
+  nodeInfosById: Map<string, GraphNodeInfo>
+): {
   meta: { id: string; entryNodeId: string };
   graph: GraphConfig;
 } {
   // Get entry node (anchor)
   const entryNodeId = subview.anchor?.nodeId || subview.anchor?.nodeIds?.[0] || subview.nodes[0];
+
+  // Build node data from nodeInfosById
+  const nodeData: GraphNodeInfo[] = subview.nodes
+    .map(nodeId => nodeInfosById.get(nodeId))
+    .filter((node): node is GraphNodeInfo => node !== undefined);
+
+  // Build edge data from subview edges
+  const edgeData: GraphEdgeInfo[] = subview.edges.map((edge, index) => ({
+    id: edge.label || `${subview.id}_edge_${index}`,
+    source: edge.source,
+    target: edge.target,
+    label: edge.label || '',
+    relation: edge.relation,
+    detail: edge.detail,
+    type: 'structural' as const,
+    process: [],
+  }));
 
   // Convert to Cytoscape element definitions
   const nodeElements = subview.nodes.map(nodeId => ({
@@ -156,7 +177,7 @@ function convertToSubgraphConfig(subview: SubviewDefinition): {
   const edgeElements = subview.edges.map((edge, index) => ({
     group: 'edges' as const,
     data: {
-      id: `${subview.id}_edge_${index}`,
+      id: edge.label || `${subview.id}_edge_${index}`,
       source: edge.source,
       target: edge.target,
       label: edge.label || '',
@@ -165,7 +186,7 @@ function convertToSubgraphConfig(subview: SubviewDefinition): {
   }));
 
   // Convert layout config
-  const layoutOptions = convertLayoutConfig(subview.layout);
+  const layoutOptions = convertLayoutConfig(subview.layout, subview);
 
   return {
     meta: {
@@ -173,8 +194,8 @@ function convertToSubgraphConfig(subview: SubviewDefinition): {
       entryNodeId,
     },
     graph: {
-      nodes: [],  // SubgraphController will fetch from main graph
-      edges: [],
+      nodes: nodeData,  // Actual node data for SubgraphController
+      edges: edgeData,  // Actual edge data for SubgraphController
       elements: [...nodeElements, ...edgeElements],
       layout: layoutOptions,
       nodesHavePreset: false,
@@ -183,9 +204,112 @@ function convertToSubgraphConfig(subview: SubviewDefinition): {
 }
 
 /**
+ * Calculate concentric levels based on hierarchical graph traversal from anchor
+ * Uses directional BFS: going down hierarchy (-1 level), going up hierarchy (+1 level)
+ */
+function calculateConcentricLevels(
+  nodes: string[],
+  edges: SubviewDefinition['edges'],
+  anchorNodeId: string
+): Map<string, number> {
+  const levels = new Map<string, number>();
+  const BASE_LEVEL = 100;
+
+  // Build directional adjacency lists
+  // children: nodes we point to (going DOWN hierarchy, level decreases)
+  // parents: nodes that point to us (going UP hierarchy, level increases)
+  const children = new Map<string, Set<string>>();
+  const parents = new Map<string, Set<string>>();
+
+  nodes.forEach(nodeId => {
+    children.set(nodeId, new Set());
+    parents.set(nodeId, new Set());
+  });
+
+  edges.forEach(edge => {
+    // source -> target: target is a child of source
+    children.get(edge.source)?.add(edge.target);
+    // target has source as parent
+    parents.get(edge.target)?.add(edge.source);
+  });
+
+  console.log('[Layout] Building hierarchical concentric levels from anchor:', {
+    anchorNodeId,
+    totalNodes: nodes.length,
+    totalEdges: edges.length,
+    childrenSize: children.size,
+    parentsSize: parents.size
+  });
+
+  // Directional BFS from anchor
+  const queue: Array<{ nodeId: string; level: number; direction: 'down' | 'up' | 'anchor' }> = [
+    { nodeId: anchorNodeId, level: BASE_LEVEL, direction: 'anchor' }
+  ];
+  const visited = new Set<string>();
+  visited.add(anchorNodeId);
+  levels.set(anchorNodeId, BASE_LEVEL);
+
+  while (queue.length > 0) {
+    const current = queue.shift()!;
+    const currentLevel = current.level;
+
+    // Traverse to children (DOWN hierarchy: level - 1)
+    const childNodes = children.get(current.nodeId) || new Set();
+    childNodes.forEach(childId => {
+      if (!visited.has(childId)) {
+        visited.add(childId);
+        const childLevel = currentLevel - 1;
+        levels.set(childId, childLevel);
+        queue.push({ nodeId: childId, level: childLevel, direction: 'down' });
+
+        console.log('[Layout] Assigned level (going DOWN):', {
+          from: current.nodeId,
+          to: childId,
+          fromLevel: currentLevel,
+          toLevel: childLevel,
+          direction: 'down'
+        });
+      }
+    });
+
+    // Traverse to parents (UP hierarchy: level + 1)
+    const parentNodes = parents.get(current.nodeId) || new Set();
+    parentNodes.forEach(parentId => {
+      if (!visited.has(parentId)) {
+        visited.add(parentId);
+        const parentLevel = currentLevel + 1;
+        levels.set(parentId, parentLevel);
+        queue.push({ nodeId: parentId, level: parentLevel, direction: 'up' });
+
+        console.log('[Layout] Assigned level (going UP):', {
+          from: current.nodeId,
+          to: parentId,
+          fromLevel: currentLevel,
+          toLevel: parentLevel,
+          direction: 'up'
+        });
+      }
+    });
+  }
+
+  // Handle disconnected nodes (assign lowest level)
+  nodes.forEach(nodeId => {
+    if (!levels.has(nodeId)) {
+      console.log('[Layout] Disconnected node, assigning level 1:', nodeId);
+      levels.set(nodeId, 1);
+    }
+  });
+
+  return levels;
+}
+
+/**
  * Converts SubviewLayoutConfig to Cytoscape LayoutOptions
  */
-function convertLayoutConfig(layoutConfig: SubviewDefinition['layout']): any {
+function convertLayoutConfig(
+  layoutConfig: SubviewDefinition['layout'],
+  subview: SubviewDefinition
+): any {
   const baseOptions = {
     animate: layoutConfig.animate ?? true,
     fit: layoutConfig.fit ?? true,
@@ -194,12 +318,30 @@ function convertLayoutConfig(layoutConfig: SubviewDefinition['layout']): any {
 
   switch (layoutConfig.type) {
     case 'concentric':
+      const centerOn = layoutConfig.options?.centerOn;
+      const anchorNodeId = centerOn || subview.anchor?.nodeId || subview.nodes[0];
+
+      console.log('[Layout] Concentric layout config:', {
+        centerOn,
+        anchorNodeId,
+        hasOptions: !!layoutConfig.options,
+        allOptions: layoutConfig.options
+      });
+
+      // Calculate levels based on graph structure
+      const nodeLevels = calculateConcentricLevels(subview.nodes, subview.edges, anchorNodeId);
+
       return {
         ...baseOptions,
         name: 'concentric',
         concentric: (node: any) => {
-          const centerOn = layoutConfig.options?.centerOn;
-          return node.id() === centerOn ? 2 : 1;
+          const nodeId = node.id();
+          const level = nodeLevels.get(nodeId) ?? 1;
+          console.log('[Layout] Concentric level lookup:', {
+            nodeId,
+            level
+          });
+          return level;
         },
         levelWidth: () => 1,
       };
@@ -251,6 +393,7 @@ function convertLayoutConfig(layoutConfig: SubviewDefinition['layout']): any {
  * (Processes may reference nodes that don't exist yet)
  */
 function createPlaceholderNode(id: string): GraphNodeInfo {
+  console.warn('[SubviewController] Creating placeholder for missing node:', id);
   return {
     id,
     label: id.split(':')[1] || id,

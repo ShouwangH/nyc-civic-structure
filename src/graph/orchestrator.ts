@@ -24,6 +24,9 @@ const createGraphRuntime: GraphRuntimeFactory = (
     mainGraph,
     subgraphByEntryId,
     subgraphById,
+    subviewByAnchorId,
+    subviewById,
+    scopeNodeIds,
     data,
     dispatch,
     setState, // NEW: Direct state setter for imperative handlers
@@ -223,24 +226,13 @@ const createGraphRuntime: GraphRuntimeFactory = (
         edgeInfosById,
       });
 
-      // Create imperative action handlers
-      // Build subview maps from subgraph maps (temporary compatibility)
-      const subviewByAnchorId = new Map<string, SubviewDefinition>();
-      const subviewById = new Map<string, SubviewDefinition>();
-
-      // TODO: Replace with actual SubviewDefinition data from GRAPH_DATA
-      // For now, this will work with legacy subgraph data
-
+      // Create imperative action handlers with actual data from GRAPH_DATA
       handlers = createGraphActionHandlers({
         subviewController,
         setState,
         subviewByAnchorId,
         subviewById,
-        scopeNodeIds: {
-          city: [],
-          state: [],
-          federal: [],
-        },
+        scopeNodeIds,
         focusNodes,
         clearNodeFocus,
       });

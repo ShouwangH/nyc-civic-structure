@@ -49,9 +49,9 @@ function App() {
   useGraphEffects(state, graphRef, { enabled: ENABLE_EFFECT_LAYER });
 
   // Static graph data - computed once at module load
-  const { dataset, mainGraph, allProcesses, indexes, maps } = GRAPH_DATA;
+  const { dataset, mainGraph, allProcesses, indexes, maps, scopeNodeIds } = GRAPH_DATA;
   const { nodesById } = indexes;
-  const { subgraphByEntryId, subgraphById } = maps;
+  const { subgraphByEntryId, subgraphById, subviewByAnchorId, subviewById } = maps;
 
   const handleScopeFocus = useCallback(
     (scope: GovernmentScope) => {
@@ -132,8 +132,11 @@ function App() {
               mainGraph={mainGraph}
               subgraphByEntryId={subgraphByEntryId}
               subgraphById={subgraphById}
+              subviewByAnchorId={subviewByAnchorId}
+              subviewById={subviewById}
               processes={allProcesses}
               nodesById={nodesById}
+              scopeNodeIds={scopeNodeIds}
               dispatch={dispatch}
               setState={setState} // NEW: Pass setState for imperative handlers
             />

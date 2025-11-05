@@ -188,6 +188,7 @@ export const createGraphActionHandlers = (config: CreateHandlersConfig): GraphAc
     if (scope) {
       // Focus on scope's nodes
       const nodeIds = scopeNodeIds[scope] ?? [];
+
       if (nodeIds.length > 0) {
         await focusNodes(nodeIds);
       }
