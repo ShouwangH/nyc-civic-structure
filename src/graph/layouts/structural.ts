@@ -1,5 +1,5 @@
 // ABOUTME: Structural layout configuration for non-workflow subviews
-// ABOUTME: Orchestrates different layout algorithms (concentric, elk-mrtree, elk-layered, elk-radial)
+// ABOUTME: Orchestrates different layout algorithms (concentric, elk-mrtree, elk-layered)
 
 import type { Core, LayoutOptions, NodeSingular, Position } from 'cytoscape';
 import type { SubviewDefinition } from '../../data/types';
@@ -55,20 +55,6 @@ export function createStructuralLayoutOptions(
           algorithm: 'layered',
           'elk.direction': layoutConfig.options?.direction || 'RIGHT',
           'elk.spacing.nodeNode': layoutConfig.options?.spacing || 80,
-          ...layoutConfig.options,
-        },
-        transform: (_node: NodeSingular, pos: Position): Position => ({
-          x: pos.x + entryPos.x,
-          y: pos.y + entryPos.y,
-        }),
-      } as LayoutOptions;
-
-    case 'elk-radial':
-      return {
-        ...baseOptions,
-        name: 'elk',
-        elk: {
-          algorithm: 'radial',
           ...layoutConfig.options,
         },
         transform: (_node: NodeSingular, pos: Position): Position => ({

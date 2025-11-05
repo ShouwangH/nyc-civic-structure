@@ -133,7 +133,7 @@ export type SubviewType =
   | 'workflow';              // Process flows
 
 export type SubviewLayoutConfig = {
-  type: 'elk-mrtree' | 'elk-layered' | 'concentric' | 'elk-radial';
+  type: 'elk-mrtree' | 'elk-layered' | 'concentric';
   options?: {
     direction?: 'DOWN' | 'UP' | 'RIGHT' | 'LEFT';
     spacing?: number;

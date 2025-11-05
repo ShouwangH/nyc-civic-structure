@@ -47,7 +47,7 @@ const transformNode = (node: StructureNode): GraphNodeInfo => ({
   factoid: node.factoid ?? 'No details available yet.',
   branchColor: branchPalette[node.branch ?? 'administrative'] ?? '#0f172a',
   system: categorizeSystem(node),
-  width: NODE_WIDTH,
+  width: ["city:nyc_charter","state:ny_state_constitution",'federal:us_constitution'].includes(node.id) ? NODE_WIDTH * 3 : NODE_WIDTH,
   height: NODE_HEIGHT,
   position: node.position,
 });

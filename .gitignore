@@ -17,6 +17,7 @@ dist-ssr
 # Data backups (created by export script)
 .backups
 data/backup-*
+data/subgraphs
 
 # Editor directories and files
 .vscode/*
@@ -35,3 +36,4 @@ data/backup-*
 .env*.local
 
 /scripts
+/docs
