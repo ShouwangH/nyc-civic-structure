@@ -22,6 +22,44 @@ type ScopedSubgraphConfig = {
   scope: GovernmentScope | null;
 };
 
+/**
+ * Converts a ProcessDefinition to a workflow-type SubviewDefinition
+ * This enables processes to flow through the unified subview system
+ */
+function convertProcessToSubview(
+  process: ProcessDefinition,
+  jurisdiction: GovernmentScope
+): SubviewDefinition {
+  return {
+    id: process.id,
+    label: process.label,
+    description: process.description,
+    type: 'workflow',
+    jurisdiction,
+    anchor: process.nodes.length > 0
+      ? { nodeId: process.nodes[0] }
+      : undefined,
+    nodes: process.nodes,
+    edges: process.edges.map(edge => ({
+      source: edge.source,
+      target: edge.target,
+    })),
+    layout: {
+      type: 'elk-layered',
+      options: {
+        direction: 'DOWN',
+        spacing: 50,
+      },
+      fit: true,
+      padding: 50,
+      animate: true,
+    },
+    metadata: {
+      steps: process.steps,
+    },
+  };
+}
+
 export type GraphData = {
   // Core data
   dataset: GovernmentDataset;
@@ -96,7 +134,25 @@ export const buildGraphData = (): GraphData => {
     (dataset) => dataset.subviews ?? []
   );
 
-  // Step 4b: Build subgraph configurations
+  // Step 4b: Convert processes to workflow-type subviews
+  const processSubviews: SubviewDefinition[] = [];
+  for (const [scope, processes] of Object.entries(processesByScope)) {
+    const scopeProcessSubviews = processes.map(process =>
+      convertProcessToSubview(process, scope as GovernmentScope)
+    );
+    processSubviews.push(...scopeProcessSubviews);
+  }
+
+  // Merge process subviews with existing subviews
+  const allSubviewsWithProcesses = [...allSubviews, ...processSubviews];
+
+  console.log('[GraphData] Converted processes to subviews', {
+    originalProcessCount: allProcesses.length,
+    processSubviewsCreated: processSubviews.length,
+    totalSubviews: allSubviewsWithProcesses.length,
+  });
+
+  // Step 4c: Build subgraph configurations
   // Old format subgraphs (from subgraphs/ directory)
   const oldSubgraphConfigs: SubgraphConfig[] = (dataset.subgraphs ?? []).map((subgraph) => ({
     meta: subgraph,
@@ -131,8 +187,8 @@ export const buildGraphData = (): GraphData => {
   const maps = {
     subgraphByEntryId: buildSubgraphByEntryId(subgraphConfigs),
     subgraphById: buildSubgraphById(subgraphConfigs),
-    subviewByAnchorId: buildSubviewByAnchorId(allSubviews),
-    subviewById: buildSubviewById(allSubviews),
+    subviewByAnchorId: buildSubviewByAnchorId(allSubviewsWithProcesses),
+    subviewById: buildSubviewById(allSubviewsWithProcesses),
   };
 
   // Test specific intra-tier nodes
@@ -144,7 +200,9 @@ export const buildGraphData = (): GraphData => {
   }));
 
   console.log('[GraphData] Built graph data at module load', {
-    totalSubviews: allSubviews.length,
+    totalSubviews: allSubviewsWithProcesses.length,
+    processSubviews: processSubviews.length,
+    regularSubviews: allSubviews.length,
     subviewByAnchorIdSize: maps.subviewByAnchorId.size,
     subviewByIdSize: maps.subviewById.size,
     subgraphConfigsCount: subgraphConfigs.length,

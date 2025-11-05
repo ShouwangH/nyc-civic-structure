@@ -135,13 +135,13 @@ const ControlsPanel = ({
                       key={process.id}
                       type="button"
                       onClick={() => {
-                        const graphHandle = graphRef.current;
-                        if (!graphHandle) return;
+                        const handlers = graphRef.current?.handlers;
+                        if (!handlers) return;
 
                         if (isActive) {
-                          void graphHandle.clearProcessHighlight();
+                          void handlers.deactivateAll();
                         } else {
-                          void graphHandle.highlightProcess(process.id);
+                          void handlers.activateSubview(process.id);
                         }
                       }}
                       className={getButtonClasses(isActive, 'small')}
