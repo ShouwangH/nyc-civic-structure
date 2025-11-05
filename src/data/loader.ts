@@ -75,6 +75,8 @@ const createElkLayout = (nodesHavePreset: boolean): LayoutOptions =>
           'elk.direction': 'DOWN',
           'elk.spacing.nodeNode': 80,
           'elk.layered.spacing.nodeNodeBetweenLayers': 80,
+          // TEMPORARY: Testing SPLINES edge routing (options: POLYLINE, ORTHOGONAL, SPLINES)
+          'elk.edgeRouting': 'SPLINES',
         },
       } as LayoutOptions);
 

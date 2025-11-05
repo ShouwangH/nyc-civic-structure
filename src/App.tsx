@@ -7,9 +7,9 @@ import { ControlsPanel } from './components/ControlsPanel';
 import { DetailsSidebar } from './components/DetailsSidebar';
 import { GraphCanvas, type GraphRuntime } from './components/GraphCanvas';
 import { governmentScopes } from './data/datasets';
-import type { GovernmentScope } from './data/datasets';
 import type { VisualizationState } from './graph/controller';
 import { GRAPH_DATA } from './data/loader';
+import { actions } from './graph/actions';
 
 cytoscape.use(cytoscapeElk);
 
@@ -94,18 +94,10 @@ function App() {
   }, []);
 
   const clearSelections = useCallback(() => {
-    runtime?.controller?.clearSelections();
+    if (runtime?.controller) {
+      void runtime.controller.dispatch(actions.clearSelections());
+    }
   }, [runtime]);
-
-  const handleScopeFocus = useCallback(
-    (scope: GovernmentScope) => {
-      const controller = runtime?.controller;
-      if (controller) {
-        void controller.handleScopeChange(scope);
-      }
-    },
-    [runtime],
-  );
 
   return (
     <div className="relative flex min-h-screen flex-col bg-[#eceae4]">
@@ -123,9 +115,6 @@ function App() {
         <ControlsPanel
           scopes={governmentScopes}
           activeScope={activeScope}
-          onScopeChange={(scope) => {
-            void handleScopeFocus(scope);
-          }}
           subviews={derived.visibleSubviews}
           processes={derived.visibleProcesses}
           activeSubviewId={activeSubviewId}
@@ -148,6 +137,7 @@ function App() {
               subviewById={subviewById}
               nodesById={nodesById}
               scopeNodeIds={scopeNodeIds}
+              state={state}
               setState={setState}
               onRuntimeReady={setRuntime}
             />

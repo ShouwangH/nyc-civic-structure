@@ -55,7 +55,7 @@
       "layout": {
         "type": "elk-layered",
         "options": {
-          "direction": "DOWN",
+          "direction": "RIGHT",
           "spacing": 50
         },
         "fit": true,
@@ -129,7 +129,7 @@
       "layout": {
         "type": "elk-layered",
         "options": {
-          "direction": "DOWN",
+          "direction": "RIGHT",
           "spacing": 50
         },
         "fit": true,
@@ -193,7 +193,7 @@
       "layout": {
         "type": "elk-layered",
         "options": {
-          "direction": "DOWN",
+          "direction": "RIGHT",
           "spacing": 50
         },
         "fit": true,
@@ -266,7 +266,7 @@
       "layout": {
         "type": "elk-layered",
         "options": {
-          "direction": "DOWN",
+          "direction": "RIGHT",
           "spacing": 50
         },
         "fit": true,
@@ -352,7 +352,7 @@
       "layout": {
         "type": "elk-layered",
         "options": {
-          "direction": "DOWN",
+          "direction": "RIGHT",
           "spacing": 50
         },
         "fit": true,
@@ -425,7 +425,7 @@
       "layout": {
         "type": "elk-layered",
         "options": {
-          "direction": "DOWN",
+          "direction": "RIGHT",
           "spacing": 50
         },
         "fit": true,
