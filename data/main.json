@@ -2646,12 +2646,6 @@
       ],
       "edges": [
         {
-          "source": "federal:white_house_vice_president",
-          "target": "federal:senate",
-          "relation": "presides_over",
-          "category": "hierarchical"
-        },
-        {
           "source": "federal:senate_president_pro_tem",
           "target": "federal:senate",
           "relation": "presides_over",
