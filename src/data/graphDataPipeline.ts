@@ -5,7 +5,6 @@ import type { SubgraphConfig } from '../graph/subgraphs';
 import { buildMainGraph, buildSubgraphGraph, buildGraphNode } from '../graph/data';
 import { buildUnifiedDataset } from './unifiedDataset';
 import { governmentDatasets } from './datasets';
-import { buildSubviewConfigs } from '../graph/subviews';
 import {
   buildNodeScopeIndex,
   buildSubgraphScopeIndex,
@@ -152,18 +151,12 @@ export const buildGraphData = (): GraphData => {
     totalSubviews: allSubviewsWithProcesses.length,
   });
 
-  // Step 4c: Build subgraph configurations
-  // Old format subgraphs (from subgraphs/ directory)
-  const oldSubgraphConfigs: SubgraphConfig[] = (dataset.subgraphs ?? []).map((subgraph) => ({
+  // Step 4c: Build subgraph configurations (old format only)
+  // Old format subgraphs kept for backward compatibility
+  const subgraphConfigs: SubgraphConfig[] = (dataset.subgraphs ?? []).map((subgraph) => ({
     meta: subgraph,
     graph: buildSubgraphGraph(subgraph),
   }));
-
-  // New format subviews (from intra JSON files)
-  const subviewConfigs = buildSubviewConfigs(governmentDatasets);
-
-  // Merge old and new configs
-  const subgraphConfigs: SubgraphConfig[] = [...oldSubgraphConfigs, ...subviewConfigs];
 
   // Step 5: Build node scope index
   const nodeScopeIndex = buildNodeScopeIndex(scopeNodeIds);
