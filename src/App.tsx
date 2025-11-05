@@ -56,16 +56,6 @@ function App() {
     [runtime],
   );
 
-  const handleClearSelection = useCallback(() => {
-    clearSelections();
-  }, [clearSelections]);
-
-  const handleConditionalHoverOff = useCallback(() => {
-    if (!selectionActive) {
-      setSidebarHover(false);
-    }
-  }, [selectionActive, setSidebarHover]);
-
   return (
     <div className="relative flex min-h-screen flex-col bg-[#eceae4]">
       <header className="border-b border-slate-200 bg-slate-100 px-6 py-5">
@@ -129,9 +119,13 @@ function App() {
             subgraphLabel={subgraphLabel}
             hasSelection={selectionActive}
             isSubgraphActive={Boolean(activeSubviewId)}
-            onClear={handleClearSelection}
+            onClear={clearSelections}
             onMouseEnter={() => setSidebarHover(true)}
-            onMouseLeave={handleConditionalHoverOff}
+            onMouseLeave={() => {
+              if (!selectionActive) {
+                setSidebarHover(false);
+              }
+            }}
           />
         )}
       </main>
@@ -139,7 +133,11 @@ function App() {
       <div
         className="fixed inset-y-0 right-0 w-4 lg:w-6"
         onMouseEnter={() => setSidebarHover(true)}
-        onMouseLeave={handleConditionalHoverOff}
+        onMouseLeave={() => {
+          if (!selectionActive) {
+            setSidebarHover(false);
+          }
+        }}
         aria-hidden="true"
       />
     </div>
