@@ -4,16 +4,13 @@ import { graphStyles } from './styles';
 import { captureInitialPositions } from './layout';
 import { createNodeFocusController, type NodeFocusController } from './node-focus-controller';
 import type { GraphEdgeInfo } from './types';
-import { createGraphInputHandler } from './inputHandler';
 import { createSubviewController, type SubviewController } from './subview-controller';
 import { createGraphActionHandlers, type GraphActionHandlers } from './actionHandlers';
 import type {
   GraphRuntime,
   GraphRuntimeConfig,
   GraphRuntimeDependencies,
-  GraphRuntimeEventHandlers,
   GraphRuntimeFactory,
-  GraphInputBinding,
 } from './runtimeTypes';
 
 const createGraphRuntime: GraphRuntimeFactory = (
@@ -34,10 +31,8 @@ const createGraphRuntime: GraphRuntimeFactory = (
   let nodeFocusController: NodeFocusController | null = null;
   let subviewController: SubviewController | null = null;
   let handlers: GraphActionHandlers | null = null;
-  let inputBinding: GraphInputBinding | null = null;
 
   const {
-    createInputHandler: createInputHandlerImpl = createGraphInputHandler,
     createCy = cytoscape,
   } = dependencies;
 
@@ -55,34 +50,7 @@ const createGraphRuntime: GraphRuntimeFactory = (
     await nodeFocusController.focus(nodeIds);
   };
 
-  const handleNodeTap = (nodeId: string) => {
-    handlers?.handleNodeClick(nodeId);
-  };
-
-  const handleEdgeTap = (edgeId: string) => {
-    handlers?.handleEdgeClick(edgeId);
-  };
-
-  const handleBackgroundTap = () => {
-    handlers?.handleBackgroundClick();
-  };
-
-  const handleZoom = () => {
-    // Disabled: zoom interactions should no longer clear selections or reset the view.
-  };
-
-  const eventHandlers: GraphRuntimeEventHandlers = {
-    handleNodeTap,
-    handleEdgeTap,
-    handleBackgroundTap,
-    handleZoom,
-  };
-
   const destroy = () => {
-    if (inputBinding) {
-      inputBinding.detach();
-      inputBinding = null;
-    }
     if (cy) {
       cy.destroy();
       cy = null;
@@ -135,6 +103,21 @@ const createGraphRuntime: GraphRuntimeFactory = (
         focusNodes,
         clearNodeFocus,
       });
+
+      // Bind Cytoscape events directly to handlers
+      cyInstance.on('tap', 'node', (event) => {
+        handlers?.handleNodeClick(event.target.id());
+      });
+
+      cyInstance.on('tap', 'edge', (event) => {
+        handlers?.handleEdgeClick(event.target.id());
+      });
+
+      cyInstance.on('tap', (event) => {
+        if (event.target === cyInstance) {
+          void handlers?.handleBackgroundClick();
+        }
+      });
     }
 
     cyInstance.one('layoutstop', () => {
@@ -146,9 +129,6 @@ const createGraphRuntime: GraphRuntimeFactory = (
       const layout = cyInstance.layout(mainGraph.layout);
       layout.run();
     });
-
-    inputBinding = createInputHandlerImpl(cyInstance, eventHandlers);
-    inputBinding.attach();
   };
 
   const runtime: GraphRuntime = {
@@ -157,10 +137,6 @@ const createGraphRuntime: GraphRuntimeFactory = (
     focusNodes,
     clearNodeFocus,
     getCy,
-    handleNodeTap: eventHandlers.handleNodeTap,
-    handleEdgeTap: eventHandlers.handleEdgeTap,
-    handleBackgroundTap: eventHandlers.handleBackgroundTap,
-    handleZoom: eventHandlers.handleZoom,
     get handlers() {
       return handlers;
     },

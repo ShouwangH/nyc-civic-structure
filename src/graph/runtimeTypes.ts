@@ -32,32 +32,15 @@ export type GraphRuntimeAccessors = {
   getCy: () => Core | null;
 };
 
-export type GraphInputBinding = {
-  attach: () => void;
-  detach: () => void;
-};
-
 export type GraphRuntimeDependencies = {
-  createInputHandler?: (
-    cy: Core,
-    runtimeHandlers: GraphRuntimeEventHandlers,
-  ) => GraphInputBinding;
   createCy?: (options: CytoscapeOptions) => Core;
 };
 
-export type GraphRuntimeEventHandlers = {
-  handleNodeTap: (nodeId: string) => void;
-  handleEdgeTap: (edgeId: string) => void;
-  handleBackgroundTap: () => void;
-  handleZoom: () => void;
-};
-
 export type GraphRuntime = GraphRuntimeCommands &
-  GraphRuntimeAccessors &
-  GraphRuntimeEventHandlers & {
+  GraphRuntimeAccessors & {
     initialize: () => void;
     destroy: () => void;
-    handlers: GraphActionHandlers | null; // NEW: Imperative action handlers
+    handlers: GraphActionHandlers | null;
   };
 
 export type GraphRuntimeFactory = (
