@@ -74,7 +74,7 @@ const createGraphRuntime: GraphRuntimeFactory = (
     // Create node focus controller
     nodeFocusController = createNodeFocusController({ cy: cyInstance });
 
-    // NEW: Create SubviewController if setState is provided
+    // Create SubviewController for interactive features if setState is provided
     if (setState) {
       const nodeInfosById = data.nodesById;
       const edgeInfosById = new Map<string, GraphEdgeInfo>();

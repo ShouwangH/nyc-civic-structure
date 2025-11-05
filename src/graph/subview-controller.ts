@@ -1,7 +1,7 @@
 // ABOUTME: Unified subview controller handling all subview types
 // ABOUTME: Manages activation, styling, layout, and cleanup for workflow and structural views
 
-import type { Core } from 'cytoscape';
+import type { Core, LayoutOptions, NodeSingular, Position } from 'cytoscape';
 import type { SubviewDefinition, SubviewType } from '../data/types';
 import type { GraphNodeInfo, GraphEdgeInfo } from './types';
 import type { MainLayoutOptions } from './layout';
@@ -280,7 +280,7 @@ export const createSubviewController = (deps: SubviewControllerDeps): SubviewCon
  * Creates layout options for structural subviews (non-workflow)
  * Uses SubviewDefinition.layout config, positioned relative to entry node
  */
-function createStructuralLayoutOptions(subview: SubviewDefinition, cy: Core): any {
+function createStructuralLayoutOptions(subview: SubviewDefinition, cy: Core): LayoutOptions {
   const layoutConfig = subview.layout;
   const entryNodeId = subview.anchor?.nodeId || subview.anchor?.nodeIds?.[0] || subview.nodes[0];
   const entryNode = cy.getElementById(entryNodeId);
@@ -309,11 +309,11 @@ function createStructuralLayoutOptions(subview: SubviewDefinition, cy: Core): an
           'elk.spacing.nodeNode': layoutConfig.options?.spacing || 60,
           ...layoutConfig.options,
         },
-        transform: (_node: any, pos: { x: number; y: number }) => ({
+        transform: (_node: NodeSingular, pos: Position): Position => ({
           x: pos.x + entryPos.x,
           y: pos.y + entryPos.y,
         }),
-      };
+      } as LayoutOptions;
 
     case 'elk-layered':
       return {
@@ -325,11 +325,11 @@ function createStructuralLayoutOptions(subview: SubviewDefinition, cy: Core): an
           'elk.spacing.nodeNode': layoutConfig.options?.spacing || 80,
           ...layoutConfig.options,
         },
-        transform: (_node: any, pos: { x: number; y: number }) => ({
+        transform: (_node: NodeSingular, pos: Position): Position => ({
           x: pos.x + entryPos.x,
           y: pos.y + entryPos.y,
         }),
-      };
+      } as LayoutOptions;
 
     case 'elk-radial':
       return {
@@ -339,11 +339,11 @@ function createStructuralLayoutOptions(subview: SubviewDefinition, cy: Core): an
           algorithm: 'radial',
           ...layoutConfig.options,
         },
-        transform: (_node: any, pos: { x: number; y: number }) => ({
+        transform: (_node: NodeSingular, pos: Position): Position => ({
           x: pos.x + entryPos.x,
           y: pos.y + entryPos.y,
         }),
-      };
+      } as LayoutOptions;
 
     default:
       return {
@@ -359,20 +359,20 @@ function createStructuralLayoutOptions(subview: SubviewDefinition, cy: Core): an
 function createConcentricLayout(
   subview: SubviewDefinition,
   anchorNodeId: string,
-  baseOptions: any
-): any {
+  baseOptions: Record<string, unknown>
+): LayoutOptions {
   const nodeLevels = calculateConcentricLevels(subview.nodes, subview.edges, anchorNodeId);
 
   return {
     ...baseOptions,
     name: 'concentric',
-    concentric: (node: any) => {
+    concentric: (node: NodeSingular): number => {
       const nodeId = node.id();
       const level = nodeLevels.get(nodeId) ?? 1;
       return level;
     },
     levelWidth: () => 1,
-  };
+  } as LayoutOptions;
 }
 
 /**

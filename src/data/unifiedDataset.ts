@@ -112,10 +112,10 @@ export const buildUnifiedDataset = (): UnifiedDatasetResult => {
     ...governmentDatasets.city.processes,
   ];
 
-  const combinedSubgraphs = [
-    ...(governmentDatasets.federal.subgraphs ?? []),
-    ...(governmentDatasets.state.subgraphs ?? []),
-    ...(governmentDatasets.city.subgraphs ?? []),
+  const combinedSubviews = [
+    ...(governmentDatasets.federal.subviews ?? []),
+    ...(governmentDatasets.state.subviews ?? []),
+    ...(governmentDatasets.city.subviews ?? []),
   ];
 
   const dataset: GovernmentDataset = {
@@ -126,7 +126,7 @@ export const buildUnifiedDataset = (): UnifiedDatasetResult => {
     nodes: combinedNodes,
     edges: combinedEdges,
     processes: combinedProcesses,
-    subgraphs: combinedSubgraphs,
+    subviews: combinedSubviews.length > 0 ? combinedSubviews : undefined,
   };
 
   const scopeNodeIds: Record<GovernmentScope, string[]> = scopeGroups.reduce(

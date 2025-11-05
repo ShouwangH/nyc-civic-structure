@@ -141,8 +141,8 @@ export const buildGraphData = (): GraphData => {
   // Step 5: Build all indexes
   const allGraphNodes = dataset.nodes.map(buildGraphNode);
   const indexes = {
-    nodesById: buildNodesIndex(mainGraph, [], allGraphNodes),
-    edgesById: buildEdgesIndex(mainGraph, []),
+    nodesById: buildNodesIndex(mainGraph, allGraphNodes),
+    edgesById: buildEdgesIndex(mainGraph),
     nodeScopeIndex,
   };
 

@@ -1,4 +1,4 @@
-import type { Core, LayoutOptions } from 'cytoscape';
+import type { Core, LayoutOptions, NodeSingular, Position } from 'cytoscape';
 import type cytoscape from 'cytoscape';
 import type { GraphConfig } from './types';
 import { animateFitToCollection, ANIMATION_DURATION, ANIMATION_EASING, type CyCollection } from './animation';
@@ -91,7 +91,7 @@ export const createProcessLayoutOptions = (
       animate: true,
       animationDuration,
       animationEasing,
-      transform: (_node: any, pos: { x: number; y: number }) => ({
+      transform: (_node: NodeSingular, pos: Position): Position => ({
         x: pos.x + centerX,
         y: pos.y + centerY,
       }),

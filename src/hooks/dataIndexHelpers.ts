@@ -1,6 +1,5 @@
 import type { GovernmentScope } from '../data/datasets';
 import type { GraphConfig, GraphEdgeInfo, GraphNodeInfo } from '../graph/types';
-import type { SubgraphConfig } from '../graph/subgraphs';
 
 /**
  * Builds an index mapping node IDs to their government scope
@@ -20,51 +19,10 @@ export const buildNodeScopeIndex = (
 };
 
 /**
- * Builds an index mapping subgraph IDs and entry node IDs to their scope
- */
-export const buildSubgraphScopeIndex = (
-  scopedSubgraphs: Array<{ config: SubgraphConfig; scope: GovernmentScope | null }>
-): Map<string, GovernmentScope | null> => {
-  const map = new Map<string, GovernmentScope | null>();
-  scopedSubgraphs.forEach(({ config, scope }) => {
-    map.set(config.meta.id, scope);
-    map.set(config.meta.entryNodeId, scope);
-  });
-  return map;
-};
-
-/**
- * Builds an index mapping subgraph entry node IDs to their config
- */
-export const buildSubgraphByEntryId = (
-  subgraphConfigs: SubgraphConfig[]
-): Map<string, SubgraphConfig> => {
-  const map = new Map<string, SubgraphConfig>();
-  subgraphConfigs.forEach((config) => {
-    map.set(config.meta.entryNodeId, config);
-  });
-  return map;
-};
-
-/**
- * Builds an index mapping subgraph IDs to their config
- */
-export const buildSubgraphById = (
-  subgraphConfigs: SubgraphConfig[]
-): Map<string, SubgraphConfig> => {
-  const map = new Map<string, SubgraphConfig>();
-  subgraphConfigs.forEach((config) => {
-    map.set(config.meta.id, config);
-  });
-  return map;
-};
-
-/**
- * Builds an index of all nodes (dataset nodes + main graph + subgraphs)
+ * Builds an index of all nodes (dataset nodes + main graph)
  */
 export const buildNodesIndex = (
   mainGraph: GraphConfig,
-  subgraphConfigs: SubgraphConfig[],
   allNodes: GraphNodeInfo[]
 ): Map<string, GraphNodeInfo> => {
   const map = new Map<string, GraphNodeInfo>();
@@ -75,34 +33,18 @@ export const buildNodesIndex = (
   // Override with mainGraph versions (may have layout-specific properties)
   mainGraph.nodes.forEach((node) => map.set(node.id, node));
 
-  // Override with subgraph versions (may have subgraph-specific properties)
-  subgraphConfigs.forEach((config) => {
-    config.graph.nodes.forEach((node) => {
-      map.set(node.id, node);
-    });
-  });
-
   return map;
 };
 
 /**
- * Builds an index of all edges (main graph + subgraphs)
+ * Builds an index of all edges from main graph
  */
 export const buildEdgesIndex = (
-  mainGraph: GraphConfig,
-  subgraphConfigs: SubgraphConfig[]
+  mainGraph: GraphConfig
 ): Map<string, GraphEdgeInfo> => {
   const map = new Map<string, GraphEdgeInfo>();
 
   mainGraph.edges.forEach((edge) => map.set(edge.id, edge));
-
-  subgraphConfigs.forEach((config) => {
-    config.graph.edges.forEach((edge) => {
-      if (!map.has(edge.id)) {
-        map.set(edge.id, edge);
-      }
-    });
-  });
 
   return map;
 };

@@ -59,20 +59,6 @@ export type ProcessesFile = {
   processes: ProcessDefinition[];
 };
 
-export type SubgraphElements = {
-  nodes: Array<{ data: Record<string, unknown> }>;
-  edges: Array<{ data: Record<string, unknown> }>;
-};
-
-export type SubgraphFile = {
-  id: string;
-  label: string;
-  entryNodeId: string;
-  description?: string;
-  layoutType?: 'concentric' | 'elk-mrtree' | 'elk-layered';
-  elements: SubgraphElements;
-};
-
 export type GovernmentScope = 'city' | 'state' | 'federal';
 
 // Edge relationship taxonomy and visual encoding

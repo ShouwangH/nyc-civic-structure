@@ -6,15 +6,12 @@ import type {
   RawEdge,
   StructureData,
   StructureNode,
-  SubgraphFile,
 } from '../data/types';
 
 export type SystemCategory =
   | 'charter'
   | 'process'
-  | 'borough'
-  | 'subgraph-node'
-  | 'subgraph-hub';
+  | 'borough';
 
 const categorizeSystem = (node: StructureNode): SystemCategory => {
   if (node.branch === 'community') {
@@ -88,116 +85,6 @@ export const buildMainGraph = (structure: StructureData, edges: EdgesData): Grap
     elements: [...nodeElements, ...edgeElements],
     layout: createElkLayout(nodesHavePreset),
     nodesHavePreset,
-  };
-};
-
-const BRANCH_BY_TYPE: Record<string, string> = {
-  office: 'executive',
-  category: 'administrative',
-};
-
-const DEFAULT_BRANCH = 'administrative';
-
-const deriveSubgraphBranch = (rawType: string, declaredBranch?: string): string => {
-  return declaredBranch ?? BRANCH_BY_TYPE[rawType] ?? DEFAULT_BRANCH;
-};
-
-export const buildSubgraphGraph = (subgraph: SubgraphFile): GraphConfig => {
-  const nodes: GraphNodeInfo[] = subgraph.elements.nodes.map((nodeWrapper) => {
-    const raw = nodeWrapper.data ?? {};
-    const id = String(raw.id);
-    const label = String(raw.label ?? raw.id);
-    const rawType = String(raw.type ?? 'agency').toLowerCase();
-    const branch = deriveSubgraphBranch(rawType, typeof raw.branch === 'string' ? raw.branch : undefined);
-
-    const system: SystemCategory =
-      id === subgraph.entryNodeId
-        ? 'subgraph-hub'
-        : rawType === 'office'
-          ? 'charter'
-          : 'subgraph-node';
-
-    return {
-      id,
-      label,
-      branch,
-      type: rawType,
-      process: Array.isArray(raw.process) ? (raw.process as string[]) : [],
-      factoid:
-        typeof raw.factoid === 'string'
-          ? raw.factoid
-          : rawType === 'agency'
-            ? `${label} is overseen by the executive branch.`
-            : label,
-      branchColor:
-        system === 'subgraph-hub'
-          ? '#0ea5e9'
-          : branchPalette[normalizeBranch(branch)] ?? '#0f172a',
-      system,
-      width: NODE_WIDTH,
-      height: NODE_HEIGHT,
-    };
-  });
-
-  const edges: GraphEdgeInfo[] = subgraph.elements.edges.map((edgeWrapper) => {
-    const raw = edgeWrapper.data ?? {};
-    const source = typeof raw.source === 'string' ? raw.source : String(raw.source ?? '');
-    const target = typeof raw.target === 'string' ? raw.target : String(raw.target ?? '');
-    const label = '';
-    const type = 'relationship';
-
-    return {
-      id: raw.id ? String(raw.id) : `${source}->${target}`,
-      source,
-      target,
-      label,
-      type,
-      process: [],
-    };
-  });
-
-  const nodeElements = nodes.map((node) => ({ data: node }));
-  const edgeElements = edges.map((edge) => ({ data: edge }));
-
-  const layout: LayoutOptions =
-    subgraph.layoutType === 'elk-mrtree'
-      ? ({
-          name: 'elk',
-          fit: true,
-          padding: 80,
-          animate: false,
-          elk: {
-          algorithm: 'mrtree',
-          'elk.direction': 'DOWN',
-          'elk.spacing.nodeNode': 80,
-          'elk.layered.spacing.nodeNodeBetweenLayers': 80,
-          },
-        } as LayoutOptions)
-      : ({
-          name: 'concentric',
-          fit: true,
-          padding: 80,
-          animate: false,
-          minNodeSpacing: 60,
-          avoidOverlap: true,
-          concentric: (node) => {
-            if (node.id() === subgraph.entryNodeId) {
-              return 3;
-            }
-            if (String(node.data('type')).toLowerCase() === 'office') {
-              return 2;
-            }
-            return 1;
-          },
-          levelWidth: () => 1,
-        } as LayoutOptions);
-
-  return {
-    nodes,
-    edges,
-    elements: [...nodeElements, ...edgeElements],
-    layout,
-    nodesHavePreset: false,
   };
 };
 
