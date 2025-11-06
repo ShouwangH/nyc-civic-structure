@@ -52,8 +52,6 @@ export function createStructuralLayoutOptions(
           algorithm: 'mrtree',
           'elk.direction': layoutConfig.options?.direction || 'DOWN',
           'elk.spacing.nodeNode': layoutConfig.options?.spacing || 60,
-          // TEMPORARY: Testing SPLINES edge routing (options: POLYLINE, ORTHOGONAL, SPLINES)
-          'elk.edgeRouting': 'SPLINES',
           ...layoutConfig.options,
         },
         transform: (_node: NodeSingular, pos: Position): Position => ({
@@ -70,8 +68,6 @@ export function createStructuralLayoutOptions(
           algorithm: 'layered',
           'elk.direction': layoutConfig.options?.direction || 'RIGHT',
           'elk.spacing.nodeNode': layoutConfig.options?.spacing || 80,
-          // TEMPORARY: Testing SPLINES edge routing (options: POLYLINE, ORTHOGONAL, SPLINES)
-          'elk.edgeRouting': 'SPLINES',
           ...layoutConfig.options,
         },
         transform: (_node: NodeSingular, pos: Position): Position => ({

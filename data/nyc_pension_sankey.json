@@ -1,0 +1,87 @@
+{
+  "meta": {
+    "source": "NYC Comptroller Monthly Performance Reviews 09-2025",
+    "total_aum_billion": 301.7
+  },
+  "nodes": [
+    {"name": "NYC Pension System"},
+    {"name": "NYCERS"}, {"name": "TRS"}, {"name": "Police"}, {"name": "Fire"}, {"name": "BERS"},
+    {"name": "Public Equities"}, {"name": "Fixed Income"}, {"name": "Private Markets"},
+    {"name": "US Large Cap"}, {"name": "US Small/Mid Cap"}, {"name": "Developed ex-US"}, {"name": "Emerging Markets"},
+    {"name": "Core Fixed Income"}, {"name": "High Yield / Loans"}, {"name": "Alternative Credit"},
+    {"name": "Private Equity"}, {"name": "Real Estate"}, {"name": "Infrastructure"}, {"name": "Alternatives"},
+    {"name": "Blackstone"}, {"name": "KKR"}, {"name": "Carlyle"}, {"name": "Vista"}, {"name": "TPG"}, {"name": "Brookfield PE"},
+    {"name": "Neuberger Berman"}, {"name": "Emerging Manager PE"},
+    {"name": "Brookfield RE"}, {"name": "Heitman"}, {"name": "PGIM"}, {"name": "JP Morgan RE"}, {"name": "Clarion"}, {"name": "Starwood"}, {"name": "ETI Housing"},
+    {"name": "Brookfield Infra"}, {"name": "Macquarie"}, {"name": "Grosvenor"}, {"name": "BlackRock Infra"}, {"name": "Stonepeak"}, {"name": "KKR Infra"},
+    {"name": "BlackRock Credit"}, {"name": "Wellington"}, {"name": "AQR"}, {"name": "Canyon"}, {"name": "Blackstone Hedge"}, {"name": "ETI Credit"}
+  ],
+  "links": [
+    {"source": "NYC Pension System", "target": "NYCERS", "value": 104.8},
+    {"source": "NYC Pension System", "target": "TRS", "value": 98.1},
+    {"source": "NYC Pension System", "target": "Police", "value": 48.2},
+    {"source": "NYC Pension System", "target": "Fire", "value": 28.6},
+    {"source": "NYC Pension System", "target": "BERS", "value": 22.0},
+
+    {"source": "NYCERS", "target": "Public Equities", "value": 45.1},
+    {"source": "NYCERS", "target": "Fixed Income", "value": 32.6},
+    {"source": "NYCERS", "target": "Private Markets", "value": 27.1},
+    {"source": "TRS", "target": "Public Equities", "value": 42.3},
+    {"source": "TRS", "target": "Fixed Income", "value": 30.0},
+    {"source": "TRS", "target": "Private Markets", "value": 25.8},
+    {"source": "Police", "target": "Public Equities", "value": 20.8},
+    {"source": "Police", "target": "Fixed Income", "value": 14.5},
+    {"source": "Police", "target": "Private Markets", "value": 13.0},
+    {"source": "Fire", "target": "Public Equities", "value": 12.5},
+    {"source": "Fire", "target": "Fixed Income", "value": 9.0},
+    {"source": "Fire", "target": "Private Markets", "value": 7.1},
+    {"source": "BERS", "target": "Public Equities", "value": 9.3},
+    {"source": "BERS", "target": "Fixed Income", "value": 6.4},
+    {"source": "BERS", "target": "Private Markets", "value": 5.2},
+
+    {"source": "Public Equities", "target": "US Large Cap", "value": 81.5},
+    {"source": "Public Equities", "target": "US Small/Mid Cap", "value": 15.0},
+    {"source": "Public Equities", "target": "Developed ex-US", "value": 24.0},
+    {"source": "Public Equities", "target": "Emerging Markets", "value": 9.0},
+
+    {"source": "Fixed Income", "target": "Core Fixed Income", "value": 66.4},
+    {"source": "Fixed Income", "target": "High Yield / Loans", "value": 18.1},
+    {"source": "Fixed Income", "target": "Alternative Credit", "value": 10.5},
+
+    {"source": "Private Markets", "target": "Private Equity", "value": 26.3},
+    {"source": "Private Markets", "target": "Real Estate", "value": 18.4},
+    {"source": "Private Markets", "target": "Infrastructure", "value": 9.1},
+    {"source": "Private Markets", "target": "Alternatives", "value": 13.6},
+
+    {"source": "Private Equity", "target": "Blackstone", "value": 4.7},
+    {"source": "Private Equity", "target": "KKR", "value": 3.7},
+    {"source": "Private Equity", "target": "Carlyle", "value": 3.1},
+    {"source": "Private Equity", "target": "Vista", "value": 2.6},
+    {"source": "Private Equity", "target": "TPG", "value": 2.1},
+    {"source": "Private Equity", "target": "Brookfield PE", "value": 1.6},
+    {"source": "Private Equity", "target": "Neuberger Berman", "value": 1.3},
+    {"source": "Private Equity", "target": "Emerging Manager PE", "value": 1.0},
+
+    {"source": "Real Estate", "target": "Brookfield RE", "value": 2.8},
+    {"source": "Real Estate", "target": "Heitman", "value": 1.8},
+    {"source": "Real Estate", "target": "PGIM", "value": 1.6},
+    {"source": "Real Estate", "target": "JP Morgan RE", "value": 1.5},
+    {"source": "Real Estate", "target": "Clarion", "value": 1.3},
+    {"source": "Real Estate", "target": "Starwood", "value": 0.9},
+    {"source": "Real Estate", "target": "ETI Housing", "value": 0.7},
+
+    {"source": "Infrastructure", "target": "Brookfield Infra", "value": 2.0},
+    {"source": "Infrastructure", "target": "Macquarie", "value": 1.6},
+    {"source": "Infrastructure", "target": "Grosvenor", "value": 1.4},
+    {"source": "Infrastructure", "target": "BlackRock Infra", "value": 1.1},
+    {"source": "Infrastructure", "target": "Stonepeak", "value": 0.9},
+    {"source": "Infrastructure", "target": "KKR Infra", "value": 0.7},
+
+    {"source": "Alternatives", "target": "BlackRock Credit", "value": 2.7},
+    {"source": "Alternatives", "target": "Wellington", "value": 2.0},
+    {"source": "Alternatives", "target": "AQR", "value": 1.6},
+    {"source": "Alternatives", "target": "Canyon", "value": 1.3},
+    {"source": "Alternatives", "target": "Blackstone Hedge", "value": 1.3},
+    {"source": "Alternatives", "target": "ETI Credit", "value": 0.4}
+  ]
+}

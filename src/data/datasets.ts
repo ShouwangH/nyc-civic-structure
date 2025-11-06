@@ -70,10 +70,10 @@ const buildDataset = (
     tier: 'main' as const,
   }));
 
-  // Annotate intra nodes with tier
+  // Annotate intra nodes with tier (preserve existing tier if set, otherwise default to 'intra')
   const annotatedIntraNodes = intraData.nodes.map(node => ({
     ...node,
-    tier: 'intra' as const,
+    tier: (node.tier as 'main' | 'intra' | 'detailed' | undefined) || ('intra' as const),
   }));
 
   // Merge subviews from main.json, intra files, and workflow files

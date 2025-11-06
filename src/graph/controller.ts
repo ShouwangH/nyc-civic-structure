@@ -48,6 +48,7 @@ export type ControllerConfig = {
   subviewByAnchorId: Map<string, SubviewDefinition>;
   subviewById: Map<string, SubviewDefinition>;
   scopeNodeIds: Record<GovernmentScope, string[]>;
+  nodeScopeIndex: Map<string, GovernmentScope>;
   nodeInfosById: Map<string, GraphNodeInfo>;
   edgeInfosById: Map<string, GraphEdgeInfo>;
   runMainGraphLayout: (options?: MainLayoutOptions) => Promise<void>;
@@ -69,6 +70,7 @@ export function createController(config: ControllerConfig): Controller {
     getState,
     subviewById,
     scopeNodeIds,
+    nodeScopeIndex,
     nodeInfosById,
     runMainGraphLayout,
   } = config;
@@ -381,9 +383,21 @@ export function createController(config: ControllerConfig): Controller {
       node.addClass('highlighted');
     }
 
+    // Determine the scope of the clicked node
+    const nodeScope = nodeScopeIndex.get(nodeId);
+    const currentState = getState();
+
+    // Set activeScope to the node's scope if not already set or different
+    const shouldUpdateScope = nodeScope && currentState.activeScope !== nodeScope;
+
+    if (shouldUpdateScope) {
+      applyScopeStyling(nodeScope);
+    }
+
     // Update React state (transition function handles mutual exclusivity and sidebar)
     transitionVisualizationState({
       selectedNodeId: nodeId,
+      ...(shouldUpdateScope ? { activeScope: nodeScope } : {}),
     });
   };
 

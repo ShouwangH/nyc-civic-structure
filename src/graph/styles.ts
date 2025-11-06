@@ -95,7 +95,7 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
     },
   },
   {
-    selector: '.process-active',
+    selector: 'node.process-active',
     style: {
       'background-color': 'data(branchColor)',
       'border-color': '#2563eb',
@@ -135,7 +135,7 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
     },
   },
   {
-    selector: '.highlighted',
+    selector: 'node.highlighted',
     style: {
       'border-color': '#0284c7',
       'border-width': '4px',

@@ -21,6 +21,7 @@ type GraphCanvasProps = {
   subviewById: Map<string, SubviewDefinition>;
   nodesById: Map<string, GraphNodeInfo>;
   scopeNodeIds: Record<GovernmentScope, string[]>;
+  nodeScopeIndex: Map<string, GovernmentScope>;
   state: VisualizationState;
   setState: SetState;
   onRuntimeReady?: (runtime: GraphRuntime) => void;
@@ -33,6 +34,7 @@ const GraphCanvas = ({
   subviewById,
   nodesById,
   scopeNodeIds,
+  nodeScopeIndex,
   state,
   setState,
   onRuntimeReady,
@@ -69,6 +71,7 @@ const GraphCanvas = ({
       subviewByAnchorId,
       subviewById,
       scopeNodeIds,
+      nodeScopeIndex,
       nodeInfosById: nodesById,
       edgeInfosById,
       runMainGraphLayout: async () => {
@@ -111,7 +114,7 @@ const GraphCanvas = ({
     return () => {
       runtime.destroy();
     };
-  }, [mainGraph, nodesById, setState, subviewByAnchorId, subviewById, scopeNodeIds, onRuntimeReady]);
+  }, [mainGraph, nodesById, setState, subviewByAnchorId, subviewById, scopeNodeIds, nodeScopeIndex, onRuntimeReady]);
 
   return <div ref={containerRef} className={className} role="presentation" />;
 };
