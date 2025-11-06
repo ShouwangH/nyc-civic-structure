@@ -4,6 +4,7 @@
 import type { Core } from 'cytoscape';
 import type { SubviewDefinition, SubviewType } from '../../data/types';
 import type { GraphNodeInfo, GraphEdgeInfo } from './types';
+import type { SankeyData } from '../sankey/types';
 import type { MainLayoutOptions} from './layout';
 import {
   copyPosition,
@@ -27,6 +28,10 @@ export type VisualizationState = {
   activeScope: GovernmentScope | null;
   controlsOpen: boolean;
   sidebarHover: boolean;
+  sankeyOverlay?: {
+    subview: SubviewDefinition;
+    data: SankeyData;
+  } | null;
 };
 
 export type SetState = (updater: (prev: VisualizationState) => VisualizationState) => void;
@@ -158,6 +163,34 @@ export function createController(config: ControllerConfig): Controller {
     // Guard: check duplicate activation
     if (activeSubview?.id === subview.id) {
       return;
+    }
+
+    // Special handling for overlay renderTarget (e.g., Sankey)
+    // Overlays are additive - they don't replace node selection or manipulate Cytoscape
+    if (subview.renderTarget === 'overlay') {
+      if (subview.type === 'sankey' && subview.sankeyData) {
+        // Load Sankey data file (add .json extension for Vite dynamic imports)
+        try {
+          const dataPath = subview.sankeyData.path.endsWith('.json')
+            ? subview.sankeyData.path
+            : `${subview.sankeyData.path}.json`;
+          const dataModule = await import(`../../../${dataPath}`);
+          const sankeyData: SankeyData = dataModule.default;
+
+          // Update state to show Sankey overlay (preserves selectedNodeId)
+          transitionVisualizationState({
+            sankeyOverlay: {
+              subview,
+              data: sankeyData,
+            },
+            // Note: selectedNodeId is preserved (not modified)
+            // activeSubviewId stays null (overlays don't set this)
+          });
+        } catch (error) {
+          console.error('Failed to load Sankey data:', error);
+        }
+      }
+      return; // Don't proceed with Cytoscape manipulation
     }
 
     // Deactivate current if any
@@ -292,6 +325,18 @@ export function createController(config: ControllerConfig): Controller {
   };
 
   const deactivateSubview = async (): Promise<void> => {
+    const currentState = getState();
+
+    // Handle overlay subviews (Sankey, etc.) - they don't have activeSubview state
+    if (currentState.sankeyOverlay) {
+      transitionVisualizationState({
+        sankeyOverlay: null,
+        // Preserve selectedNodeId - return to the node that was selected
+        // Don't modify activeSubviewId, selectedNodeId, or selectedEdgeId
+      });
+      return;
+    }
+
     const currentSubview = activeSubview;
     if (!currentSubview || transitionInProgress) {
       transitionVisualizationState({
