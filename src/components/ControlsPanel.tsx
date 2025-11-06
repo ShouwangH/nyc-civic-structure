@@ -1,7 +1,7 @@
 import type { GovernmentScope } from '../data/datasets';
 import type { SubviewDefinition } from '../data/types';
-import type { Controller } from '../graph/controller';
-import { actions } from '../graph/actions';
+import type { Controller } from '../visualization/cytoscape/controller';
+import { actions } from '../visualization/cytoscape/actions';
 
 type ScopeOption = {
   id: GovernmentScope;

@@ -58,7 +58,7 @@ const buildDataset = (
   scope: GovernmentScope,
   label: string,
   description: string,
-  intraData: { nodes: StructureNode[]; edges?: RawEdge[]; subviews?: unknown[] },
+  intraData: { nodes: any[]; edges?: any[]; subviews?: unknown[] },
   workflowData: { subviews: unknown[] },
 ): GovernmentDataset => {
   const mainNodes = extractMainNodes(scope);
@@ -71,10 +71,15 @@ const buildDataset = (
   }));
 
   // Annotate intra nodes with tier (preserve existing tier if set, otherwise default to 'intra')
-  const annotatedIntraNodes = intraData.nodes.map(node => ({
-    ...node,
-    tier: (node.tier as 'main' | 'intra' | 'detailed' | undefined) || ('intra' as const),
-  }));
+  const annotatedIntraNodes = intraData.nodes.map(node => {
+    const validTier = node.tier;
+    return {
+      ...node,
+      tier: (validTier === 'main' || validTier === 'intra' || validTier === 'detailed'
+        ? validTier
+        : 'intra') as 'main' | 'intra' | 'detailed',
+    };
+  });
 
   // Merge subviews from main.json, intra files, and workflow files
   const mainSubviews = extractMainSubviews(scope);

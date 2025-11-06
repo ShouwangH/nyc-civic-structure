@@ -2,7 +2,7 @@
 // ABOUTME: Only place that directly mutates cytoscape instance and calls setState
 
 import type { Core } from 'cytoscape';
-import type { SubviewDefinition, SubviewType } from '../data/types';
+import type { SubviewDefinition, SubviewType } from '../../data/types';
 import type { GraphNodeInfo, GraphEdgeInfo } from './types';
 import type { MainLayoutOptions} from './layout';
 import {
@@ -17,7 +17,7 @@ import {
   applyStructuralSubviewClasses,
 } from './styles-application';
 import { createStructuralLayoutOptions } from './layouts';
-import type { GovernmentScope } from '../data/datasets';
+import type { GovernmentScope } from '../../data/datasets';
 import type { GraphAction } from './actions';
 
 export type VisualizationState = {

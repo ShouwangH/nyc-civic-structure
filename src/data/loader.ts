@@ -5,8 +5,8 @@ import type { LayoutOptions } from 'cytoscape';
 import { governmentDatasets } from './datasets';
 import type { GovernmentScope, GovernmentDataset } from './datasets';
 import type { SubviewDefinition, StructureNode, RawEdge } from './types';
-import type { GraphConfig, GraphEdgeInfo, GraphNodeInfo } from '../graph/types';
-import { branchPalette, NODE_HEIGHT, NODE_WIDTH } from '../graph/constants';
+import type { GraphConfig, GraphEdgeInfo, GraphNodeInfo } from '../visualization/cytoscape/types';
+import { branchPalette, NODE_HEIGHT, NODE_WIDTH } from '../visualization/cytoscape/constants';
 
 export type GraphData = {
   // Core data

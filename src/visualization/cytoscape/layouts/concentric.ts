@@ -2,7 +2,7 @@
 // ABOUTME: Calculates node levels using bidirectional BFS from anchor node
 
 import type { LayoutOptions, NodeSingular } from 'cytoscape';
-import type { SubviewDefinition } from '../../data/types';
+import type { SubviewDefinition } from '../../../data/types';
 
 /**
  * Calculate concentric levels based on hierarchical graph traversal from anchor

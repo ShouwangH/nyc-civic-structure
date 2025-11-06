@@ -2,7 +2,7 @@
 // ABOUTME: Orchestrates different layout algorithms (concentric, elk-mrtree, elk-layered)
 
 import type { Core, LayoutOptions, NodeSingular, Position } from 'cytoscape';
-import type { SubviewDefinition } from '../../data/types';
+import type { SubviewDefinition } from '../../../data/types';
 import { ANIMATION_DURATION, ANIMATION_EASING } from '../animation';
 import { createConcentricLayout } from './concentric';
 

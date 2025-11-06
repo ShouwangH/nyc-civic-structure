@@ -7,9 +7,9 @@ import { ControlsPanel } from './components/ControlsPanel';
 import { DetailsSidebar } from './components/DetailsSidebar';
 import { GraphCanvas, type GraphRuntime } from './components/GraphCanvas';
 import { governmentScopes } from './data/datasets';
-import type { VisualizationState } from './graph/controller';
+import type { VisualizationState } from './visualization/cytoscape/controller';
 import { GRAPH_DATA } from './data/loader';
-import { actions } from './graph/actions';
+import { actions } from './visualization/cytoscape/actions';
 
 cytoscape.use(cytoscapeElk);
 

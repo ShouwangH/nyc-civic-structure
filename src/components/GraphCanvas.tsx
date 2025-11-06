@@ -1,13 +1,13 @@
 import { useEffect, useRef } from 'react';
 import cytoscape from 'cytoscape';
 import type { Core } from 'cytoscape';
-import type { GraphConfig, GraphNodeInfo, GraphEdgeInfo } from '../graph/types';
+import type { GraphConfig, GraphNodeInfo, GraphEdgeInfo } from '../visualization/cytoscape/types';
 import type { SubviewDefinition } from '../data/types';
 import type { GovernmentScope } from '../data/datasets';
-import type { SetState, Controller, VisualizationState } from '../graph/controller';
-import { createController } from '../graph/controller';
-import { setupInputHandler } from '../graph/inputHandler';
-import { graphStyles } from '../graph/styles';
+import type { SetState, Controller, VisualizationState } from '../visualization/cytoscape/controller';
+import { createController } from '../visualization/cytoscape/controller';
+import { setupInputHandler } from '../visualization/cytoscape/inputHandler';
+import { graphStyles } from '../visualization/cytoscape/styles';
 
 export type GraphRuntime = {
   cy: Core;
