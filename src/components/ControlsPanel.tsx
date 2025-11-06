@@ -1,6 +1,6 @@
 import type { GovernmentScope } from '../data/datasets';
 import type { SubviewDefinition } from '../data/types';
-import type { Controller } from '../visualization/cytoscape/controller';
+import type { InputHandler } from '../visualization/cytoscape/inputHandler';
 import { actions } from '../visualization/cytoscape/actions';
 
 type ScopeOption = {
@@ -16,7 +16,7 @@ type ControlsPanelProps = {
   activeSubviewId: string | null;
   isOpen: boolean;
   onToggleOpen: () => void;
-  controller: Controller | null;
+  inputHandler: InputHandler | null;
 };
 
 const getButtonClasses = (isActive: boolean, size: 'default' | 'small' = 'default'): string => {
@@ -37,7 +37,7 @@ const ControlsPanel = ({
   activeSubviewId,
   isOpen,
   onToggleOpen,
-  controller,
+  inputHandler,
 }: ControlsPanelProps) => {
   const activeProcess = activeSubviewId
     ? processes.find((process) => process.id === activeSubviewId) ?? null
@@ -70,8 +70,8 @@ const ControlsPanel = ({
                   key={scope.id}
                   type="button"
                   onClick={() => {
-                    if (!controller) return;
-                    void controller.dispatch(actions.changeScope(scope.id));
+                    if (!inputHandler) return;
+                    void inputHandler.enqueue(actions.changeScope(scope.id));
                   }}
                   className={getButtonClasses(activeScope === scope.id)}
                 >
@@ -98,12 +98,12 @@ const ControlsPanel = ({
                       key={subview.id}
                       type="button"
                       onClick={() => {
-                        if (!controller) return;
+                        if (!inputHandler) return;
 
                         if (isActive) {
-                          void controller.dispatch(actions.backgroundClick());
+                          void inputHandler.enqueue(actions.backgroundClick());
                         } else {
-                          void controller.dispatch(actions.activateSubview(subview.id));
+                          void inputHandler.enqueue(actions.activateSubview(subview.id));
                         }
                       }}
                       className={getButtonClasses(isActive)}
@@ -133,14 +133,14 @@ const ControlsPanel = ({
                       key={process.id}
                       type="button"
                       onClick={() => {
-                        if (!controller) {
+                        if (!inputHandler) {
                           return;
                         }
 
                         if (isActive) {
-                          void controller.dispatch(actions.backgroundClick());
+                          void inputHandler.enqueue(actions.backgroundClick());
                         } else {
-                          void controller.dispatch(actions.activateSubview(process.id));
+                          void inputHandler.enqueue(actions.activateSubview(process.id));
                         }
                       }}
                       className={getButtonClasses(isActive, 'small')}

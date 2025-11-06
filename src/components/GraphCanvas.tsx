@@ -6,12 +6,14 @@ import type { SubviewDefinition } from '../data/types';
 import type { GovernmentScope } from '../data/datasets';
 import type { SetState, Controller, VisualizationState } from '../visualization/cytoscape/controller';
 import { createController } from '../visualization/cytoscape/controller';
+import type { InputHandler } from '../visualization/cytoscape/inputHandler';
 import { setupInputHandler } from '../visualization/cytoscape/inputHandler';
 import { graphStyles } from '../visualization/cytoscape/styles';
 
 export type GraphRuntime = {
   cy: Core;
   controller: Controller;
+  inputHandler: InputHandler;
   destroy: () => void;
 };
 
@@ -83,7 +85,7 @@ const GraphCanvas = ({
     });
 
     // 3. Wire up input handler (pure event translation)
-    setupInputHandler({
+    const inputHandler = setupInputHandler({
       cy,
       controller,
     });
@@ -104,6 +106,7 @@ const GraphCanvas = ({
     const runtime: GraphRuntime = {
       cy,
       controller,
+      inputHandler,
       destroy: () => {
         cy.destroy();
       },

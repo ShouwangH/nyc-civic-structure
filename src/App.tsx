@@ -110,8 +110,8 @@ function App() {
   }, []);
 
   const clearSelections = useCallback(() => {
-    if (runtime?.controller) {
-      void runtime.controller.dispatch(actions.clearSelections());
+    if (runtime?.inputHandler) {
+      void runtime.inputHandler.enqueue(actions.clearSelections());
     }
   }, [runtime]);
 
@@ -136,7 +136,7 @@ function App() {
           activeSubviewId={activeSubviewId}
           isOpen={controlsOpen}
           onToggleOpen={toggleControlsOpen}
-          controller={runtime?.controller ?? null}
+          inputHandler={runtime?.inputHandler ?? null}
         />
 
         <section
@@ -202,8 +202,8 @@ function App() {
           subview={sankeyOverlay.subview}
           data={sankeyOverlay.data}
           onClose={() => {
-            if (runtime?.controller) {
-              void runtime.controller.dispatch(actions.deactivateSubview());
+            if (runtime?.inputHandler) {
+              void runtime.inputHandler.enqueue(actions.deactivateSubview());
             }
           }}
           controlPanelWidth={controlsOpen ? window.innerWidth * 0.25 : 64}
