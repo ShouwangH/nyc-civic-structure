@@ -58,7 +58,7 @@ const buildDataset = (
   scope: GovernmentScope,
   label: string,
   description: string,
-  intraData: { nodes: any[]; edges?: any[]; subviews?: unknown[] },
+  intraData: { nodes: StructureNode[]; edges?: RawEdge[]; subviews?: unknown[] },
   workflowData: { subviews: unknown[] },
 ): GovernmentDataset => {
   const mainNodes = extractMainNodes(scope);
@@ -71,15 +71,10 @@ const buildDataset = (
   }));
 
   // Annotate intra nodes with tier (preserve existing tier if set, otherwise default to 'intra')
-  const annotatedIntraNodes = intraData.nodes.map(node => {
-    const validTier = node.tier;
-    return {
-      ...node,
-      tier: (validTier === 'main' || validTier === 'intra' || validTier === 'detailed'
-        ? validTier
-        : 'intra') as 'main' | 'intra' | 'detailed',
-    };
-  });
+  const annotatedIntraNodes: StructureNode[] = intraData.nodes.map(node => ({
+    ...node,
+    tier: (node.tier as 'main' | 'intra' | 'detailed' | undefined) || 'intra',
+  }));
 
   // Merge subviews from main.json, intra files, and workflow files
   const mainSubviews = extractMainSubviews(scope);
@@ -106,21 +101,21 @@ export const governmentDatasets: Record<GovernmentScope, GovernmentDataset> = {
     'city',
     'New York City',
     'Complete NYC government including city-wide governance and borough advisory structures.',
-    cityIntra,
+    cityIntra as { nodes: StructureNode[]; edges?: RawEdge[]; subviews?: unknown[] },
     cityWorkflows,
   ),
   state: buildDataset(
     'state',
     'New York State',
     'High-level structure of New York State government as defined by the State Constitution and related laws.',
-    stateIntra,
+    stateIntra as { nodes: StructureNode[]; edges?: RawEdge[]; subviews?: unknown[] },
     stateWorkflows,
   ),
   federal: buildDataset(
     'federal',
     'United States',
     'High-level structure of the U.S. federal government as defined by the Constitution.',
-    federalIntra,
+    federalIntra as { nodes: StructureNode[]; edges?: RawEdge[]; subviews?: unknown[] },
     federalWorkflows,
   ),
 };

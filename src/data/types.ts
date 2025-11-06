@@ -130,7 +130,8 @@ export type SubviewType =
   | 'inter'                  // Inter-entity relationships (default main view)
   | 'intra'                  // Intra-entity (internal structure)
   | 'cross-jurisdictional'   // Cross-level relationships
-  | 'workflow';              // Process flows
+  | 'workflow'               // Process flows
+  | 'sankey';                // Sankey diagram (financial flows, etc.)
 
 export type SubviewLayoutConfig = {
   type: 'elk-mrtree' | 'elk-layered' | 'concentric';
@@ -151,6 +152,11 @@ export type SubviewLayoutConfig = {
 // - Otherwise, fallback heuristic: anchor node = 3, offices = 2, others = 1
 // - Higher numbers = closer to center
 
+export type SankeyReference = {
+  type: 'file';
+  path: string;  // e.g., 'data/nyc_pension_sankey.json'
+};
+
 export type SubviewDefinition = {
   // Identity
   id: string;
@@ -161,6 +167,11 @@ export type SubviewDefinition = {
   type: SubviewType;
   jurisdiction: GovernmentScope | 'multi';
 
+  // Render target: where this subview is displayed
+  // 'cytoscape': manipulates the cytoscape graph (adds/removes nodes, styles)
+  // 'overlay': renders in separate overlay layer (e.g., Sankey, timeline, etc.)
+  renderTarget?: 'cytoscape' | 'overlay';  // Defaults to 'cytoscape'
+
   // Anchor nodes (what triggers this view)
   anchor?: {
     nodeId?: string;        // Single anchor node
@@ -168,7 +179,9 @@ export type SubviewDefinition = {
   };
 
   // Content (REFERENCES ONLY - no ephemeral nodes)
-  nodes: string[];          // Node IDs that must exist in main graph
+  // For cytoscape renderTarget: Node IDs that must exist in main graph
+  // For overlay renderTarget: May be empty
+  nodes: string[];
   edges: Array<{
     source: string;
     target: string;
@@ -176,6 +189,9 @@ export type SubviewDefinition = {
     detail?: string;
     label?: string;
   }>;
+
+  // For overlay renderTarget with external data (e.g., Sankey)
+  sankeyData?: SankeyReference;
 
   // Presentation (FIXED per subview)
   layout: SubviewLayoutConfig;

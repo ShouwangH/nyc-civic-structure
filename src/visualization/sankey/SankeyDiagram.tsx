@@ -6,9 +6,8 @@ import {
   sankey as d3Sankey,
   sankeyLinkHorizontal,
   sankeyJustify,
-  type SankeyLayout,
 } from 'd3-sankey';
-import type { SankeyData, SankeyNode, SankeyLink, SankeyNodeData, SankeyLinkData } from './types';
+import type { SankeyData, SankeyNode, SankeyLink } from './types';
 import {
   getNodeColor,
   getGradientId,
@@ -39,11 +38,8 @@ export function SankeyDiagram({
 
   // Compute Sankey layout using d3-sankey
   const { nodes, links, gradients } = useMemo(() => {
-    // Create sankey layout generator
-    const sankeyGenerator: SankeyLayout<SankeyNodeData, SankeyLinkData> = d3Sankey<
-      SankeyNodeData,
-      SankeyLinkData
-    >()
+    // Create sankey layout generator (using any to avoid d3-sankey generic complexity)
+    const sankeyGenerator = d3Sankey<any, any>()
       .nodeWidth(NODE_WIDTH)
       .nodePadding(NODE_PADDING)
       .extent([
@@ -55,12 +51,12 @@ export function SankeyDiagram({
 
     // Compute layout
     const graph = sankeyGenerator({
-      nodes: data.nodes.map(d => ({ ...d })),
-      links: data.links.map(d => ({ ...d })),
-    });
+      nodes: data.nodes.map(d => ({ ...d })) as any,
+      links: data.links.map(d => ({ ...d })) as any,
+    }) as { nodes: SankeyNode[]; links: SankeyLink[] };
 
     // Generate gradient definitions for links
-    const gradientDefs = graph.links.map(link => {
+    const gradientDefs = graph.links.map((link) => {
       const sourceNode = link.source as SankeyNode;
       const targetNode = link.target as SankeyNode;
       const gradientId = getGradientId(sourceNode.name, targetNode.name);
@@ -116,7 +112,7 @@ export function SankeyDiagram({
     >
       {/* Define gradients for links */}
       <defs>
-        {gradients.map(gradient => (
+        {gradients.map((gradient) => (
           <linearGradient
             key={gradient.id}
             id={gradient.id}
