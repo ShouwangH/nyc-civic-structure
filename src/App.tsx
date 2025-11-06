@@ -6,6 +6,7 @@ import clsx from 'clsx';
 import { ControlsPanel } from './components/ControlsPanel';
 import { DetailsSidebar } from './components/DetailsSidebar';
 import { GraphCanvas, type GraphRuntime } from './components/GraphCanvas';
+import { SankeyOverlay } from './components/SankeyOverlay';
 import { governmentScopes } from './data/datasets';
 import type { VisualizationState } from './visualization/cytoscape/controller';
 import { GRAPH_DATA } from './data/loader';
@@ -26,7 +27,7 @@ function App() {
     sidebarHover: false,
   });
 
-  const { selectedNodeId, selectedEdgeId, activeSubviewId, activeScope, controlsOpen, sidebarHover } = state;
+  const { selectedNodeId, selectedEdgeId, activeSubviewId, activeScope, controlsOpen, sidebarHover, sankeyOverlay } = state;
 
   // Static graph data - computed once at module load
   const { dataset, mainGraph, indexes, maps, scopeNodeIds } = GRAPH_DATA;
@@ -195,6 +196,19 @@ function App() {
         }}
         aria-hidden="true"
       />
+
+      {sankeyOverlay && (
+        <SankeyOverlay
+          subview={sankeyOverlay.subview}
+          data={sankeyOverlay.data}
+          onClose={() => {
+            if (runtime?.controller) {
+              void runtime.controller.dispatch(actions.deactivateSubview());
+            }
+          }}
+          controlPanelWidth={controlsOpen ? window.innerWidth * 0.25 : 64}
+        />
+      )}
     </div>
   );
 }

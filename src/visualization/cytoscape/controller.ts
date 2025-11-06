@@ -169,6 +169,20 @@ export function createController(config: ControllerConfig): Controller {
     // Overlays are additive - they don't replace node selection or manipulate Cytoscape
     if (subview.renderTarget === 'overlay') {
       if (subview.type === 'sankey' && subview.sankeyData) {
+        // Determine scope - use subview jurisdiction if it's a valid scope (not 'multi')
+        const subviewScope = subview.jurisdiction !== 'multi' ? subview.jurisdiction : null;
+
+        // Apply scope styling for overlays since they don't manipulate the graph
+        if (subviewScope) {
+          applyScopeStyling(subviewScope);
+        }
+
+        // Set activeSubviewId and scope IMMEDIATELY so ControlPanel syncs before async operation
+        transitionVisualizationState({
+          activeSubviewId: subview.id,
+          ...(subviewScope ? { activeScope: subviewScope } : {}),
+        });
+
         // Load Sankey data file (add .json extension for Vite dynamic imports)
         try {
           const dataPath = subview.sankeyData.path.endsWith('.json')
@@ -177,17 +191,19 @@ export function createController(config: ControllerConfig): Controller {
           const dataModule = await import(`../../../${dataPath}`);
           const sankeyData: SankeyData = dataModule.default;
 
-          // Update state to show Sankey overlay (preserves selectedNodeId)
+          // Update state to add Sankey overlay (preserves selectedNodeId and activeSubviewId)
           transitionVisualizationState({
             sankeyOverlay: {
               subview,
               data: sankeyData,
             },
-            // Note: selectedNodeId is preserved (not modified)
-            // activeSubviewId stays null (overlays don't set this)
           });
         } catch (error) {
           console.error('Failed to load Sankey data:', error);
+          // Clear activeSubviewId on error
+          transitionVisualizationState({
+            activeSubviewId: null,
+          });
         }
       }
       return; // Don't proceed with Cytoscape manipulation
@@ -316,11 +332,19 @@ export function createController(config: ControllerConfig): Controller {
 
     transitionInProgress = false;
 
+    // Determine scope - use subview jurisdiction if it's a valid scope (not 'multi')
+    const subviewScope = subview.jurisdiction !== 'multi' ? subview.jurisdiction : null;
+
+    // NOTE: Don't call applyScopeStyling here - subview styling already handles all dimming.
+    // The applyProcessHighlightClasses/applyStructuralSubviewClasses functions dim everything
+    // outside the subview, which is more specific than scope-level dimming.
+
     // Update React state
     transitionVisualizationState({
       activeSubviewId: subview.id,
       selectedNodeId: null,
       selectedEdgeId: null,
+      ...(subviewScope ? { activeScope: subviewScope } : {}),
     });
   };
 
@@ -331,8 +355,8 @@ export function createController(config: ControllerConfig): Controller {
     if (currentState.sankeyOverlay) {
       transitionVisualizationState({
         sankeyOverlay: null,
+        activeSubviewId: null,
         // Preserve selectedNodeId - return to the node that was selected
-        // Don't modify activeSubviewId, selectedNodeId, or selectedEdgeId
       });
       return;
     }
@@ -478,6 +502,12 @@ export function createController(config: ControllerConfig): Controller {
   const handleBackgroundClick = async (): Promise<void> => {
     const currentState = getState();
 
+    // If there's an overlay open, close it (preserve node selection)
+    if (currentState.sankeyOverlay) {
+      await deactivateSubview();
+      return;
+    }
+
     // If there's a selected node or edge, clear only selections (keep activeScope)
     if (currentState.selectedNodeId || currentState.selectedEdgeId) {
       clearSelections();
@@ -570,6 +600,19 @@ export function createController(config: ControllerConfig): Controller {
     switch (action.type) {
       case 'NODE_CLICK': {
         const { nodeId } = action.payload;
+        const currentState = getState();
+
+        // If there's an active subview and we're clicking outside it, deactivate first
+        if (currentState.activeSubviewId && activeSubview) {
+          const isNodeInSubview = activeSubview.affectedNodeIds.has(nodeId);
+          if (!isNodeInSubview) {
+            // Clicking outside active subview - deactivate it first
+            await deactivateSubview();
+            // Fall through to handle the click normally
+          }
+        }
+
+        // Now handle the node click
         const subview = config.subviewByAnchorId.get(nodeId);
 
         if (subview) {
@@ -578,8 +621,12 @@ export function createController(config: ControllerConfig): Controller {
           if (isActive) {
             // Re-clicking active subview - use hierarchical clearing
             await handleBackgroundClick();
+          } else if (subview.renderTarget === 'overlay') {
+            // Overlay subviews don't auto-activate on node click - just select the node
+            // User must explicitly activate via ControlPanel
+            selectNode(nodeId);
           } else {
-            // Activate subview
+            // Cytoscape subviews auto-activate on node click
             await activateSubview(subview.id);
           }
         } else {

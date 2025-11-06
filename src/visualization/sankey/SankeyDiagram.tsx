@@ -160,6 +160,22 @@ export function SankeyDiagram({
           const isHovered = hoveredNodeId === node.index;
           const nodeColor = getNodeColor(node.name);
 
+          // Calculate dynamic font size based on node height
+          const nodeHeight = node.y1! - node.y0!;
+          const minFontSize = 10;
+          const maxFontSize = 30;
+          const minHeight = 20;  // Minimum node height for smallest font
+          const maxHeight = 100; // Node height for largest font
+
+          // Linear interpolation between min and max font sizes
+          const fontSize = Math.max(
+            minFontSize,
+            Math.min(
+              maxFontSize,
+              minFontSize + ((nodeHeight - minHeight) / (maxHeight - minHeight)) * (maxFontSize - minFontSize)
+            )
+          );
+
           return (
             <g key={`node-${i}`}>
               {/* Node rectangle */}
@@ -185,7 +201,7 @@ export function SankeyDiagram({
                 y={(node.y0! + node.y1!) / 2}
                 dy="0.35em"
                 textAnchor={node.x0! < width / 2 ? 'start' : 'end'}
-                fontSize={12}
+                fontSize={fontSize}
                 fontFamily="SF Pro Display, sans-serif"
                 fill="#374151"
                 style={{ pointerEvents: 'none', userSelect: 'none' }}
@@ -197,10 +213,10 @@ export function SankeyDiagram({
               {isHovered && node.value && (
                 <text
                   x={node.x0! < width / 2 ? node.x1! + 6 : node.x0! - 6}
-                  y={(node.y0! + node.y1!) / 2 + 16}
+                  y={(node.y0! + node.y1!) / 2 + Math.max(12, fontSize * 0.6)}
                   dy="0.35em"
                   textAnchor={node.x0! < width / 2 ? 'start' : 'end'}
-                  fontSize={10}
+                  fontSize={Math.max(8, fontSize * 0.6)}
                   fontFamily="SF Pro Display, sans-serif"
                   fill="#6b7280"
                   style={{ pointerEvents: 'none', userSelect: 'none' }}
