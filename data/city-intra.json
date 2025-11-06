@@ -1921,6 +1921,30 @@
         "fit": true,
         "padding": 120
       }
+    },
+    {
+      "id": "city:comptroller-pension-allocation",
+      "label": "NYC Pension Investment Allocation",
+      "description": "Detailed breakdown of $301.7B NYC pension fund investments from 5 systems through asset classes to individual investment managers",
+      "type": "sankey",
+      "jurisdiction": "city",
+      "renderTarget": "overlay",
+      "anchor": {
+        "nodeId": "city:comptroller"
+      },
+      "nodes": [],
+      "edges": [],
+      "sankeyData": {
+        "type": "file",
+        "path": "data/nyc_pension_sankey.json"
+      },
+      "layout": {
+        "type": "elk-layered"
+      },
+      "metadata": {
+        "tags": ["financial", "pensions", "investments"],
+        "importance": "high"
+      }
     }
   ]
 }
