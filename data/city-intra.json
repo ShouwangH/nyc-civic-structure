@@ -1936,7 +1936,7 @@
       "edges": [],
       "sankeyData": {
         "type": "file",
-        "path": "data/nyc_pension_sankey.json"
+        "path": "/data/nyc_pension_sankey.json"
       },
       "layout": {
         "type": "elk-layered"
@@ -1960,7 +1960,7 @@
       "edges": [],
       "sunburstData": {
         "type": "file",
-        "path": "data/nyc_revenue_sunburst_fy2025.json"
+        "path": "/data/nyc_revenue_sunburst_fy2025.json"
       },
       "layout": {
         "type": "elk-layered"
