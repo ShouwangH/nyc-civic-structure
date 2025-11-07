@@ -1945,6 +1945,30 @@
         "tags": ["financial", "pensions", "investments"],
         "importance": "high"
       }
+    },
+    {
+      "id": "city:comptroller-revenue-breakdown",
+      "label": "NYC Revenue Breakdown FY2025",
+      "description": "Interactive hierarchical breakdown of $120.5B NYC revenue sources from funding types through revenue categories to individual sources",
+      "type": "sunburst",
+      "jurisdiction": "city",
+      "renderTarget": "overlay",
+      "anchor": {
+        "nodeId": "city:comptroller"
+      },
+      "nodes": [],
+      "edges": [],
+      "sunburstData": {
+        "type": "file",
+        "path": "data/nyc_revenue_sunburst_fy2025.json"
+      },
+      "layout": {
+        "type": "elk-layered"
+      },
+      "metadata": {
+        "tags": ["financial", "revenue", "budget"],
+        "importance": "high"
+      }
     }
   ]
 }

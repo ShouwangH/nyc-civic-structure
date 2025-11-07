@@ -5,6 +5,7 @@ import type { Core } from 'cytoscape';
 import type { SubviewDefinition, SubviewType } from '../../data/types';
 import type { GraphNodeInfo, GraphEdgeInfo } from './types';
 import type { SankeyData } from '../sankey/types';
+import type { SunburstData } from '../sunburst/types';
 import type { MainLayoutOptions} from './layout';
 import {
   copyPosition,
@@ -31,6 +32,10 @@ export type VisualizationState = {
   sankeyOverlay?: {
     subview: SubviewDefinition;
     data: SankeyData;
+  } | null;
+  sunburstOverlay?: {
+    subview: SubviewDefinition;
+    data: SunburstData;
   } | null;
 };
 
@@ -165,7 +170,7 @@ export function createController(config: ControllerConfig): Controller {
       return;
     }
 
-    // Special handling for overlay renderTarget (e.g., Sankey)
+    // Special handling for overlay renderTarget (e.g., Sankey, Sunburst)
     // Overlays are additive - they don't replace node selection or manipulate Cytoscape
     if (subview.renderTarget === 'overlay') {
       if (subview.type === 'sankey' && subview.sankeyData) {
@@ -200,6 +205,43 @@ export function createController(config: ControllerConfig): Controller {
           });
         } catch (error) {
           console.error('Failed to load Sankey data:', error);
+          // Clear activeSubviewId on error
+          transitionVisualizationState({
+            activeSubviewId: null,
+          });
+        }
+      } else if (subview.type === 'sunburst' && subview.sunburstData) {
+        // Determine scope - use subview jurisdiction if it's a valid scope (not 'multi')
+        const subviewScope = subview.jurisdiction !== 'multi' ? subview.jurisdiction : null;
+
+        // Apply scope styling for overlays since they don't manipulate the graph
+        if (subviewScope) {
+          applyScopeStyling(subviewScope);
+        }
+
+        // Set activeSubviewId and scope IMMEDIATELY so ControlPanel syncs before async operation
+        transitionVisualizationState({
+          activeSubviewId: subview.id,
+          ...(subviewScope ? { activeScope: subviewScope } : {}),
+        });
+
+        // Load Sunburst data file (add .json extension for Vite dynamic imports)
+        try {
+          const dataPath = subview.sunburstData.path.endsWith('.json')
+            ? subview.sunburstData.path
+            : `${subview.sunburstData.path}.json`;
+          const dataModule = await import(`../../../${dataPath}`);
+          const sunburstData: SunburstData = dataModule.default;
+
+          // Update state to add Sunburst overlay (preserves selectedNodeId and activeSubviewId)
+          transitionVisualizationState({
+            sunburstOverlay: {
+              subview,
+              data: sunburstData,
+            },
+          });
+        } catch (error) {
+          console.error('Failed to load Sunburst data:', error);
           // Clear activeSubviewId on error
           transitionVisualizationState({
             activeSubviewId: null,
@@ -351,10 +393,19 @@ export function createController(config: ControllerConfig): Controller {
   const deactivateSubview = async (): Promise<void> => {
     const currentState = getState();
 
-    // Handle overlay subviews (Sankey, etc.) - they don't have activeSubview state
+    // Handle overlay subviews (Sankey, Sunburst, etc.) - they don't have activeSubview state
     if (currentState.sankeyOverlay) {
       transitionVisualizationState({
         sankeyOverlay: null,
+        activeSubviewId: null,
+        // Preserve selectedNodeId - return to the node that was selected
+      });
+      return;
+    }
+
+    if (currentState.sunburstOverlay) {
+      transitionVisualizationState({
+        sunburstOverlay: null,
         activeSubviewId: null,
         // Preserve selectedNodeId - return to the node that was selected
       });
@@ -503,7 +554,7 @@ export function createController(config: ControllerConfig): Controller {
     const currentState = getState();
 
     // If there's an overlay open, close it (preserve node selection)
-    if (currentState.sankeyOverlay) {
+    if (currentState.sankeyOverlay || currentState.sunburstOverlay) {
       await deactivateSubview();
       return;
     }

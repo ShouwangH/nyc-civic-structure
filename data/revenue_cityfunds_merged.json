@@ -1,0 +1,524 @@
+{
+  "meta": {
+    "source": "NYC Comptroller White Book FY2025 \u2013 Schedule G2 (Revenues vs Budget by Category)",
+    "fiscal_year": 2025,
+    "fund_group": "City Funds",
+    "total_revenue_billion": 120.6
+  },
+  "data": {
+    "name": "NYC Revenue FY2025",
+    "children": [
+      {
+        "name": "City Funds",
+        "children": [
+          {
+            "name": "Taxes",
+            "children": [
+              {
+                "name": "Real Estate Taxes",
+                "children": [
+                  {
+                    "name": "Real Estate Taxes (Net of Refunds)",
+                    "value": 34756900278,
+                    "actualValue": 34756900278,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "Sales and Use Taxes",
+                "children": [
+                  {
+                    "name": "General Sales",
+                    "value": 10364781495,
+                    "actualValue": 10364781495,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Cigarette",
+                    "value": 12802220,
+                    "actualValue": 12802220,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Commercial Motor Vehicle",
+                    "value": 65886362,
+                    "actualValue": 65886362,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Mortgage",
+                    "value": 773174335,
+                    "actualValue": 773174335,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Auto Use",
+                    "value": 29555250,
+                    "actualValue": 29555250,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Other",
+                    "value": 17998548,
+                    "actualValue": 17998548,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "Income Taxes",
+                "children": [
+                  {
+                    "name": "Personal Income",
+                    "value": 16102462407,
+                    "actualValue": 16102462407,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "General Corporation",
+                    "value": 7365442430,
+                    "actualValue": 7365442430,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Financial Corporation",
+                    "value": 21724296,
+                    "actualValue": 21724296,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Unincorporated Business Income",
+                    "value": 3641034609,
+                    "actualValue": 3641034609,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Pass-through Entity",
+                    "value": 2363772380,
+                    "actualValue": 2363772380,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Personal Income (Non-Resident City Employees)",
+                    "value": 243695460,
+                    "actualValue": 243695460,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Utility",
+                    "value": 482525517,
+                    "actualValue": 482525517,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "Other Taxes",
+                "children": [
+                  {
+                    "name": "Payment in Lieu of Taxes",
+                    "value": 865443211,
+                    "actualValue": 865443211,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Hotel Room Occupancy",
+                    "value": 791568193,
+                    "actualValue": 791568193,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Commercial Rent",
+                    "value": 1010198226,
+                    "actualValue": 1010198226,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Conveyance of Real Property",
+                    "value": 1255559762,
+                    "actualValue": 1255559762,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Beer and Liquor Excise",
+                    "value": 22582254,
+                    "actualValue": 22582254,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Taxi Medallion Transfer",
+                    "value": 849376,
+                    "actualValue": 849376,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Surcharge on Liquor Licenses",
+                    "value": 6420895,
+                    "actualValue": 6420895,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Refunds of Other Taxes",
+                    "value": 55470502,
+                    "actualValue": -55470502,
+                    "isNegative": true
+                  },
+                  {
+                    "name": "Off-Track Betting Surtax",
+                    "value": 286008,
+                    "actualValue": 286008,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Other",
+                    "value": 334208,
+                    "actualValue": 334208,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "Penalties and Interest on Delinquent Taxes",
+                "children": [
+                  {
+                    "name": "Penalties and Interest on Real Estate Taxes",
+                    "value": 185755493,
+                    "actualValue": 185755493,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Refunds on Penalties and Interest on Other Taxes",
+                    "value": 11038074,
+                    "actualValue": -11038074,
+                    "isNegative": true
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Categorical Aid",
+            "children": [
+              {
+                "name": "Federal Grants",
+                "children": [
+                  {
+                    "name": "General Government",
+                    "value": 893614141,
+                    "actualValue": 893614141,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Public Safety and Judicial",
+                    "value": 387983126,
+                    "actualValue": 387983126,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Education",
+                    "value": 2309159809,
+                    "actualValue": 2309159809,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Social Services",
+                    "value": 4006798851,
+                    "actualValue": 4006798851,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Environmental Protection",
+                    "value": 8581615,
+                    "actualValue": 8581615,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Transportation Services",
+                    "value": 130955473,
+                    "actualValue": 130955473,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Parks, Recreation and Cultural Activities",
+                    "value": 1842291,
+                    "actualValue": 1842291,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Housing",
+                    "value": 935206664,
+                    "actualValue": 935206664,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Health",
+                    "value": 408808332,
+                    "actualValue": 408808332,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "State Grants",
+                "children": [
+                  {
+                    "name": "General Government",
+                    "value": 1648758785,
+                    "actualValue": 1648758785,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Public Safety and Judicial",
+                    "value": 455357296,
+                    "actualValue": 455357296,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Education",
+                    "value": 13605966219,
+                    "actualValue": 13605966219,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Social Services",
+                    "value": 3073165516,
+                    "actualValue": 3073165516,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Environmental Protection",
+                    "value": 27136,
+                    "actualValue": 27136,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Transportation Services",
+                    "value": 357900169,
+                    "actualValue": 357900169,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Parks, Recreation and Cultural Activities",
+                    "value": 1473845,
+                    "actualValue": 1473845,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Housing",
+                    "value": 2580505,
+                    "actualValue": 2580505,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Health",
+                    "value": 605169339,
+                    "actualValue": 605169339,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "City University",
+                    "value": 271620017,
+                    "actualValue": 271620017,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "Non-Governmental Grants",
+                "children": [
+                  {
+                    "name": "General Government",
+                    "value": 323988469,
+                    "actualValue": 323988469,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Public Safety and Judicial",
+                    "value": 296249047,
+                    "actualValue": 296249047,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Education",
+                    "value": 106703820,
+                    "actualValue": 106703820,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Social Services",
+                    "value": 3177449,
+                    "actualValue": 3177449,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Environmental Protection",
+                    "value": 11436033,
+                    "actualValue": 11436033,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Transportation Services",
+                    "value": 7516460,
+                    "actualValue": 7516460,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Parks, Recreation and Cultural Activities",
+                    "value": 16127560,
+                    "actualValue": 16127560,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Housing",
+                    "value": 8523982,
+                    "actualValue": 8523982,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Health",
+                    "value": 3119953,
+                    "actualValue": 3119953,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Libraries",
+                    "value": 241523,
+                    "actualValue": 241523,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "City University",
+                    "value": 19266888,
+                    "actualValue": 19266888,
+                    "isNegative": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Unrestricted Aid",
+            "children": [
+              {
+                "name": "Intergovernmental Aid",
+                "value": 52693301,
+                "actualValue": 52693301,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Charges for Services",
+            "children": [
+              {
+                "name": "General Government Charges",
+                "value": 1049222965,
+                "actualValue": 1049222965,
+                "isNegative": false
+              },
+              {
+                "name": "Water and Sewer",
+                "value": 2161382739,
+                "actualValue": 2161382739,
+                "isNegative": false
+              },
+              {
+                "name": "Housing",
+                "value": 12324800,
+                "actualValue": 12324800,
+                "isNegative": false
+              },
+              {
+                "name": "Rental Income",
+                "value": 278157312,
+                "actualValue": 278157312,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Investment Income",
+            "value": 640779648,
+            "actualValue": 640779648,
+            "isNegative": false
+          },
+          {
+            "name": "Other Revenues",
+            "children": [
+              {
+                "name": "Licenses, Permits, Privileges and Franchises",
+                "children": [
+                  {
+                    "name": "Licenses",
+                    "value": 80081402,
+                    "actualValue": 80081402,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Permits",
+                    "value": 318400605,
+                    "actualValue": 318400605,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Privileges and Franchises",
+                    "value": 338459741,
+                    "actualValue": 338459741,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "Fines and Forfeitures",
+                "children": [
+                  {
+                    "name": "Fines",
+                    "value": 1421699136,
+                    "actualValue": 1421699136,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Forfeitures",
+                    "value": 2928790,
+                    "actualValue": 2928790,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "Miscellaneous",
+                "value": 641849928,
+                "actualValue": 641849928,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Other Financing Sources",
+            "children": [
+              {
+                "name": "Pollution Remediation-Bond Sales",
+                "value": 205907354,
+                "actualValue": 205907354,
+                "isNegative": false
+              },
+              {
+                "name": "Transfer from General Debt Service Fund",
+                "value": 42038479,
+                "actualValue": 42038479,
+                "isNegative": false
+              },
+              {
+                "name": "Transfer from Nonmajor Debt Service Fund",
+                "value": 203542300,
+                "actualValue": 203542300,
+                "isNegative": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

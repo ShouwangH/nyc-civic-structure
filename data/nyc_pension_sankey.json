@@ -1,87 +1,1257 @@
 {
-  "meta": {
-    "source": "NYC Comptroller Monthly Performance Reviews 09-2025",
-    "total_aum_billion": 301.7
-  },
+  "units": "USD (millions)",
+  "description": "NYC pensions combined: Fund -> bucket -> asset class breakdown, as of July 31, 2025.",
   "nodes": [
-    {"name": "NYC Pension System"},
-    {"name": "NYCERS"}, {"name": "TRS"}, {"name": "Police"}, {"name": "Fire"}, {"name": "BERS"},
-    {"name": "Public Equities"}, {"name": "Fixed Income"}, {"name": "Private Markets"},
-    {"name": "US Large Cap"}, {"name": "US Small/Mid Cap"}, {"name": "Developed ex-US"}, {"name": "Emerging Markets"},
-    {"name": "Core Fixed Income"}, {"name": "High Yield / Loans"}, {"name": "Alternative Credit"},
-    {"name": "Private Equity"}, {"name": "Real Estate"}, {"name": "Infrastructure"}, {"name": "Alternatives"},
-    {"name": "Blackstone"}, {"name": "KKR"}, {"name": "Carlyle"}, {"name": "Vista"}, {"name": "TPG"}, {"name": "Brookfield PE"},
-    {"name": "Neuberger Berman"}, {"name": "Emerging Manager PE"},
-    {"name": "Brookfield RE"}, {"name": "Heitman"}, {"name": "PGIM"}, {"name": "JP Morgan RE"}, {"name": "Clarion"}, {"name": "Starwood"}, {"name": "ETI Housing"},
-    {"name": "Brookfield Infra"}, {"name": "Macquarie"}, {"name": "Grosvenor"}, {"name": "BlackRock Infra"}, {"name": "Stonepeak"}, {"name": "KKR Infra"},
-    {"name": "BlackRock Credit"}, {"name": "Wellington"}, {"name": "AQR"}, {"name": "Canyon"}, {"name": "Blackstone Hedge"}, {"name": "ETI Credit"}
+    {
+      "id": "BERS",
+      "label": "Board of Education Retirement System (BERS)",
+      "level": 0,
+      "type": "fund"
+    },
+    {
+      "id": "BERS Public Equity",
+      "label": "Public Equity",
+      "level": 1,
+      "type": "bucket"
+    },
+    {
+      "id": "BERS Fixed Income - Core",
+      "label": "Fixed Income - Core",
+      "level": 1,
+      "type": "bucket"
+    },
+    {
+      "id": "BERS Fixed Income - Opportunistic",
+      "label": "Fixed Income - Opportunistic",
+      "level": 1,
+      "type": "bucket"
+    },
+    {
+      "id": "BERS Alternatives",
+      "label": "Alternatives",
+      "level": 1,
+      "type": "bucket"
+    },
+    {
+      "id": "BERS Cash",
+      "label": "Cash",
+      "level": 1,
+      "type": "bucket"
+    },
+    {
+      "id": "FIRE",
+      "label": "Fire Department Pension Fund",
+      "level": 0,
+      "type": "fund"
+    },
+    {
+      "id": "FIRE Public Equity",
+      "label": "Public Equity",
+      "level": 1,
+      "type": "bucket"
+    },
+    {
+      "id": "FIRE Fixed Income - Core",
+      "label": "Fixed Income - Core",
+      "level": 1,
+      "type": "bucket"
+    },
+    {
+      "id": "FIRE Fixed Income - Opportunistic",
+      "label": "Fixed Income - Opportunistic",
+      "level": 1,
+      "type": "bucket"
+    },
+    {
+      "id": "FIRE Alternatives",
+      "label": "Alternatives",
+      "level": 1,
+      "type": "bucket"
+    },
+    {
+      "id": "FIRE Cash",
+      "label": "Cash",
+      "level": 1,
+      "type": "bucket"
+    },
+    {
+      "id": "NYCERS",
+      "label": "NYC Employees’ Retirement System (NYCERS)",
+      "level": 0,
+      "type": "fund"
+    },
+    {
+      "id": "NYCERS Public Equity",
+      "label": "Public Equity",
+      "level": 1,
+      "type": "bucket"
+    },
+    {
+      "id": "NYCERS Fixed Income - Core",
+      "label": "Fixed Income - Core",
+      "level": 1,
+      "type": "bucket"
+    },
+    {
+      "id": "NYCERS Fixed Income - Opportunistic",
+      "label": "Fixed Income - Opportunistic",
+      "level": 1,
+      "type": "bucket"
+    },
+    {
+      "id": "NYCERS Alternatives",
+      "label": "Alternatives",
+      "level": 1,
+      "type": "bucket"
+    },
+    {
+      "id": "NYCERS Cash",
+      "label": "Cash",
+      "level": 1,
+      "type": "bucket"
+    },
+    {
+      "id": "POLICE",
+      "label": "Police Pension Fund",
+      "level": 0,
+      "type": "fund"
+    },
+    {
+      "id": "POLICE Public Equity",
+      "label": "Public Equity",
+      "level": 1,
+      "type": "bucket"
+    },
+    {
+      "id": "POLICE Fixed Income - Core",
+      "label": "Fixed Income - Core",
+      "level": 1,
+      "type": "bucket"
+    },
+    {
+      "id": "POLICE Fixed Income - Opportunistic",
+      "label": "Fixed Income - Opportunistic",
+      "level": 1,
+      "type": "bucket"
+    },
+    {
+      "id": "POLICE Alternatives",
+      "label": "Alternatives",
+      "level": 1,
+      "type": "bucket"
+    },
+    {
+      "id": "POLICE Cash",
+      "label": "Cash",
+      "level": 1,
+      "type": "bucket"
+    },
+    {
+      "id": "TRS",
+      "label": "Teachers’ Retirement System (TRS)",
+      "level": 0,
+      "type": "fund"
+    },
+    {
+      "id": "TRS Public Equity",
+      "label": "Public Equity",
+      "level": 1,
+      "type": "bucket"
+    },
+    {
+      "id": "TRS Fixed Income - Core",
+      "label": "Fixed Income - Core",
+      "level": 1,
+      "type": "bucket"
+    },
+    {
+      "id": "TRS Fixed Income - Opportunistic",
+      "label": "Fixed Income - Opportunistic",
+      "level": 1,
+      "type": "bucket"
+    },
+    {
+      "id": "TRS Alternatives",
+      "label": "Alternatives",
+      "level": 1,
+      "type": "bucket"
+    },
+    {
+      "id": "TRS Cash",
+      "label": "Cash",
+      "level": 1,
+      "type": "bucket"
+    },
+    {
+      "id": "Domestic Equity",
+      "label": "Domestic Equity",
+      "level": 2,
+      "type": "sub-asset"
+    },
+    {
+      "id": "World ex-USA Equity",
+      "label": "World ex-USA Equity",
+      "level": 2,
+      "type": "sub-asset"
+    },
+    {
+      "id": "Emerging Markets Equity",
+      "label": "Emerging Markets Equity",
+      "level": 2,
+      "type": "sub-asset"
+    },
+    {
+      "id": "International Equity FoF",
+      "label": "International Equity FoF",
+      "level": 2,
+      "type": "sub-asset"
+    },
+    {
+      "id": "Global Equity",
+      "label": "Global Equity",
+      "level": 2,
+      "type": "sub-asset"
+    },
+    {
+      "id": "Structured/Core Bonds",
+      "label": "Structured/Core Bonds",
+      "level": 2,
+      "type": "sub-asset"
+    },
+    {
+      "id": "High Yield",
+      "label": "High Yield",
+      "level": 2,
+      "type": "sub-asset"
+    },
+    {
+      "id": "Bank Loans",
+      "label": "Bank Loans",
+      "level": 2,
+      "type": "sub-asset"
+    },
+    {
+      "id": "Core FI - Developing Managers",
+      "label": "Core FI - Developing Managers",
+      "level": 2,
+      "type": "sub-asset"
+    },
+    {
+      "id": "TIPS",
+      "label": "TIPS",
+      "level": 2,
+      "type": "sub-asset"
+    },
+    {
+      "id": "Other Fixed Income",
+      "label": "Other Fixed Income",
+      "level": 2,
+      "type": "sub-asset"
+    },
+    {
+      "id": "Opportunistic Fixed Income",
+      "label": "Opportunistic Fixed Income",
+      "level": 2,
+      "type": "sub-asset"
+    },
+    {
+      "id": "Hedge Funds",
+      "label": "Hedge Funds",
+      "level": 2,
+      "type": "sub-asset"
+    },
+    {
+      "id": "Private Equity",
+      "label": "Private Equity",
+      "level": 2,
+      "type": "sub-asset"
+    },
+    {
+      "id": "Private Real Estate",
+      "label": "Private Real Estate",
+      "level": 2,
+      "type": "sub-asset"
+    },
+    {
+      "id": "Infrastructure",
+      "label": "Infrastructure",
+      "level": 2,
+      "type": "sub-asset"
+    },
+    {
+      "id": "Cash",
+      "label": "Cash",
+      "level": 2,
+      "type": "sub-asset"
+    }
   ],
   "links": [
-    {"source": "NYC Pension System", "target": "NYCERS", "value": 104.8},
-    {"source": "NYC Pension System", "target": "TRS", "value": 98.1},
-    {"source": "NYC Pension System", "target": "Police", "value": 48.2},
-    {"source": "NYC Pension System", "target": "Fire", "value": 28.6},
-    {"source": "NYC Pension System", "target": "BERS", "value": 22.0},
+    {
+      "source": "BERS",
+      "target": "BERS Public Equity",
+      "value": 4438.29,
+      "meta": {
+        "fund": "BERS",
+        "bucket": "Public Equity"
+      }
+    },
+    {
+      "source": "BERS",
+      "target": "BERS Fixed Income - Core",
+      "value": 2628.48,
+      "meta": {
+        "fund": "BERS",
+        "bucket": "Fixed Income - Core"
+      }
+    },
+    {
+      "source": "BERS",
+      "target": "BERS Fixed Income - Opportunistic",
+      "value": 576.59,
+      "meta": {
+        "fund": "BERS",
+        "bucket": "Fixed Income - Opportunistic"
+      }
+    },
+    {
+      "source": "BERS",
+      "target": "BERS Alternatives",
+      "value": 2523.75,
+      "meta": {
+        "fund": "BERS",
+        "bucket": "Alternatives"
+      }
+    },
+    {
+      "source": "BERS",
+      "target": "BERS Cash",
+      "value": 50.34,
+      "meta": {
+        "fund": "BERS",
+        "bucket": "Cash"
+      }
+    },
+    {
+      "source": "BERS Public Equity",
+      "target": "Domestic Equity",
+      "value": 3018.38,
+      "meta": {
+        "fund": "BERS",
+        "category": "TOTAL DOMESTIC EQUITY"
+      }
+    },
+    {
+      "source": "BERS Public Equity",
+      "target": "World ex-USA Equity",
+      "value": 755.22,
+      "meta": {
+        "fund": "BERS",
+        "category": "TOTAL WORLD ex-USA"
+      }
+    },
+    {
+      "source": "BERS Public Equity",
+      "target": "Emerging Markets Equity",
+      "value": 404.01,
+      "meta": {
+        "fund": "BERS",
+        "category": "TOTAL EMERGING MARKETS"
+      }
+    },
+    {
+      "source": "BERS Public Equity",
+      "target": "International Equity FoF",
+      "value": 136.84,
+      "meta": {
+        "fund": "BERS",
+        "category": "TOTAL INTL FOF"
+      }
+    },
+    {
+      "source": "BERS Public Equity",
+      "target": "Global Equity",
+      "value": 123.84,
+      "meta": {
+        "fund": "BERS",
+        "category": "TOTAL GLOBAL EQUITY"
+      }
+    },
+    {
+      "source": "BERS Alternatives",
+      "target": "Private Equity",
+      "value": 1183.4,
+      "meta": {
+        "fund": "BERS",
+        "category": "TOTAL PRIVATE EQUITY"
+      }
+    },
+    {
+      "source": "BERS Alternatives",
+      "target": "Private Real Estate",
+      "value": 835.67,
+      "meta": {
+        "fund": "BERS",
+        "category": "TOTAL PRIVATE REAL ESTATE"
+      }
+    },
+    {
+      "source": "BERS Alternatives",
+      "target": "Infrastructure",
+      "value": 504.68,
+      "meta": {
+        "fund": "BERS",
+        "category": "TOTAL INFRASTRUCTURE"
+      }
+    },
+    {
+      "source": "BERS Fixed Income - Core",
+      "target": "Structured/Core Bonds",
+      "value": 1777.9,
+      "meta": {
+        "fund": "BERS",
+        "category": "TOTAL STRUCTURED"
+      }
+    },
+    {
+      "source": "BERS Fixed Income - Core",
+      "target": "High Yield",
+      "value": 580.63,
+      "meta": {
+        "fund": "BERS",
+        "category": "TOTAL HIGH YIELD"
+      }
+    },
+    {
+      "source": "BERS Fixed Income - Core",
+      "target": "Bank Loans",
+      "value": 0.3,
+      "meta": {
+        "fund": "BERS",
+        "category": "TOTAL BANK LOANS"
+      }
+    },
+    {
+      "source": "BERS Fixed Income - Core",
+      "target": "Core FI - Developing Managers",
+      "value": 231.13,
+      "meta": {
+        "fund": "BERS",
+        "category": "TOTAL CORE FI- DEVELOPING MGRS"
+      }
+    },
+    {
+      "source": "BERS Fixed Income - Core",
+      "target": "TIPS",
+      "value": 2.72,
+      "meta": {
+        "fund": "BERS",
+        "category": "TOTAL TIPS MANAGERS"
+      }
+    },
+    {
+      "source": "BERS Fixed Income - Core",
+      "target": "Other Fixed Income",
+      "value": 35.8,
+      "meta": {
+        "fund": "BERS",
+        "category": "Other Fixed Income (residual)"
+      }
+    },
+    {
+      "source": "BERS Fixed Income - Opportunistic",
+      "target": "Opportunistic Fixed Income",
+      "value": 576.59,
+      "meta": {
+        "fund": "BERS",
+        "category": "TOTAL OPPORTUNISTIC FIXED"
+      }
+    },
+    {
+      "source": "BERS Cash",
+      "target": "Cash",
+      "value": 50.34,
+      "meta": {
+        "fund": "BERS",
+        "category": "TOTAL CASH"
+      }
+    },
 
-    {"source": "NYCERS", "target": "Public Equities", "value": 45.1},
-    {"source": "NYCERS", "target": "Fixed Income", "value": 32.6},
-    {"source": "NYCERS", "target": "Private Markets", "value": 27.1},
-    {"source": "TRS", "target": "Public Equities", "value": 42.3},
-    {"source": "TRS", "target": "Fixed Income", "value": 30.0},
-    {"source": "TRS", "target": "Private Markets", "value": 25.8},
-    {"source": "Police", "target": "Public Equities", "value": 20.8},
-    {"source": "Police", "target": "Fixed Income", "value": 14.5},
-    {"source": "Police", "target": "Private Markets", "value": 13.0},
-    {"source": "Fire", "target": "Public Equities", "value": 12.5},
-    {"source": "Fire", "target": "Fixed Income", "value": 9.0},
-    {"source": "Fire", "target": "Private Markets", "value": 7.1},
-    {"source": "BERS", "target": "Public Equities", "value": 9.3},
-    {"source": "BERS", "target": "Fixed Income", "value": 6.4},
-    {"source": "BERS", "target": "Private Markets", "value": 5.2},
+    {
+      "source": "FIRE",
+      "target": "FIRE Public Equity",
+      "value": 10281.52,
+      "meta": {
+        "fund": "FIRE",
+        "bucket": "Public Equity"
+      }
+    },
+    {
+      "source": "FIRE",
+      "target": "FIRE Fixed Income - Core",
+      "value": 6357.33,
+      "meta": {
+        "fund": "FIRE",
+        "bucket": "Fixed Income - Core"
+      }
+    },
+    {
+      "source": "FIRE",
+      "target": "FIRE Fixed Income - Opportunistic",
+      "value": 1026.61,
+      "meta": {
+        "fund": "FIRE",
+        "bucket": "Fixed Income - Opportunistic"
+      }
+    },
+    {
+      "source": "FIRE",
+      "target": "FIRE Alternatives",
+      "value": 4620.44,
+      "meta": {
+        "fund": "FIRE",
+        "bucket": "Alternatives"
+      }
+    },
+    {
+      "source": "FIRE",
+      "target": "FIRE Cash",
+      "value": 82.18,
+      "meta": {
+        "fund": "FIRE",
+        "bucket": "Cash"
+      }
+    },
+    {
+      "source": "FIRE Public Equity",
+      "target": "Domestic Equity",
+      "value": 6419.78,
+      "meta": {
+        "fund": "FIRE",
+        "category": "TOTAL DOMESTIC EQUITY"
+      }
+    },
+    {
+      "source": "FIRE Public Equity",
+      "target": "World ex-USA Equity",
+      "value": 1819.74,
+      "meta": {
+        "fund": "FIRE",
+        "category": "TOTAL WORLD ex-USA"
+      }
+    },
+    {
+      "source": "FIRE Public Equity",
+      "target": "Emerging Markets Equity",
+      "value": 1318.97,
+      "meta": {
+        "fund": "FIRE",
+        "category": "TOTAL EMERGING MARKETS"
+      }
+    },
+    {
+      "source": "FIRE Public Equity",
+      "target": "International Equity FoF",
+      "value": 267.71,
+      "meta": {
+        "fund": "FIRE",
+        "category": "TOTAL INTL FOF"
+      }
+    },
+    {
+      "source": "FIRE Public Equity",
+      "target": "Global Equity",
+      "value": 455.32,
+      "meta": {
+        "fund": "FIRE",
+        "category": "TOTAL GLOBAL EQUITY"
+      }
+    },
+    {
+      "source": "FIRE Alternatives",
+      "target": "Hedge Funds",
+      "value": 831.02,
+      "meta": {
+        "fund": "FIRE",
+        "category": "TOTAL HEDGE FUNDS"
+      }
+    },
+    {
+      "source": "FIRE Alternatives",
+      "target": "Private Equity",
+      "value": 1901.87,
+      "meta": {
+        "fund": "FIRE",
+        "category": "TOTAL PRIVATE EQUITY"
+      }
+    },
+    {
+      "source": "FIRE Alternatives",
+      "target": "Private Real Estate",
+      "value": 1328.57,
+      "meta": {
+        "fund": "FIRE",
+        "category": "TOTAL PRIVATE REAL ESTATE"
+      }
+    },
+    {
+      "source": "FIRE Alternatives",
+      "target": "Infrastructure",
+      "value": 558.98,
+      "meta": {
+        "fund": "FIRE",
+        "category": "TOTAL INFRASTRUCTURE"
+      }
+    },
+    {
+      "source": "FIRE Fixed Income - Core",
+      "target": "Structured/Core Bonds",
+      "value": 4416.03,
+      "meta": {
+        "fund": "FIRE",
+        "category": "TOTAL STRUCTURED"
+      }
+    },
+    {
+      "source": "FIRE Fixed Income - Core",
+      "target": "High Yield",
+      "value": 1746.66,
+      "meta": {
+        "fund": "FIRE",
+        "category": "TOTAL HIGH YIELD"
+      }
+    },
+    {
+      "source": "FIRE Fixed Income - Core",
+      "target": "Bank Loans",
+      "value": 0.25,
+      "meta": {
+        "fund": "FIRE",
+        "category": "TOTAL BANK LOANS"
+      }
+    },
+    {
+      "source": "FIRE Fixed Income - Core",
+      "target": "Core FI - Developing Managers",
+      "value": 85.34,
+      "meta": {
+        "fund": "FIRE",
+        "category": "TOTAL CORE FI- DEVELOPING MGRS"
+      }
+    },
+    {
+      "source": "FIRE Fixed Income - Core",
+      "target": "TIPS",
+      "value": 2.68,
+      "meta": {
+        "fund": "FIRE",
+        "category": "TOTAL TIPS MANAGERS"
+      }
+    },
+    {
+      "source": "FIRE Fixed Income - Core",
+      "target": "Other Fixed Income",
+      "value": 106.37,
+      "meta": {
+        "fund": "FIRE",
+        "category": "Other Fixed Income (residual)"
+      }
+    },
+    {
+      "source": "FIRE Fixed Income - Opportunistic",
+      "target": "Opportunistic Fixed Income",
+      "value": 1026.61,
+      "meta": {
+        "fund": "FIRE",
+        "category": "TOTAL OPPORTUNISTIC FIXED"
+      }
+    },
+    {
+      "source": "FIRE Cash",
+      "target": "Cash",
+      "value": 82.18,
+      "meta": {
+        "fund": "FIRE",
+        "category": "TOTAL CASH"
+      }
+    },
 
-    {"source": "Public Equities", "target": "US Large Cap", "value": 81.5},
-    {"source": "Public Equities", "target": "US Small/Mid Cap", "value": 15.0},
-    {"source": "Public Equities", "target": "Developed ex-US", "value": 24.0},
-    {"source": "Public Equities", "target": "Emerging Markets", "value": 9.0},
+    {
+      "source": "NYCERS",
+      "target": "NYCERS Public Equity",
+      "value": 39153.15,
+      "meta": {
+        "fund": "NYCERS",
+        "bucket": "Public Equity"
+      }
+    },
+    {
+      "source": "NYCERS",
+      "target": "NYCERS Fixed Income - Core",
+      "value": 29960.16,
+      "meta": {
+        "fund": "NYCERS",
+        "bucket": "Fixed Income - Core"
+      }
+    },
+    {
+      "source": "NYCERS",
+      "target": "NYCERS Fixed Income - Opportunistic",
+      "value": 4802.64,
+      "meta": {
+        "fund": "NYCERS",
+        "bucket": "Fixed Income - Opportunistic"
+      }
+    },
+    {
+      "source": "NYCERS",
+      "target": "NYCERS Alternatives",
+      "value": 18059.54,
+      "meta": {
+        "fund": "NYCERS",
+        "bucket": "Alternatives"
+      }
+    },
+    {
+      "source": "NYCERS",
+      "target": "NYCERS Cash",
+      "value": 393.78,
+      "meta": {
+        "fund": "NYCERS",
+        "bucket": "Cash"
+      }
+    },
+    {
+      "source": "NYCERS Public Equity",
+      "target": "Domestic Equity",
+      "value": 22761.38,
+      "meta": {
+        "fund": "NYCERS",
+        "category": "TOTAL DOMESTIC EQUITY"
+      }
+    },
+    {
+      "source": "NYCERS Public Equity",
+      "target": "World ex-USA Equity",
+      "value": 9660.86,
+      "meta": {
+        "fund": "NYCERS",
+        "category": "TOTAL WORLD ex-USA"
+      }
+    },
+    {
+      "source": "NYCERS Public Equity",
+      "target": "Emerging Markets Equity",
+      "value": 4416.98,
+      "meta": {
+        "fund": "NYCERS",
+        "category": "TOTAL EMERGING MARKETS"
+      }
+    },
+    {
+      "source": "NYCERS Public Equity",
+      "target": "International Equity FoF",
+      "value": 1363.52,
+      "meta": {
+        "fund": "NYCERS",
+        "category": "TOTAL INTL FOF"
+      }
+    },
+    {
+      "source": "NYCERS Public Equity",
+      "target": "Global Equity",
+      "value": 950.41,
+      "meta": {
+        "fund": "NYCERS",
+        "category": "TOTAL GLOBAL EQUITY"
+      }
+    },
+    {
+      "source": "NYCERS Alternatives",
+      "target": "Hedge Funds",
+      "value": 0.86,
+      "meta": {
+        "fund": "NYCERS",
+        "category": "TOTAL HEDGE FUNDS"
+      }
+    },
+    {
+      "source": "NYCERS Alternatives",
+      "target": "Private Equity",
+      "value": 8682.06,
+      "meta": {
+        "fund": "NYCERS",
+        "category": "TOTAL PRIVATE EQUITY"
+      }
+    },
+    {
+      "source": "NYCERS Alternatives",
+      "target": "Private Real Estate",
+      "value": 6369.08,
+      "meta": {
+        "fund": "NYCERS",
+        "category": "TOTAL PRIVATE REAL ESTATE"
+      }
+    },
+    {
+      "source": "NYCERS Alternatives",
+      "target": "Infrastructure",
+      "value": 3007.54,
+      "meta": {
+        "fund": "NYCERS",
+        "category": "TOTAL INFRASTRUCTURE"
+      }
+    },
+    {
+      "source": "NYCERS Fixed Income - Core",
+      "target": "Structured/Core Bonds",
+      "value": 21223.35,
+      "meta": {
+        "fund": "NYCERS",
+        "category": "TOTAL STRUCTURED"
+      }
+    },
+    {
+      "source": "NYCERS Fixed Income - Core",
+      "target": "High Yield",
+      "value": 5233.93,
+      "meta": {
+        "fund": "NYCERS",
+        "category": "TOTAL HIGH YIELD"
+      }
+    },
+    {
+      "source": "NYCERS Fixed Income - Core",
+      "target": "Bank Loans",
+      "value": 0.77,
+      "meta": {
+        "fund": "NYCERS",
+        "category": "TOTAL BANK LOANS"
+      }
+    },
+    {
+      "source": "NYCERS Fixed Income - Core",
+      "target": "Core FI - Developing Managers",
+      "value": 604.13,
+      "meta": {
+        "fund": "NYCERS",
+        "category": "TOTAL CORE FI- DEVELOPING MGRS"
+      }
+    },
+    {
+      "source": "NYCERS Fixed Income - Core",
+      "target": "TIPS",
+      "value": 2.95,
+      "meta": {
+        "fund": "NYCERS",
+        "category": "TOTAL TIPS MANAGERS"
+      }
+    },
+    {
+      "source": "NYCERS Fixed Income - Core",
+      "target": "Other Fixed Income",
+      "value": 2895.03,
+      "meta": {
+        "fund": "NYCERS",
+        "category": "Other Fixed Income (residual)"
+      }
+    },
+    {
+      "source": "NYCERS Fixed Income - Opportunistic",
+      "target": "Opportunistic Fixed Income",
+      "value": 4802.64,
+      "meta": {
+        "fund": "NYCERS",
+        "category": "TOTAL OPPORTUNISTIC FIXED"
+      }
+    },
+    {
+      "source": "NYCERS Cash",
+      "target": "Cash",
+      "value": 393.78,
+      "meta": {
+        "fund": "NYCERS",
+        "category": "TOTAL CASH"
+      }
+    },
 
-    {"source": "Fixed Income", "target": "Core Fixed Income", "value": 66.4},
-    {"source": "Fixed Income", "target": "High Yield / Loans", "value": 18.1},
-    {"source": "Fixed Income", "target": "Alternative Credit", "value": 10.5},
+    {
+      "source": "POLICE",
+      "target": "POLICE Public Equity",
+      "value": 21492.11,
+      "meta": {
+        "fund": "POLICE",
+        "bucket": "Public Equity"
+      }
+    },
+    {
+      "source": "POLICE",
+      "target": "POLICE Fixed Income - Core",
+      "value": 17681.08,
+      "meta": {
+        "fund": "POLICE",
+        "bucket": "Fixed Income - Core"
+      }
+    },
+    {
+      "source": "POLICE",
+      "target": "POLICE Fixed Income - Opportunistic",
+      "value": 2925.52,
+      "meta": {
+        "fund": "POLICE",
+        "bucket": "Fixed Income - Opportunistic"
+      }
+    },
+    {
+      "source": "POLICE",
+      "target": "POLICE Alternatives",
+      "value": 14190.58,
+      "meta": {
+        "fund": "POLICE",
+        "bucket": "Alternatives"
+      }
+    },
+    {
+      "source": "POLICE",
+      "target": "POLICE Cash",
+      "value": 146.93,
+      "meta": {
+        "fund": "POLICE",
+        "bucket": "Cash"
+      }
+    },
+    {
+      "source": "POLICE Public Equity",
+      "target": "Domestic Equity",
+      "value": 15456.99,
+      "meta": {
+        "fund": "POLICE",
+        "category": "TOTAL DOMESTIC EQUITY"
+      }
+    },
+    {
+      "source": "POLICE Public Equity",
+      "target": "World ex-USA Equity",
+      "value": 3639.25,
+      "meta": {
+        "fund": "POLICE",
+        "category": "TOTAL WORLD ex-USA"
+      }
+    },
+    {
+      "source": "POLICE Public Equity",
+      "target": "Emerging Markets Equity",
+      "value": 1853.04,
+      "meta": {
+        "fund": "POLICE",
+        "category": "TOTAL EMERGING MARKETS"
+      }
+    },
+    {
+      "source": "POLICE Public Equity",
+      "target": "International Equity FoF",
+      "value": 542.83,
+      "meta": {
+        "fund": "POLICE",
+        "category": "TOTAL INTL FOF"
+      }
+    },
+    {
+      "source": "POLICE Alternatives",
+      "target": "Hedge Funds",
+      "value": 3485.51,
+      "meta": {
+        "fund": "POLICE",
+        "category": "TOTAL HEDGE FUNDS"
+      }
+    },
+    {
+      "source": "POLICE Alternatives",
+      "target": "Private Equity",
+      "value": 5476.04,
+      "meta": {
+        "fund": "POLICE",
+        "category": "TOTAL PRIVATE EQUITY"
+      }
+    },
+    {
+      "source": "POLICE Alternatives",
+      "target": "Private Real Estate",
+      "value": 3600.99,
+      "meta": {
+        "fund": "POLICE",
+        "category": "TOTAL PRIVATE REAL ESTATE"
+      }
+    },
+    {
+      "source": "POLICE Alternatives",
+      "target": "Infrastructure",
+      "value": 1628.04,
+      "meta": {
+        "fund": "POLICE",
+        "category": "TOTAL INFRASTRUCTURE"
+      }
+    },
+    {
+      "source": "POLICE Fixed Income - Core",
+      "target": "Structured/Core Bonds",
+      "value": 11522.19,
+      "meta": {
+        "fund": "POLICE",
+        "category": "TOTAL STRUCTURED"
+      }
+    },
+    {
+      "source": "POLICE Fixed Income - Core",
+      "target": "High Yield",
+      "value": 5579.2,
+      "meta": {
+        "fund": "POLICE",
+        "category": "TOTAL HIGH YIELD"
+      }
+    },
+    {
+      "source": "POLICE Fixed Income - Core",
+      "target": "Bank Loans",
+      "value": 0.71,
+      "meta": {
+        "fund": "POLICE",
+        "category": "TOTAL BANK LOANS"
+      }
+    },
+    {
+      "source": "POLICE Fixed Income - Core",
+      "target": "Core FI - Developing Managers",
+      "value": 176.38,
+      "meta": {
+        "fund": "POLICE",
+        "category": "TOTAL CORE FI- DEVELOPING MGRS"
+      }
+    },
+    {
+      "source": "POLICE Fixed Income - Core",
+      "target": "TIPS",
+      "value": 2.64,
+      "meta": {
+        "fund": "POLICE",
+        "category": "TOTAL TIPS MANAGERS"
+      }
+    },
+    {
+      "source": "POLICE Fixed Income - Core",
+      "target": "Other Fixed Income",
+      "value": 399.96,
+      "meta": {
+        "fund": "POLICE",
+        "category": "Other Fixed Income (residual)"
+      }
+    },
+    {
+      "source": "POLICE Fixed Income - Opportunistic",
+      "target": "Opportunistic Fixed Income",
+      "value": 2925.52,
+      "meta": {
+        "fund": "POLICE",
+        "category": "TOTAL OPPORTUNISTIC FIXED"
+      }
+    },
+    {
+      "source": "POLICE Cash",
+      "target": "Cash",
+      "value": 146.93,
+      "meta": {
+        "fund": "POLICE",
+        "category": "TOTAL CASH"
+      }
+    },
 
-    {"source": "Private Markets", "target": "Private Equity", "value": 26.3},
-    {"source": "Private Markets", "target": "Real Estate", "value": 18.4},
-    {"source": "Private Markets", "target": "Infrastructure", "value": 9.1},
-    {"source": "Private Markets", "target": "Alternatives", "value": 13.6},
-
-    {"source": "Private Equity", "target": "Blackstone", "value": 4.7},
-    {"source": "Private Equity", "target": "KKR", "value": 3.7},
-    {"source": "Private Equity", "target": "Carlyle", "value": 3.1},
-    {"source": "Private Equity", "target": "Vista", "value": 2.6},
-    {"source": "Private Equity", "target": "TPG", "value": 2.1},
-    {"source": "Private Equity", "target": "Brookfield PE", "value": 1.6},
-    {"source": "Private Equity", "target": "Neuberger Berman", "value": 1.3},
-    {"source": "Private Equity", "target": "Emerging Manager PE", "value": 1.0},
-
-    {"source": "Real Estate", "target": "Brookfield RE", "value": 2.8},
-    {"source": "Real Estate", "target": "Heitman", "value": 1.8},
-    {"source": "Real Estate", "target": "PGIM", "value": 1.6},
-    {"source": "Real Estate", "target": "JP Morgan RE", "value": 1.5},
-    {"source": "Real Estate", "target": "Clarion", "value": 1.3},
-    {"source": "Real Estate", "target": "Starwood", "value": 0.9},
-    {"source": "Real Estate", "target": "ETI Housing", "value": 0.7},
-
-    {"source": "Infrastructure", "target": "Brookfield Infra", "value": 2.0},
-    {"source": "Infrastructure", "target": "Macquarie", "value": 1.6},
-    {"source": "Infrastructure", "target": "Grosvenor", "value": 1.4},
-    {"source": "Infrastructure", "target": "BlackRock Infra", "value": 1.1},
-    {"source": "Infrastructure", "target": "Stonepeak", "value": 0.9},
-    {"source": "Infrastructure", "target": "KKR Infra", "value": 0.7},
-
-    {"source": "Alternatives", "target": "BlackRock Credit", "value": 2.7},
-    {"source": "Alternatives", "target": "Wellington", "value": 2.0},
-    {"source": "Alternatives", "target": "AQR", "value": 1.6},
-    {"source": "Alternatives", "target": "Canyon", "value": 1.3},
-    {"source": "Alternatives", "target": "Blackstone Hedge", "value": 1.3},
-    {"source": "Alternatives", "target": "ETI Credit", "value": 0.4}
+    {
+      "source": "TRS",
+      "target": "TRS Public Equity",
+      "value": 52798.62,
+      "meta": {
+        "fund": "TRS",
+        "bucket": "Public Equity"
+      }
+    },
+    {
+      "source": "TRS",
+      "target": "TRS Fixed Income - Core",
+      "value": 37251.87,
+      "meta": {
+        "fund": "TRS",
+        "bucket": "Fixed Income - Core"
+      }
+    },
+    {
+      "source": "TRS",
+      "target": "TRS Fixed Income - Opportunistic",
+      "value": 4920.06,
+      "meta": {
+        "fund": "TRS",
+        "bucket": "Fixed Income - Opportunistic"
+      }
+    },
+    {
+      "source": "TRS",
+      "target": "TRS Alternatives",
+      "value": 18665.3,
+      "meta": {
+        "fund": "TRS",
+        "bucket": "Alternatives"
+      }
+    },
+    {
+      "source": "TRS",
+      "target": "TRS Cash",
+      "value": 480.5,
+      "meta": {
+        "fund": "TRS",
+        "bucket": "Cash"
+      }
+    },
+    {
+      "source": "TRS Public Equity",
+      "target": "Domestic Equity",
+      "value": 31712.34,
+      "meta": {
+        "fund": "TRS",
+        "category": "TOTAL DOMESTIC EQUITY"
+      }
+    },
+    {
+      "source": "TRS Public Equity",
+      "target": "World ex-USA Equity",
+      "value": 12720.74,
+      "meta": {
+        "fund": "TRS",
+        "category": "TOTAL WORLD ex-USA"
+      }
+    },
+    {
+      "source": "TRS Public Equity",
+      "target": "Emerging Markets Equity",
+      "value": 5620.79,
+      "meta": {
+        "fund": "TRS",
+        "category": "TOTAL EMERGING MARKETS"
+      }
+    },
+    {
+      "source": "TRS Public Equity",
+      "target": "International Equity FoF",
+      "value": 1636.16,
+      "meta": {
+        "fund": "TRS",
+        "category": "TOTAL INTL FOF"
+      }
+    },
+    {
+      "source": "TRS Public Equity",
+      "target": "Global Equity",
+      "value": 1108.59,
+      "meta": {
+        "fund": "TRS",
+        "category": "TOTAL GLOBAL EQUITY"
+      }
+    },
+    {
+      "source": "TRS Alternatives",
+      "target": "Private Equity",
+      "value": 8745.31,
+      "meta": {
+        "fund": "TRS",
+        "category": "TOTAL PRIVATE EQUITY"
+      }
+    },
+    {
+      "source": "TRS Alternatives",
+      "target": "Private Real Estate",
+      "value": 6338.86,
+      "meta": {
+        "fund": "TRS",
+        "category": "TOTAL PRIVATE REAL ESTATE"
+      }
+    },
+    {
+      "source": "TRS Alternatives",
+      "target": "Infrastructure",
+      "value": 3581.13,
+      "meta": {
+        "fund": "TRS",
+        "category": "TOTAL INFRASTRUCTURE"
+      }
+    },
+    {
+      "source": "TRS Fixed Income - Core",
+      "target": "Structured/Core Bonds",
+      "value": 29726.58,
+      "meta": {
+        "fund": "TRS",
+        "category": "TOTAL STRUCTURED"
+      }
+    },
+    {
+      "source": "TRS Fixed Income - Core",
+      "target": "High Yield",
+      "value": 6590.72,
+      "meta": {
+        "fund": "TRS",
+        "category": "TOTAL HIGH YIELD"
+      }
+    },
+    {
+      "source": "TRS Fixed Income - Core",
+      "target": "Bank Loans",
+      "value": 1.07,
+      "meta": {
+        "fund": "TRS",
+        "category": "TOTAL BANK LOANS"
+      }
+    },
+    {
+      "source": "TRS Fixed Income - Core",
+      "target": "Core FI - Developing Managers",
+      "value": 283.94,
+      "meta": {
+        "fund": "TRS",
+        "category": "TOTAL CORE FI- DEVELOPING MGRS"
+      }
+    },
+    {
+      "source": "TRS Fixed Income - Core",
+      "target": "TIPS",
+      "value": 2.64,
+      "meta": {
+        "fund": "TRS",
+        "category": "TOTAL TIPS MANAGERS"
+      }
+    },
+    {
+      "source": "TRS Fixed Income - Core",
+      "target": "Other Fixed Income",
+      "value": 646.92,
+      "meta": {
+        "fund": "TRS",
+        "category": "Other Fixed Income (residual)"
+      }
+    },
+    {
+      "source": "TRS Fixed Income - Opportunistic",
+      "target": "Opportunistic Fixed Income",
+      "value": 4920.06,
+      "meta": {
+        "fund": "TRS",
+        "category": "TOTAL OPPORTUNISTIC FIXED"
+      }
+    },
+    {
+      "source": "TRS Cash",
+      "target": "Cash",
+      "value": 480.5,
+      "meta": {
+        "fund": "TRS",
+        "category": "TOTAL CASH"
+      }
+    }
   ]
 }

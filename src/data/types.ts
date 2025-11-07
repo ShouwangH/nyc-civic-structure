@@ -131,7 +131,8 @@ export type SubviewType =
   | 'intra'                  // Intra-entity (internal structure)
   | 'cross-jurisdictional'   // Cross-level relationships
   | 'workflow'               // Process flows
-  | 'sankey';                // Sankey diagram (financial flows, etc.)
+  | 'sankey'                 // Sankey diagram (financial flows, etc.)
+  | 'sunburst';              // Sunburst diagram (hierarchical revenue breakdown, etc.)
 
 export type SubviewLayoutConfig = {
   type: 'elk-mrtree' | 'elk-layered' | 'concentric';
@@ -155,6 +156,11 @@ export type SubviewLayoutConfig = {
 export type SankeyReference = {
   type: 'file';
   path: string;  // e.g., 'data/nyc_pension_sankey.json'
+};
+
+export type SunburstReference = {
+  type: 'file';
+  path: string;  // e.g., 'data/nyc_revenue_sunburst_fy2025.json'
 };
 
 export type SubviewDefinition = {
@@ -190,8 +196,9 @@ export type SubviewDefinition = {
     label?: string;
   }>;
 
-  // For overlay renderTarget with external data (e.g., Sankey)
+  // For overlay renderTarget with external data (e.g., Sankey, Sunburst)
   sankeyData?: SankeyReference;
+  sunburstData?: SunburstReference;
 
   // Presentation (FIXED per subview)
   layout: SubviewLayoutConfig;
