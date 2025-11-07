@@ -60,7 +60,7 @@ export function SankeyTooltip({ node, link, position }: SankeyTooltipProps) {
       >
         <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-3 min-w-[160px]">
           <div className="text-sm font-medium text-gray-900 mb-1">
-            {node.name}
+            {node.label}
           </div>
           {node.value !== undefined && (
             <div className="text-xs text-gray-600">
@@ -97,16 +97,16 @@ export function SankeyTooltip({ node, link, position }: SankeyTooltipProps) {
       >
         <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-3 min-w-[180px]">
           <div className="text-xs text-gray-600 mb-2">
-            <div className="font-medium text-gray-900">{sourceNode.name}</div>
+            <div className="font-medium text-gray-900">{sourceNode.label}</div>
             <div className="text-gray-400 my-1">↓</div>
-            <div className="font-medium text-gray-900">{targetNode.name}</div>
+            <div className="font-medium text-gray-900">{targetNode.label}</div>
           </div>
           <div className="text-sm font-semibold text-gray-900 mt-2">
             {formatBillions(link.value)}
           </div>
           {sourceNode.value && (
             <div className="text-xs text-gray-500 mt-1">
-              {((link.value / sourceNode.value) * 100).toFixed(1)}% of {sourceNode.name}
+              {((link.value / sourceNode.value) * 100).toFixed(1)}% of {sourceNode.label}
             </div>
           )}
         </div>
