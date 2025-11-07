@@ -11,7 +11,10 @@ import type {
  * Matches the nyc_pension_sankey.json format
  */
 export type SankeyNodeData = {
-  name: string;
+  id: string;
+  label: string;
+  level: number;
+  type: string;
 };
 
 /**
