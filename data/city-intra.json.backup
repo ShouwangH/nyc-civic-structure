@@ -1,0 +1,1424 @@
+{
+  "meta": {
+    "jurisdiction": "city",
+    "tier": "intra",
+    "version": "1.0.0",
+    "description": "city agencies, departments, and intra-agency subviews"
+  },
+  "nodes": [
+    {
+      "id": "city:NYPD",
+      "label": "New York Police Department",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Primary law enforcement agency for NYC with patrol, investigation, and counterterrorism responsibilities."
+    },
+    {
+      "id": "city:FDNY",
+      "label": "Fire Department of New York",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Provides fire suppression, emergency medical services, and disaster response across all five boroughs."
+    },
+    {
+      "id": "city:DOE",
+      "label": "Department of Education",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Operates the nation's largest public school system serving over 1 million students in 1,800 schools."
+    },
+    {
+      "id": "city:DOHMH",
+      "label": "Department of Health and Mental Hygiene",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Protects and promotes public health through disease surveillance, health inspections, and mental health programs."
+    },
+    {
+      "id": "city:DHS",
+      "label": "Department of Homeless Services",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Provides shelter and services to homeless individuals and families and works to prevent homelessness."
+    },
+    {
+      "id": "city:HRA",
+      "label": "Human Resources Administration",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Administers public assistance programs including cash assistance, food stamps, and Medicaid enrollment."
+    },
+    {
+      "id": "city:ACS",
+      "label": "Administration for Children's Services",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Protects child welfare through foster care, child protective investigations, and preventive services."
+    },
+    {
+      "id": "city:HPD",
+      "label": "Department of Housing Preservation and Development",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Promotes affordable housing development, enforces housing code, and provides tenant protection services."
+    },
+    {
+      "id": "city:DOT",
+      "label": "Department of Transportation",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Maintains streets, bridges, sidewalks, and traffic signals while managing transportation infrastructure and policy."
+    },
+    {
+      "id": "city:DSNY",
+      "label": "Department of Sanitation",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Collects residential waste and recyclables, cleans streets, and removes snow from 6,000 miles of city streets."
+    },
+    {
+      "id": "city:DEP",
+      "label": "Department of Environmental Protection",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Manages NYC's water supply system, wastewater treatment, and environmental quality enforcement."
+    },
+    {
+      "id": "city:Parks",
+      "label": "Department of Parks and Recreation",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Maintains over 30,000 acres of parkland, beaches, playgrounds, and recreational facilities citywide."
+    },
+    {
+      "id": "city:DCP",
+      "label": "Department of City Planning",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Shapes land use policy through zoning, environmental review, and comprehensive urban planning."
+    },
+    {
+      "id": "city:DDC",
+      "label": "Department of Design and Construction",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Designs and builds infrastructure projects including schools, firehouses, courthouses, and public facilities."
+    },
+    {
+      "id": "city:LPC",
+      "label": "Landmarks Preservation Commission",
+      "type": "commission",
+      "branch": "administrative",
+      "factoid": "Designates and regulates historic landmarks and districts to preserve NYC's architectural heritage."
+    },
+    {
+      "id": "city:BSA",
+      "label": "Board of Standards and Appeals",
+      "type": "commission",
+      "branch": "administrative",
+      "factoid": "Hears appeals from zoning and building code decisions and grants special permits and variances."
+    },
+    {
+      "id": "city:OMB",
+      "label": "Office of Management and Budget",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Prepares the city's annual budget, monitors agency spending, and manages fiscal planning."
+    },
+    {
+      "id": "city:DOF",
+      "label": "Department of Finance",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Collects property taxes, business taxes, and parking fines while maintaining property records."
+    },
+    {
+      "id": "city:DCAS",
+      "label": "Department of Citywide Administrative Services",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Manages city facilities, procurement, fleet operations, and civil service hiring and personnel."
+    },
+    {
+      "id": "city:MOCS",
+      "label": "Mayor's Office of Contract Services",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Oversees city procurement policy, contract registration, and vendor compliance programs."
+    },
+    {
+      "id": "city:Law",
+      "label": "Law Department",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Serves as city's legal counsel, defending lawsuits and providing legal advice to city agencies."
+    },
+    {
+      "id": "city:DOI",
+      "label": "Department of Investigation",
+      "type": "agency",
+      "branch": "administrative",
+      "factoid": "Investigates corruption, fraud, and misconduct in city government and among city contractors."
+    },
+    {
+      "id": "city:CCRB",
+      "label": "Civilian Complaint Review Board",
+      "type": "commission",
+      "branch": "administrative",
+      "factoid": "Independent agency investigating complaints of police misconduct including excessive force and abuse of authority."
+    },
+    {
+      "id": "city:COIB",
+      "label": "Conflicts of Interest Board",
+      "type": "commission",
+      "branch": "administrative",
+      "factoid": "Enforces conflicts of interest and financial disclosure requirements for city employees and officials."
+    },
+    {
+      "id": "city:CFB",
+      "label": "Campaign Finance Board",
+      "type": "commission",
+      "branch": "administrative",
+      "factoid": "Administers public financing for city elections and enforces campaign finance regulations."
+    },
+    {
+      "id": "city:DOB",
+      "label": "Department of Buildings",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Issues building permits, enforces construction codes, and ensures structural safety of buildings."
+    },
+    {
+      "id": "city:DCWP",
+      "label": "Department of Consumer and Worker Protection",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Protects consumers and workers through licensing, enforcement, and education on workplace and marketplace rights."
+    },
+    {
+      "id": "city:TLC",
+      "label": "Taxi and Limousine Commission",
+      "type": "commission",
+      "branch": "executive",
+      "factoid": "Licenses and regulates taxis, for-hire vehicles, and drivers including ride-sharing services."
+    },
+    {
+      "id": "city:OATH",
+      "label": "Office of Administrative Trials and Hearings",
+      "type": "office",
+      "branch": "administrative",
+      "factoid": "Conducts administrative hearings and adjudicates summonses and violations issued by city agencies."
+    },
+    {
+      "id": "city:BIC",
+      "label": "Business Integrity Commission",
+      "type": "commission",
+      "branch": "administrative",
+      "factoid": "Regulates commercial waste hauling, public wholesale markets, and shipboard gambling to prevent organized crime."
+    },
+    {
+      "id": "city:DYCD",
+      "label": "Department of Youth and Community Development",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Funds youth programs, literacy services, and community development initiatives through nonprofit partnerships."
+    },
+    {
+      "id": "city:DFTA",
+      "label": "Department for the Aging",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Provides services for older New Yorkers including senior centers, meals, case management, and caregiver support."
+    },
+    {
+      "id": "city:DVS",
+      "label": "Department of Veterans' Services",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Connects military veterans to benefits, services, and resources including healthcare and housing assistance."
+    },
+    {
+      "id": "city:DOC",
+      "label": "Department of Correction",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Operates city jails including Rikers Island and provides custody and care for pretrial detainees."
+    },
+    {
+      "id": "city:DCLA",
+      "label": "Department of Cultural Affairs",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Supports cultural institutions and arts organizations through grants and manages cultural facilities."
+    },
+    {
+      "id": "city:NYCEM",
+      "label": "NYC Emergency Management",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Coordinates citywide emergency preparedness, response, and recovery for natural and man-made disasters."
+    },
+    {
+      "id": "city:DOP",
+      "label": "Department of Probation",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Supervises individuals on probation and provides alternatives to incarceration for court-involved youth and adults."
+    },
+    {
+      "id": "city:DoRIS",
+      "label": "Department of Records and Information Services",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Manages city archives, records retention, and public access to historical government documents."
+    },
+    {
+      "id": "city:SBS",
+      "label": "Department of Small Business Services",
+      "type": "agency",
+      "branch": "executive",
+      "factoid": "Supports small businesses and workforce development through training, financing, and neighborhood revitalization programs."
+    },
+    {
+      "id": "city:OTI",
+      "label": "Office of Technology and Innovation",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Manages citywide technology infrastructure, digital services, cybersecurity, and IT strategy for city agencies."
+    },
+    {
+      "id": "city:OCME",
+      "label": "Office of Chief Medical Examiner",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Investigates deaths, performs autopsies, maintains forensic laboratories, and identifies human remains."
+    },
+    {
+      "id": "city:Sheriff",
+      "label": "NYC Sheriff's Office",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Enforces civil judgments, seizes property, and conducts investigations related to consumer fraud and tax violations."
+    },
+    {
+      "id": "city:EEPC",
+      "label": "Equal Employment Practices Commission",
+      "type": "commission",
+      "branch": "administrative",
+      "factoid": "Ensures equal employment opportunity in city government and reviews discrimination complaints from city employees."
+    },
+    {
+      "id": "city:charter_revision_commission",
+      "label": "Charter Revision Commission",
+      "type": "commission",
+      "branch": "administrative",
+      "factoid": "Temporary commission appointed to review and propose amendments to the NYC Charter for voter approval."
+    },
+    {
+      "id": "city:city_council_member",
+      "label": "City Council Member",
+      "type": "office",
+      "branch": "legislative",
+      "factoid": "Individual elected representative serving one of 51 council districts in the NYC City Council."
+    },
+    {
+      "id": "city:mayor_office_operations",
+      "label": "Mayor's Office of Operations",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Reviews agency performance through the Mayor's Management Report and evaluates proposed agency rules."
+    },
+    {
+      "id": "city:voters",
+      "label": "NYC Voters",
+      "type": "stakeholder",
+      "branch": "electoral",
+      "factoid": "Registered voters who elect city officials and vote on ballot measures including charter amendments."
+    },
+    {
+      "id": "city:public_nyc",
+      "label": "NYC Public",
+      "type": "stakeholder",
+      "branch": "civic",
+      "factoid": "General public participating in city government through public hearings, comment periods, and civic engagement."
+    },
+    {
+      "id": "city:vendors",
+      "label": "City Vendors",
+      "type": "stakeholder",
+      "branch": "commercial",
+      "factoid": "Private companies and organizations contracting with NYC to provide goods and services to city agencies."
+    },
+    {
+      "id": "city:community_boards",
+      "label": "Community Boards",
+      "type": "body",
+      "branch": "advisory",
+      "factoid": "59 advisory bodies representing neighborhoods across NYC that review land use and service delivery issues."
+    },
+    {
+      "id": "city:borough_presidents",
+      "label": "Borough Presidents",
+      "type": "body",
+      "branch": "executive",
+      "factoid": "Five elected borough-level executives with advisory roles in budget, land use, and appointment processes."
+    },
+    {
+      "id": "city:nypd_patrol_bureau",
+      "label": "Patrol Bureau",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Largest NYPD bureau responsible for uniformed patrol, neighborhood policing, 911 response, and precinct operations across all five boroughs with approximately 22,000 officers."
+    },
+    {
+      "id": "city:nypd_detective_bureau",
+      "label": "Detective Bureau",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Investigates major crimes including homicides, robberies, gang activity, and cold cases through specialized detective squads and borough investigative units citywide."
+    },
+    {
+      "id": "city:nypd_transit_bureau",
+      "label": "Transit Bureau",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Dedicated to policing the NYC subway system and buses, conducting patrol, enforcement, and investigations within the MTA transit network."
+    },
+    {
+      "id": "city:nypd_housing_bureau",
+      "label": "Housing Bureau",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Provides police services to NYCHA public housing developments with dedicated officers serving residents in housing projects across the city."
+    },
+    {
+      "id": "city:nypd_counterterrorism_bureau",
+      "label": "Counterterrorism Bureau",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Protects NYC from terrorist threats through intelligence gathering, critical infrastructure protection, strategic planning, and coordination with federal agencies."
+    },
+    {
+      "id": "city:nypd_intelligence_bureau",
+      "label": "Intelligence Bureau",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Collects and analyzes intelligence on criminal and terrorist threats, manages informants, and coordinates with federal and international law enforcement agencies."
+    },
+    {
+      "id": "city:nypd_internal_affairs",
+      "label": "Internal Affairs Bureau",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Investigates allegations of corruption and misconduct by NYPD officers, ensuring integrity and accountability within the department through independent investigations."
+    },
+    {
+      "id": "city:doe_division_instructional_tech",
+      "label": "Division of Instructional and Informational Technology",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Manages educational technology infrastructure, digital learning platforms, student information systems, and technology integration across 1,800 schools serving over one million students."
+    },
+    {
+      "id": "city:doe_division_school_quality",
+      "label": "Division of School Quality",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Oversees school performance through superintendent networks, conducts school quality reviews, and provides support to improve academic outcomes and school leadership."
+    },
+    {
+      "id": "city:doe_division_early_childhood",
+      "label": "Division of Early Childhood Education",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Administers Pre-K for All, 3-K programs, and early childhood services across community-based organizations and public schools, serving approximately 100,000 young children."
+    },
+    {
+      "id": "city:doe_division_multilingual",
+      "label": "Division of Multilingual Learners",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Supports English Language Learners and multilingual students through curriculum development, teacher training, and bilingual education programs in over 180 languages."
+    },
+    {
+      "id": "city:doe_division_special_education",
+      "label": "Division of Special Education",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Provides special education services and IEP implementation for over 200,000 students with disabilities through specialized programs, related services, and accommodations."
+    },
+    {
+      "id": "city:doe_division_facilities",
+      "label": "Division of School Facilities",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Manages capital planning, construction, maintenance, and facility operations for over 1,800 school buildings, ensuring safe and functional learning environments."
+    },
+    {
+      "id": "city:comptroller_bureau_audit",
+      "label": "Bureau of Audit",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Conducts financial and performance audits of city agencies, programs, and contracts to ensure proper use of public funds and identify waste or fraud."
+    },
+    {
+      "id": "city:comptroller_bureau_asset_management",
+      "label": "Bureau of Asset Management",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Manages over $250 billion in pension fund investments for five NYC retirement systems, making allocation decisions across equities, bonds, real estate, and alternative investments."
+    },
+    {
+      "id": "city:comptroller_bureau_accountancy",
+      "label": "Bureau of Accountancy",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Processes payroll for all city employees, maintains accounting records, produces financial reports, and ensures compliance with governmental accounting standards."
+    },
+    {
+      "id": "city:comptroller_bureau_public_finance",
+      "label": "Bureau of Public Finance",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Issues and manages city bonds and other debt instruments, monitors city revenues and budget execution, and provides fiscal analysis and forecasting."
+    },
+    {
+      "id": "city:omb_budget_division",
+      "label": "Budget Division",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Prepares the Mayor's executive budget, analyzes agency budget requests, monitors spending throughout fiscal year, and develops financial plans for the city."
+    },
+    {
+      "id": "city:omb_economic_revenue",
+      "label": "Economic and Revenue Analysis",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Forecasts city tax revenues, analyzes economic trends affecting NYC, produces economic reports, and provides revenue projections for budget planning."
+    },
+    {
+      "id": "city:omb_operations",
+      "label": "Operations Unit",
+      "type": "unit",
+      "branch": "executive",
+      "factoid": "Monitors agency performance metrics, conducts operational reviews, manages mayoral management reports, and tracks service delivery indicators across city government."
+    },
+    {
+      "id": "city:omb_management_analysis",
+      "label": "Management Analysis",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Conducts organizational studies, evaluates program effectiveness, recommends management improvements, and analyzes city operations for efficiency and cost savings."
+    },
+    {
+      "id": "city:fdny_bureau_operations",
+      "label": "Bureau of Fire Operations",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Commands all fire suppression operations through 218 firehouses, responds to structure fires, hazardous materials incidents, and technical rescue calls citywide."
+    },
+    {
+      "id": "city:fdny_bureau_ems",
+      "label": "Bureau of Emergency Medical Services",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Operates citywide emergency medical services with 400+ ambulances responding to over 1.5 million medical emergencies annually through 46 EMS stations."
+    },
+    {
+      "id": "city:fdny_bureau_prevention",
+      "label": "Bureau of Fire Prevention",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Conducts building inspections, enforces fire safety codes, issues permits for fire alarm systems, and investigates fires to determine cause and origin."
+    },
+    {
+      "id": "city:fdny_bureau_training",
+      "label": "Bureau of Training",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Trains all FDNY firefighters and EMTs through Fire Academy and EMS Academy, provides continuing education, and maintains training facilities on Randall's Island."
+    },
+    {
+      "id": "city:dsny_bureau_cleaning_collection",
+      "label": "Bureau of Cleaning and Collection",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Collects over 12,000 tons of residential and institutional waste daily, maintains street cleanliness through mechanical broom operations, and empties 25,000 public litter baskets."
+    },
+    {
+      "id": "city:dsny_bureau_recycling",
+      "label": "Bureau of Recycling and Sustainability",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Manages citywide recycling programs including curbside collection of paper, metal, glass, and plastic, operates special waste drop-off sites, and promotes waste reduction."
+    },
+    {
+      "id": "city:dsny_bureau_motor_equipment",
+      "label": "Bureau of Motor Equipment",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Maintains and repairs DSNY's fleet of over 6,000 collection trucks, sweepers, and specialized vehicles through 12 repair shops across the city."
+    },
+    {
+      "id": "city:dhs_adult_family_services",
+      "label": "Adult Family Services",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Provides shelter, supportive housing, and services to adult families experiencing homelessness through a network of shelters and transitional housing facilities."
+    },
+    {
+      "id": "city:dhs_family_services",
+      "label": "Family Services",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Operates family shelters, provides case management, and coordinates services for families with children experiencing homelessness to support transition to permanent housing."
+    },
+    {
+      "id": "city:dhs_prevention",
+      "label": "Prevention Services",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Administers rental assistance programs, eviction prevention services, and emergency grants to help at-risk households avoid entering the shelter system."
+    },
+    {
+      "id": "city:dhs_outreach",
+      "label": "Outreach and Intake",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Conducts street outreach through HOME-STAT teams, operates intake centers for shelter placement, and connects unsheltered individuals to services and housing."
+    },
+    {
+      "id": "city:hra_adult_services",
+      "label": "Office of Adult Services",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Provides support services to vulnerable adults including home care, protective services, and assistance programs for elderly and disabled New Yorkers."
+    },
+    {
+      "id": "city:hra_family_independence",
+      "label": "Family Independence Administration",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Administers cash assistance programs including Family Assistance and Safety Net, SNAP benefits, and employment services to support low-income families toward self-sufficiency."
+    },
+    {
+      "id": "city:hra_hiv_aids",
+      "label": "HIV/AIDS Services Administration",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Provides supportive housing, case management, and emergency assistance to New Yorkers living with HIV/AIDS through a network of specialized services."
+    },
+    {
+      "id": "city:hra_medical_assistance",
+      "label": "Medical Assistance Program",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Processes Medicaid applications, determines eligibility for health coverage programs, and coordinates with NYC Health + Hospitals for healthcare access."
+    },
+    {
+      "id": "city:dot_traffic_operations",
+      "label": "Division of Traffic Operations",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Manages 12,700 traffic signals, implements traffic calming measures, coordinates street closures and special events, and monitors traffic flow through traffic management center."
+    },
+    {
+      "id": "city:dot_infrastructure",
+      "label": "Division of Infrastructure",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Designs and constructs street reconstruction projects, sidewalk repairs, bike lanes, and pedestrian safety improvements across 6,300 miles of city streets."
+    },
+    {
+      "id": "city:dot_bridges",
+      "label": "Division of Bridges",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Maintains and rehabilitates 789 bridges including East River bridges, inspects bridge structures for safety, and manages major capital reconstruction projects."
+    },
+    {
+      "id": "city:dot_ferries",
+      "label": "Division of Ferries",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Operates NYC Ferry service with six routes connecting waterfront communities, manages ferry infrastructure including landing facilities, and coordinates marine transportation."
+    },
+    {
+      "id": "city:hpd_preservation",
+      "label": "Division of Housing Preservation",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Administers rental assistance programs, manages affordable housing lotteries, and provides resources to tenants and landlords to preserve existing affordable housing stock."
+    },
+    {
+      "id": "city:hpd_development",
+      "label": "Division of Housing Development",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Finances new affordable housing construction, manages tax incentive programs like 421-a, and partners with developers to create income-restricted housing units."
+    },
+    {
+      "id": "city:hpd_code_enforcement",
+      "label": "Division of Code Enforcement",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Inspects residential buildings for housing code violations, issues violations for unsafe conditions, and can initiate emergency repairs or legal action against negligent landlords."
+    },
+    {
+      "id": "city:hpd_neighborhood_preservation",
+      "label": "Division of Neighborhood Preservation",
+      "type": "division",
+      "branch": "executive",
+      "factoid": "Supports community-based organizations providing housing counseling, homeownership programs, and neighborhood revitalization initiatives to strengthen communities."
+    },
+    {
+      "id": "city:dohmh_communicable_disease",
+      "label": "Bureau of Communicable Disease",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Monitors and responds to infectious disease outbreaks, conducts disease surveillance, manages TB control programs, and coordinates immunization efforts across the city."
+    },
+    {
+      "id": "city:dohmh_vital_statistics",
+      "label": "Bureau of Vital Statistics",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Maintains official records of births, deaths, and marriages in NYC, issues birth and death certificates, and produces vital statistics reports for public health planning."
+    },
+    {
+      "id": "city:dohmh_mental_health",
+      "label": "Bureau of Mental Health",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Provides mental health services through clinics, coordinates crisis intervention, operates ThriveNYC programs, and supports community mental health providers citywide."
+    },
+    {
+      "id": "city:dohmh_environmental_health",
+      "label": "Bureau of Environmental Health",
+      "type": "bureau",
+      "branch": "executive",
+      "factoid": "Enforces health code regulations for restaurants and food establishments, conducts inspections, manages letter grading system, and investigates foodborne illness complaints."
+    },
+    {
+      "id": "city:mayor_office_chief_of_staff",
+      "label": "Chief of Staff to the Mayor",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Oversees the Mayor's senior staff and coordinates policy initiatives across city agencies."
+    },
+    {
+      "id": "city:mayor_office_first_deputy",
+      "label": "First Deputy Mayor",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Serves as the Mayor's principal advisor and manages day-to-day operations of City Hall."
+    },
+    {
+      "id": "city:mayor_office_dm_strategic_policy",
+      "label": "Deputy Mayor for Strategic Policy Initiatives",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Leads long-term policy planning and coordinates cross-agency strategic initiatives."
+    },
+    {
+      "id": "city:mayor_office_dm_health_hs",
+      "label": "Deputy Mayor for Health and Human Services",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Oversees health, mental health, social services, and homelessness agencies and programs."
+    },
+    {
+      "id": "city:mayor_office_dm_housing_econ",
+      "label": "Deputy Mayor for Housing and Economic Development",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Leads housing policy, affordable housing development, and economic growth initiatives."
+    },
+    {
+      "id": "city:mayor_office_dm_public_safety",
+      "label": "Deputy Mayor for Public Safety",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Coordinates NYPD, FDNY, Corrections, and emergency management to ensure public safety."
+    },
+    {
+      "id": "city:mayor_office_dm_operations",
+      "label": "Deputy Mayor for Operations",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Manages operational agencies including sanitation, transportation, buildings, and parks."
+    },
+    {
+      "id": "city:mayor_office_counsel",
+      "label": "Counsel to the Mayor",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Provides legal advice to the Mayor and reviews all legislation, contracts, and executive orders."
+    },
+    {
+      "id": "city:mayor_office_dir_operations",
+      "label": "Director of Mayor's Office of Operations",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Tracks agency performance metrics and publishes the Mayor's Management Report."
+    },
+    {
+      "id": "city:mayor_office_press_secretary",
+      "label": "Press Secretary",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Manages media relations, press briefings, and the Mayor's public communications."
+    },
+    {
+      "id": "city:mayor_office_dir_intergov",
+      "label": "Director of Intergovernmental Affairs",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Coordinates relationships with federal, state, and local government officials."
+    },
+    {
+      "id": "city:council_speaker",
+      "label": "Speaker of the Council",
+      "type": "office",
+      "branch": "legislative",
+      "factoid": "Leads the City Council, sets legislative agenda, and assigns committee chairs."
+    },
+    {
+      "id": "city:council_majority_leader",
+      "label": "Majority Leader",
+      "type": "office",
+      "branch": "legislative",
+      "factoid": "Assists the Speaker in managing the legislative agenda and building consensus among members."
+    },
+    {
+      "id": "city:council_finance_committee",
+      "label": "Finance Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Reviews the city budget, monitors revenue and expenditures, and oversees fiscal policy."
+    },
+    {
+      "id": "city:council_land_use_committee",
+      "label": "Land Use Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Reviews all land use applications including rezonings, special permits, and ULURP projects."
+    },
+    {
+      "id": "city:council_public_safety_committee",
+      "label": "Public Safety Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Oversees NYPD, FDNY, emergency management, and corrections policies and operations."
+    },
+    {
+      "id": "city:council_transportation_committee",
+      "label": "Transportation Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Oversees DOT, street safety, transit policy, and transportation infrastructure."
+    },
+    {
+      "id": "city:council_education_committee",
+      "label": "Education Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Oversees DOE, school policies, education funding, and student services."
+    },
+    {
+      "id": "city:council_health_committee",
+      "label": "Health Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Oversees DOHMH, public health programs, healthcare access, and health facilities."
+    },
+    {
+      "id": "city:council_general_welfare_committee",
+      "label": "General Welfare Committee",
+      "type": "committee",
+      "branch": "legislative",
+      "factoid": "Oversees DHS, HRA, social services, homelessness programs, and public assistance."
+    }
+  ],
+  "edges": [],
+  "subviews": [
+    {
+      "id": "nypd_internal",
+      "label": "NYPD Internal Structure",
+      "description": "Major operational bureaus within the New York Police Department organized by function and jurisdiction",
+      "type": "intra",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:NYPD"
+      },
+      "nodes": [
+        "city:NYPD",
+        "city:nypd_patrol_bureau",
+        "city:nypd_detective_bureau",
+        "city:nypd_transit_bureau",
+        "city:nypd_housing_bureau",
+        "city:nypd_counterterrorism_bureau",
+        "city:nypd_intelligence_bureau",
+        "city:nypd_internal_affairs"
+      ],
+      "edges": [
+        {
+          "source": "city:NYPD",
+          "target": "city:nypd_patrol_bureau",
+          "id": "NYPD→nypd_patrol_bureau:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:NYPD",
+          "target": "city:nypd_detective_bureau",
+          "id": "NYPD→nypd_detective_bureau:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:NYPD",
+          "target": "city:nypd_transit_bureau",
+          "id": "NYPD→nypd_transit_bureau:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:NYPD",
+          "target": "city:nypd_housing_bureau",
+          "id": "NYPD→nypd_housing_bureau:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:NYPD",
+          "target": "city:nypd_counterterrorism_bureau",
+          "id": "NYPD→nypd_counterterrorism_bureau:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:NYPD",
+          "target": "city:nypd_intelligence_bureau",
+          "id": "NYPD→nypd_intelligence_bureau:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:NYPD",
+          "target": "city:nypd_internal_affairs",
+          "id": "NYPD→nypd_internal_affairs:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      },
+      "nesting": {
+        "allowedChildIds": [
+          "nypd_patrol_precincts",
+          "nypd_detective_squads"
+        ]
+      }
+    },
+    {
+      "id": "doe_internal",
+      "label": "DOE Internal Structure",
+      "description": "Major operational divisions within the NYC Department of Education managing instructional, student, and facility services",
+      "type": "intra",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:DOE"
+      },
+      "nodes": [
+        "city:DOE",
+        "city:doe_division_instructional_tech",
+        "city:doe_division_school_quality",
+        "city:doe_division_early_childhood",
+        "city:doe_division_multilingual",
+        "city:doe_division_special_education",
+        "city:doe_division_facilities"
+      ],
+      "edges": [
+        {
+          "source": "city:DOE",
+          "target": "city:doe_division_instructional_tech",
+          "id": "DOE→doe_division_instructional_tech:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:DOE",
+          "target": "city:doe_division_school_quality",
+          "id": "DOE→doe_division_school_quality:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:DOE",
+          "target": "city:doe_division_early_childhood",
+          "id": "DOE→doe_division_early_childhood:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:DOE",
+          "target": "city:doe_division_multilingual",
+          "id": "DOE→doe_division_multilingual:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:DOE",
+          "target": "city:doe_division_special_education",
+          "id": "DOE→doe_division_special_education:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:DOE",
+          "target": "city:doe_division_facilities",
+          "id": "DOE→doe_division_facilities:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "omb_internal",
+      "label": "OMB Internal Structure",
+      "description": "Major divisions within the Office of Management and Budget responsible for budget preparation, economic analysis, and agency oversight",
+      "type": "intra",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:OMB"
+      },
+      "nodes": [
+        "city:OMB",
+        "city:omb_budget_division",
+        "city:omb_economic_revenue",
+        "city:omb_operations",
+        "city:omb_management_analysis"
+      ],
+      "edges": [
+        {
+          "source": "city:OMB",
+          "target": "city:omb_budget_division",
+          "id": "OMB→omb_budget_division:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:OMB",
+          "target": "city:omb_economic_revenue",
+          "id": "OMB→omb_economic_revenue:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:OMB",
+          "target": "city:omb_operations",
+          "id": "OMB→omb_operations:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:OMB",
+          "target": "city:omb_management_analysis",
+          "id": "OMB→omb_management_analysis:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "fdny_internal",
+      "label": "FDNY Internal Structure",
+      "description": "Major operational bureaus within the Fire Department managing fire suppression, EMS, prevention, and training services",
+      "type": "intra",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:FDNY"
+      },
+      "nodes": [
+        "city:FDNY",
+        "city:fdny_bureau_operations",
+        "city:fdny_bureau_ems",
+        "city:fdny_bureau_prevention",
+        "city:fdny_bureau_training"
+      ],
+      "edges": [
+        {
+          "source": "city:FDNY",
+          "target": "city:fdny_bureau_operations",
+          "id": "FDNY→fdny_bureau_operations:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:FDNY",
+          "target": "city:fdny_bureau_ems",
+          "id": "FDNY→fdny_bureau_ems:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:FDNY",
+          "target": "city:fdny_bureau_prevention",
+          "id": "FDNY→fdny_bureau_prevention:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:FDNY",
+          "target": "city:fdny_bureau_training",
+          "id": "FDNY→fdny_bureau_training:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "dsny_internal",
+      "label": "DSNY Internal Structure",
+      "description": "Major operational bureaus within the Department of Sanitation managing waste collection, recycling, and fleet maintenance",
+      "type": "intra",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:DSNY"
+      },
+      "nodes": [
+        "city:DSNY",
+        "city:dsny_bureau_cleaning_collection",
+        "city:dsny_bureau_recycling",
+        "city:dsny_bureau_motor_equipment"
+      ],
+      "edges": [
+        {
+          "source": "city:DSNY",
+          "target": "city:dsny_bureau_cleaning_collection",
+          "id": "DSNY→dsny_bureau_cleaning_collection:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:DSNY",
+          "target": "city:dsny_bureau_recycling",
+          "id": "DSNY→dsny_bureau_recycling:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:DSNY",
+          "target": "city:dsny_bureau_motor_equipment",
+          "id": "DSNY→dsny_bureau_motor_equipment:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "dhs_internal",
+      "label": "DHS Internal Structure",
+      "description": "Major service divisions within the Department of Homeless Services managing shelter operations, prevention programs, and outreach",
+      "type": "intra",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:DHS"
+      },
+      "nodes": [
+        "city:DHS",
+        "city:dhs_adult_family_services",
+        "city:dhs_family_services",
+        "city:dhs_prevention",
+        "city:dhs_outreach"
+      ],
+      "edges": [
+        {
+          "source": "city:DHS",
+          "target": "city:dhs_adult_family_services",
+          "id": "DHS→dhs_adult_family_services:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:DHS",
+          "target": "city:dhs_family_services",
+          "id": "DHS→dhs_family_services:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:DHS",
+          "target": "city:dhs_prevention",
+          "id": "DHS→dhs_prevention:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:DHS",
+          "target": "city:dhs_outreach",
+          "id": "DHS→dhs_outreach:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "hra_internal",
+      "label": "HRA Internal Structure",
+      "description": "Major service administrations within the Human Resources Administration providing public assistance, HIV/AIDS services, and healthcare access",
+      "type": "intra",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:HRA"
+      },
+      "nodes": [
+        "city:HRA",
+        "city:hra_adult_services",
+        "city:hra_family_independence",
+        "city:hra_hiv_aids",
+        "city:hra_medical_assistance"
+      ],
+      "edges": [
+        {
+          "source": "city:HRA",
+          "target": "city:hra_adult_services",
+          "id": "HRA→hra_adult_services:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:HRA",
+          "target": "city:hra_family_independence",
+          "id": "HRA→hra_family_independence:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:HRA",
+          "target": "city:hra_hiv_aids",
+          "id": "HRA→hra_hiv_aids:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:HRA",
+          "target": "city:hra_medical_assistance",
+          "id": "HRA→hra_medical_assistance:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "dot_internal",
+      "label": "DOT Internal Structure",
+      "description": "Major operational divisions within the Department of Transportation managing traffic operations, infrastructure, bridges, and ferry services",
+      "type": "intra",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:DOT"
+      },
+      "nodes": [
+        "city:DOT",
+        "city:dot_traffic_operations",
+        "city:dot_infrastructure",
+        "city:dot_bridges",
+        "city:dot_ferries"
+      ],
+      "edges": [
+        {
+          "source": "city:DOT",
+          "target": "city:dot_traffic_operations",
+          "id": "DOT→dot_traffic_operations:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:DOT",
+          "target": "city:dot_infrastructure",
+          "id": "DOT→dot_infrastructure:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:DOT",
+          "target": "city:dot_bridges",
+          "id": "DOT→dot_bridges:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:DOT",
+          "target": "city:dot_ferries",
+          "id": "DOT→dot_ferries:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "hpd_internal",
+      "label": "HPD Internal Structure",
+      "description": "Major operational divisions within Housing Preservation and Development managing affordable housing preservation, development, code enforcement, and neighborhood programs",
+      "type": "intra",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:HPD"
+      },
+      "nodes": [
+        "city:HPD",
+        "city:hpd_preservation",
+        "city:hpd_development",
+        "city:hpd_code_enforcement",
+        "city:hpd_neighborhood_preservation"
+      ],
+      "edges": [
+        {
+          "source": "city:HPD",
+          "target": "city:hpd_preservation",
+          "id": "HPD→hpd_preservation:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:HPD",
+          "target": "city:hpd_development",
+          "id": "HPD→hpd_development:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:HPD",
+          "target": "city:hpd_code_enforcement",
+          "id": "HPD→hpd_code_enforcement:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:HPD",
+          "target": "city:hpd_neighborhood_preservation",
+          "id": "HPD→hpd_neighborhood_preservation:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    },
+    {
+      "id": "dohmh_internal",
+      "label": "DOHMH Internal Structure",
+      "description": "Major operational bureaus within the Department of Health and Mental Hygiene managing disease control, vital records, mental health, and environmental health",
+      "type": "intra",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:DOHMH"
+      },
+      "nodes": [
+        "city:DOHMH",
+        "city:dohmh_communicable_disease",
+        "city:dohmh_vital_statistics",
+        "city:dohmh_mental_health",
+        "city:dohmh_environmental_health"
+      ],
+      "edges": [
+        {
+          "source": "city:DOHMH",
+          "target": "city:dohmh_communicable_disease",
+          "id": "DOHMH→dohmh_communicable_disease:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:DOHMH",
+          "target": "city:dohmh_vital_statistics",
+          "id": "DOHMH→dohmh_vital_statistics:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:DOHMH",
+          "target": "city:dohmh_mental_health",
+          "id": "DOHMH→dohmh_mental_health:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        },
+        {
+          "source": "city:DOHMH",
+          "target": "city:dohmh_environmental_health",
+          "id": "DOHMH→dohmh_environmental_health:contains",
+          "relation": "contains",
+          "category": "hierarchical"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN",
+          "spacing": 70
+        }
+      }
+    }
+  ]
+}

@@ -5,8 +5,8 @@ import type { LayoutOptions } from 'cytoscape';
 import { governmentDatasets } from './datasets';
 import type { GovernmentScope, GovernmentDataset } from './datasets';
 import type { SubviewDefinition, StructureNode, RawEdge } from './types';
-import type { GraphConfig, GraphEdgeInfo, GraphNodeInfo } from '../graph/types';
-import { branchPalette, NODE_HEIGHT, NODE_WIDTH } from '../graph/constants';
+import type { GraphConfig, GraphEdgeInfo, GraphNodeInfo } from '../visualization/cytoscape/types';
+import { branchPalette, NODE_HEIGHT, NODE_WIDTH } from '../visualization/cytoscape/constants';
 
 export type GraphData = {
   // Core data
@@ -76,8 +76,6 @@ const createElkLayout = (nodesHavePreset: boolean): LayoutOptions =>
           'elk.direction': 'DOWN',
           'elk.spacing.nodeNode': 80,
           'elk.layered.spacing.nodeNodeBetweenLayers': 80,
-          // TEMPORARY: Testing SPLINES edge routing (options: POLYLINE, ORTHOGONAL, SPLINES)
-          'elk.edgeRouting': 'SPLINES',
         },
       } as LayoutOptions);
 

@@ -838,6 +838,126 @@
       "type": "committee",
       "branch": "legislative",
       "factoid": "Oversees DHS, HRA, social services, homelessness programs, and public assistance."
+    },
+    {
+      "id": "city:nyc-operating-budget",
+      "label": "Operating Budget",
+      "type": "budget_division",
+      "branch": "financial",
+      "tier": "detailed",
+      "factoid": "FY2024 operating budget: ~$107 billion"
+    },
+    {
+      "id": "city:nyc-capital-budget",
+      "label": "Capital Budget",
+      "type": "budget_division",
+      "branch": "financial",
+      "tier": "detailed",
+      "factoid": "FY2024-2028 capital commitment plan: ~$160 billion over 4 years"
+    },
+    {
+      "id": "city:nyc-property-tax-revenue",
+      "label": "Property Tax Revenue",
+      "type": "revenue_source",
+      "branch": "financial",
+      "tier": "detailed",
+      "factoid": "Generates ~$32 billion annually (45% of tax revenue)"
+    },
+    {
+      "id": "city:nyc-income-tax-revenue",
+      "label": "Personal Income Tax",
+      "type": "revenue_source",
+      "branch": "financial",
+      "tier": "detailed",
+      "factoid": "Generates ~$15 billion annually (21% of tax revenue)"
+    },
+    {
+      "id": "city:nyc-sales-tax-revenue",
+      "label": "Sales Tax Revenue",
+      "type": "revenue_source",
+      "branch": "financial",
+      "tier": "detailed",
+      "factoid": "Generates ~$9 billion annually (13% of tax revenue)"
+    },
+    {
+      "id": "city:nyc-state-federal-aid",
+      "label": "State & Federal Aid",
+      "type": "revenue_source",
+      "branch": "financial",
+      "tier": "detailed",
+      "factoid": "~$20 billion annually from state and federal sources"
+    },
+    {
+      "id": "city:nyc-debt-service",
+      "label": "Debt Service",
+      "type": "budget_allocation",
+      "branch": "financial",
+      "tier": "detailed",
+      "factoid": "~$7 billion annually (7% of operating budget)"
+    },
+    {
+      "id": "city:nyc-pension-contributions",
+      "label": "Pension Contributions",
+      "type": "budget_allocation",
+      "branch": "financial",
+      "tier": "detailed",
+      "factoid": "~$10 billion annually (9% of operating budget)"
+    },
+    {
+      "id": "city:nyc-agency-allocations",
+      "label": "Agency Operating Allocations",
+      "type": "budget_allocation",
+      "branch": "financial",
+      "tier": "detailed",
+      "factoid": "~$90 billion allocated to 70+ city agencies"
+    },
+    {
+      "id": "city:nyc-capital-project-allocations",
+      "label": "Capital Project Allocations",
+      "type": "budget_allocation",
+      "branch": "financial",
+      "tier": "detailed",
+      "factoid": "~$160B committed over 4-year plan"
+    },
+    {
+      "id": "city:nyc-comptroller-audit",
+      "label": "Bureau of Audit",
+      "type": "comptroller_bureau",
+      "branch": "executive",
+      "tier": "detailed",
+      "factoid": "Performs ~30 audits annually of agencies, contracts, and programs"
+    },
+    {
+      "id": "city:nyc-comptroller-asset-mgmt",
+      "label": "Bureau of Asset Management",
+      "type": "comptroller_bureau",
+      "branch": "executive",
+      "tier": "detailed",
+      "factoid": "Invests $250B+ across Teachers, Police, Fire, Employees, Board of Ed pension systems"
+    },
+    {
+      "id": "city:nyc-comptroller-accountancy",
+      "label": "Bureau of Accountancy",
+      "type": "comptroller_bureau",
+      "branch": "executive",
+      "tier": "detailed",
+      "factoid": "Processes payroll for 300,000+ city employees twice monthly"
+    },
+    {
+      "id": "city:nyc-comptroller-public-finance",
+      "label": "Bureau of Public Finance",
+      "type": "comptroller_bureau",
+      "branch": "executive",
+      "tier": "detailed",
+      "factoid": "Issues $8-10 billion in bonds annually to fund capital projects"
+    },
+    {
+      "id": "city:nyc-pension-funds",
+      "label": "NYC Pension Funds",
+      "type": "financial_entity",
+      "branch": "financial",
+      "tier": "detailed",
+      "factoid": "Five systems: NYCERS (general employees), TRS (teachers), POLICE, FIRE, BERS (Board of Ed)"
     }
   ],
   "edges": [],
@@ -1418,6 +1538,436 @@
           "direction": "DOWN",
           "spacing": 70
         }
+      }
+    },
+    {
+      "id": "city:budget-structure-subview",
+      "label": "Budget Structure",
+      "description": "NYC Budget divided into Operating Budget (annual expenses) and Capital Budget (infrastructure/long-term projects)",
+      "type": "intra",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:nyc_budget"
+      },
+      "nodes": [
+        "city:nyc_budget",
+        "city:nyc-operating-budget",
+        "city:nyc-capital-budget"
+      ],
+      "edges": [
+        {
+          "source": "city:nyc_budget",
+          "target": "city:nyc-operating-budget",
+          "relation": "contains",
+          "detail": "Budget includes Operating Budget for annual expenses"
+        },
+        {
+          "source": "city:nyc_budget",
+          "target": "city:nyc-capital-budget",
+          "relation": "contains",
+          "detail": "Budget includes Capital Budget for infrastructure projects"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN"
+        },
+        "fit": true,
+        "padding": 120
+      }
+    },
+    {
+      "id": "city:budget-revenue-flows",
+      "label": "Revenue Sources",
+      "description": "Where NYC's money comes from - tax revenues and intergovernmental aid",
+      "type": "workflow",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:nyc_budget"
+      },
+      "nodes": [
+        "city:nyc-property-tax-revenue",
+        "city:nyc-income-tax-revenue",
+        "city:nyc-sales-tax-revenue",
+        "city:nyc-state-federal-aid",
+        "city:nyc_budget"
+      ],
+      "edges": [
+        {
+          "source": "city:nyc-property-tax-revenue",
+          "target": "city:nyc_budget",
+          "relation": "funds",
+          "detail": "Property tax revenue flows into city budget (45% of tax revenue)"
+        },
+        {
+          "source": "city:nyc-income-tax-revenue",
+          "target": "city:nyc_budget",
+          "relation": "funds",
+          "detail": "Personal income tax flows into city budget (21% of tax revenue)"
+        },
+        {
+          "source": "city:nyc-sales-tax-revenue",
+          "target": "city:nyc_budget",
+          "relation": "funds",
+          "detail": "Sales tax revenue flows into city budget (13% of tax revenue)"
+        },
+        {
+          "source": "city:nyc-state-federal-aid",
+          "target": "city:nyc_budget",
+          "relation": "funds",
+          "detail": "State and federal grants flow into city budget for specific programs"
+        }
+      ],
+      "layout": {
+        "type": "elk-layered",
+        "options": {
+          "direction": "RIGHT",
+          "spacing": 100
+        },
+        "fit": true,
+        "padding": 120
+      }
+    },
+    {
+      "id": "city:budget-spending-allocations",
+      "label": "Budget Allocations",
+      "description": "Where NYC's money goes - major spending categories",
+      "type": "workflow",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:nyc_budget"
+      },
+      "nodes": [
+        "city:nyc_budget",
+        "city:nyc-agency-allocations",
+        "city:nyc-capital-project-allocations",
+        "city:nyc-debt-service",
+        "city:nyc-pension-contributions"
+      ],
+      "edges": [
+        {
+          "source": "city:nyc_budget",
+          "target": "city:nyc-agency-allocations",
+          "relation": "allocates_to",
+          "detail": "Operating budget allocates $90B+ to city agencies for personnel and programs"
+        },
+        {
+          "source": "city:nyc_budget",
+          "target": "city:nyc-capital-project-allocations",
+          "relation": "allocates_to",
+          "detail": "Capital budget allocates $160B over 4 years for infrastructure projects"
+        },
+        {
+          "source": "city:nyc_budget",
+          "target": "city:nyc-debt-service",
+          "relation": "allocates_to",
+          "detail": "Budget allocates $7B annually for debt service (bond payments)"
+        },
+        {
+          "source": "city:nyc_budget",
+          "target": "city:nyc-pension-contributions",
+          "relation": "allocates_to",
+          "detail": "Budget allocates $10B annually for pension contributions (constitutionally required)"
+        }
+      ],
+      "layout": {
+        "type": "elk-layered",
+        "options": {
+          "direction": "RIGHT",
+          "spacing": 100
+        },
+        "fit": true,
+        "padding": 120
+      }
+    },
+    {
+      "id": "city:budget-full-money-flow",
+      "label": "Complete Money Flow",
+      "description": "End-to-end view: revenue collection → budget → spending",
+      "type": "workflow",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:nyc_budget"
+      },
+      "nodes": [
+        "city:nyc-property-tax-revenue",
+        "city:nyc-income-tax-revenue",
+        "city:nyc-sales-tax-revenue",
+        "city:nyc-state-federal-aid",
+        "city:nyc_budget",
+        "city:nyc-operating-budget",
+        "city:nyc-capital-budget",
+        "city:nyc-agency-allocations",
+        "city:nyc-capital-project-allocations",
+        "city:nyc-debt-service",
+        "city:nyc-pension-contributions"
+      ],
+      "edges": [
+        {
+          "source": "city:nyc_budget",
+          "target": "city:nyc-operating-budget",
+          "relation": "contains",
+          "detail": "Budget includes Operating Budget for annual expenses"
+        },
+        {
+          "source": "city:nyc_budget",
+          "target": "city:nyc-capital-budget",
+          "relation": "contains",
+          "detail": "Budget includes Capital Budget for infrastructure projects"
+        },
+        {
+          "source": "city:nyc-property-tax-revenue",
+          "target": "city:nyc_budget",
+          "relation": "funds",
+          "detail": "Property tax revenue flows into city budget (45% of tax revenue)"
+        },
+        {
+          "source": "city:nyc-income-tax-revenue",
+          "target": "city:nyc_budget",
+          "relation": "funds",
+          "detail": "Personal income tax flows into city budget (21% of tax revenue)"
+        },
+        {
+          "source": "city:nyc-sales-tax-revenue",
+          "target": "city:nyc_budget",
+          "relation": "funds",
+          "detail": "Sales tax revenue flows into city budget (13% of tax revenue)"
+        },
+        {
+          "source": "city:nyc-state-federal-aid",
+          "target": "city:nyc_budget",
+          "relation": "funds",
+          "detail": "State and federal grants flow into city budget for specific programs"
+        },
+        {
+          "source": "city:nyc_budget",
+          "target": "city:nyc-agency-allocations",
+          "relation": "allocates_to",
+          "detail": "Operating budget allocates $90B+ to city agencies for personnel and programs"
+        },
+        {
+          "source": "city:nyc_budget",
+          "target": "city:nyc-capital-project-allocations",
+          "relation": "allocates_to",
+          "detail": "Capital budget allocates $160B over 4 years for infrastructure projects"
+        },
+        {
+          "source": "city:nyc_budget",
+          "target": "city:nyc-debt-service",
+          "relation": "allocates_to",
+          "detail": "Budget allocates $7B annually for debt service (bond payments)"
+        },
+        {
+          "source": "city:nyc_budget",
+          "target": "city:nyc-pension-contributions",
+          "relation": "allocates_to",
+          "detail": "Budget allocates $10B annually for pension contributions (constitutionally required)"
+        }
+      ],
+      "layout": {
+        "type": "elk-layered",
+        "options": {
+          "direction": "RIGHT",
+          "spacing": 100
+        },
+        "fit": true,
+        "padding": 120
+      }
+    },
+    {
+      "id": "city:comptroller-structure-subview",
+      "label": "Comptroller Bureaus",
+      "description": "Internal organization of the NYC Comptroller's Office - four major bureaus handling audits, pensions, accounting, and public finance",
+      "type": "intra",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:comptroller"
+      },
+      "nodes": [
+        "city:comptroller",
+        "city:nyc-comptroller-audit",
+        "city:nyc-comptroller-asset-mgmt",
+        "city:nyc-comptroller-accountancy",
+        "city:nyc-comptroller-public-finance"
+      ],
+      "edges": [
+        {
+          "source": "city:comptroller",
+          "target": "city:nyc-comptroller-audit",
+          "relation": "contains",
+          "detail": "Comptroller's office includes Bureau of Audit"
+        },
+        {
+          "source": "city:comptroller",
+          "target": "city:nyc-comptroller-asset-mgmt",
+          "relation": "contains",
+          "detail": "Comptroller's office includes Bureau of Asset Management"
+        },
+        {
+          "source": "city:comptroller",
+          "target": "city:nyc-comptroller-accountancy",
+          "relation": "contains",
+          "detail": "Comptroller's office includes Bureau of Accountancy"
+        },
+        {
+          "source": "city:comptroller",
+          "target": "city:nyc-comptroller-public-finance",
+          "relation": "contains",
+          "detail": "Comptroller's office includes Bureau of Public Finance"
+        }
+      ],
+      "layout": {
+        "type": "elk-mrtree",
+        "options": {
+          "direction": "DOWN"
+        },
+        "fit": true,
+        "padding": 120
+      }
+    },
+    {
+      "id": "city:comptroller-oversight-flow",
+      "label": "Financial Oversight Process",
+      "description": "How the Comptroller provides checks on city spending and operations",
+      "type": "workflow",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:comptroller"
+      },
+      "nodes": [
+        "city:comptroller",
+        "city:nyc-comptroller-audit",
+        "city:nyc-comptroller-accountancy",
+        "city:nyc-agencies",
+        "city:nyc_budget"
+      ],
+      "edges": [
+        {
+          "source": "city:comptroller",
+          "target": "city:nyc-comptroller-audit",
+          "relation": "contains",
+          "detail": "Comptroller's office includes Bureau of Audit"
+        },
+        {
+          "source": "city:comptroller",
+          "target": "city:nyc-comptroller-accountancy",
+          "relation": "contains",
+          "detail": "Comptroller's office includes Bureau of Accountancy"
+        },
+        {
+          "source": "city:nyc-comptroller-audit",
+          "target": "city:nyc-agencies",
+          "relation": "audits",
+          "detail": "Audit Bureau conducts financial and performance audits of city agencies"
+        },
+        {
+          "source": "city:nyc-comptroller-accountancy",
+          "target": "city:nyc_budget",
+          "relation": "registers",
+          "detail": "Accountancy Bureau registers budget after Council adoption, making it official"
+        },
+        {
+          "source": "city:nyc-comptroller-accountancy",
+          "target": "city:nyc-agencies",
+          "relation": "registers_contracts",
+          "detail": "Accountancy Bureau must register contracts before agencies can spend"
+        }
+      ],
+      "layout": {
+        "type": "elk-layered",
+        "options": {
+          "direction": "RIGHT",
+          "spacing": 100
+        },
+        "fit": true,
+        "padding": 120
+      }
+    },
+    {
+      "id": "city:comptroller-pension-power",
+      "label": "Pension Fund Management",
+      "description": "Comptroller's control over massive pension fund investments",
+      "type": "workflow",
+      "jurisdiction": "city",
+      "anchor": {
+        "nodeId": "city:comptroller"
+      },
+      "nodes": [
+        "city:comptroller",
+        "city:nyc-comptroller-asset-mgmt",
+        "city:nyc-pension-funds"
+      ],
+      "edges": [
+        {
+          "source": "city:comptroller",
+          "target": "city:nyc-comptroller-asset-mgmt",
+          "relation": "contains",
+          "detail": "Comptroller's office includes Bureau of Asset Management"
+        },
+        {
+          "source": "city:nyc-comptroller-asset-mgmt",
+          "target": "city:nyc-pension-funds",
+          "relation": "manages",
+          "detail": "Asset Management Bureau invests and manages $250B in pension assets"
+        }
+      ],
+      "layout": {
+        "type": "elk-layered",
+        "options": {
+          "direction": "RIGHT",
+          "spacing": 100
+        },
+        "fit": true,
+        "padding": 120
+      }
+    },
+    {
+      "id": "city:comptroller-pension-allocation",
+      "label": "NYC Pension Investment Allocation",
+      "description": "Detailed breakdown of $301.7B NYC pension fund investments from 5 systems through asset classes to individual investment managers",
+      "type": "sankey",
+      "jurisdiction": "city",
+      "renderTarget": "overlay",
+      "anchor": {
+        "nodeId": "city:comptroller"
+      },
+      "nodes": [],
+      "edges": [],
+      "sankeyData": {
+        "type": "file",
+        "path": "data/nyc_pension_sankey.json"
+      },
+      "layout": {
+        "type": "elk-layered"
+      },
+      "metadata": {
+        "tags": ["financial", "pensions", "investments"],
+        "importance": "high"
+      }
+    },
+    {
+      "id": "city:comptroller-revenue-breakdown",
+      "label": "NYC Revenue Breakdown FY2025",
+      "description": "Interactive hierarchical breakdown of $120.5B NYC revenue sources from funding types through revenue categories to individual sources",
+      "type": "sunburst",
+      "jurisdiction": "city",
+      "renderTarget": "overlay",
+      "anchor": {
+        "nodeId": "city:comptroller"
+      },
+      "nodes": [],
+      "edges": [],
+      "sunburstData": {
+        "type": "file",
+        "path": "data/nyc_revenue_sunburst_fy2025.json"
+      },
+      "layout": {
+        "type": "elk-layered"
+      },
+      "metadata": {
+        "tags": ["financial", "revenue", "budget"],
+        "importance": "high"
       }
     }
   ]

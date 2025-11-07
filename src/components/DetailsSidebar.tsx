@@ -1,5 +1,5 @@
 import type { SubviewDefinition, ProcessStep } from '../data/types';
-import type { GraphEdgeInfo, GraphNodeInfo } from '../graph/types';
+import type { GraphEdgeInfo, GraphNodeInfo } from '../visualization/cytoscape/types';
 
 type DetailsSidebarProps = {
   activeNode: GraphNodeInfo | null;

@@ -42,6 +42,69 @@ When asked to do something, just do it - including obvious follow-up actions nee
 - YAGNI. The best code is no code. Don't add features we don't need right now.
 - When it doesn't conflict with YAGNI, architect for extensibility and flexibility.
 
+## Application Architecture
+
+This application follows a strict unidirectional data flow pattern. YOU MUST ALWAYS respect this architecture:
+
+### The Sacred Flow: InputHandler → Controller → App → Rendering
+
+1. **InputHandler** (`src/visualization/cytoscape/inputHandler.ts`)
+   - Receives all user interactions (clicks, keyboard, gestures)
+   - Uses action queue for serialization of asynchronous operations
+   - Translates raw events into high-level actions
+   - Calls controller methods (NEVER calls App directly)
+
+2. **Controller** (`src/visualization/cytoscape/controller.ts`)
+   - Central state management and business logic
+   - Maintains the single source of truth (VisualizationState)
+   - Processes actions from InputHandler
+   - Updates state and notifies App via callbacks
+   - Manages all visualization overlays (Sankey, Sunburst, etc.)
+
+3. **App** (`src/App.tsx`)
+   - Pure rendering based on state from Controller
+   - Receives state updates via callbacks
+   - NEVER manipulates state directly
+   - NEVER wires event handlers directly to UI components
+   - Passes state down to child components
+
+4. **Rendering Components**
+   - Receive data and callbacks as props
+   - Report user interactions back up the chain
+   - Remain stateless where possible
+
+### Critical Rules
+
+- **YOU MUST NEVER wire user interactions directly in App.tsx**
+  - Wrong: `<button onClick={() => setOverlay(...)}>` in App
+  - Right: `<button onClick={() => inputHandler.enqueue(actions.activateSubview(id))}>` in component
+
+- **YOU MUST NEVER bypass the Controller**
+  - All state changes flow through Controller
+  - All overlay activations/deactivations go through Controller methods
+  - Direct state manipulation in App causes desynchronization
+
+- **YOU MUST NEVER create duplicate state**
+  - Controller holds the single source of truth
+  - App receives state via callbacks, never maintains its own copy
+  - Any divergence between App and Controller state is a critical bug
+
+### Why This Matters
+
+In the past, attempts to wire things directly in App have caused:
+- State desynchronization between Controller and UI
+- Race conditions with asynchronous operations
+- Inability to properly serialize user interactions
+- Broken undo/redo and history management
+
+When implementing new features:
+1. Start with InputHandler to capture the interaction
+2. Add action to the action queue if async
+3. Call the appropriate Controller method
+4. Update Controller state
+5. Let the callback propagate state to App
+6. App renders based on new state
+
 ## Planning and Documentation
 
 - YOU MUST NOT write detailed implementation code in plans, architecture docs, or implementation guides unless you have thoroughly explored the existing codebase architecture
