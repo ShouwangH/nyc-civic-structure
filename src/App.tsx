@@ -28,35 +28,12 @@ function App() {
     sidebarHover: false,
   });
 
-  const { selectedNodeId, selectedEdgeId, activeSubviewId, activeScope, controlsOpen, sidebarHover, sankeyOverlay, sunburstOverlay } = state;
+  const { selectedNodeId, selectedEdgeId, activeSubviewId, activeScope, sidebarHover, sankeyOverlay, sunburstOverlay } = state;
 
   // Static graph data - computed once at module load
   const { dataset, mainGraph, indexes, maps, scopeNodeIds } = GRAPH_DATA;
   const { nodesById, edgesById, nodeScopeIndex } = indexes;
   const { subviewByAnchorId, subviewById } = maps;
-
-  // Filter workflow subviews by scope and anchor node tier
-  const visibleProcesses = activeScope
-    ? Array.from(subviewById.values()).filter(subview => {
-        if (subview.jurisdiction !== activeScope || subview.type !== 'workflow') {
-          return false;
-        }
-
-        // Get anchor node to check tier
-        const anchorNodeId = subview.anchor?.nodeId;
-        if (!anchorNodeId) return true; // No anchor, show by default
-
-        const anchorNode = nodesById.get(anchorNodeId);
-        if (!anchorNode) return true; // Anchor not found, show by default
-
-        // Detailed tier workflows only show when anchor node is selected
-        if (anchorNode.tier === 'detailed') {
-          return selectedNodeId === anchorNodeId;
-        }
-
-        return true; // Main tier workflows always show in scope
-      })
-    : [];
 
   // Filter non-workflow subviews by scope and anchor node visibility
   const visibleSubviews = activeScope
@@ -102,10 +79,6 @@ function App() {
   const shouldShowSidebar = selectionActive || sidebarHover;
 
   // Simple action handlers
-  const toggleControlsOpen = useCallback(() => {
-    setState((prev) => ({ ...prev, controlsOpen: !prev.controlsOpen }));
-  }, []);
-
   const setSidebarHover = useCallback((hover: boolean) => {
     setState((prev) => ({ ...prev, sidebarHover: hover }));
   }, []);
@@ -117,38 +90,32 @@ function App() {
   }, [runtime]);
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-[#eceae4]">
-      <header className="border-b border-slate-200 bg-slate-100 px-6 py-5">
-        <h1 className="text-2xl font-semibold text-slate-900">
+    <div className="relative flex min-h-screen flex-col bg-[#eceae4] p-3">
+      <header className="mb-3 rounded-lg border border-slate-200 bg-slate-50 px-6 py-3 shadow-sm">
+        <h1 className="text-xl font-semibold text-slate-900">
           <span>Maximum New York |</span>
           <span className="text-gray-500 text-lg"> {dataset.meta.title}</span>
         </h1>
-        <p className="mt-1 max-w-3xl text-sm text-slate-600">
-          {dataset.meta.description}
-        </p>
       </header>
 
-      <main className="flex flex-1 overflow-hidden bg-[#eceae4]">
+      <main className="flex flex-1 overflow-hidden bg-[#eceae4] gap-3">
         <ControlsPanel
           scopes={governmentScopes}
           activeScope={activeScope}
           subviews={visibleSubviews}
-          processes={visibleProcesses}
           activeSubviewId={activeSubviewId}
-          isOpen={controlsOpen}
-          onToggleOpen={toggleControlsOpen}
           inputHandler={runtime?.inputHandler ?? null}
         />
 
         <section
           className={clsx(
-            'relative flex flex-1 flex-col gap-6 px-6 py-6',
+            'relative flex flex-1 flex-col',
             shouldShowSidebar && 'lg:min-w-0'
           )}
         >
-          <div className="flex flex-1 min-h-[75vh] overflow-hidden rounded-lg border border-slate-200 bg-slate-50 shadow-sm lg:min-h-[82vh]">
+          <div className="flex flex-1 overflow-hidden rounded-lg border border-slate-200 bg-slate-50 shadow-sm">
             <GraphCanvas
-              className="h-full w-full min-h-[75vh] rounded-lg bg-[#eceae4] lg:min-h-[82vh]"
+              className="h-full w-full rounded-lg bg-[#eceae4]"
               mainGraph={mainGraph}
               subviewByAnchorId={subviewByAnchorId}
               subviewById={subviewById}
@@ -160,10 +127,6 @@ function App() {
               onRuntimeReady={setRuntime}
             />
           </div>
-          <p className="text-xs text-slate-500">
-            Zoom with scroll, drag to pan, click a node or edge to inspect. Use the left menu to
-            switch scopes, spotlight processes, or explore a subview.
-          </p>
         </section>
 
         {shouldShowSidebar && (
@@ -207,7 +170,7 @@ function App() {
               void runtime.inputHandler.enqueue(actions.deactivateSubview());
             }
           }}
-          controlPanelWidth={controlsOpen ? window.innerWidth * 0.25 : 64}
+          controlPanelWidth={256}
         />
       )}
 
@@ -220,7 +183,7 @@ function App() {
               void runtime.inputHandler.enqueue(actions.deactivateSubview());
             }
           }}
-          controlPanelWidth={controlsOpen ? window.innerWidth * 0.25 : 64}
+          controlPanelWidth={256}
         />
       )}
     </div>

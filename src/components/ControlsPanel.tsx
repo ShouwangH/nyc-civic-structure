@@ -12,10 +12,7 @@ type ControlsPanelProps = {
   scopes: ScopeOption[];
   activeScope: GovernmentScope | null;
   subviews: SubviewDefinition[];
-  processes: SubviewDefinition[];
   activeSubviewId: string | null;
-  isOpen: boolean;
-  onToggleOpen: () => void;
   inputHandler: InputHandler | null;
 };
 
@@ -33,38 +30,17 @@ const ControlsPanel = ({
   scopes,
   activeScope,
   subviews,
-  processes,
   activeSubviewId,
-  isOpen,
-  onToggleOpen,
   inputHandler,
 }: ControlsPanelProps) => {
-  const activeProcess = activeSubviewId
-    ? processes.find((process) => process.id === activeSubviewId) ?? null
-    : null;
-
   return (
     <aside
-      className={`relative flex flex-shrink-0 flex-col border-slate-200 bg-slate-50 transition-all duration-200 ${
-        isOpen ? 'w-3/12' : 'w-16'
-      }`}
+      className="relative flex w-64 flex-shrink-0 flex-col rounded-lg border border-slate-200 bg-slate-50 shadow-sm"
       aria-label="Controls menu"
     >
-      <button
-        type="button"
-        onClick={onToggleOpen}
-        aria-expanded={isOpen}
-        className="flex items-center justify-between gap-2 border-b border-slate-200 px-4 py-3 text-xl font-medium text-slate-600 transition hover:bg-slate-100"
-      >
-        <span>{isOpen ? 'Hide' : '='}</span>
-        <span>{isOpen ? '⟨' : ''}</span>
-      </button>
-
-      {isOpen ? (
-        <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-4 py-5 text-xl text-slate-700">
+      <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-4 py-5 text-xl text-slate-700">
           <section className="space-y-3">
-            <h2 className="text-lg font-semibold uppercase tracking-wide text-slate-500">Scope</h2>
-            <div className="space-y-2">
+            <div className="flex rounded-lg bg-white border border-slate-200 p-1">
               {scopes.map((scope) => (
                 <button
                   key={scope.id}
@@ -73,7 +49,11 @@ const ControlsPanel = ({
                     if (!inputHandler) return;
                     void inputHandler.enqueue(actions.changeScope(scope.id));
                   }}
-                  className={getButtonClasses(activeScope === scope.id)}
+                  className={`flex-1 rounded-md px-3 py-2 text-base font-medium transition ${
+                    activeScope === scope.id
+                      ? 'bg-blue-600 text-white shadow-sm'
+                      : 'text-slate-600 hover:text-slate-900'
+                  }`}
                 >
                   {scope.label}
                 </button>
@@ -81,17 +61,13 @@ const ControlsPanel = ({
             </div>
           </section>
 
-          <section className="space-y-3">
-            <h2 className="text-lg font-semibold uppercase tracking-wide text-slate-500">
-              Departments and Agencies
-            </h2>
-            {activeScope === null ? (
-              <p className="text-lg text-slate-500">Select a scope to view agencies and departments</p>
-            ) : subviews.length === 0 ? (
-              <p className="text-lg text-slate-500">No agencies available for this scope.</p>
-            ) : (
+          {subviews.filter(sv => sv.renderTarget === 'overlay').length > 0 && (
+            <section className="space-y-3">
+              <h2 className="text-lg font-semibold uppercase tracking-wide text-slate-500">
+                Views
+              </h2>
               <div className="space-y-2">
-                {subviews.map((subview) => {
+                {subviews.filter(sv => sv.renderTarget === 'overlay').map((subview) => {
                   const isActive = activeSubviewId === subview.id;
                   return (
                     <button
@@ -113,57 +89,9 @@ const ControlsPanel = ({
                   );
                 })}
               </div>
-            )}
-          </section>
-
-          <section className="space-y-3">
-            <h2 className="text-lg font-semibold uppercase tracking-wide text-slate-500">
-              Processes
-            </h2>
-            {activeScope === null ? (
-              <p className="text-lg text-slate-500">Select a scope to view processes.</p>
-            ) : processes.length === 0 ? (
-              <p className="text-lg text-slate-500">No processes yet for this scope.</p>
-            ) : (
-              <div className="space-y-2">
-                {processes.map((process) => {
-                  const isActive = activeSubviewId === process.id;
-                  return (
-                    <button
-                      key={process.id}
-                      type="button"
-                      onClick={() => {
-                        if (!inputHandler) {
-                          return;
-                        }
-
-                        if (isActive) {
-                          void inputHandler.enqueue(actions.backgroundClick());
-                        } else {
-                          void inputHandler.enqueue(actions.activateSubview(process.id));
-                        }
-                      }}
-                      className={getButtonClasses(isActive, 'small')}
-                    >
-                      {process.label}
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-            {activeProcess && (
-              <div className="rounded-md bg-slate-100 px-3 py-2 text-lg text-slate-600">
-                <p className="font-semibold text-slate-700">{activeProcess.label}</p>
-                <p className="mt-1">{activeProcess.description}</p>
-              </div>
-            )}
-          </section>
+            </section>
+          )}
         </div>
-      ) : (
-        <div className="flex flex-1 items-center justify-center text-lg font-semibold uppercase tracking-wide text-slate-500">
-          Menu
-        </div>
-      )}
     </aside>
   );
 };

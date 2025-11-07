@@ -70,7 +70,7 @@ const DetailsSidebar = ({
 
   return (
     <aside
-      className="pointer-events-auto z-30 hidden h-full flex-col overflow-y-auto border-l border-slate-200 bg-white px-6 py-6 text-sm text-slate-600 shadow-xl lg:flex lg:w-[320px]"
+      className="pointer-events-auto z-30 hidden h-full flex-col overflow-y-auto rounded-lg border border-slate-200 bg-slate-50 px-6 py-6 text-sm text-slate-600 shadow-sm lg:flex lg:w-[320px]"
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >

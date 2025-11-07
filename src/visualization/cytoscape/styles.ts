@@ -143,4 +143,10 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
       color:'white'
     },
   },
+  {
+    selector: 'node[hasSubview]',
+    style: {
+      'border-style': 'double',
+    },
+  },
 ];
