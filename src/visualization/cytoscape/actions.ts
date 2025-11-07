@@ -24,6 +24,9 @@ export type ClearScopeAction = Action<'CLEAR_SCOPE'>;
 // Selection actions
 export type ClearSelectionsAction = Action<'CLEAR_SELECTIONS'>;
 
+// View mode actions
+export type ChangeViewModeAction = Action<'CHANGE_VIEW_MODE', { mode: 'diagram' | 'views' }>;
+
 // Union of all possible actions
 export type GraphAction =
   | NodeClickAction
@@ -33,7 +36,8 @@ export type GraphAction =
   | DeactivateSubviewAction
   | ChangeScopeAction
   | ClearScopeAction
-  | ClearSelectionsAction;
+  | ClearSelectionsAction
+  | ChangeViewModeAction;
 
 // Action creators for convenience
 export const actions = {
@@ -71,5 +75,10 @@ export const actions = {
 
   clearSelections: (): ClearSelectionsAction => ({
     type: 'CLEAR_SELECTIONS',
+  }),
+
+  changeViewMode: (mode: 'diagram' | 'views'): ChangeViewModeAction => ({
+    type: 'CHANGE_VIEW_MODE',
+    payload: { mode },
   }),
 };

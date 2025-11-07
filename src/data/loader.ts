@@ -233,6 +233,14 @@ export function loadGraphData(): GraphData {
     });
   });
 
+  // Pass 5: Mark nodes that have subviews with a badge property
+  subviewByAnchorId.forEach((_, nodeId) => {
+    const node = nodesById.get(nodeId);
+    if (node) {
+      (node as any).hasSubview = true;
+    }
+  });
+
   // Build unified dataset for metadata
   const dataset: GovernmentDataset = {
     scope: 'city',

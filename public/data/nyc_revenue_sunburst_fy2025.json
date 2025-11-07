@@ -8,9 +8,6 @@
   "data": {
     "name": "NYC Revenue FY2025",
     "children": [
-      {
-        "name": "City Funds",
-        "children": [
           {
             "name": "Taxes",
             "children": [
@@ -519,6 +516,4 @@
           }
         ]
       }
-    ]
   }
-}

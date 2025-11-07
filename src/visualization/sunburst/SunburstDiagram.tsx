@@ -84,12 +84,12 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
       .innerRadius(d => d.y0 * radius / 3)
       .outerRadius(d => Math.max(d.y0 * radius / 3, d.y1 * radius / 3 - 1));
 
-    // Determine fill color for a node - color by level 2 ancestor
+    // Determine fill color for a node - color by level 1 ancestor (first child of root)
     const getColor = (node: NodeWithCurrent): string => {
       if (node.depth === 0) return '#f3f4f6';
-      if (node.depth === 1) return '#e5e7eb';
+      // Walk up to depth 1 (first level children)
       let current: NodeWithCurrent = node;
-      while (current.depth > 2 && current.parent) current = current.parent as NodeWithCurrent;
+      while (current.depth > 1 && current.parent) current = current.parent as NodeWithCurrent;
       return color(current.data.name);
     };
 
@@ -108,29 +108,78 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
       return `rotate(${rotate}) translate(${y},0) rotate(${rotate > 90 ? 180 : 0})`;
     };
 
+    // Check if arc is visible - show 2 child levels (skip focused node itself)
+    const arcVisible = (d: ArcCoords) => {
+      return d.y1 <= 3 && d.y0 >= 1 && d.x1 > d.x0;
+    };
+
+    // Calculate opacity based on value relative to parent, bounded by parent's opacity
+    const getOpacity = (node: NodeWithCurrent): number => {
+      if (!node.parent) return 1;
+
+      const parentValue = node.parent.value || 1;
+      const nodeValue = node.value || 0;
+      const ratio = nodeValue / parentValue;
+
+      // Map ratio to opacity range: 0.4 (small) to 1.0 (large)
+      const baseOpacity = 0.4 + (ratio * 0.6);
+
+      // Get parent's opacity and ensure child never exceeds it
+      const parentOpacity = getOpacity(node.parent as NodeWithCurrent);
+      return Math.min(baseOpacity, parentOpacity);
+    };
+
+    // Update center circle to track current focus
+    const updateCenterCircle = (focusNode: NodeWithCurrent) => {
+      const innerRadius = radius / hierarchyRoot.height;
+      g.selectAll('circle.center-circle')
+        .data([focusNode])
+        .join('circle')
+        .attr('class', 'center-circle')
+        .attr('r', innerRadius)
+        .attr('fill', 'white')
+        .attr('pointer-events', 'all')
+        .style('cursor', 'pointer')
+        .on('click', clicked as any);
+    };
+
     // Click handler - recalculates coordinates and transitions
     const clicked = (_event: MouseEvent, p: NodeWithCurrent) => {
+      console.log('=== Sunburst Click Debug ===');
+      console.log('Clicked node:', p.data.name, 'depth:', p.depth);
+      console.log('Current focus:', currentFocus.data.name, 'depth:', currentFocus.depth);
+
       // Calculate depth below this node
       const maxDepthBelow = (node: NodeWithCurrent): number => {
         if (!node.children || node.children.length === 0) return 0;
         return 1 + Math.max(...(node.children as NodeWithCurrent[]).map(maxDepthBelow));
       };
 
+      const depthBelow = maxDepthBelow(p);
+      console.log('Depth below clicked node:', depthBelow);
+      console.log('Has children:', !!p.children, 'count:', p.children?.length || 0);
+
       // Only allow zoom in if node has at least 2 levels below it (to show 2 rings)
       // Or if clicking the same node/parent to zoom out
       if (currentFocus === p) {
+        console.log('Decision: Zoom out (clicked current focus)');
         // Zoom out to parent
         currentFocus = (p.parent as NodeWithCurrent) || root;
       } else if (maxDepthBelow(p) < 2) {
+        console.log('Decision: Zoom out (not enough depth below)');
         // Not enough depth below - treat as zoom out click on parent
         currentFocus = (p.parent as NodeWithCurrent) || root;
       } else {
+        console.log('Decision: Zoom in (enough depth)');
         // Zoom in - enough depth
         currentFocus = p;
       }
 
-      // Update focused label
+      console.log('New focus:', currentFocus.data.name, 'depth:', currentFocus.depth);
+
+      // Update focused label and center circle
       svg.select('.center-label').text(currentFocus.data.name);
+      updateCenterCircle(currentFocus);
 
       // Calculate target coordinates for all nodes relative to clicked node
       root.each((d: NodeWithCurrent) => {
@@ -174,27 +223,6 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
           const visible = arcVisible(d.target!) && labelVisible(d.target!);
           return visible ? 0.9 : 0;
         });
-    };
-
-    // Check if arc is visible - show 2 child levels (skip focused node itself)
-    const arcVisible = (d: ArcCoords) => {
-      return d.y1 <= 3 && d.y0 >= 1 && d.x1 > d.x0;
-    };
-
-    // Calculate opacity based on value relative to parent, bounded by parent's opacity
-    const getOpacity = (node: NodeWithCurrent): number => {
-      if (!node.parent) return 1;
-
-      const parentValue = node.parent.value || 1;
-      const nodeValue = node.value || 0;
-      const ratio = nodeValue / parentValue;
-
-      // Map ratio to opacity range: 0.4 (small) to 1.0 (large)
-      const baseOpacity = 0.4 + (ratio * 0.6);
-
-      // Get parent's opacity and ensure child never exceeds it
-      const parentOpacity = getOpacity(node.parent as NodeWithCurrent);
-      return Math.min(baseOpacity, parentOpacity);
     };
 
     // Initial render - include all descendants (no slice)

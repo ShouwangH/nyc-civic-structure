@@ -29,6 +29,7 @@ export type VisualizationState = {
   activeScope: GovernmentScope | null;
   controlsOpen: boolean;
   sidebarHover: boolean;
+  viewMode: 'diagram' | 'views';
   sankeyOverlay?: {
     subview: SubviewDefinition;
     data: SankeyData;
@@ -404,6 +405,7 @@ export function createController(config: ControllerConfig): Controller {
       transitionVisualizationState({
         sankeyOverlay: null,
         activeSubviewId: null,
+        viewMode: 'diagram',
         // Preserve selectedNodeId - return to the node that was selected
       });
       return;
@@ -413,6 +415,7 @@ export function createController(config: ControllerConfig): Controller {
       transitionVisualizationState({
         sunburstOverlay: null,
         activeSubviewId: null,
+        viewMode: 'diagram',
         // Preserve selectedNodeId - return to the node that was selected
       });
       return;
@@ -557,6 +560,11 @@ export function createController(config: ControllerConfig): Controller {
   // ============================================================================
 
   const handleBackgroundClick = async (): Promise<void> => {
+    // Guard: Don't allow background clicks during transitions
+    if (transitionInProgress) {
+      return;
+    }
+
     const currentState = getState();
 
     // If there's an overlay open, close it (preserve node selection)
@@ -657,6 +665,12 @@ export function createController(config: ControllerConfig): Controller {
     switch (action.type) {
       case 'NODE_CLICK': {
         const { nodeId } = action.payload;
+
+        // Guard: Don't allow node clicks during transitions
+        if (transitionInProgress) {
+          return;
+        }
+
         const currentState = getState();
 
         // If there's an active subview and we're clicking outside it, deactivate first
@@ -694,6 +708,11 @@ export function createController(config: ControllerConfig): Controller {
       }
 
       case 'EDGE_CLICK': {
+        // Guard: Don't allow edge clicks during transitions
+        if (transitionInProgress) {
+          return;
+        }
+
         const { edgeId } = action.payload;
         selectEdge(edgeId);
         break;
@@ -731,6 +750,14 @@ export function createController(config: ControllerConfig): Controller {
 
       case 'CLEAR_SELECTIONS': {
         clearSelections();
+        break;
+      }
+
+      case 'CHANGE_VIEW_MODE': {
+        const { mode } = action.payload;
+        transitionVisualizationState({
+          viewMode: mode,
+        });
         break;
       }
 

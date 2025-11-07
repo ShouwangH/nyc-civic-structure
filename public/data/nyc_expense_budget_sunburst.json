@@ -1,0 +1,4501 @@
+{
+  "meta": {
+    "source": "NYC Comptroller / OMB Expense Budget Detail \u2013 Adopted (CSV snapshot 2025-11-06)",
+    "fiscal_year": 2026,
+    "fund_group": "City Funds",
+    "total_expense_billion": 115.83
+  },
+  "data": {
+    "name": "NYC Expense FY2026",
+    "children": [
+      {
+        "name": "Culture & Recreation",
+        "children": [
+          {
+            "name": "Brooklyn Public Library",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 2954945.0,
+                "actualValue": 2954945.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 132551792.0,
+                "actualValue": 132551792.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 1250.0,
+                "actualValue": 1250.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Department Of Cultural Affairs",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 141386371.0,
+                "actualValue": 141386371.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 106071.0,
+                "actualValue": 106071.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 105856150.0,
+                "actualValue": 105856150.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 6472180.0,
+                "actualValue": 6472180.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 45206.0,
+                "actualValue": 45206.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Department Of Parks And Recreation",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 101287443.0,
+                "actualValue": 101287443.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 3951831.0,
+                "actualValue": 3951831.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 3555824.0,
+                "actualValue": 3555824.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 288056.0,
+                "actualValue": 288056.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 461707049.0,
+                "actualValue": 461707049.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 47261081.0,
+                "actualValue": 47261081.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "New York Public Library",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 6439586.0,
+                "actualValue": 6439586.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 171732881.0,
+                "actualValue": 171732881.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Queens Borough Public Library",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 3793586.0,
+                "actualValue": 3793586.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 136401616.0,
+                "actualValue": 136401616.0,
+                "isNegative": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Debt & Finance",
+        "children": [
+          {
+            "name": "Debt Service",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 3672112107.0,
+                "actualValue": 3672112107.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Department Of Finance",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 141251444.0,
+                "actualValue": 141251444.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 2154089.0,
+                "actualValue": 2154089.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 498894.0,
+                "actualValue": 498894.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 27180.0,
+                "actualValue": 27180.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 208843939.0,
+                "actualValue": 208843939.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 13405834.0,
+                "actualValue": 13405834.0,
+                "isNegative": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Education",
+        "children": [
+          {
+            "name": "City University Of New York",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 254823347.0,
+                "actualValue": 254823347.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 26706604.0,
+                "actualValue": 26706604.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 228330180.0,
+                "actualValue": 228330180.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 76637048.0,
+                "actualValue": 76637048.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 687729047.0,
+                "actualValue": 687729047.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 111015997.0,
+                "actualValue": 111015997.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Department Of Education",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 11857652152.0,
+                "actualValue": 11857652152.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 279079942.0,
+                "actualValue": 279079942.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 4844587216.0,
+                "actualValue": 4844587216.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 206518159.0,
+                "actualValue": 206518159.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 14825108476.0,
+                "actualValue": 14825108476.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 1063409645.0,
+                "actualValue": 1063409645.0,
+                "isNegative": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Government & Oversight",
+        "children": [
+          {
+            "name": "City Council",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 21260034.0,
+                "actualValue": 21260034.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 865000.0,
+                "actualValue": 865000.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 10034.0,
+                "actualValue": 10034.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 84117635.0,
+                "actualValue": 84117635.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 2165000.0,
+                "actualValue": 2165000.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Public Advocate",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 379444.0,
+                "actualValue": 379444.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 20635.0,
+                "actualValue": 20635.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 359660.0,
+                "actualValue": 359660.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 5598296.0,
+                "actualValue": 5598296.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 81971.0,
+                "actualValue": 81971.0,
+                "isNegative": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Health & Environment",
+        "children": [
+          {
+            "name": "Department Of Health And Mental Hygiene",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 1585141900.0,
+                "actualValue": 1585141900.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 5243601.0,
+                "actualValue": 5243601.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 857136.0,
+                "actualValue": 857136.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 3382889.0,
+                "actualValue": 3382889.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 624979600.0,
+                "actualValue": 624979600.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 35040145.0,
+                "actualValue": 35040145.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Department Of Sanitation",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 652058559.0,
+                "actualValue": 652058559.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 3957614.0,
+                "actualValue": 3957614.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 44753060.0,
+                "actualValue": 44753060.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 17000.0,
+                "actualValue": 17000.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 1157372822.0,
+                "actualValue": 1157372822.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 114082982.0,
+                "actualValue": 114082982.0,
+                "isNegative": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Housing & Development",
+        "children": [
+          {
+            "name": "Department Of Buildings",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 48018576.0,
+                "actualValue": 48018576.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 1142098.0,
+                "actualValue": 1142098.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 3400.0,
+                "actualValue": 3400.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 177637468.0,
+                "actualValue": 177637468.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 6557877.0,
+                "actualValue": 6557877.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Department Of City Planning",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 15399059.0,
+                "actualValue": 15399059.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 67618.0,
+                "actualValue": 67618.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 1000.0,
+                "actualValue": 1000.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 34158036.0,
+                "actualValue": 34158036.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 310815.0,
+                "actualValue": 310815.0,
+                "isNegative": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Other / Independent Agencies",
+        "children": [
+          {
+            "name": "Admin For Children'S Services",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 2181663704.0,
+                "actualValue": 2181663704.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 2426081.0,
+                "actualValue": 2426081.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 1269.0,
+                "actualValue": 1269.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 28806454.0,
+                "actualValue": 28806454.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 578043447.0,
+                "actualValue": 578043447.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 7661485.0,
+                "actualValue": 7661485.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Board Of Elections",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 68874013.0,
+                "actualValue": 68874013.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 4009147.0,
+                "actualValue": 4009147.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 24000.0,
+                "actualValue": 24000.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 1146395.0,
+                "actualValue": 1146395.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 67581228.0,
+                "actualValue": 67581228.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 3999409.0,
+                "actualValue": 3999409.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Borough President - Brooklyn",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 1144660.0,
+                "actualValue": 1144660.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 57000.0,
+                "actualValue": 57000.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 72404.0,
+                "actualValue": 72404.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 6348299.0,
+                "actualValue": 6348299.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 184701.0,
+                "actualValue": 184701.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Borough President - Manhattan",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 1065317.0,
+                "actualValue": 1065317.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 45159.0,
+                "actualValue": 45159.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 5044348.0,
+                "actualValue": 5044348.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 13582.0,
+                "actualValue": 13582.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Borough President - Queens",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 1500196.0,
+                "actualValue": 1500196.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 11992.0,
+                "actualValue": 11992.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 1000.0,
+                "actualValue": 1000.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 4914471.0,
+                "actualValue": 4914471.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 93470.0,
+                "actualValue": 93470.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Borough President Bronx",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 1983588.0,
+                "actualValue": 1983588.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 41215.0,
+                "actualValue": 41215.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 357184.0,
+                "actualValue": 357184.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 7282123.0,
+                "actualValue": 7282123.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 133615.0,
+                "actualValue": 133615.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Borough President Staten Island",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 1976548.0,
+                "actualValue": 1976548.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 126000.0,
+                "actualValue": 126000.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 350695.0,
+                "actualValue": 350695.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 4912135.0,
+                "actualValue": 4912135.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 227138.0,
+                "actualValue": 227138.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Bronx Community Board #1",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 90683.0,
+                "actualValue": 90683.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 262701.0,
+                "actualValue": 262701.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 7135.0,
+                "actualValue": 7135.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Bronx Community Board #10",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 103872.0,
+                "actualValue": 103872.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 6000.0,
+                "actualValue": 6000.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 9014.0,
+                "actualValue": 9014.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 252224.0,
+                "actualValue": 252224.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 3492.0,
+                "actualValue": 3492.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Bronx Community Board #11",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 81199.0,
+                "actualValue": 81199.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 3150.0,
+                "actualValue": 3150.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 277801.0,
+                "actualValue": 277801.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 1070.0,
+                "actualValue": 1070.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Bronx Community Board #12",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 17409.0,
+                "actualValue": 17409.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 1098.0,
+                "actualValue": 1098.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 15048.0,
+                "actualValue": 15048.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 253557.0,
+                "actualValue": 253557.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 6500.0,
+                "actualValue": 6500.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Bronx Community Board #2",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 116026.0,
+                "actualValue": 116026.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 5165.0,
+                "actualValue": 5165.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 36062.0,
+                "actualValue": 36062.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 212597.0,
+                "actualValue": 212597.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 2914.0,
+                "actualValue": 2914.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Bronx Community Board #3",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 74666.0,
+                "actualValue": 74666.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 1080.0,
+                "actualValue": 1080.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 258682.0,
+                "actualValue": 258682.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 1532.0,
+                "actualValue": 1532.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Bronx Community Board #4",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 24396.0,
+                "actualValue": 24396.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 3948.0,
+                "actualValue": 3948.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 271279.0,
+                "actualValue": 271279.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 2400.0,
+                "actualValue": 2400.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Bronx Community Board #5",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 19173.0,
+                "actualValue": 19173.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 265124.0,
+                "actualValue": 265124.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 3660.0,
+                "actualValue": 3660.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Bronx Community Board #6",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 19581.0,
+                "actualValue": 19581.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 546.0,
+                "actualValue": 546.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 500.0,
+                "actualValue": 500.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 269370.0,
+                "actualValue": 269370.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 1500.0,
+                "actualValue": 1500.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Bronx Community Board #7",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 196623.0,
+                "actualValue": 196623.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 18400.0,
+                "actualValue": 18400.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 238388.0,
+                "actualValue": 238388.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 3000.0,
+                "actualValue": 3000.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Bronx Community Board #8",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 85545.0,
+                "actualValue": 85545.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 275232.0,
+                "actualValue": 275232.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Bronx Community Board #9",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 88840.0,
+                "actualValue": 88840.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 17954.0,
+                "actualValue": 17954.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 268475.0,
+                "actualValue": 268475.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 500.0,
+                "actualValue": 500.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Brooklyn Community Board #1",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 118394.0,
+                "actualValue": 118394.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 1396.0,
+                "actualValue": 1396.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 266186.0,
+                "actualValue": 266186.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 2165.0,
+                "actualValue": 2165.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Brooklyn Community Board #10",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 110902.0,
+                "actualValue": 110902.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 690.0,
+                "actualValue": 690.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 270947.0,
+                "actualValue": 270947.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 400.0,
+                "actualValue": 400.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Brooklyn Community Board #11",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 108471.0,
+                "actualValue": 108471.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 3200.0,
+                "actualValue": 3200.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 243338.0,
+                "actualValue": 243338.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 3200.0,
+                "actualValue": 3200.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Brooklyn Community Board #12",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 108240.0,
+                "actualValue": 108240.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 570.0,
+                "actualValue": 570.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 257581.0,
+                "actualValue": 257581.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 6069.0,
+                "actualValue": 6069.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Brooklyn Community Board #13",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 92893.0,
+                "actualValue": 92893.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 2156.0,
+                "actualValue": 2156.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 267973.0,
+                "actualValue": 267973.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 4250.0,
+                "actualValue": 4250.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Brooklyn Community Board #14",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 284970.0,
+                "actualValue": 284970.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 271750.0,
+                "actualValue": 271750.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 3722.0,
+                "actualValue": 3722.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Brooklyn Community Board #15",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 10186.0,
+                "actualValue": 10186.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 5500.0,
+                "actualValue": 5500.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 10566.0,
+                "actualValue": 10566.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 219697.0,
+                "actualValue": 219697.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 30500.0,
+                "actualValue": 30500.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Brooklyn Community Board #16",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 51245.0,
+                "actualValue": 51245.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 5000.0,
+                "actualValue": 5000.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 239108.0,
+                "actualValue": 239108.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 13780.0,
+                "actualValue": 13780.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Brooklyn Community Board #17",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 120227.0,
+                "actualValue": 120227.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 420.0,
+                "actualValue": 420.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 271199.0,
+                "actualValue": 271199.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 1800.0,
+                "actualValue": 1800.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Brooklyn Community Board #18",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 38269.0,
+                "actualValue": 38269.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 245119.0,
+                "actualValue": 245119.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 2123.0,
+                "actualValue": 2123.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Brooklyn Community Board #2",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 87763.0,
+                "actualValue": 87763.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 3850.0,
+                "actualValue": 3850.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 268514.0,
+                "actualValue": 268514.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 1190.0,
+                "actualValue": 1190.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Brooklyn Community Board #3",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 75646.0,
+                "actualValue": 75646.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 4000.0,
+                "actualValue": 4000.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 224080.0,
+                "actualValue": 224080.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 14295.0,
+                "actualValue": 14295.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Brooklyn Community Board #4",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 85438.0,
+                "actualValue": 85438.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 1902.0,
+                "actualValue": 1902.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 251705.0,
+                "actualValue": 251705.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 1771.0,
+                "actualValue": 1771.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Brooklyn Community Board #5",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 14782.0,
+                "actualValue": 14782.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 1300.0,
+                "actualValue": 1300.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 19712.0,
+                "actualValue": 19712.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 249249.0,
+                "actualValue": 249249.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 1963.0,
+                "actualValue": 1963.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Brooklyn Community Board #6",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 117531.0,
+                "actualValue": 117531.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 300.0,
+                "actualValue": 300.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 40918.0,
+                "actualValue": 40918.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 229700.0,
+                "actualValue": 229700.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 5100.0,
+                "actualValue": 5100.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Brooklyn Community Board #7",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 10609.0,
+                "actualValue": 10609.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 270662.0,
+                "actualValue": 270662.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 12590.0,
+                "actualValue": 12590.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Brooklyn Community Board #8",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 99450.0,
+                "actualValue": 99450.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 1500.0,
+                "actualValue": 1500.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 36382.0,
+                "actualValue": 36382.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 227270.0,
+                "actualValue": 227270.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 7101.0,
+                "actualValue": 7101.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Brooklyn Community Board #9",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 148835.0,
+                "actualValue": 148835.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 2500.0,
+                "actualValue": 2500.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 251212.0,
+                "actualValue": 251212.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 8100.0,
+                "actualValue": 8100.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Business Integrity Commission",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 2208025.0,
+                "actualValue": 2208025.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 13000.0,
+                "actualValue": 13000.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 6407393.0,
+                "actualValue": 6407393.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 71400.0,
+                "actualValue": 71400.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Campaign Finance Board",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 39267388.0,
+                "actualValue": 39267388.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 865000.0,
+                "actualValue": 865000.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 31600000.0,
+                "actualValue": 31600000.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 26638948.0,
+                "actualValue": 26638948.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 5042500.0,
+                "actualValue": 5042500.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "City Clerk",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 1989192.0,
+                "actualValue": 1989192.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 42767.0,
+                "actualValue": 42767.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 9041.0,
+                "actualValue": 9041.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 5864366.0,
+                "actualValue": 5864366.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 82324.0,
+                "actualValue": 82324.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Civil Service Commission",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 20500.0,
+                "actualValue": 20500.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 27332.0,
+                "actualValue": 27332.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 1085611.0,
+                "actualValue": 1085611.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 12217.0,
+                "actualValue": 12217.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Commission On Human Rights",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 1361293.0,
+                "actualValue": 1361293.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 104938.0,
+                "actualValue": 104938.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 12180004.0,
+                "actualValue": 12180004.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 899701.0,
+                "actualValue": 899701.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Commission On Racial Equity",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 94960.0,
+                "actualValue": 94960.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 1329093.0,
+                "actualValue": 1329093.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 45040.0,
+                "actualValue": 45040.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Conflicts Of Interest Board",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 83435.0,
+                "actualValue": 83435.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 23192.0,
+                "actualValue": 23192.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 2538107.0,
+                "actualValue": 2538107.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 37757.0,
+                "actualValue": 37757.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Department Of Citywide Admin Service",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 1810045790.0,
+                "actualValue": 1810045790.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 16334875.0,
+                "actualValue": 16334875.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 2254956.0,
+                "actualValue": 2254956.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 1356670.0,
+                "actualValue": 1356670.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 229888416.0,
+                "actualValue": 229888416.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 45173753.0,
+                "actualValue": 45173753.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Department Of Consumer & Worker Protection",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 34252043.0,
+                "actualValue": 34252043.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 135884.0,
+                "actualValue": 135884.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 523413.0,
+                "actualValue": 523413.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 10500.0,
+                "actualValue": 10500.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 34286376.0,
+                "actualValue": 34286376.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 394946.0,
+                "actualValue": 394946.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Department Of Design & Construction",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 51662653.0,
+                "actualValue": 51662653.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 632028.0,
+                "actualValue": 632028.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 153120.0,
+                "actualValue": 153120.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 126719096.0,
+                "actualValue": 126719096.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 2132519.0,
+                "actualValue": 2132519.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Department Of Emergency Management",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 168164017.0,
+                "actualValue": 168164017.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 499014.0,
+                "actualValue": 499014.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 501091.0,
+                "actualValue": 501091.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 25000.0,
+                "actualValue": 25000.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 29051941.0,
+                "actualValue": 29051941.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 397540.0,
+                "actualValue": 397540.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Department Of Environmental Protect.",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 626815113.0,
+                "actualValue": 626815113.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 24659754.0,
+                "actualValue": 24659754.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 3296754.0,
+                "actualValue": 3296754.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 171068780.0,
+                "actualValue": 171068780.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 695339393.0,
+                "actualValue": 695339393.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 182229629.0,
+                "actualValue": 182229629.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Department Of Info Tech & Telecomm",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 654243339.0,
+                "actualValue": 654243339.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 920087.0,
+                "actualValue": 920087.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 59918.0,
+                "actualValue": 59918.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 195671881.0,
+                "actualValue": 195671881.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 2020181.0,
+                "actualValue": 2020181.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Department Of Investigation",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 23879634.0,
+                "actualValue": 23879634.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 1527255.0,
+                "actualValue": 1527255.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 136934.0,
+                "actualValue": 136934.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 188200.0,
+                "actualValue": 188200.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 35821932.0,
+                "actualValue": 35821932.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 2020844.0,
+                "actualValue": 2020844.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Department Of Records & Information Svs",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 7343463.0,
+                "actualValue": 7343463.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 2860423.0,
+                "actualValue": 2860423.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 3712.0,
+                "actualValue": 3712.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 4998977.0,
+                "actualValue": 4998977.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 82362.0,
+                "actualValue": 82362.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Department Of Small Business Services",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 236004198.0,
+                "actualValue": 236004198.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 55016.0,
+                "actualValue": 55016.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 8147.0,
+                "actualValue": 8147.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 36190760.0,
+                "actualValue": 36190760.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 226141.0,
+                "actualValue": 226141.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Department Of Veterans' Services",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 1844114.0,
+                "actualValue": 1844114.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 5000.0,
+                "actualValue": 5000.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 20000.0,
+                "actualValue": 20000.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 4104784.0,
+                "actualValue": 4104784.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 392476.0,
+                "actualValue": 392476.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Department Of Youth & Community Dev",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 1193209203.0,
+                "actualValue": 1193209203.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 161968963.0,
+                "actualValue": 161968963.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 56115102.0,
+                "actualValue": 56115102.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 101178.0,
+                "actualValue": 101178.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "District Attorney Bronx County",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 9011456.0,
+                "actualValue": 9011456.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 489472.0,
+                "actualValue": 489472.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 37642.0,
+                "actualValue": 37642.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 110303518.0,
+                "actualValue": 110303518.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 1236592.0,
+                "actualValue": 1236592.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "District Attorney Kings County",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 29793259.0,
+                "actualValue": 29793259.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 1375658.0,
+                "actualValue": 1375658.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 32000.0,
+                "actualValue": 32000.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 115499501.0,
+                "actualValue": 115499501.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 1906801.0,
+                "actualValue": 1906801.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "District Attorney New York County",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 14594722.0,
+                "actualValue": 14594722.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 287459.0,
+                "actualValue": 287459.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 145411.0,
+                "actualValue": 145411.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 156310241.0,
+                "actualValue": 156310241.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 1034608.0,
+                "actualValue": 1034608.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "District Attorney Queens County",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 13774684.0,
+                "actualValue": 13774684.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 342658.0,
+                "actualValue": 342658.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 26000.0,
+                "actualValue": 26000.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 88852478.0,
+                "actualValue": 88852478.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 683828.0,
+                "actualValue": 683828.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "District Attorney Richmond County",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 3186772.0,
+                "actualValue": 3186772.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 259082.0,
+                "actualValue": 259082.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 4000.0,
+                "actualValue": 4000.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 9500.0,
+                "actualValue": 9500.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 20846746.0,
+                "actualValue": 20846746.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 1139941.0,
+                "actualValue": 1139941.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Equal Employment Practices Commission",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 58517.0,
+                "actualValue": 58517.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 3500.0,
+                "actualValue": 3500.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 1837.0,
+                "actualValue": 1837.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 1572404.0,
+                "actualValue": 1572404.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 23538.0,
+                "actualValue": 23538.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Financial Information Service Agency",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 62760148.0,
+                "actualValue": 62760148.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 148168.0,
+                "actualValue": 148168.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 57118303.0,
+                "actualValue": 57118303.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 2224423.0,
+                "actualValue": 2224423.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Health And Hospitals Corp",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 2329224.0,
+                "actualValue": 2329224.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 3160338048.0,
+                "actualValue": 3160338048.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Housing Preservation And Development",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 745500394.0,
+                "actualValue": 745500394.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 1199772.0,
+                "actualValue": 1199772.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 28000.0,
+                "actualValue": 28000.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 1002880504.0,
+                "actualValue": 1002880504.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 232424033.0,
+                "actualValue": 232424033.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 11088638.0,
+                "actualValue": 11088638.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Independent Budget Office",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 1219305.0,
+                "actualValue": 1219305.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 318511.0,
+                "actualValue": 318511.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 28890.0,
+                "actualValue": 28890.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 5992937.0,
+                "actualValue": 5992937.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 232466.0,
+                "actualValue": 232466.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Landmarks Preservation Comm.",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 716436.0,
+                "actualValue": 716436.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 29532.0,
+                "actualValue": 29532.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 7298685.0,
+                "actualValue": 7298685.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 108954.0,
+                "actualValue": 108954.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Manhattan Community Board #1",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 12645.0,
+                "actualValue": 12645.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 4200.0,
+                "actualValue": 4200.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 3691.0,
+                "actualValue": 3691.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 263793.0,
+                "actualValue": 263793.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 10400.0,
+                "actualValue": 10400.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Manhattan Community Board #10",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 196614.0,
+                "actualValue": 196614.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 27431.0,
+                "actualValue": 27431.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 218139.0,
+                "actualValue": 218139.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 11100.0,
+                "actualValue": 11100.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Manhattan Community Board #11",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 124886.0,
+                "actualValue": 124886.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 18696.0,
+                "actualValue": 18696.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 251540.0,
+                "actualValue": 251540.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 2000.0,
+                "actualValue": 2000.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Manhattan Community Board #12",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 165504.0,
+                "actualValue": 165504.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 1540.0,
+                "actualValue": 1540.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 261997.0,
+                "actualValue": 261997.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 2500.0,
+                "actualValue": 2500.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Manhattan Community Board #2",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 110796.0,
+                "actualValue": 110796.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 273640.0,
+                "actualValue": 273640.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Manhattan Community Board #3",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 156136.0,
+                "actualValue": 156136.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 287014.0,
+                "actualValue": 287014.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 1536.0,
+                "actualValue": 1536.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Manhattan Community Board #4",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 260273.0,
+                "actualValue": 260273.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 2225.0,
+                "actualValue": 2225.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 26398.0,
+                "actualValue": 26398.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 250260.0,
+                "actualValue": 250260.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 2252.0,
+                "actualValue": 2252.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Manhattan Community Board #5",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 207689.0,
+                "actualValue": 207689.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 273182.0,
+                "actualValue": 273182.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 2000.0,
+                "actualValue": 2000.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Manhattan Community Board #6",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 195984.0,
+                "actualValue": 195984.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 210.0,
+                "actualValue": 210.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 14737.0,
+                "actualValue": 14737.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 256575.0,
+                "actualValue": 256575.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 1687.0,
+                "actualValue": 1687.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Manhattan Community Board #7",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 154199.0,
+                "actualValue": 154199.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 5255.0,
+                "actualValue": 5255.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 272063.0,
+                "actualValue": 272063.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 487.0,
+                "actualValue": 487.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Manhattan Community Board #8",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 186139.0,
+                "actualValue": 186139.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 15228.0,
+                "actualValue": 15228.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 261724.0,
+                "actualValue": 261724.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 2584.0,
+                "actualValue": 2584.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Manhattan Community Board #9",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 176066.0,
+                "actualValue": 176066.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 32618.0,
+                "actualValue": 32618.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 214012.0,
+                "actualValue": 214012.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 4700.0,
+                "actualValue": 4700.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Mayoralty",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 35203519.0,
+                "actualValue": 35203519.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 513389.0,
+                "actualValue": 513389.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 195993.0,
+                "actualValue": 195993.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 1421929.0,
+                "actualValue": 1421929.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 142041537.0,
+                "actualValue": 142041537.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 4472741.0,
+                "actualValue": 4472741.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Miscellaneous",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 1965770654.0,
+                "actualValue": 1965770654.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 8882705018.0,
+                "actualValue": 8882705018.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 3507993956.0,
+                "actualValue": 3507993956.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 1086934716.0,
+                "actualValue": 1086934716.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "New York Research Libraries",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 3473344.0,
+                "actualValue": 3473344.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 31521766.0,
+                "actualValue": 31521766.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Nyc Taxi And Limousine Comm",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 13011538.0,
+                "actualValue": 13011538.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 339425.0,
+                "actualValue": 339425.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 145396.0,
+                "actualValue": 145396.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 304100.0,
+                "actualValue": 304100.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 49270313.0,
+                "actualValue": 49270313.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 1420265.0,
+                "actualValue": 1420265.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Office Of Admin Trials & Hearings",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 15931557.0,
+                "actualValue": 15931557.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 374803.0,
+                "actualValue": 374803.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 60935636.0,
+                "actualValue": 60935636.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 1559368.0,
+                "actualValue": 1559368.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Office Of Administrative Tax Appeals",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 173343.0,
+                "actualValue": 173343.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 60765.0,
+                "actualValue": 60765.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 12876.0,
+                "actualValue": 12876.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 5876747.0,
+                "actualValue": 5876747.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 13387.0,
+                "actualValue": 13387.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Office Of Collective Bargaining",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 187578.0,
+                "actualValue": 187578.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 30729.0,
+                "actualValue": 30729.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 2471071.0,
+                "actualValue": 2471071.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 69400.0,
+                "actualValue": 69400.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Office Of Criminal Justice",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 768321364.0,
+                "actualValue": 768321364.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 24049.0,
+                "actualValue": 24049.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 1382244.0,
+                "actualValue": 1382244.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 9351806.0,
+                "actualValue": 9351806.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 75159.0,
+                "actualValue": 75159.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Office Of Payroll Administration",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 1218595.0,
+                "actualValue": 1218595.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 77494.0,
+                "actualValue": 77494.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 1000.0,
+                "actualValue": 1000.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 15444577.0,
+                "actualValue": 15444577.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 88076.0,
+                "actualValue": 88076.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Office Of Prosecution Spec Narco",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 2774047.0,
+                "actualValue": 2774047.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 78000.0,
+                "actualValue": 78000.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 14975.0,
+                "actualValue": 14975.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 28709154.0,
+                "actualValue": 28709154.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 120122.0,
+                "actualValue": 120122.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Office Of Racial Equity",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 2896360.0,
+                "actualValue": 2896360.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 4598699.0,
+                "actualValue": 4598699.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 849640.0,
+                "actualValue": 849640.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Office Of The Actuary",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 2011491.0,
+                "actualValue": 2011491.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 33143.0,
+                "actualValue": 33143.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 7558.0,
+                "actualValue": 7558.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 5481715.0,
+                "actualValue": 5481715.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 37737.0,
+                "actualValue": 37737.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Office Of The Comptroller",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 34143905.0,
+                "actualValue": 34143905.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 795004.0,
+                "actualValue": 795004.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 587000.0,
+                "actualValue": 587000.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 85929642.0,
+                "actualValue": 85929642.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 1542906.0,
+                "actualValue": 1542906.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Pension Contributions",
+            "children": [
+              {
+                "name": "Fringe Benefits",
+                "value": 10347074734.0,
+                "actualValue": 10347074734.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Public Administrator- Queens County",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 17703.0,
+                "actualValue": 17703.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 670001.0,
+                "actualValue": 670001.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 196.0,
+                "actualValue": 196.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Public Administrator-Bronx County",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 59305.0,
+                "actualValue": 59305.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 815430.0,
+                "actualValue": 815430.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Public Administrator-Kings County",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 54451.0,
+                "actualValue": 54451.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 1071110.0,
+                "actualValue": 1071110.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Public Administrator-New York County",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 292622.0,
+                "actualValue": 292622.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 4740.0,
+                "actualValue": 4740.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 998841.0,
+                "actualValue": 998841.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 5596.0,
+                "actualValue": 5596.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Public Administrator-Richmond County",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 56837.0,
+                "actualValue": 56837.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 725.0,
+                "actualValue": 725.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 609971.0,
+                "actualValue": 609971.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 3362.0,
+                "actualValue": 3362.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Queens Community Board #1",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 87403.0,
+                "actualValue": 87403.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 3290.0,
+                "actualValue": 3290.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 25000.0,
+                "actualValue": 25000.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 213557.0,
+                "actualValue": 213557.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 6356.0,
+                "actualValue": 6356.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Queens Community Board #10",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 62939.0,
+                "actualValue": 62939.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 1200.0,
+                "actualValue": 1200.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 256475.0,
+                "actualValue": 256475.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 9200.0,
+                "actualValue": 9200.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Queens Community Board #11",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 96988.0,
+                "actualValue": 96988.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 1050.0,
+                "actualValue": 1050.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 269338.0,
+                "actualValue": 269338.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 4674.0,
+                "actualValue": 4674.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Queens Community Board #12",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 83725.0,
+                "actualValue": 83725.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 600.0,
+                "actualValue": 600.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 266741.0,
+                "actualValue": 266741.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 4513.0,
+                "actualValue": 4513.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Queens Community Board #13",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 84503.0,
+                "actualValue": 84503.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 1823.0,
+                "actualValue": 1823.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 12155.0,
+                "actualValue": 12155.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 238594.0,
+                "actualValue": 238594.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 7345.0,
+                "actualValue": 7345.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Queens Community Board #14",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 42775.0,
+                "actualValue": 42775.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 1640.0,
+                "actualValue": 1640.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 5866.0,
+                "actualValue": 5866.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 240747.0,
+                "actualValue": 240747.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 12305.0,
+                "actualValue": 12305.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Queens Community Board #2",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 134837.0,
+                "actualValue": 134837.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 3150.0,
+                "actualValue": 3150.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 268879.0,
+                "actualValue": 268879.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 3103.0,
+                "actualValue": 3103.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Queens Community Board #3",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 118893.0,
+                "actualValue": 118893.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 3207.0,
+                "actualValue": 3207.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 261261.0,
+                "actualValue": 261261.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 5400.0,
+                "actualValue": 5400.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Queens Community Board #4",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 71520.0,
+                "actualValue": 71520.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 2550.0,
+                "actualValue": 2550.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 277214.0,
+                "actualValue": 277214.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 1575.0,
+                "actualValue": 1575.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Queens Community Board #5",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 66794.0,
+                "actualValue": 66794.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 50.0,
+                "actualValue": 50.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 272705.0,
+                "actualValue": 272705.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 3310.0,
+                "actualValue": 3310.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Queens Community Board #6",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 85771.0,
+                "actualValue": 85771.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 800.0,
+                "actualValue": 800.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 281479.0,
+                "actualValue": 281479.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 2100.0,
+                "actualValue": 2100.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Queens Community Board #7",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 109805.0,
+                "actualValue": 109805.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 10068.0,
+                "actualValue": 10068.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 267312.0,
+                "actualValue": 267312.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 994.0,
+                "actualValue": 994.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Queens Community Board #8",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 101067.0,
+                "actualValue": 101067.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 30.0,
+                "actualValue": 30.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 5187.0,
+                "actualValue": 5187.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 267507.0,
+                "actualValue": 267507.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 2500.0,
+                "actualValue": 2500.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Queens Community Board #9",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 32532.0,
+                "actualValue": 32532.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 1915.0,
+                "actualValue": 1915.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 249147.0,
+                "actualValue": 249147.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 2975.0,
+                "actualValue": 2975.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Staten Island Community Board #1",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 76348.0,
+                "actualValue": 76348.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 784.0,
+                "actualValue": 784.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 17577.0,
+                "actualValue": 17577.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 260358.0,
+                "actualValue": 260358.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 3595.0,
+                "actualValue": 3595.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Staten Island Community Board #2",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 50302.0,
+                "actualValue": 50302.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 2305.0,
+                "actualValue": 2305.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 14500.0,
+                "actualValue": 14500.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 250305.0,
+                "actualValue": 250305.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 2950.0,
+                "actualValue": 2950.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Staten Island Community Board #3",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 139524.0,
+                "actualValue": 139524.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 27683.0,
+                "actualValue": 27683.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 252420.0,
+                "actualValue": 252420.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 1400.0,
+                "actualValue": 1400.0,
+                "isNegative": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Public Safety & Judicial",
+        "children": [
+          {
+            "name": "Board Of Correction",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 157109.0,
+                "actualValue": 157109.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 10787.0,
+                "actualValue": 10787.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 37543.0,
+                "actualValue": 37543.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 3540981.0,
+                "actualValue": 3540981.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 33063.0,
+                "actualValue": 33063.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Civilian Complaint Review Board",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 4654078.0,
+                "actualValue": 4654078.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 77132.0,
+                "actualValue": 77132.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 1500.0,
+                "actualValue": 1500.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 22607861.0,
+                "actualValue": 22607861.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 462123.0,
+                "actualValue": 462123.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Department Of Correction",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 122135546.0,
+                "actualValue": 122135546.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 5911118.0,
+                "actualValue": 5911118.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 24823478.0,
+                "actualValue": 24823478.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 2039488.0,
+                "actualValue": 2039488.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 857107908.0,
+                "actualValue": 857107908.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 49243782.0,
+                "actualValue": 49243782.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Department Of Probation",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 40368390.0,
+                "actualValue": 40368390.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 1216164.0,
+                "actualValue": 1216164.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 12000.0,
+                "actualValue": 12000.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 85475623.0,
+                "actualValue": 85475623.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 1663368.0,
+                "actualValue": 1663368.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Fire Department",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 198465468.0,
+                "actualValue": 198465468.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 7506459.0,
+                "actualValue": 7506459.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 32066853.0,
+                "actualValue": 32066853.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 500544.0,
+                "actualValue": 500544.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 2345395261.0,
+                "actualValue": 2345395261.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 60443435.0,
+                "actualValue": 60443435.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Law Department",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 91675767.0,
+                "actualValue": 91675767.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 984000.0,
+                "actualValue": 984000.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 17560.0,
+                "actualValue": 17560.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 190291413.0,
+                "actualValue": 190291413.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 1069898.0,
+                "actualValue": 1069898.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Police Department",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 369303049.0,
+                "actualValue": 369303049.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 26687381.0,
+                "actualValue": 26687381.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 61882741.0,
+                "actualValue": 61882741.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 572281.0,
+                "actualValue": 572281.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 5835673751.0,
+                "actualValue": 5835673751.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 77374830.0,
+                "actualValue": 77374830.0,
+                "isNegative": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Social Services",
+        "children": [
+          {
+            "name": "Department For The Aging",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 517674247.0,
+                "actualValue": 517674247.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 208340.0,
+                "actualValue": 208340.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 344885.0,
+                "actualValue": 344885.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 32262453.0,
+                "actualValue": 32262453.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 424363.0,
+                "actualValue": 424363.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Department Of Homeless Services",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 3774365879.0,
+                "actualValue": 3774365879.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 2860082.0,
+                "actualValue": 2860082.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 831654.0,
+                "actualValue": 831654.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 69163.0,
+                "actualValue": 69163.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 181484650.0,
+                "actualValue": 181484650.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 21001169.0,
+                "actualValue": 21001169.0,
+                "isNegative": false
+              }
+            ]
+          },
+          {
+            "name": "Department Of Social Services",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 10834838620.0,
+                "actualValue": 10834838620.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 5299532.0,
+                "actualValue": 5299532.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 913420.0,
+                "actualValue": 913420.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 254985.0,
+                "actualValue": 254985.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 917525883.0,
+                "actualValue": 917525883.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 75277461.0,
+                "actualValue": 75277461.0,
+                "isNegative": false
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Transportation & Infrastructure",
+        "children": [
+          {
+            "name": "Department Of Transportation",
+            "children": [
+              {
+                "name": "Contracts",
+                "value": 627494431.0,
+                "actualValue": 627494431.0,
+                "isNegative": false
+              },
+              {
+                "name": "Equipment",
+                "value": 9775696.0,
+                "actualValue": 9775696.0,
+                "isNegative": false
+              },
+              {
+                "name": "Fringe Benefits",
+                "value": 4980165.0,
+                "actualValue": 4980165.0,
+                "isNegative": false
+              },
+              {
+                "name": "Other",
+                "value": 259850.0,
+                "actualValue": 259850.0,
+                "isNegative": false
+              },
+              {
+                "name": "Regular Salaries",
+                "value": 636673032.0,
+                "actualValue": 636673032.0,
+                "isNegative": false
+              },
+              {
+                "name": "Supplies",
+                "value": 186377281.0,
+                "actualValue": 186377281.0,
+                "isNegative": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

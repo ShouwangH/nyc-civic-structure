@@ -31,6 +31,8 @@ export type SankeyLinkData = {
  * Complete Sankey dataset with metadata
  */
 export type SankeyData = {
+  units?: string;               // Units of values (e.g., "USD", "USD (millions)")
+  description?: string;         // Dataset description
   meta?: {
     source?: string;           // Data source (e.g., "NYC Comptroller Monthly Performance Reviews 09-2025")
     total_aum_billion?: number; // Total assets under management
