@@ -163,7 +163,7 @@ export function SankeyDiagram({
           // Calculate dynamic font size based on node height
           const nodeHeight = node.y1! - node.y0!;
           const minFontSize = 10;
-          const maxFontSize = 30;
+          const maxFontSize = 20;
           const minHeight = 20;  // Minimum node height for smallest font
           const maxHeight = 100; // Node height for largest font
 

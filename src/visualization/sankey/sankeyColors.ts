@@ -12,33 +12,47 @@
 
 // Main asset class colors
 const ASSET_CLASS_COLORS = {
-  // Public Equities family: Blue gradient (900 down by 200)
-  'Public Equities': '#1e3a8a',           // Blue 900
-  'US Large Cap': '#1d4ed8',              // Blue 700
-  'US Small/Mid Cap': '#3b82f6',          // Blue 500
-  'Developed ex-US': '#93c5fd',           // Blue 300
-  'Emerging Markets': '#dbeafe',          // Blue 100
+  // System root
+  'NYC_Pensions': '#111827',              // Gray 900 (root)
 
-  // Fixed Income family: Emerald gradient (900 down by 200)
-  'Fixed Income': '#064e3b',              // Emerald 900
-  'Core Fixed Income': '#047857',         // Emerald 700
-  'High Yield / Loans': '#10b981',        // Emerald 500
-  'Alternative Credit': '#6ee7b7',        // Emerald 300
-
-  // Private Markets family: Violet gradient (900 down by 200)
-  'Private Markets': '#4c1d95',           // Violet 900
-  'Private Equity': '#6d28d9',            // Violet 700
-  'Real Estate': '#8b5cf6',               // Violet 500
-  'Infrastructure': '#c4b5fd',            // Violet 300
-  'Alternatives': '#ede9fe',              // Violet 100
-
-  // Root and pension funds: Gray gradient (900 down by 200)
-  'NYC Pension System': '#111827',        // Gray 900 (root)
+  // Pension funds: Gray gradient
   'NYCERS': '#374151',                    // Gray 700
   'TRS': '#6b7280',                       // Gray 500
-  'Police': '#d1d5db',                    // Gray 300
-  'Fire': '#f3f4f6',                      // Gray 100
+  'POLICE': '#d1d5db',                    // Gray 300
+  'FIRE': '#f3f4f6',                      // Gray 100
   'BERS': '#9ca3af',                      // Gray 400
+
+  // Asset buckets
+  'Public Equity': '#1e3a8a',             // Blue 900
+  'Fixed Income - Core': '#064e3b',       // Emerald 900
+  'Fixed Income - Opportunistic': '#047857', // Emerald 700
+  'Alternatives': '#4c1d95',              // Violet 900
+  'Cash': '#78716c',                      // Stone 500
+
+  // Public equity sub-assets: Blue gradient
+  'Domestic Equity': '#1d4ed8',           // Blue 700
+  'World ex-USA Equity': '#3b82f6',       // Blue 500
+  'Emerging Markets Equity': '#60a5fa',   // Blue 400
+  'International Equity FoF': '#93c5fd',  // Blue 300
+  'Global Equity': '#dbeafe',             // Blue 100
+
+  // Fixed income sub-assets: Emerald/Green gradient
+  'Structured/Core Bonds': '#059669',     // Emerald 600
+  'High Yield': '#10b981',                // Emerald 500
+  'Bank Loans': '#34d399',                // Emerald 400
+  'Core FI - Developing Managers': '#6ee7b7', // Emerald 300
+  'TIPS': '#a7f3d0',                      // Emerald 200
+  'Other Fixed Income': '#d1fae5',        // Emerald 100
+  'Opportunistic Fixed Income': '#10b981', // Emerald 500
+
+  // Alternatives sub-assets: Violet gradient
+  'Hedge Funds': '#7c3aed',               // Violet 600
+  'Private Equity': '#8b5cf6',            // Violet 500
+  'Private Real Estate': '#a78bfa',       // Violet 400
+  'Infrastructure': '#c4b5fd',            // Violet 300
+
+  // Cash sub-asset
+  'Cash Sub-Asset': '#a8a29e',            // Stone 400
 } as const;
 
 // Individual managers inherit lightest shade from their parent category
