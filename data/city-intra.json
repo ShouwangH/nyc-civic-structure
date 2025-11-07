@@ -1947,6 +1947,48 @@
       }
     },
     {
+      "id": "city:budget-expense-allocation",
+      "label": "NYC FY2025 Expense Budget by Revenue Source",
+      "description": "Flow of NYC FY2025 expense budget from revenue classes through specific sources and funds to government functions",
+      "type": "sankey",
+      "jurisdiction": "city",
+      "renderTarget": "overlay",
+      "nodes": [],
+      "edges": [],
+      "sankeyData": {
+        "type": "file",
+        "path": "/data/nyc_budget_sankey_fy2025.json"
+      },
+      "layout": {
+        "type": "elk-layered"
+      },
+      "metadata": {
+        "tags": ["financial", "budget", "expense", "revenue"],
+        "importance": "high"
+      }
+    },
+    {
+      "id": "city:expense-budget-breakdown",
+      "label": "NYC Expense Budget FY2026",
+      "description": "Interactive hierarchical breakdown of $115.8B NYC City Funds expense budget by agency, program, and expenditure category",
+      "type": "sunburst",
+      "jurisdiction": "city",
+      "renderTarget": "overlay",
+      "nodes": [],
+      "edges": [],
+      "sunburstData": {
+        "type": "file",
+        "path": "/data/nyc_expense_budget_sunburst.json"
+      },
+      "layout": {
+        "type": "elk-layered"
+      },
+      "metadata": {
+        "tags": ["financial", "expense", "budget"],
+        "importance": "high"
+      }
+    },
+    {
       "id": "city:comptroller-revenue-breakdown",
       "label": "NYC Revenue Breakdown FY2025",
       "description": "Interactive hierarchical breakdown of $120.5B NYC revenue sources from funding types through revenue categories to individual sources",

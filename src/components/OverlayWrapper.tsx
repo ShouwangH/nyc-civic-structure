@@ -99,8 +99,24 @@ const OverlayWrapper = ({
     return null;
   }
 
+  // Calculate overlay dimensions (90% of viewport minus control panel)
+  const viewportWidth = window.innerWidth;
+  const viewportHeight = window.innerHeight;
+  const overlayWidth = (viewportWidth - controlPanelWidth) * 0.9;
+  const overlayHeight = viewportHeight * 0.9;
+
+  // Handle backdrop click to close
+  const handleBackdropClick = (event: React.MouseEvent) => {
+    if (event.target === event.currentTarget) {
+      handleClose();
+    }
+  };
+
   return (
-    <div className="fixed inset-0 z-50 bg-[#eceae4]" style={{ paddingLeft: `${controlPanelWidth}px` }}>
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+      onClick={handleBackdropClick}
+    >
       {/* Dropdown floating in top left */}
       <div className="absolute top-6 left-6 z-[60]" ref={dropdownRef}>
         <button
@@ -144,30 +160,79 @@ const OverlayWrapper = ({
         )}
       </div>
 
-      {/* Render selected visualization */}
-      {isLoading && (
-        <div className="flex items-center justify-center h-full">
-          <div className="text-slate-600 text-xl">Loading visualization...</div>
+      {/* Main panel */}
+      <div
+        className="bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden"
+        style={{
+          width: `${overlayWidth}px`,
+          height: `${overlayHeight}px`,
+          maxWidth: '95vw',
+          maxHeight: '95vh',
+        }}
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50">
+          <div>
+            <h2 className="text-lg font-semibold text-gray-900">
+              {selectedSubview.label}
+            </h2>
+            {selectedData && 'meta' in selectedData && selectedData.meta?.source && (
+              <p className="text-sm text-gray-600 mt-1">
+                Data: {selectedData.meta.source}
+              </p>
+            )}
+            {selectedSubview.type === 'sunburst' && (
+              <p className="text-xs text-gray-500 mt-1">
+                Click on a segment to zoom in. Click the center or same segment to zoom out.
+              </p>
+            )}
+          </div>
+          <button
+            onClick={handleClose}
+            className="text-gray-400 hover:text-gray-600 transition-colors p-2 rounded-md hover:bg-gray-100"
+            aria-label="Close overlay"
+          >
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <line x1="18" y1="6" x2="6" y2="18" />
+              <line x1="6" y1="6" x2="18" y2="18" />
+            </svg>
+          </button>
         </div>
-      )}
 
-      {!isLoading && selectedSubview.type === 'sunburst' && selectedData && (
-        <SunburstOverlay
-          subview={selectedSubview}
-          data={selectedData as SunburstData}
-          onClose={handleClose}
-          controlPanelWidth={controlPanelWidth}
-        />
-      )}
+        {/* Render selected visualization */}
+        <div className="flex-1 overflow-hidden">
+          {isLoading && (
+            <div className="flex items-center justify-center h-full">
+              <div className="text-slate-600 text-xl">Loading visualization...</div>
+            </div>
+          )}
 
-      {!isLoading && selectedSubview.type === 'sankey' && selectedData && (
-        <SankeyOverlay
-          subview={selectedSubview}
-          data={selectedData as SankeyData}
-          onClose={handleClose}
-          controlPanelWidth={controlPanelWidth}
-        />
-      )}
+          {!isLoading && selectedSubview.type === 'sunburst' && selectedData && (
+            <SunburstOverlay
+              data={selectedData as SunburstData}
+              width={overlayWidth}
+              height={overlayHeight - 100}
+            />
+          )}
+
+          {!isLoading && selectedSubview.type === 'sankey' && selectedData && (
+            <SankeyOverlay
+              data={selectedData as SankeyData}
+              width={overlayWidth}
+              height={overlayHeight - 100}
+            />
+          )}
+        </div>
+      </div>
     </div>
   );
 };

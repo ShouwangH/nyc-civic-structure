@@ -7,13 +7,39 @@ type SankeyTooltipProps = {
   node?: SankeyNode | null;
   link?: SankeyLink | null;
   position: { x: number; y: number };
+  units?: string;  // Units from the data file (e.g., "USD", "USD (millions)")
 };
 
 /**
- * Format value in billions with appropriate precision
+ * Format value based on units from the data file
+ * - "USD (millions)" or "millions": value is already in millions, show as billions
+ * - "USD" or default: value is in dollars, convert to appropriate scale
  */
-function formatBillions(value: number): string {
-  return `$${value.toFixed(1)}B`;
+function formatValue(value: number, units?: string): string {
+  // Check if units indicate the value is already in millions
+  const isMillions = units?.toLowerCase().includes('million');
+
+  if (isMillions) {
+    // Value is in millions, convert to billions
+    const billions = value / 1000;
+    if (billions >= 1) {
+      return `$${billions.toFixed(1)}B`;
+    } else {
+      return `$${value.toFixed(0)}M`;
+    }
+  } else {
+    // Value is in raw dollars, convert to appropriate scale
+    const billions = value / 1_000_000_000;
+    const millions = value / 1_000_000;
+
+    if (billions >= 1) {
+      return `$${billions.toFixed(1)}B`;
+    } else if (millions >= 1) {
+      return `$${millions.toFixed(0)}M`;
+    } else {
+      return `$${value.toLocaleString('en-US', { maximumFractionDigits: 0 })}`;
+    }
+  }
 }
 
 /**
@@ -40,7 +66,7 @@ function getTooltipStyle(x: number, y: number, width: number, height: number) {
   return { left, top };
 }
 
-export function SankeyTooltip({ node, link, position }: SankeyTooltipProps) {
+export function SankeyTooltip({ node, link, position, units }: SankeyTooltipProps) {
   // Don't render if neither node nor link is provided
   if (!node && !link) {
     return null;
@@ -64,7 +90,7 @@ export function SankeyTooltip({ node, link, position }: SankeyTooltipProps) {
           </div>
           {node.value !== undefined && (
             <div className="text-xs text-gray-600">
-              Total: <span className="font-semibold">{formatBillions(node.value)}</span>
+              Total: <span className="font-semibold">{formatValue(node.value, units)}</span>
             </div>
           )}
           {node.sourceLinks && node.sourceLinks.length > 0 && (
@@ -102,7 +128,7 @@ export function SankeyTooltip({ node, link, position }: SankeyTooltipProps) {
             <div className="font-medium text-gray-900">{targetNode.label}</div>
           </div>
           <div className="text-sm font-semibold text-gray-900 mt-2">
-            {formatBillions(link.value)}
+            {formatValue(link.value, units)}
           </div>
           {sourceNode.value && (
             <div className="text-xs text-gray-500 mt-1">
