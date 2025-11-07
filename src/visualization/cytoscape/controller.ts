@@ -29,6 +29,7 @@ export type VisualizationState = {
   activeScope: GovernmentScope | null;
   controlsOpen: boolean;
   sidebarHover: boolean;
+  viewMode: 'diagram' | 'views';
   sankeyOverlay?: {
     subview: SubviewDefinition;
     data: SankeyData;
@@ -404,6 +405,7 @@ export function createController(config: ControllerConfig): Controller {
       transitionVisualizationState({
         sankeyOverlay: null,
         activeSubviewId: null,
+        viewMode: 'diagram',
         // Preserve selectedNodeId - return to the node that was selected
       });
       return;
@@ -413,6 +415,7 @@ export function createController(config: ControllerConfig): Controller {
       transitionVisualizationState({
         sunburstOverlay: null,
         activeSubviewId: null,
+        viewMode: 'diagram',
         // Preserve selectedNodeId - return to the node that was selected
       });
       return;
@@ -747,6 +750,14 @@ export function createController(config: ControllerConfig): Controller {
 
       case 'CLEAR_SELECTIONS': {
         clearSelections();
+        break;
+      }
+
+      case 'CHANGE_VIEW_MODE': {
+        const { mode } = action.payload;
+        transitionVisualizationState({
+          viewMode: mode,
+        });
         break;
       }
 
