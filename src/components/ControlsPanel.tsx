@@ -35,7 +35,7 @@ const ControlsPanel = ({
 }: ControlsPanelProps) => {
   return (
     <aside
-      className="relative flex w-64 flex-shrink-0 flex-col rounded-lg border border-slate-200 bg-slate-50 shadow-sm"
+      className="relative flex flex-1 flex-col rounded-lg border border-slate-200 bg-slate-50 shadow-sm"
       aria-label="Controls menu"
     >
       <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-4 py-5 text-xl text-slate-700">

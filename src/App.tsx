@@ -90,15 +90,15 @@ function App() {
   }, [runtime]);
 
   return (
-    <div className="relative flex min-h-screen flex-col bg-[#eceae4] p-3">
-      <header className="mb-3 rounded-lg border border-slate-200 bg-slate-50 px-6 py-3 shadow-sm">
-        <h1 className="text-xl font-semibold text-slate-900">
-          <span>Maximum New York |</span>
-          <span className="text-gray-500 text-lg"> {dataset.meta.title}</span>
-        </h1>
-      </header>
+    <div className="relative flex min-h-screen bg-[#eceae4] p-3">
+      <div className="flex flex-col w-1/4 gap-3">
+        <header className="rounded-lg border border-slate-200 bg-slate-50 px-6 py-3 shadow-sm">
+          <h1 className="text-xl font-semibold text-slate-900">
+            <span>Maximum New York |</span>
+            <span className="text-gray-500 text-lg"> {dataset.meta.title}</span>
+          </h1>
+        </header>
 
-      <main className="flex flex-1 overflow-hidden bg-[#eceae4] gap-3">
         <ControlsPanel
           scopes={governmentScopes}
           activeScope={activeScope}
@@ -106,7 +106,9 @@ function App() {
           activeSubviewId={activeSubviewId}
           inputHandler={runtime?.inputHandler ?? null}
         />
+      </div>
 
+      <main className="flex flex-1 overflow-hidden bg-[#eceae4]">
         <section
           className={clsx(
             'relative flex flex-1 flex-col',
@@ -170,7 +172,7 @@ function App() {
               void runtime.inputHandler.enqueue(actions.deactivateSubview());
             }
           }}
-          controlPanelWidth={256}
+          controlPanelWidth={window.innerWidth * 0.25}
         />
       )}
 
@@ -183,7 +185,7 @@ function App() {
               void runtime.inputHandler.enqueue(actions.deactivateSubview());
             }
           }}
-          controlPanelWidth={256}
+          controlPanelWidth={window.innerWidth * 0.25}
         />
       )}
     </div>

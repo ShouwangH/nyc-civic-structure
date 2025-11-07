@@ -146,7 +146,9 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
   {
     selector: 'node[hasSubview]',
     style: {
-      'border-style': 'double',
+      'border-width': '6px',
+      'border-style': 'solid',
+      'border-color': '#3b82f6',
     },
   },
 ];
