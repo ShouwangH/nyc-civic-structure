@@ -188,13 +188,16 @@ export function createController(config: ControllerConfig): Controller {
           ...(subviewScope ? { activeScope: subviewScope } : {}),
         });
 
-        // Load Sankey data file (add .json extension for Vite dynamic imports)
+        // Load Sankey data file from public directory
         try {
           const dataPath = subview.sankeyData.path.endsWith('.json')
             ? subview.sankeyData.path
             : `${subview.sankeyData.path}.json`;
-          const dataModule = await import(`../../../${dataPath}`);
-          const sankeyData: SankeyData = dataModule.default;
+          const response = await fetch(dataPath);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const sankeyData: SankeyData = await response.json();
 
           // Update state to add Sankey overlay (preserves selectedNodeId and activeSubviewId)
           transitionVisualizationState({
@@ -225,13 +228,16 @@ export function createController(config: ControllerConfig): Controller {
           ...(subviewScope ? { activeScope: subviewScope } : {}),
         });
 
-        // Load Sunburst data file (add .json extension for Vite dynamic imports)
+        // Load Sunburst data file from public directory
         try {
           const dataPath = subview.sunburstData.path.endsWith('.json')
             ? subview.sunburstData.path
             : `${subview.sunburstData.path}.json`;
-          const dataModule = await import(`../../../${dataPath}`);
-          const sunburstData: SunburstData = dataModule.default;
+          const response = await fetch(dataPath);
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          const sunburstData: SunburstData = await response.json();
 
           // Update state to add Sunburst overlay (preserves selectedNodeId and activeSubviewId)
           transitionVisualizationState({
