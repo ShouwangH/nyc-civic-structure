@@ -34,7 +34,7 @@ type NodeWithCurrent = HierarchyRectangularNode<SunburstNode> & {
   target?: ArcCoords;
 };
 
-export function SunburstDiagram({ data, width, height }: SunburstDiagramProps) {
+export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDiagramProps) {
   const svgRef = useRef<SVGSVGElement>(null);
 
   const radius = Math.min(width, height) / 2;
@@ -110,7 +110,24 @@ export function SunburstDiagram({ data, width, height }: SunburstDiagramProps) {
 
     // Click handler - recalculates coordinates and transitions
     const clicked = (_event: MouseEvent, p: NodeWithCurrent) => {
-      currentFocus = currentFocus === p ? (p.parent as NodeWithCurrent || root) : p;
+      // Calculate depth below this node
+      const maxDepthBelow = (node: NodeWithCurrent): number => {
+        if (!node.children || node.children.length === 0) return 0;
+        return 1 + Math.max(...(node.children as NodeWithCurrent[]).map(maxDepthBelow));
+      };
+
+      // Only allow zoom in if node has at least 2 levels below it (to show 2 rings)
+      // Or if clicking the same node/parent to zoom out
+      if (currentFocus === p) {
+        // Zoom out to parent
+        currentFocus = (p.parent as NodeWithCurrent) || root;
+      } else if (maxDepthBelow(p) < 2) {
+        // Not enough depth below - treat as zoom out click on parent
+        currentFocus = (p.parent as NodeWithCurrent) || root;
+      } else {
+        // Zoom in - enough depth
+        currentFocus = p;
+      }
 
       // Update focused label
       svg.select('.center-label').text(currentFocus.data.name);
@@ -141,8 +158,7 @@ export function SunburstDiagram({ data, width, height }: SunburstDiagramProps) {
         })
         .attr('fill-opacity', (d: NodeWithCurrent) => {
           const visible = arcVisible(d.target!);
-          const depthFactor = 1 - (d.target!.y0 / 3) * 0.15;
-          return visible ? depthFactor : 0;
+          return visible ? getOpacity(d) : 0;
         })
         .attr('pointer-events', (d: NodeWithCurrent) =>
           arcVisible(d.target!) ? 'auto' : 'none'
@@ -165,11 +181,21 @@ export function SunburstDiagram({ data, width, height }: SunburstDiagramProps) {
       return d.y1 <= 3 && d.y0 >= 1 && d.x1 > d.x0;
     };
 
-    // Create gradient definitions for depth shading
-    const defs = svg.select('defs');
-    if (defs.empty()) {
-      svg.append('defs');
-    }
+    // Calculate opacity based on value relative to parent, bounded by parent's opacity
+    const getOpacity = (node: NodeWithCurrent): number => {
+      if (!node.parent) return 1;
+
+      const parentValue = node.parent.value || 1;
+      const nodeValue = node.value || 0;
+      const ratio = nodeValue / parentValue;
+
+      // Map ratio to opacity range: 0.4 (small) to 1.0 (large)
+      const baseOpacity = 0.4 + (ratio * 0.6);
+
+      // Get parent's opacity and ensure child never exceeds it
+      const parentOpacity = getOpacity(node.parent as NodeWithCurrent);
+      return Math.min(baseOpacity, parentOpacity);
+    };
 
     // Initial render - include all descendants (no slice)
     const paths = g.selectAll<SVGPathElement, NodeWithCurrent>('path')
@@ -178,9 +204,7 @@ export function SunburstDiagram({ data, width, height }: SunburstDiagramProps) {
       .attr('fill', (d: NodeWithCurrent) => getColor(d))
       .attr('fill-opacity', (d: NodeWithCurrent) => {
         const visible = arcVisible(d.current!);
-        // Subtle fade for deeper levels
-        const depthFactor = 1 - (d.current!.y0 / 3) * 0.15;
-        return visible ? depthFactor : 0;
+        return visible ? getOpacity(d) : 0;
       })
       .attr('pointer-events', (d: NodeWithCurrent) =>
         arcVisible(d.current!) ? 'auto' : 'none'
@@ -192,7 +216,18 @@ export function SunburstDiagram({ data, width, height }: SunburstDiagramProps) {
       .attr('stroke', '#fff')
       .attr('stroke-width', 1.5)
       .style('cursor', 'pointer')
-      .on('click', clicked as any);
+      .on('click', clicked as any)
+      .on('mouseover', function(event: MouseEvent, d: NodeWithCurrent) {
+        if (onNodeHover && arcVisible(d.current!)) {
+          const mouseEvent = event as any as React.MouseEvent;
+          onNodeHover(d, mouseEvent);
+        }
+      })
+      .on('mouseout', function() {
+        if (onNodeHover) {
+          onNodeHover(null);
+        }
+      });
 
     // Add text labels
     g.selectAll<SVGTextElement, NodeWithCurrent>('text')
