@@ -46,7 +46,7 @@ export function SankeyDiagram({
         [PADDING, PADDING],
         [width - PADDING, height - PADDING],
       ])
-      .nodeId((d: any) => d.name)
+      .nodeId((d: any) => d.id)
       .nodeAlign(sankeyJustify);
 
     // Compute layout
@@ -59,8 +59,8 @@ export function SankeyDiagram({
     const gradientDefs = graph.links.map((link) => {
       const sourceNode = link.source as SankeyNode;
       const targetNode = link.target as SankeyNode;
-      const gradientId = getGradientId(sourceNode.name, targetNode.name);
-      const { startColor, endColor } = getGradientColors(sourceNode.name, targetNode.name);
+      const gradientId = getGradientId(sourceNode.id, targetNode.id);
+      const { startColor, endColor } = getGradientColors(sourceNode.id, targetNode.id);
 
       return {
         id: gradientId,
@@ -94,7 +94,7 @@ export function SankeyDiagram({
   const handleLinkMouseEnter = (link: SankeyLink) => {
     const sourceNode = link.source as SankeyNode;
     const targetNode = link.target as SankeyNode;
-    const linkId = `${sourceNode.name}-${targetNode.name}`;
+    const linkId = `${sourceNode.id}-${targetNode.id}`;
     setHoveredLinkId(linkId);
     onLinkHover?.(link);
   };
@@ -131,8 +131,8 @@ export function SankeyDiagram({
         {links.map((link, i) => {
           const sourceNode = link.source as SankeyNode;
           const targetNode = link.target as SankeyNode;
-          const linkId = `${sourceNode.name}-${targetNode.name}`;
-          const gradientId = getGradientId(sourceNode.name, targetNode.name);
+          const linkId = `${sourceNode.id}-${targetNode.id}`;
+          const gradientId = getGradientId(sourceNode.id, targetNode.id);
           const isHovered = hoveredLinkId === linkId;
 
           return (
@@ -158,12 +158,12 @@ export function SankeyDiagram({
       <g className="nodes">
         {nodes.map((node, i) => {
           const isHovered = hoveredNodeId === node.index;
-          const nodeColor = getNodeColor(node.name);
+          const nodeColor = getNodeColor(node.id);
 
           // Calculate dynamic font size based on node height
           const nodeHeight = node.y1! - node.y0!;
           const minFontSize = 10;
-          const maxFontSize = 30;
+          const maxFontSize = 20;
           const minHeight = 20;  // Minimum node height for smallest font
           const maxHeight = 100; // Node height for largest font
 
@@ -206,7 +206,7 @@ export function SankeyDiagram({
                 fill="#374151"
                 style={{ pointerEvents: 'none', userSelect: 'none' }}
               >
-                {node.name}
+                {node.label}
               </text>
 
               {/* Value label (show on hover or for important nodes) */}

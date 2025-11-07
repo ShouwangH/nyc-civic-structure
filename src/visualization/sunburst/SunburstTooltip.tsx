@@ -10,11 +10,10 @@ type SunburstTooltipProps = {
   totalValue: number;
 };
 
-export function SunburstTooltip({ node, position, totalValue }: SunburstTooltipProps) {
+export function SunburstTooltip({ node, position }: SunburstTooltipProps) {
   if (!node) return null;
 
   const value = node.value || 0;
-  const percentage = totalValue > 0 ? (value / totalValue) * 100 : 0;
   const valueBillion = value / 1_000_000_000;
 
   return (
@@ -28,13 +27,7 @@ export function SunburstTooltip({ node, position, totalValue }: SunburstTooltipP
     >
       <div className="font-semibold mb-1">{node.data.name}</div>
       <div className="text-gray-300">
-        <div>${valueBillion.toFixed(2)}B</div>
-        <div>{percentage.toFixed(1)}% of total</div>
-        {node.depth > 0 && (
-          <div className="text-xs text-gray-400 mt-1">
-            Depth: {node.depth} | Children: {node.children?.length || 0}
-          </div>
-        )}
+        ${valueBillion.toFixed(2)}B
       </div>
     </div>
   );
