@@ -8,12 +8,16 @@ import type { Feature, Polygon, Point } from 'geojson';
 export type CapitalProjectProperties = {
   maprojid: string;
   description: string;
-  managingagency: string;
-  borough: string;
-  totalcost: number;
-  projecttype: string;
-  status: string;
-  fy: string;
+  magencyname: string;
+  magencyacro: string;
+  typecategory: string;
+  mindate: string;
+  maxdate: string;
+  allocate_total: number;
+  commit_total: number;
+  spent_total: number;
+  plannedcommit_total: number;
+  fiscalYear?: number; // Derived from mindate
 };
 
 // GeoJSON Feature type for capital projects
@@ -52,20 +56,31 @@ export function useCapitalBudgetData(): UseCapitalBudgetDataReturn {
         const data = await response.json();
 
         // Transform to our expected format
-        const features: CapitalProjectFeature[] = data.features.map((feature: any) => ({
-          type: 'Feature',
-          geometry: feature.geometry,
-          properties: {
-            maprojid: feature.properties.maprojid || 'Unknown',
-            description: feature.properties.description || 'Unnamed Project',
-            managingagency: feature.properties.managingagency || 'Unknown',
-            borough: feature.properties.borough || 'Unknown',
-            totalcost: parseFloat(feature.properties.totalcost || '0'),
-            projecttype: feature.properties.projecttype || 'Unknown',
-            status: feature.properties.status || 'Unknown',
-            fy: feature.properties.fy || 'Unknown',
-          },
-        }));
+        const features: CapitalProjectFeature[] = data.features.map((feature: any) => {
+          // Extract fiscal year from mindate (format: "2024-06-20T00:00:00.000")
+          const fiscalYear = feature.properties.mindate
+            ? parseInt(feature.properties.mindate.substring(0, 4), 10)
+            : undefined;
+
+          return {
+            type: 'Feature',
+            geometry: feature.geometry,
+            properties: {
+              maprojid: feature.properties.maprojid || 'Unknown',
+              description: feature.properties.description || 'Unnamed Project',
+              magencyname: feature.properties.magencyname || 'Unknown Agency',
+              magencyacro: feature.properties.magencyacro || 'N/A',
+              typecategory: feature.properties.typecategory || 'Unknown',
+              mindate: feature.properties.mindate || '',
+              maxdate: feature.properties.maxdate || '',
+              allocate_total: parseFloat(feature.properties.allocate_total || '0'),
+              commit_total: parseFloat(feature.properties.commit_total || '0'),
+              spent_total: parseFloat(feature.properties.spent_total || '0'),
+              plannedcommit_total: parseFloat(feature.properties.plannedcommit_total || '0'),
+              fiscalYear,
+            },
+          };
+        });
 
         setProjects(features);
       } catch (err) {
