@@ -59,16 +59,19 @@ export function useHousingData(currentYear: number): UseHousingDataResult {
     };
   }, []);
 
-  // Get buildings up to current year
-  const buildings = dataByYear ? getBuildingsUpToYear(dataByYear, currentYear) : [];
+  // Get ALL buildings (don't filter by year - deck.gl needs stable data array)
+  const allBuildings = dataByYear ? getBuildingsUpToYear(dataByYear, 2025) : [];
 
-  // Calculate statistics
-  const totalBuildings = buildings.length;
-  const totalUnits = buildings.reduce((sum, b) => sum + b.totalUnits, 0);
-  const affordableUnits = buildings.reduce((sum, b) => sum + b.affordableUnits, 0);
+  // Get buildings up to current year for statistics only
+  const buildingsUpToYear = dataByYear ? getBuildingsUpToYear(dataByYear, currentYear) : [];
+
+  // Calculate statistics based on visible buildings
+  const totalBuildings = buildingsUpToYear.length;
+  const totalUnits = buildingsUpToYear.reduce((sum, b) => sum + b.totalUnits, 0);
+  const affordableUnits = buildingsUpToYear.reduce((sum, b) => sum + b.affordableUnits, 0);
 
   return {
-    buildings,
+    buildings: allBuildings, // Pass ALL buildings for stable deck.gl data array
     dataByYear,
     isLoading,
     error,

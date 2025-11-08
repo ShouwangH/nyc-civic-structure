@@ -36,7 +36,8 @@ export function Map3D({ buildings, currentYear, width, height }: Map3DProps) {
       pickable: true,
       elevationScale: 4,
       getPosition: (d) => d.coordinates,
-      getElevation: (d) => d.totalUnits,
+      // Conditionally show buildings - future buildings have elevation 0
+      getElevation: (d) => d.completionYear <= currentYear ? d.totalUnits : 0,
       getFillColor: (d) => {
         // Color based on building type
         switch (d.buildingType) {

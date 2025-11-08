@@ -169,6 +169,14 @@ async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
   }
   console.info(`[HousingData] Indexed ${housingByBBL.size} Housing NY records by BBL`);
 
+  // Debug: Sample BBL formats from both datasets
+  console.info('[HousingData] Sample Housing NY BBLs:',
+    housingNYData.slice(0, 10).map(r => ({ raw: r.bbl, normalized: normalizeBBL(r.bbl) }))
+  );
+  console.info('[HousingData] Sample PLUTO BBLs:',
+    plutoData.slice(0, 10).map(r => ({ raw: r.bbl, normalized: normalizeBBL(r.bbl) }))
+  );
+
   // Join PLUTO with Housing NY data
   const joinedData: any[] = [];
   let joinedCount = 0;
