@@ -63,7 +63,7 @@ export function CapitalBudgetMap() {
         setHoveredProject(null);
       }
     },
-  });
+  } as any);
 
   return (
     <div className="relative w-full h-full">
