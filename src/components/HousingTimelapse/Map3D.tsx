@@ -65,7 +65,12 @@ export function Map3D({ buildings, currentYear, width, height }: Map3DProps) {
         getElevation: [displayYear], // Only trigger on integer year change
       },
       transitions: {
-        getElevation: 1000 // Simple duration like the example
+        getElevation: {
+          type: 'interpolation',
+          duration: 1000,
+          easing: (t) => t * (2 - t), // ease-out-quad
+          enter: (value) => [0] // Buildings start from ground
+        }
       },
       onHover: (info: PickingInfo) => {
         if (info.object) {
