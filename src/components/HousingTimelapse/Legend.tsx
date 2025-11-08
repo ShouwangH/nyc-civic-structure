@@ -77,6 +77,7 @@ export function Legend({
       {/* Data source */}
       <div className="mt-4 pt-4 border-t border-slate-200">
         <div className="text-xs text-slate-500">
+          <strong>New construction only (2014-2024)</strong><br />
           Data: NYC Open Data<br />
           • Housing New York Units by Building<br />
           • PLUTO (Primary Land Use Tax Lot Output)
