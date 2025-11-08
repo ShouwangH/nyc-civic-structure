@@ -113,6 +113,7 @@ export function HousingTimelapseContent({ width, height }: HousingTimelapseConte
           totalBuildings={totalBuildings}
           totalUnits={totalUnits}
           affordableUnits={affordableUnits}
+          buildings={buildings}
         />
       </div>
       <TimeSlider

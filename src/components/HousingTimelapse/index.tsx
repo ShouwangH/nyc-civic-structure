@@ -182,6 +182,7 @@ export function HousingTimelapse({ onClose }: HousingTimelapseProps) {
                 totalBuildings={totalBuildings}
                 totalUnits={totalUnits}
                 affordableUnits={affordableUnits}
+                buildings={buildings}
               />
             </>
           )}

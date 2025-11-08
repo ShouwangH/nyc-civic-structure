@@ -1,7 +1,8 @@
 // ABOUTME: Legend component displaying color coding and statistics
-// ABOUTME: Shows affordable housing percentage legend and current year statistics
+// ABOUTME: Shows building type legend with unit counts and data sources
 
 import type { LegendProps } from './types';
+import type { ProcessedBuilding } from './types';
 
 /**
  * Legend and statistics panel
@@ -11,64 +12,82 @@ export function Legend({
   totalBuildings,
   totalUnits,
   affordableUnits,
-}: LegendProps) {
-  const affordablePercentage = totalUnits > 0 ? (affordableUnits / totalUnits) * 100 : 0;
+  buildings,
+}: LegendProps & { buildings?: ProcessedBuilding[] }) {
+  // Calculate unit counts by building type
+  const buildingTypeCounts = buildings?.reduce((acc, building) => {
+    const type = building.buildingType;
+    if (!acc[type]) {
+      acc[type] = 0;
+    }
+    acc[type] += building.totalUnits;
+    return acc;
+  }, {} as Record<string, number>) || {};
+
+  // Check if any PLUTO data is being used
+  const usesPluto = buildings?.some(b => b.dataSource === 'pluto') || false;
 
   return (
     <div className="absolute bottom-6 right-6 z-10 bg-white rounded-xl border border-slate-200 shadow-lg p-4 max-w-xs">
-      {/* Statistics */}
-      <div className="space-y-2 mb-4 pb-4 border-b border-slate-200">
-        <div className="flex justify-between text-sm">
-          <span className="text-slate-600">Buildings:</span>
-          <span className="font-semibold text-slate-900">{totalBuildings.toLocaleString()}</span>
-        </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-slate-600">Total Units:</span>
-          <span className="font-semibold text-slate-900">{totalUnits.toLocaleString()}</span>
-        </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-slate-600">Affordable:</span>
-          <span className="font-semibold text-slate-900">
-            {affordableUnits.toLocaleString()}
-          </span>
-        </div>
-        <div className="flex justify-between text-sm">
-          <span className="text-slate-600">Market Rate:</span>
-          <span className="font-semibold text-slate-900">
-            {(totalUnits - affordableUnits).toLocaleString()}
-          </span>
-        </div>
-      </div>
-
       {/* Color legend */}
       <div>
         <div className="text-xs font-semibold text-slate-700 mb-2">
           Building Type
         </div>
         <div className="space-y-1.5">
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgb(34, 197, 94)' }}></div>
-            <span className="text-xs text-slate-600">Affordable Housing</span>
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgb(34, 197, 94)' }}></div>
+              <span className="text-xs text-slate-600">Affordable Housing</span>
+            </div>
+            <span className="text-xs font-medium text-slate-700">
+              {(buildingTypeCounts['affordable'] || 0).toLocaleString()}
+            </span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgb(249, 115, 22)' }}></div>
-            <span className="text-xs text-slate-600">Major Renovation</span>
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgb(249, 115, 22)' }}></div>
+              <span className="text-xs text-slate-600">Major Renovation</span>
+            </div>
+            <span className="text-xs font-medium text-slate-700">
+              {(buildingTypeCounts['renovation'] || 0).toLocaleString()}
+            </span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgb(59, 130, 246)' }}></div>
-            <span className="text-xs text-slate-600">Multifamily Elevator</span>
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgb(59, 130, 246)' }}></div>
+              <span className="text-xs text-slate-600">Multifamily Elevator</span>
+            </div>
+            <span className="text-xs font-medium text-slate-700">
+              {(buildingTypeCounts['multifamily-elevator'] || 0).toLocaleString()}
+            </span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgb(147, 51, 234)' }}></div>
-            <span className="text-xs text-slate-600">Multifamily Walkup</span>
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgb(147, 51, 234)' }}></div>
+              <span className="text-xs text-slate-600">Multifamily Walkup</span>
+            </div>
+            <span className="text-xs font-medium text-slate-700">
+              {(buildingTypeCounts['multifamily-walkup'] || 0).toLocaleString()}
+            </span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgb(251, 191, 36)' }}></div>
-            <span className="text-xs text-slate-600">Mixed Use</span>
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgb(251, 191, 36)' }}></div>
+              <span className="text-xs text-slate-600">Mixed Use</span>
+            </div>
+            <span className="text-xs font-medium text-slate-700">
+              {(buildingTypeCounts['mixed-use'] || 0).toLocaleString()}
+            </span>
           </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgb(239, 68, 68)' }}></div>
-            <span className="text-xs text-slate-600">1-2 Family Homes</span>
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2">
+              <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgb(239, 68, 68)' }}></div>
+              <span className="text-xs text-slate-600">1-2 Family Homes</span>
+            </div>
+            <span className="text-xs font-medium text-slate-700">
+              {(buildingTypeCounts['one-two-family'] || 0).toLocaleString()}
+            </span>
           </div>
         </div>
       </div>
@@ -86,8 +105,8 @@ export function Legend({
           <strong>New construction + renovations (2014-2024)</strong><br />
           Data: NYC Open Data<br />
           • DOB Job Applications (primary)<br />
-          • Housing New York Units by Building<br />
-          • PLUTO (fallback)
+          • Housing New York Units by Building
+          {usesPluto && <><br />• PLUTO (fallback)</>}
         </div>
       </div>
     </div>

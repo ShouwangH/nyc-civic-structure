@@ -42,7 +42,7 @@ export function useCapitalBudgetData(): UseCapitalBudgetDataReturn {
         // Fetch from CPDB Polygons dataset (9jkp-n57r)
         // Limit to recent projects with valid geometry and cost data
         const response = await fetch(
-          'https://data.cityofnewyork.us/resource/9jkp-n57r.geojson?$limit=100&$where=totalcost>0'
+          'https://data.cityofnewyork.us/resource/9jkp-n57r.geojson?$limit=500'
         );
 
         if (!response.ok) {
