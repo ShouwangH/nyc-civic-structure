@@ -26,6 +26,9 @@ export function Map3D({ buildings, currentYear, width, height }: Map3DProps) {
   const [hoveredBuilding, setHoveredBuilding] = useState<string | null>(null);
 
   // Create deck.gl layer
+  // Use integer year for stable transitions
+  const displayYear = Math.floor(currentYear);
+
   const layer = useMemo(() => {
     return new ColumnLayer({
       id: 'buildings-layer',
@@ -37,7 +40,7 @@ export function Map3D({ buildings, currentYear, width, height }: Map3DProps) {
       pickable: true,
       elevationScale: 4,
       // Conditionally show buildings - future buildings have elevation 0
-      getElevation: (d) => d.completionYear <= currentYear ? d.totalUnits : 0,
+      getElevation: (d) => d.completionYear <= displayYear ? d.totalUnits : 0,
       getFillColor: (d) => {
         // Color based on building type
         switch (d.buildingType) {
@@ -59,14 +62,10 @@ export function Map3D({ buildings, currentYear, width, height }: Map3DProps) {
       getLineWidth: 1,
       lineWidthMinPixels: 1,
       updateTriggers: {
-        getElevation: [currentYear],
+        getElevation: [displayYear], // Only trigger on integer year change
       },
       transitions: {
-        getElevation: {
-          duration: 300,
-          easing: (t) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t, // Ease in-out quad
-          enter: () => [0], // Start from 0 height
-        },
+        getElevation: 1000 // Simple duration like the example
       },
       onHover: (info: PickingInfo) => {
         if (info.object) {
@@ -76,7 +75,7 @@ export function Map3D({ buildings, currentYear, width, height }: Map3DProps) {
         }
       },
     });
-  }, [buildings, currentYear]);
+  }, [buildings, displayYear]);
 
   // Tooltip for hovered building
   const renderTooltip = () => {
