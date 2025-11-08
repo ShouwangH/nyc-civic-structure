@@ -1,11 +1,12 @@
 // ABOUTME: Wrapper component for map visualizations with dropdown selector
-// ABOUTME: Allows switching between housing timelapse and capital budget maps
+// ABOUTME: Allows switching between housing timelapse, capital budget, and school funding maps
 
 import { useState, useRef, useEffect } from 'react';
 import { HousingTimelapseContent } from './HousingTimelapseContent';
 import { CapitalBudgetMap } from './CapitalBudgetMap';
+import { SchoolFundingMap } from './SchoolFundingMap';
 
-type MapType = 'housing' | 'capital-budget';
+type MapType = 'housing' | 'capital-budget' | 'school-funding';
 
 type MapOption = {
   id: MapType;
@@ -23,6 +24,11 @@ const MAP_OPTIONS: MapOption[] = [
     id: 'capital-budget',
     label: 'Capital Budget Projects',
     description: 'Pending capital projects by borough and budget',
+  },
+  {
+    id: 'school-funding',
+    label: 'School Funding',
+    description: 'Public school funding per student (FY2025)',
   },
 ];
 
@@ -156,6 +162,9 @@ export function MapsOverlay({ onClose }: MapsOverlayProps) {
           )}
           {selectedMap === 'capital-budget' && (
             <CapitalBudgetMap />
+          )}
+          {selectedMap === 'school-funding' && (
+            <SchoolFundingMap />
           )}
         </div>
       </div>
