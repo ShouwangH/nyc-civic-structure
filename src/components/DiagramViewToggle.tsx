@@ -1,11 +1,11 @@
-// ABOUTME: Toggle component for switching between Diagram and Views modes
+// ABOUTME: Toggle component for switching between Diagram, Financials, and Maps modes
 // ABOUTME: Displays as a centered toggle similar to scope selector
 
 import type { InputHandler } from '../visualization/cytoscape/inputHandler';
 import { actions } from '../visualization/cytoscape/actions';
 
 type DiagramViewToggleProps = {
-  mode: 'diagram' | 'views';
+  mode: 'diagram' | 'financials' | 'maps';
   inputHandler: InputHandler | null;
 };
 
@@ -31,15 +31,29 @@ const DiagramViewToggle = ({ mode, inputHandler }: DiagramViewToggleProps) => {
           type="button"
           onClick={() => {
             if (!inputHandler) return;
-            void inputHandler.enqueue(actions.changeViewMode('views'));
+            void inputHandler.enqueue(actions.changeViewMode('financials'));
           }}
           className={`rounded-xl px-4 py-2 text-base font-medium transition-all ${
-            mode === 'views'
+            mode === 'financials'
               ? 'bg-blue-600 text-white shadow-md'
               : 'text-slate-600 hover:text-slate-800'
           }`}
         >
-          Views
+          Financials
+        </button>
+        <button
+          type="button"
+          onClick={() => {
+            if (!inputHandler) return;
+            void inputHandler.enqueue(actions.changeViewMode('maps'));
+          }}
+          className={`rounded-xl px-4 py-2 text-base font-medium transition-all ${
+            mode === 'maps'
+              ? 'bg-blue-600 text-white shadow-md'
+              : 'text-slate-600 hover:text-slate-800'
+          }`}
+        >
+          Maps
         </button>
       </div>
     </div>

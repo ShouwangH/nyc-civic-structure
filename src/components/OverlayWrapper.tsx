@@ -1,5 +1,5 @@
 // ABOUTME: Wrapper component for displaying visualization overlays
-// ABOUTME: Includes dropdown to select from all available Sankey and Sunburst visualizations
+// ABOUTME: Header includes dropdown to select from all available Sankey and Sunburst visualizations
 
 import { useState, useRef, useEffect } from 'react';
 import { SankeyOverlay } from './SankeyOverlay';
@@ -117,49 +117,6 @@ const OverlayWrapper = ({
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
       onClick={handleBackdropClick}
     >
-      {/* Dropdown floating in top left */}
-      <div className="absolute top-6 left-6 z-[60]" ref={dropdownRef}>
-        <button
-          type="button"
-          onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-          className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-base font-medium text-slate-700 shadow-sm hover:bg-slate-100 transition"
-        >
-          <span>{selectedSubview.label}</span>
-          <svg
-            className={`h-4 w-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-
-        {isDropdownOpen && overlaySubviews.length > 1 && (
-          <div className="absolute left-0 top-full mt-2 w-64 rounded-xl border border-slate-200 bg-white shadow-lg">
-            <div className="py-2 max-h-96 overflow-y-auto">
-              {overlaySubviews.map((subview) => (
-                <button
-                  key={subview.id}
-                  type="button"
-                  onClick={() => {
-                    setSelectedSubviewId(subview.id);
-                    setIsDropdownOpen(false);
-                  }}
-                  className={`w-full px-4 py-2 text-left text-sm transition ${
-                    selectedSubviewId === subview.id
-                      ? 'bg-blue-50 text-blue-700 font-medium'
-                      : 'text-slate-700 hover:bg-slate-50'
-                  }`}
-                >
-                  {subview.label}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-      </div>
-
       {/* Main panel */}
       <div
         className="bg-white rounded-lg shadow-2xl flex flex-col overflow-hidden"
@@ -172,10 +129,52 @@ const OverlayWrapper = ({
       >
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-gray-200 bg-gray-50">
-          <div>
-            <h2 className="text-lg font-semibold text-gray-900">
-              {selectedSubview.label}
-            </h2>
+          <div className="flex-1">
+            {/* Dropdown selector */}
+            <div className="relative" ref={dropdownRef}>
+              <button
+                type="button"
+                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                className="flex items-center gap-2 text-lg font-semibold text-gray-900 hover:text-gray-700 transition"
+              >
+                <span>{selectedSubview.label}</span>
+                {overlaySubviews.length > 1 && (
+                  <svg
+                    className={`h-4 w-4 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                  </svg>
+                )}
+              </button>
+
+              {isDropdownOpen && overlaySubviews.length > 1 && (
+                <div className="absolute left-0 top-full mt-2 w-64 rounded-xl border border-slate-200 bg-white shadow-lg z-10">
+                  <div className="py-2 max-h-96 overflow-y-auto">
+                    {overlaySubviews.map((subview) => (
+                      <button
+                        key={subview.id}
+                        type="button"
+                        onClick={() => {
+                          setSelectedSubviewId(subview.id);
+                          setIsDropdownOpen(false);
+                        }}
+                        className={`w-full px-4 py-2 text-left text-sm transition ${
+                          selectedSubviewId === subview.id
+                            ? 'bg-blue-50 text-blue-700 font-medium'
+                            : 'text-slate-700 hover:bg-slate-50'
+                        }`}
+                      >
+                        {subview.label}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
             {selectedData && 'meta' in selectedData && selectedData.meta?.source && (
               <p className="text-sm text-gray-600 mt-1">
                 Data: {selectedData.meta.source}
