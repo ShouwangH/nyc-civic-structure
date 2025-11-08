@@ -236,6 +236,17 @@ async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
   console.info(`[HousingData] Join complete: ${joinedCount} matched, ${housingByBBL.size} Housing NY only, ${plutoData.length - joinedCount} PLUTO only`);
   console.info(`[HousingData] Total joined records: ${joinedData.length}`);
 
+  // Debug: Sample unmatched Housing NY records
+  const unmatchedSamples = Array.from(housingByBBL.values()).slice(0, 5);
+  console.info('[HousingData] Sample unmatched Housing NY records:',
+    unmatchedSamples.map(r => ({
+      name: r.project_name,
+      bbl: r.bbl,
+      constructionType: r.reporting_construction_type,
+      completionDate: r.building_completion_date
+    }))
+  );
+
   return joinedData;
 }
 
