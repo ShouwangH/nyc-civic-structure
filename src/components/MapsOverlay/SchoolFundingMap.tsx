@@ -6,7 +6,7 @@ import { Map } from 'react-map-gl/maplibre';
 import { DeckGL } from '@deck.gl/react';
 import { ColumnLayer } from '@deck.gl/layers';
 import type { PickingInfo } from '@deck.gl/core';
-import { scaleSequential, scaleQuantile, scaleLog } from 'd3-scale';
+import { scaleSequential } from 'd3-scale';
 import { interpolateViridis } from 'd3-scale-chromatic';
 import { useSchoolFundingData, type SchoolBudgetFeature } from '../../hooks/useSchoolFundingData';
 
