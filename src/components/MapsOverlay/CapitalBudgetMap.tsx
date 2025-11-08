@@ -49,8 +49,8 @@ export function CapitalBudgetMap() {
     wireframe: true,
     pickable: true,
     elevationScale: 0.5,
-    getElevation: (d) => d.properties.allocate_total / 10000, // Scale budget to reasonable height
-    getFillColor: (d) => {
+    getElevation: (d: CapitalProjectFeature) => d.properties.allocate_total / 10000, // Scale budget to reasonable height
+    getFillColor: (d: CapitalProjectFeature) => {
       const color = AGENCY_COLORS[d.properties.magencyacro] || DEFAULT_COLOR;
       return [...color, 200]; // Add alpha channel
     },

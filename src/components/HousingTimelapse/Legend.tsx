@@ -9,9 +9,6 @@ import type { ProcessedBuilding } from './types';
  */
 export function Legend({
   currentYear,
-  totalBuildings,
-  totalUnits,
-  affordableUnits,
   buildings,
 }: LegendProps & { buildings?: ProcessedBuilding[] }) {
   // Filter buildings up to current year (for updating counts as timeline moves)
