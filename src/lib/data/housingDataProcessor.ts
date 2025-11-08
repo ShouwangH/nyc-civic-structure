@@ -10,15 +10,15 @@ import type {
 } from '../../components/HousingTimelapse/types';
 
 // Cache configuration
-const CACHE_KEY = 'nyc_housing_processed_v3';
-const CACHE_VERSION = '3.0.0';
+const CACHE_KEY = 'nyc_housing_processed_v4';
+const CACHE_VERSION = '4.0.0';
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 // NYC Open Data API configuration
 const HOUSING_NY_API = 'https://data.cityofnewyork.us/resource/hg8x-zxpr.json'; // Affordable housing
 const PLUTO_API = 'https://data.cityofnewyork.us/resource/64uk-42ks.json'; // PLUTO data
 const HOUSING_NY_LIMIT = 20000; // Limit for Housing NY API
-const PLUTO_LIMIT = 5000; // Smaller limit for PLUTO
+const PLUTO_LIMIT = 50000; // Increased limit for PLUTO (was 5000)
 const ENABLE_CACHE = true; // Cache processed data (much smaller than raw)
 
 /**
@@ -119,11 +119,17 @@ async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
 
   const housingNYData: any[] = await housingNYResponse.json();
   console.info(`[HousingData] Fetched ${housingNYData.length} records from Housing NY API`);
+  if (housingNYData.length >= HOUSING_NY_LIMIT) {
+    console.warn(`[HousingData] Hit Housing NY limit (${HOUSING_NY_LIMIT}). May be missing data.`);
+  }
 
   let plutoData: any[] = [];
   if (plutoResponse.ok) {
     plutoData = await plutoResponse.json();
     console.info(`[HousingData] Fetched ${plutoData.length} records from PLUTO API`);
+    if (plutoData.length >= PLUTO_LIMIT) {
+      console.warn(`[HousingData] Hit PLUTO limit (${PLUTO_LIMIT}). May be missing data.`);
+    }
 
     // Log first PLUTO record to understand structure
     if (plutoData.length > 0) {
