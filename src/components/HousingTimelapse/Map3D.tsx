@@ -46,6 +46,8 @@ export function Map3D({ buildings, currentYear, width, height }: Map3DProps) {
         switch (d.buildingType) {
           case 'affordable':
             return [34, 197, 94]; // Green - Affordable housing
+          case 'renovation':
+            return [249, 115, 22]; // Orange - Major renovations/alterations
           case 'multifamily-elevator':
             return [59, 130, 246]; // Blue - High-rise multifamily
           case 'multifamily-walkup':

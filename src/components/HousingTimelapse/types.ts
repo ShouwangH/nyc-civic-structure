@@ -77,6 +77,7 @@ export type BuildingType =
   | 'multifamily-elevator' // C - Multifamily elevator
   | 'mixed-use'          // D - Mixed residential/commercial
   | 'affordable'         // From Housing NY data
+  | 'renovation'         // Major alterations (DOB A1/A2/A3)
   | 'unknown';
 
 /**

@@ -16,10 +16,12 @@ const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 // NYC Open Data API configuration
 const HOUSING_NY_API = 'https://data.cityofnewyork.us/resource/hg8x-zxpr.json'; // Affordable housing
-const PLUTO_API = 'https://data.cityofnewyork.us/resource/64uk-42ks.json'; // PLUTO data
-const HOUSING_NY_LIMIT = 20000; // Limit for Housing NY API
-const PLUTO_LIMIT = 50000; // Increased limit for PLUTO (was 5000)
-const ENABLE_CACHE = false; // Disabled: localStorage quota exceeded with ~16K buildings
+const DOB_API = 'https://data.cityofnewyork.us/resource/ic3t-wcy2.json'; // DOB Job Applications
+const PLUTO_API = 'https://data.cityofnewyork.us/resource/64uk-42ks.json'; // PLUTO data (fallback)
+const HOUSING_NY_LIMIT = 20000;
+const DOB_LIMIT = 50000;
+const PLUTO_LIMIT = 20000; // Reduced - only fallback for missing DOB records
+const ENABLE_CACHE = false; // Disabled: localStorage quota exceeded
 
 /**
  * Check if cached data is still valid
@@ -125,127 +127,139 @@ function normalizeBBL(bbl: string | undefined): string | null {
 }
 
 /**
- * Fetch housing data from NYC Open Data API - joins PLUTO with Housing NY by BBL
+ * Construct BBL from borough, block, lot (DOB format)
+ */
+function constructBBL(borough: string, block: string, lot: string): string | null {
+  if (!borough || !block || !lot) return null;
+
+  // Borough codes: Manhattan=1, Bronx=2, Brooklyn=3, Queens=4, Staten Island=5
+  const boroughMap: Record<string, string> = {
+    'MANHATTAN': '1', 'MN': '1',
+    'BRONX': '2', 'BX': '2',
+    'BROOKLYN': '3', 'BK': '3',
+    'QUEENS': '4', 'QN': '4',
+    'STATEN ISLAND': '5', 'SI': '5'
+  };
+
+  const boroughCode = boroughMap[borough.toUpperCase()] || borough;
+
+  // Pad block to 5 digits, lot to 4 digits
+  const paddedBlock = block.padStart(5, '0');
+  const paddedLot = lot.padStart(4, '0');
+
+  return boroughCode + paddedBlock + paddedLot;
+}
+
+/**
+ * Fetch housing data from NYC Open Data APIs - DOB primary, PLUTO fallback, Housing NY overlay
  */
 async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
-  console.info('[HousingData] Fetching from NYC Open Data APIs...');
+  console.info('[HousingData] Fetching from NYC Open Data APIs (DOB primary + PLUTO fallback + Housing NY)...');
 
-  // Fetch from both sources in parallel
-  const [housingNYResponse, plutoResponse] = await Promise.all([
+  // Fetch from all three sources in parallel
+  const [housingNYResponse, dobResponse, plutoResponse] = await Promise.all([
     fetch(`${HOUSING_NY_API}?$limit=${HOUSING_NY_LIMIT}&$order=building_completion_date`),
+    fetch(`${DOB_API}?$limit=${DOB_LIMIT}&$where=latest_action_date>='2014-01-01' AND (job_status_descrp='APPROVED' OR job_status_descrp='COMPLETED')`),
     fetch(`${PLUTO_API}?$limit=${PLUTO_LIMIT}&$where=yearbuilt>=2014`)
   ]);
 
   if (!housingNYResponse.ok) {
-    throw new Error(`Housing NY API error: ${housingNYResponse.status} ${housingNYResponse.statusText}`);
-  }
-
-  if (!plutoResponse.ok) {
-    console.warn(`PLUTO API error: ${plutoResponse.status} ${plutoResponse.statusText}. Continuing with Housing NY data only.`);
+    throw new Error(`Housing NY API error: ${housingNYResponse.status}`);
   }
 
   const housingNYData: any[] = await housingNYResponse.json();
-  console.info(`[HousingData] Fetched ${housingNYData.length} records from Housing NY API`);
-  if (housingNYData.length >= HOUSING_NY_LIMIT) {
-    console.warn(`[HousingData] Hit Housing NY limit (${HOUSING_NY_LIMIT}). May be missing data.`);
+  console.info(`[HousingData] Fetched ${housingNYData.length} Housing NY records`);
+
+  let dobData: any[] = [];
+  if (dobResponse.ok) {
+    dobData = await dobResponse.json();
+    console.info(`[HousingData] Fetched ${dobData.length} DOB records (approved/completed only)`);
+    if (dobData.length > 0) {
+      console.info('[HousingData] Sample DOB record:', dobData[0]);
+      console.info('[HousingData] DOB fields:', Object.keys(dobData[0]));
+    }
+  } else {
+    console.warn(`[HousingData] DOB API error: ${dobResponse.status}. Will use PLUTO only.`);
   }
 
   let plutoData: any[] = [];
   if (plutoResponse.ok) {
     plutoData = await plutoResponse.json();
-    console.info(`[HousingData] Fetched ${plutoData.length} records from PLUTO API`);
-    if (plutoData.length >= PLUTO_LIMIT) {
-      console.warn(`[HousingData] Hit PLUTO limit (${PLUTO_LIMIT}). May be missing data.`);
-    }
-
-    // Log first PLUTO record to understand structure
-    if (plutoData.length > 0) {
-      console.info('[HousingData] Sample PLUTO record:', plutoData[0]);
-      console.info('[HousingData] PLUTO fields:', Object.keys(plutoData[0]));
-    }
-  }
-
-  // Debug: Log Housing NY fields
-  if (housingNYData.length > 0) {
-    console.info('[HousingData] Sample Housing NY record:', housingNYData[0]);
-    console.info('[HousingData] Housing NY fields:', Object.keys(housingNYData[0]));
+    console.info(`[HousingData] Fetched ${plutoData.length} PLUTO records (fallback)`);
   }
 
   // Build BBL index from Housing NY data for O(1) lookup
   const housingByBBL = new Map<string, any>();
-  let housingNYWithBBL = 0;
   for (const record of housingNYData) {
     const bbl = normalizeBBL(record.bbl);
     if (bbl) {
       housingByBBL.set(bbl, record);
-      housingNYWithBBL++;
     }
   }
   console.info(`[HousingData] Indexed ${housingByBBL.size} Housing NY records by BBL`);
-  console.info(`[HousingData] Housing NY records with BBL: ${housingNYWithBBL} / ${housingNYData.length}`);
 
-  // Debug: Sample BBL formats from both datasets
-  console.info('[HousingData] Sample Housing NY BBLs:',
-    housingNYData.slice(0, 10).map(r => ({ raw: r.bbl, normalized: normalizeBBL(r.bbl) }))
-  );
-  console.info('[HousingData] Sample PLUTO BBLs:',
-    plutoData.slice(0, 10).map(r => ({ raw: r.bbl, normalized: normalizeBBL(r.bbl) }))
-  );
-
-  // Join PLUTO with Housing NY data
+  // Track which BBLs are covered by DOB
+  const dobBBLs = new Set<string>();
   const joinedData: any[] = [];
-  let joinedCount = 0;
-  let plutoWithBBL = 0;
+  let dobAffordableMatches = 0;
+  let dobProcessed = 0;
+  let dobSkipped = 0;
 
-  for (const plutoRecord of plutoData) {
-    const bbl = normalizeBBL(plutoRecord.bbl);
+  // Process DOB records (primary source)
+  for (const dobRecord of dobData) {
+    const bbl = constructBBL(dobRecord.borough, dobRecord.block, dobRecord.lot);
     if (!bbl) continue;
 
-    plutoWithBBL++;
-    const housingRecord = housingByBBL.get(bbl);
+    // Calculate net new units (proposed - existing)
+    const existingUnits = parseInt(dobRecord.existing_dwelling_units || '0', 10);
+    const proposedUnits = parseInt(dobRecord.proposed_dwelling_units || '0', 10);
+    const netUnits = proposedUnits - existingUnits;
 
-    if (housingRecord) {
-      // Merge: PLUTO as base, overlay Housing NY affordable data
-      joinedData.push({
-        ...plutoRecord,
-        _affordableData: housingRecord,
-        _hasAffordable: true,
-      });
-      joinedCount++;
-      housingByBBL.delete(bbl); // Mark as joined
-    } else {
-      // PLUTO only (market-rate)
-      joinedData.push({
-        ...plutoRecord,
-        _hasAffordable: false,
-      });
+    // Skip if negative (exclude renovations that remove units)
+    if (netUnits <= 0) {
+      dobSkipped++;
+      continue;
     }
-  }
 
-  // Add unmatched Housing NY records (buildings not in PLUTO post-2014 dataset)
-  for (const [, housingRecord] of housingByBBL) {
+    dobBBLs.add(bbl);
+    dobProcessed++;
+
+    const housingRecord = housingByBBL.get(bbl);
+    if (housingRecord) {
+      dobAffordableMatches++;
+    }
+
     joinedData.push({
-      ...housingRecord,
-      _affordableData: housingRecord,
-      _hasAffordable: true,
-      _plutoMissing: true,
+      ...dobRecord,
+      _netUnits: netUnits,
+      _affordableData: housingRecord || null,
+      _hasAffordable: Boolean(housingRecord),
+      _dataSource: 'dob',
     });
   }
 
-  console.info(`[HousingData] PLUTO records with BBL: ${plutoWithBBL} / ${plutoData.length}`);
-  console.info(`[HousingData] Join complete: ${joinedCount} matched, ${housingByBBL.size} Housing NY only, ${plutoData.length - joinedCount} PLUTO only`);
-  console.info(`[HousingData] Total joined records: ${joinedData.length}`);
+  console.info(`[HousingData] DOB: ${dobProcessed} valid (net+ units), ${dobSkipped} skipped (net zero/negative)`);
+  console.info(`[HousingData] DOB affordable matches: ${dobAffordableMatches}`);
 
-  // Debug: Sample unmatched Housing NY records
-  const unmatchedSamples = Array.from(housingByBBL.values()).slice(0, 5);
-  console.info('[HousingData] Sample unmatched Housing NY records:',
-    unmatchedSamples.map(r => ({
-      name: r.project_name,
-      bbl: r.bbl,
-      constructionType: r.reporting_construction_type,
-      completionDate: r.building_completion_date
-    }))
-  );
+  // Add PLUTO records as fallback (only for BBLs not in DOB)
+  let plutoFallback = 0;
+  for (const plutoRecord of plutoData) {
+    const bbl = normalizeBBL(plutoRecord.bbl);
+    if (!bbl || dobBBLs.has(bbl)) continue; // Skip if in DOB
+
+    plutoFallback++;
+    const housingRecord = housingByBBL.get(bbl);
+
+    joinedData.push({
+      ...plutoRecord,
+      _affordableData: housingRecord || null,
+      _hasAffordable: Boolean(housingRecord),
+      _dataSource: 'pluto',
+    });
+  }
+
+  console.info(`[HousingData] PLUTO fallback: ${plutoFallback} records (BBLs not in DOB)`);
+  console.info(`[HousingData] Total joined records: ${joinedData.length}`);
 
   return joinedData;
 }
@@ -313,26 +327,36 @@ function calculateAffordableUnits(record: HousingBuildingRecord): number {
 }
 
 /**
- * Determine building type from PLUTO building class
+ * Determine building type from PLUTO building class or DOB job type
  */
-function getBuildingType(buildingClass: string | undefined, isAffordable: boolean): any {
+function getBuildingType(
+  buildingClass: string | undefined,
+  jobType: string | undefined,
+  isAffordable: boolean,
+  isRenovation: boolean
+): any {
+  // Priority 1: Affordable housing
   if (isAffordable) {
     return 'affordable';
   }
 
-  if (!buildingClass) {
-    return 'unknown';
+  // Priority 2: Renovation (DOB A1/A2/A3 types)
+  if (isRenovation) {
+    return 'renovation';
   }
 
-  const classPrefix = buildingClass.charAt(0).toUpperCase();
-
-  switch (classPrefix) {
-    case 'A': return 'one-two-family';
-    case 'B': return 'multifamily-walkup';
-    case 'C': return 'multifamily-elevator';
-    case 'D': return 'mixed-use';
-    default: return 'unknown';
+  // Priority 3: PLUTO building class
+  if (buildingClass) {
+    const classPrefix = buildingClass.charAt(0).toUpperCase();
+    switch (classPrefix) {
+      case 'A': return 'one-two-family';
+      case 'B': return 'multifamily-walkup';
+      case 'C': return 'multifamily-elevator';
+      case 'D': return 'mixed-use';
+    }
   }
+
+  return 'unknown';
 }
 
 /**
@@ -341,12 +365,12 @@ function getBuildingType(buildingClass: string | undefined, isAffordable: boolea
 function processBuilding(record: any): ProcessedBuilding | null {
   const affordableData = record._affordableData;
   const hasAffordable = record._hasAffordable;
-  const plutoMissing = record._plutoMissing;
+  const dataSource = record._dataSource; // 'dob' or 'pluto'
+  const isDOB = dataSource === 'dob';
+  const isPLUTO = dataSource === 'pluto';
 
-  // Prefer PLUTO data when available, fall back to Housing NY
-  const isPLUTO = Boolean(record.yearbuilt || record.bldgclass);
-
-  // Try to extract coordinates (prefer PLUTO, fallback to Housing NY)
+  // Extract coordinates
+  // DOB doesn't have direct coords, PLUTO and Housing NY do
   const lat = parseFloat(
     record.latitude ||
     affordableData?.latitude ||
@@ -364,25 +388,36 @@ function processBuilding(record: any): ProcessedBuilding | null {
     '0'
   );
 
-  // Parse date (prefer Housing NY completion date, fallback to PLUTO yearbuilt)
+  // Parse date
   let dateInfo;
-  if (affordableData && (affordableData.building_completion_date || affordableData.completion_date)) {
+  if (isDOB) {
+    // DOB: use latest_action_date or pre_filing_date
+    const dateStr = record.latest_action_date || record.pre_filing_date;
+    if (dateStr) {
+      const year = parseInt(dateStr.substring(0, 4), 10);
+      dateInfo = { year };
+    } else {
+      dateInfo = { year: 0 };
+    }
+  } else if (affordableData && (affordableData.building_completion_date || affordableData.completion_date)) {
     dateInfo = parseCompletionDate(
       affordableData.building_completion_date ||
       affordableData.completion_date ||
       ''
     );
   } else if (isPLUTO) {
-    // PLUTO uses yearbuilt
     const yearBuilt = parseInt(record.yearbuilt || '0', 10);
     dateInfo = { year: yearBuilt };
   } else {
     dateInfo = { year: 0 };
   }
 
-  // Extract units (prefer PLUTO, but get affordable breakdown from Housing NY)
+  // Extract units
   let totalUnits;
-  if (isPLUTO) {
+  if (isDOB) {
+    // DOB: use net units (already calculated)
+    totalUnits = record._netUnits || 0;
+  } else if (isPLUTO) {
     totalUnits = parseInt(record.unitsres || record.unitstotal || '0', 10);
   } else if (affordableData) {
     totalUnits = parseInt(
@@ -400,26 +435,20 @@ function processBuilding(record: any): ProcessedBuilding | null {
     return null;
   }
 
-  // Calculate affordable units from Housing NY data if available
+  // Calculate affordable units
   const affordableUnits = affordableData ? calculateAffordableUnits(affordableData) : 0;
+
+  // Determine if renovation
+  const jobType = record.job_type || '';
+  const isRenovation = isDOB && ['A1', 'A2', 'A3'].includes(jobType.toUpperCase());
 
   // Classify building type
   const buildingClass = record.bldgclass;
-  const buildingType = getBuildingType(buildingClass, affordableUnits > 0);
-
-  // Determine data source label
-  let dataSource: 'housing-ny' | 'pluto' | 'both';
-  if (hasAffordable && isPLUTO) {
-    dataSource = 'both';
-  } else if (hasAffordable) {
-    dataSource = 'housing-ny';
-  } else {
-    dataSource = 'pluto';
-  }
+  const buildingType = getBuildingType(buildingClass, jobType, affordableUnits > 0, isRenovation);
 
   return {
-    id: record.bbl || affordableData?.building_id || String(Math.random()),
-    name: affordableData?.project_name || record.address || 'Building',
+    id: record.bbl || record.job || affordableData?.building_id || String(Math.random()),
+    name: affordableData?.project_name || record.address || record.street_name || 'Building',
     coordinates: [lon, lat],
     borough: record.borough || affordableData?.borough || 'Unknown',
     completionYear: dateInfo.year,
@@ -432,7 +461,7 @@ function processBuilding(record: any): ProcessedBuilding | null {
     buildingClass,
     zoningDistrict: record.zonedist1,
     address: record.address || affordableData?.address || `${record.house_number || ''} ${record.street_name || ''}`.trim(),
-    dataSource: dataSource as any, // Cast to match existing type
+    dataSource: (isDOB ? 'dob' : isPLUTO ? 'pluto' : 'housing-ny') as any,
   };
 }
 

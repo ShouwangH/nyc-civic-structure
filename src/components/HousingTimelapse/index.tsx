@@ -123,7 +123,7 @@ export function HousingTimelapse({ onClose }: HousingTimelapseProps) {
               NYC Housing Development Timelapse
             </h2>
             <p className="text-sm text-gray-600 mt-1">
-              New construction visualization (2014-2024)
+              New construction + renovations visualization (2014-2024)
             </p>
           </div>
           <button

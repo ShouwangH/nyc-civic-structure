@@ -49,6 +49,10 @@ export function Legend({
             <span className="text-xs text-slate-600">Affordable Housing</span>
           </div>
           <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgb(249, 115, 22)' }}></div>
+            <span className="text-xs text-slate-600">Major Renovation</span>
+          </div>
+          <div className="flex items-center gap-2">
             <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgb(59, 130, 246)' }}></div>
             <span className="text-xs text-slate-600">Multifamily Elevator</span>
           </div>
@@ -77,10 +81,11 @@ export function Legend({
       {/* Data source */}
       <div className="mt-4 pt-4 border-t border-slate-200">
         <div className="text-xs text-slate-500">
-          <strong>New construction only (2014-2024)</strong><br />
+          <strong>New construction + renovations (2014-2024)</strong><br />
           Data: NYC Open Data<br />
+          • DOB Job Applications (primary)<br />
           • Housing New York Units by Building<br />
-          • PLUTO (Primary Land Use Tax Lot Output)
+          • PLUTO (fallback)
         </div>
       </div>
     </div>
