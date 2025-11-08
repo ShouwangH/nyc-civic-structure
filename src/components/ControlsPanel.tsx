@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import type { GovernmentScope } from '../data/datasets';
 import type { SubviewDefinition } from '../data/types';
 import type { GraphNodeInfo, GraphEdgeInfo } from '../visualization/cytoscape/types';
@@ -24,6 +23,7 @@ type ControlsPanelProps = {
   edgeTargetNode: GraphNodeInfo | null;
   activeProcess: SubviewDefinition | null;
   isSubviewActive: boolean;
+  activeTab: 'details' | 'processes';
 };
 
 const getButtonClasses = (isActive: boolean, size: 'default' | 'small' = 'default'): string => {
@@ -48,8 +48,8 @@ const ControlsPanel = ({
   edgeTargetNode,
   activeProcess,
   isSubviewActive,
+  activeTab,
 }: ControlsPanelProps) => {
-  const [activeTab, setActiveTab] = useState<'details' | 'processes'>('details');
 
   // Group workflows by jurisdiction
   const groupedWorkflows = workflows.reduce((acc, workflow) => {
@@ -99,7 +99,10 @@ const ControlsPanel = ({
       <div className="flex border-b border-slate-200">
         <button
           type="button"
-          onClick={() => setActiveTab('details')}
+          onClick={() => {
+            if (!inputHandler) return;
+            void inputHandler.enqueue(actions.changeControlPanelTab('details'));
+          }}
           className={`flex-1 px-4 py-3 text-base font-medium transition ${
             activeTab === 'details'
               ? 'border-b-2 border-blue-600 text-blue-600'
@@ -110,7 +113,10 @@ const ControlsPanel = ({
         </button>
         <button
           type="button"
-          onClick={() => setActiveTab('processes')}
+          onClick={() => {
+            if (!inputHandler) return;
+            void inputHandler.enqueue(actions.changeControlPanelTab('processes'));
+          }}
           className={`flex-1 px-4 py-3 text-base font-medium transition ${
             activeTab === 'processes'
               ? 'border-b-2 border-blue-600 text-blue-600'

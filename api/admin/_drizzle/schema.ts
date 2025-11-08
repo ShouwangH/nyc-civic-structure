@@ -69,6 +69,23 @@ export const subgraphs = pgTable('subgraphs', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
 });
 
+// Overlays table (sankey and sunburst visualizations anchored to nodes)
+export const overlays = pgTable('overlays', {
+  id: text('id').primaryKey(),
+  scopeId: text('scope_id').notNull().references(() => scopes.id),
+  anchorNodeId: text('anchor_node_id').notNull().references(() => nodes.id),
+  label: text('label').notNull(),
+  description: text('description'),
+  type: text('type').notNull(), // 'sankey' | 'sunburst'
+  renderTarget: text('render_target'), // 'overlay' | 'tab' | 'inline'
+  dataSource: text('data_source'), // URL or reference to external data
+  dataSnapshot: jsonb('data_snapshot'), // Cached data structure
+  metadata: jsonb('metadata'), // Additional config (colors, formatting, etc.)
+  lastFetched: timestamp('last_fetched'),
+  createdAt: timestamp('created_at').defaultNow().notNull(),
+  updatedAt: timestamp('updated_at').defaultNow().notNull(),
+});
+
 // Audit log for tracking changes
 export const auditLog = pgTable('audit_log', {
   id: serial('id').primaryKey(),
@@ -86,6 +103,7 @@ export type Node = typeof nodes.$inferSelect;
 export type Edge = typeof edges.$inferSelect;
 export type Process = typeof processes.$inferSelect;
 export type Subgraph = typeof subgraphs.$inferSelect;
+export type Overlay = typeof overlays.$inferSelect;
 export type AuditLog = typeof auditLog.$inferSelect;
 
 export type InsertScope = typeof scopes.$inferInsert;
@@ -93,4 +111,5 @@ export type InsertNode = typeof nodes.$inferInsert;
 export type InsertEdge = typeof edges.$inferInsert;
 export type InsertProcess = typeof processes.$inferInsert;
 export type InsertSubgraph = typeof subgraphs.$inferInsert;
+export type InsertOverlay = typeof overlays.$inferInsert;
 export type InsertAuditLog = typeof auditLog.$inferInsert;

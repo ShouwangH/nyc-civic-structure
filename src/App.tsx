@@ -1,6 +1,6 @@
 import cytoscape from 'cytoscape';
 import cytoscapeElk from 'cytoscape-elk';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 import { ControlsPanel } from './components/ControlsPanel';
 import { DiagramViewToggle } from './components/DiagramViewToggle';
@@ -8,12 +8,15 @@ import { GraphCanvas, type GraphRuntime } from './components/GraphCanvas';
 import { OverlayWrapper } from './components/OverlayWrapper';
 import { governmentScopes } from './data/datasets';
 import type { VisualizationState } from './visualization/cytoscape/controller';
-import { GRAPH_DATA } from './data/loader';
+import { initializeGraphData, type GraphData } from './data/loader';
 
 cytoscape.use(cytoscapeElk);
 
 function App() {
   const [runtime, setRuntime] = useState<GraphRuntime | null>(null);
+  const [graphData, setGraphData] = useState<GraphData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // Single state object
   const [state, setState] = useState<VisualizationState>({
@@ -24,12 +27,57 @@ function App() {
     controlsOpen: true,
     sidebarHover: false,
     viewMode: 'diagram',
+    activeTab: 'details',
   });
 
-  const { selectedNodeId, selectedEdgeId, activeSubviewId, activeScope, viewMode } = state;
+  // Load graph data on mount
+  useEffect(() => {
+    initializeGraphData()
+      .then((data) => {
+        setGraphData(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error('Failed to load graph data:', err);
+        setError(err instanceof Error ? err.message : 'Failed to load data');
+        setLoading(false);
+      });
+  }, []);
 
-  // Static graph data - computed once at module load
-  const { dataset, mainGraph, indexes, maps, scopeNodeIds } = GRAPH_DATA;
+  const { selectedNodeId, selectedEdgeId, activeSubviewId, activeScope, viewMode, activeTab } = state;
+
+  // Show loading state
+  if (loading || !graphData) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#eceae4]">
+        <div className="text-center">
+          <div className="text-2xl font-semibold text-slate-900 mb-2">
+            Loading Maximum New York...
+          </div>
+          {loading && (
+            <div className="text-slate-600">Initializing civic structure data</div>
+          )}
+        </div>
+      </div>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#eceae4]">
+        <div className="text-center max-w-md">
+          <div className="text-2xl font-semibold text-red-600 mb-2">
+            Error Loading Data
+          </div>
+          <div className="text-slate-700">{error}</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Extract graph data
+  const { dataset, mainGraph, indexes, maps, scopeNodeIds } = graphData;
   const { nodesById, edgesById, nodeScopeIndex } = indexes;
   const { subviewByAnchorId, subviewById } = maps;
 
@@ -72,6 +120,7 @@ function App() {
           edgeTargetNode={selectedEdgeTarget}
           activeProcess={activeProcess}
           isSubviewActive={Boolean(activeSubviewId)}
+          activeTab={activeTab}
         />
       </div>
 

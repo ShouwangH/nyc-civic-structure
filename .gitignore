@@ -35,5 +35,5 @@ data/subgraphs
 .vercel
 .env*.local
 
-/scripts
+
 /docs

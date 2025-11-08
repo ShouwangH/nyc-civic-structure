@@ -45,6 +45,7 @@ When asked to do something, just do it - including obvious follow-up actions nee
 ## Application Architecture
 
 This application follows a strict unidirectional data flow pattern. YOU MUST ALWAYS respect this architecture:
+The one exception is the deck.gl overlay as it does not touch global state, only local state. No component can touch global state.
 
 ### The Sacred Flow: InputHandler → Controller → App → Rendering
 

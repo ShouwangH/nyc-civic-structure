@@ -30,6 +30,7 @@ export type VisualizationState = {
   controlsOpen: boolean;
   sidebarHover: boolean;
   viewMode: 'diagram' | 'views';
+  activeTab: 'details' | 'processes';
   sankeyOverlay?: {
     subview: SubviewDefinition;
     data: SankeyData;
@@ -524,8 +525,10 @@ export function createController(config: ControllerConfig): Controller {
     }
 
     // Update React state (transition function handles mutual exclusivity and sidebar)
+    // Set activeTab to 'details' when a node is selected
     transitionVisualizationState({
       selectedNodeId: nodeId,
+      activeTab: 'details',
       ...(shouldUpdateScope ? { activeScope: nodeScope } : {}),
     });
   };
@@ -757,6 +760,14 @@ export function createController(config: ControllerConfig): Controller {
         const { mode } = action.payload;
         transitionVisualizationState({
           viewMode: mode,
+        });
+        break;
+      }
+
+      case 'CHANGE_CONTROL_PANEL_TAB': {
+        const { tab } = action.payload;
+        transitionVisualizationState({
+          activeTab: tab,
         });
         break;
       }

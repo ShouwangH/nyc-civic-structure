@@ -1,0 +1,1147 @@
+{
+  "meta": {
+    "description": "NYC FY2025 Revenue\u2192Fund\u2192Function\u2192Agency Sankey (deduplicated Federal/State Aid)",
+    "units": "USD (millions)",
+    "levels": [
+      "Revenue Source",
+      "Fund Group",
+      "Function",
+      "Agency"
+    ],
+    "value_cutoff_million": 0.01
+  },
+  "nodes": [
+    {
+      "id": "Charges & Fees",
+      "label": "Charges & Fees",
+      "level": 0,
+      "type": "revenue_source"
+    },
+    {
+      "id": "Fines & Forfeitures",
+      "label": "Fines & Forfeitures",
+      "level": 0,
+      "type": "revenue_source"
+    },
+    {
+      "id": "Income Taxes",
+      "label": "Income Taxes",
+      "level": 0,
+      "type": "revenue_source"
+    },
+    {
+      "id": "Miscellaneous",
+      "label": "Miscellaneous",
+      "level": 0,
+      "type": "revenue_source"
+    },
+    {
+      "id": "Other Taxes",
+      "label": "Other Taxes",
+      "level": 0,
+      "type": "revenue_source"
+    },
+    {
+      "id": "City Funds",
+      "label": "City Funds",
+      "level": 1,
+      "type": "fund_source"
+    },
+    {
+      "id": "Community Development",
+      "label": "Community Development",
+      "level": 1,
+      "type": "fund_source"
+    },
+    {
+      "id": "Federal Funds",
+      "label": "Federal Funds",
+      "level": 1,
+      "type": "fund_source"
+    },
+    {
+      "id": "Other Categorical",
+      "label": "Other Categorical",
+      "level": 1,
+      "type": "fund_source"
+    },
+    {
+      "id": "State Funds",
+      "label": "State Funds",
+      "level": 1,
+      "type": "fund_source"
+    },
+    {
+      "id": "Debt & Pensions",
+      "label": "Debt & Pensions",
+      "level": 2,
+      "type": "function"
+    },
+    {
+      "id": "Education",
+      "label": "Education",
+      "level": 2,
+      "type": "function"
+    },
+    {
+      "id": "Environment & Infrastructure",
+      "label": "Environment & Infrastructure",
+      "level": 2,
+      "type": "function"
+    },
+    {
+      "id": "General Government",
+      "label": "General Government",
+      "level": 2,
+      "type": "function"
+    },
+    {
+      "id": "Health",
+      "label": "Health",
+      "level": 2,
+      "type": "function"
+    },
+    {
+      "id": "Housing",
+      "label": "Housing",
+      "level": 2,
+      "type": "function"
+    },
+    {
+      "id": "Parks & Recreation",
+      "label": "Parks & Recreation",
+      "level": 2,
+      "type": "function"
+    },
+    {
+      "id": "Public Safety",
+      "label": "Public Safety",
+      "level": 2,
+      "type": "function"
+    },
+    {
+      "id": "Social Services",
+      "label": "Social Services",
+      "level": 2,
+      "type": "function"
+    },
+    {
+      "id": "Transportation",
+      "label": "Transportation",
+      "level": 2,
+      "type": "function"
+    },
+    {
+      "id": "ADMIN FOR CHILDREN'S SERVICES",
+      "label": "Admin For Children'S Services",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "CITY UNIVERSITY OF NEW YORK",
+      "label": "City University Of New York",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "DEBT SERVICE",
+      "label": "Debt Service",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "DEPARTMENT FOR THE AGING",
+      "label": "Department For The Aging",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "DEPARTMENT OF CITYWIDE ADMIN SERVICE",
+      "label": "Department Of Citywide Admin Service",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "DEPARTMENT OF CORRECTION",
+      "label": "Department Of Correction",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "DEPARTMENT OF EDUCATION",
+      "label": "Department Of Education",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "DEPARTMENT OF ENVIRONMENTAL PROTECT.",
+      "label": "Department Of Environmental Protect.",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "DEPARTMENT OF FINANCE",
+      "label": "Department Of Finance",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "DEPARTMENT OF HEALTH AND MENTAL HYGIENE",
+      "label": "Department Of Health And Mental Hygiene",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "DEPARTMENT OF HOMELESS SERVICES",
+      "label": "Department Of Homeless Services",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "DEPARTMENT OF INFO TECH & TELECOMM",
+      "label": "Department Of Info Tech & Telecomm",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "DEPARTMENT OF PARKS AND RECREATION",
+      "label": "Department Of Parks And Recreation",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "DEPARTMENT OF SANITATION",
+      "label": "Department Of Sanitation",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "DEPARTMENT OF SMALL BUSINESS SERVICES",
+      "label": "Department Of Small Business Services",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "DEPARTMENT OF SOCIAL SERVICES",
+      "label": "Department Of Social Services",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "DEPARTMENT OF TRANSPORTATION",
+      "label": "Department Of Transportation",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "DEPARTMENT OF YOUTH & COMMUNITY DEV",
+      "label": "Department Of Youth & Community Dev",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "FIRE DEPARTMENT",
+      "label": "Fire Department",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "HEALTH AND HOSPITALS CORP",
+      "label": "Health And Hospitals Corp",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "HOUSING PRESERVATION AND DEVELOPMENT",
+      "label": "Housing Preservation And Development",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "LAW DEPARTMENT",
+      "label": "Law Department",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "MISCELLANEOUS",
+      "label": "Miscellaneous",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "PENSION CONTRIBUTIONS",
+      "label": "Pension Contributions",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "POLICE DEPARTMENT",
+      "label": "Police Department",
+      "level": 3,
+      "type": "agency"
+    }
+  ],
+  "links": [
+    {
+      "source": "Charges & Fees",
+      "target": "City Funds",
+      "value": 85167.99
+    },
+    {
+      "source": "Charges & Fees",
+      "target": "City Funds",
+      "value": 63506.99
+    },
+    {
+      "source": "Fines & Forfeitures",
+      "target": "City Funds",
+      "value": 31591.72
+    },
+    {
+      "source": "Income Taxes",
+      "target": "City Funds",
+      "value": 5998.6
+    },
+    {
+      "source": "Miscellaneous",
+      "target": "City Funds",
+      "value": 22056.38
+    },
+    {
+      "source": "Miscellaneous",
+      "target": "City Funds",
+      "value": 20070.0
+    },
+    {
+      "source": "Other Taxes",
+      "target": "City Funds",
+      "value": 1879040.12
+    },
+    {
+      "source": "Other Taxes",
+      "target": "City Funds",
+      "value": 31339.82
+    },
+    {
+      "source": "City Funds",
+      "target": "Debt & Pensions",
+      "value": 419284.91000000003
+    },
+    {
+      "source": "City Funds",
+      "target": "Education",
+      "value": 395817.05
+    },
+    {
+      "source": "City Funds",
+      "target": "Environment & Infrastructure",
+      "value": 88727.32
+    },
+    {
+      "source": "City Funds",
+      "target": "General Government",
+      "value": 527813.16
+    },
+    {
+      "source": "City Funds",
+      "target": "Health",
+      "value": 60037.149999999994
+    },
+    {
+      "source": "City Funds",
+      "target": "Housing",
+      "value": 10583.23
+    },
+    {
+      "source": "City Funds",
+      "target": "Parks & Recreation",
+      "value": 19130.260000000002
+    },
+    {
+      "source": "City Funds",
+      "target": "Public Safety",
+      "value": 207813.24
+    },
+    {
+      "source": "City Funds",
+      "target": "Social Services",
+      "value": 281602.73
+    },
+    {
+      "source": "City Funds",
+      "target": "Transportation",
+      "value": 20441.64
+    },
+    {
+      "source": "Community Development",
+      "target": "Education",
+      "value": 1880.29
+    },
+    {
+      "source": "Community Development",
+      "target": "Environment & Infrastructure",
+      "value": 2667.15
+    },
+    {
+      "source": "Community Development",
+      "target": "General Government",
+      "value": 8293.130000000001
+    },
+    {
+      "source": "Community Development",
+      "target": "Health",
+      "value": 0.03
+    },
+    {
+      "source": "Community Development",
+      "target": "Housing",
+      "value": 12034.45
+    },
+    {
+      "source": "Community Development",
+      "target": "Parks & Recreation",
+      "value": 209.28
+    },
+    {
+      "source": "Community Development",
+      "target": "Social Services",
+      "value": 543.83
+    },
+    {
+      "source": "Community Development",
+      "target": "Transportation",
+      "value": 0.02
+    },
+    {
+      "source": "Federal Funds",
+      "target": "Debt & Pensions",
+      "value": 5075.11
+    },
+    {
+      "source": "Federal Funds",
+      "target": "Education",
+      "value": 84541.94
+    },
+    {
+      "source": "Federal Funds",
+      "target": "Environment & Infrastructure",
+      "value": 5356.780000000001
+    },
+    {
+      "source": "Federal Funds",
+      "target": "General Government",
+      "value": 71874.95
+    },
+    {
+      "source": "Federal Funds",
+      "target": "Health",
+      "value": 30356.699999999997
+    },
+    {
+      "source": "Federal Funds",
+      "target": "Housing",
+      "value": 18358.82
+    },
+    {
+      "source": "Federal Funds",
+      "target": "Parks & Recreation",
+      "value": 370.69
+    },
+    {
+      "source": "Federal Funds",
+      "target": "Public Safety",
+      "value": 11265.45
+    },
+    {
+      "source": "Federal Funds",
+      "target": "Social Services",
+      "value": 73231.39
+    },
+    {
+      "source": "Federal Funds",
+      "target": "Transportation",
+      "value": 3407.66
+    },
+    {
+      "source": "Other Categorical",
+      "target": "Debt & Pensions",
+      "value": 605.37
+    },
+    {
+      "source": "Other Categorical",
+      "target": "Education",
+      "value": 5631.12
+    },
+    {
+      "source": "Other Categorical",
+      "target": "Environment & Infrastructure",
+      "value": 307.23
+    },
+    {
+      "source": "Other Categorical",
+      "target": "General Government",
+      "value": 14150.410000000002
+    },
+    {
+      "source": "Other Categorical",
+      "target": "Health",
+      "value": 1040.47
+    },
+    {
+      "source": "Other Categorical",
+      "target": "Housing",
+      "value": 477.31
+    },
+    {
+      "source": "Other Categorical",
+      "target": "Parks & Recreation",
+      "value": 590.9
+    },
+    {
+      "source": "Other Categorical",
+      "target": "Public Safety",
+      "value": 8137.610000000001
+    },
+    {
+      "source": "Other Categorical",
+      "target": "Social Services",
+      "value": 73.25
+    },
+    {
+      "source": "Other Categorical",
+      "target": "Transportation",
+      "value": 109.07
+    },
+    {
+      "source": "State Funds",
+      "target": "Debt & Pensions",
+      "value": 1224.49
+    },
+    {
+      "source": "State Funds",
+      "target": "Education",
+      "value": 337837.5
+    },
+    {
+      "source": "State Funds",
+      "target": "Environment & Infrastructure",
+      "value": 117.99000000000001
+    },
+    {
+      "source": "State Funds",
+      "target": "General Government",
+      "value": 77046.23
+    },
+    {
+      "source": "State Funds",
+      "target": "Health",
+      "value": 18851.51
+    },
+    {
+      "source": "State Funds",
+      "target": "Housing",
+      "value": 437.78
+    },
+    {
+      "source": "State Funds",
+      "target": "Parks & Recreation",
+      "value": 77.0
+    },
+    {
+      "source": "State Funds",
+      "target": "Public Safety",
+      "value": 1945.99
+    },
+    {
+      "source": "State Funds",
+      "target": "Social Services",
+      "value": 34427.58
+    },
+    {
+      "source": "State Funds",
+      "target": "Transportation",
+      "value": 3526.55
+    },
+    {
+      "source": "Debt & Pensions",
+      "target": "DEBT SERVICE",
+      "value": 143660.38
+    },
+    {
+      "source": "Debt & Pensions",
+      "target": "PENSION CONTRIBUTIONS",
+      "value": 275624.53
+    },
+    {
+      "source": "Education",
+      "target": "DEPARTMENT OF EDUCATION",
+      "value": 395817.05
+    },
+    {
+      "source": "Environment & Infrastructure",
+      "target": "DEPARTMENT OF ENVIRONMENTAL PROTECT.",
+      "value": 39811.31
+    },
+    {
+      "source": "Environment & Infrastructure",
+      "target": "DEPARTMENT OF SANITATION",
+      "value": 48916.01
+    },
+    {
+      "source": "General Government",
+      "target": "ADMIN FOR CHILDREN'S SERVICES",
+      "value": 27656.17
+    },
+    {
+      "source": "General Government",
+      "target": "CITY UNIVERSITY OF NEW YORK",
+      "value": 25603.12
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT FOR THE AGING",
+      "value": 8690.8
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF CITYWIDE ADMIN SERVICE",
+      "value": 11748.88
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF CORRECTION",
+      "value": 36291.18
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF FINANCE",
+      "value": 9123.14
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF INFO TECH & TELECOMM",
+      "value": 16192.59
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF SMALL BUSINESS SERVICES",
+      "value": 5453.6
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF YOUTH & COMMUNITY DEV",
+      "value": 21525.75
+    },
+    {
+      "source": "General Government",
+      "target": "LAW DEPARTMENT",
+      "value": 7060.29
+    },
+    {
+      "source": "General Government",
+      "target": "MISCELLANEOUS",
+      "value": 289494.89
+    },
+    {
+      "source": "Health",
+      "target": "DEPARTMENT OF HEALTH AND MENTAL HYGIENE",
+      "value": 27765.39
+    },
+    {
+      "source": "Health",
+      "target": "HEALTH AND HOSPITALS CORP",
+      "value": 32271.76
+    },
+    {
+      "source": "Housing",
+      "target": "HOUSING PRESERVATION AND DEVELOPMENT",
+      "value": 10583.23
+    },
+    {
+      "source": "Parks & Recreation",
+      "target": "DEPARTMENT OF PARKS AND RECREATION",
+      "value": 13106.94
+    },
+    {
+      "source": "Public Safety",
+      "target": "FIRE DEPARTMENT",
+      "value": 55145.44
+    },
+    {
+      "source": "Public Safety",
+      "target": "POLICE DEPARTMENT",
+      "value": 152667.8
+    },
+    {
+      "source": "Social Services",
+      "target": "DEPARTMENT OF HOMELESS SERVICES",
+      "value": 42403.32
+    },
+    {
+      "source": "Social Services",
+      "target": "DEPARTMENT OF SOCIAL SERVICES",
+      "value": 239199.41
+    },
+    {
+      "source": "Transportation",
+      "target": "DEPARTMENT OF TRANSPORTATION",
+      "value": 20441.64
+    },
+    {
+      "source": "Debt & Pensions",
+      "target": "DEBT SERVICE",
+      "value": 295.77
+    },
+    {
+      "source": "Debt & Pensions",
+      "target": "PENSION CONTRIBUTIONS",
+      "value": 928.72
+    },
+    {
+      "source": "Education",
+      "target": "DEPARTMENT OF EDUCATION",
+      "value": 337837.5
+    },
+    {
+      "source": "Environment & Infrastructure",
+      "target": "DEPARTMENT OF ENVIRONMENTAL PROTECT.",
+      "value": 91.2
+    },
+    {
+      "source": "Environment & Infrastructure",
+      "target": "DEPARTMENT OF SANITATION",
+      "value": 26.79
+    },
+    {
+      "source": "General Government",
+      "target": "ADMIN FOR CHILDREN'S SERVICES",
+      "value": 23784.86
+    },
+    {
+      "source": "General Government",
+      "target": "CITY UNIVERSITY OF NEW YORK",
+      "value": 8237.41
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT FOR THE AGING",
+      "value": 1330.36
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF CITYWIDE ADMIN SERVICE",
+      "value": 3119.54
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF CORRECTION",
+      "value": 33.78
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF FINANCE",
+      "value": 14.24
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF INFO TECH & TELECOMM",
+      "value": 855.33
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF SMALL BUSINESS SERVICES",
+      "value": 51.4
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF YOUTH & COMMUNITY DEV",
+      "value": 273.89
+    },
+    {
+      "source": "General Government",
+      "target": "LAW DEPARTMENT",
+      "value": 184.79
+    },
+    {
+      "source": "General Government",
+      "target": "MISCELLANEOUS",
+      "value": 36402.32
+    },
+    {
+      "source": "Health",
+      "target": "DEPARTMENT OF HEALTH AND MENTAL HYGIENE",
+      "value": 18053.73
+    },
+    {
+      "source": "Health",
+      "target": "HEALTH AND HOSPITALS CORP",
+      "value": 797.78
+    },
+    {
+      "source": "Housing",
+      "target": "HOUSING PRESERVATION AND DEVELOPMENT",
+      "value": 437.78
+    },
+    {
+      "source": "Parks & Recreation",
+      "target": "DEPARTMENT OF PARKS AND RECREATION",
+      "value": 76.7
+    },
+    {
+      "source": "Public Safety",
+      "target": "FIRE DEPARTMENT",
+      "value": 101.2
+    },
+    {
+      "source": "Public Safety",
+      "target": "POLICE DEPARTMENT",
+      "value": 1844.79
+    },
+    {
+      "source": "Social Services",
+      "target": "DEPARTMENT OF HOMELESS SERVICES",
+      "value": 10819.26
+    },
+    {
+      "source": "Social Services",
+      "target": "DEPARTMENT OF SOCIAL SERVICES",
+      "value": 23608.32
+    },
+    {
+      "source": "Transportation",
+      "target": "DEPARTMENT OF TRANSPORTATION",
+      "value": 3526.55
+    },
+    {
+      "source": "Debt & Pensions",
+      "target": "DEBT SERVICE",
+      "value": 5075.11
+    },
+    {
+      "source": "Education",
+      "target": "DEPARTMENT OF EDUCATION",
+      "value": 84541.94
+    },
+    {
+      "source": "Environment & Infrastructure",
+      "target": "DEPARTMENT OF ENVIRONMENTAL PROTECT.",
+      "value": 587.93
+    },
+    {
+      "source": "Environment & Infrastructure",
+      "target": "DEPARTMENT OF SANITATION",
+      "value": 4768.85
+    },
+    {
+      "source": "General Government",
+      "target": "ADMIN FOR CHILDREN'S SERVICES",
+      "value": 35933.32
+    },
+    {
+      "source": "General Government",
+      "target": "CITY UNIVERSITY OF NEW YORK",
+      "value": 1246.39
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT FOR THE AGING",
+      "value": 2852.31
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF CITYWIDE ADMIN SERVICE",
+      "value": 5328.06
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF CORRECTION",
+      "value": 1583.06
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF FINANCE",
+      "value": 34.53
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF INFO TECH & TELECOMM",
+      "value": 1260.39
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF SMALL BUSINESS SERVICES",
+      "value": 3587.84
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF YOUTH & COMMUNITY DEV",
+      "value": 3393.76
+    },
+    {
+      "source": "General Government",
+      "target": "LAW DEPARTMENT",
+      "value": 10.74
+    },
+    {
+      "source": "General Government",
+      "target": "MISCELLANEOUS",
+      "value": 8804.44
+    },
+    {
+      "source": "Health",
+      "target": "DEPARTMENT OF HEALTH AND MENTAL HYGIENE",
+      "value": 19084.12
+    },
+    {
+      "source": "Health",
+      "target": "HEALTH AND HOSPITALS CORP",
+      "value": 11272.58
+    },
+    {
+      "source": "Housing",
+      "target": "HOUSING PRESERVATION AND DEVELOPMENT",
+      "value": 18358.82
+    },
+    {
+      "source": "Parks & Recreation",
+      "target": "DEPARTMENT OF PARKS AND RECREATION",
+      "value": 318.68
+    },
+    {
+      "source": "Public Safety",
+      "target": "FIRE DEPARTMENT",
+      "value": 3581.49
+    },
+    {
+      "source": "Public Safety",
+      "target": "POLICE DEPARTMENT",
+      "value": 7683.96
+    },
+    {
+      "source": "Social Services",
+      "target": "DEPARTMENT OF HOMELESS SERVICES",
+      "value": 22372.0
+    },
+    {
+      "source": "Social Services",
+      "target": "DEPARTMENT OF SOCIAL SERVICES",
+      "value": 50859.39
+    },
+    {
+      "source": "Transportation",
+      "target": "DEPARTMENT OF TRANSPORTATION",
+      "value": 3407.66
+    },
+    {
+      "source": "Debt & Pensions",
+      "target": "DEBT SERVICE",
+      "value": 605.37
+    },
+    {
+      "source": "Education",
+      "target": "DEPARTMENT OF EDUCATION",
+      "value": 5631.12
+    },
+    {
+      "source": "Environment & Infrastructure",
+      "target": "DEPARTMENT OF ENVIRONMENTAL PROTECT.",
+      "value": 266.23
+    },
+    {
+      "source": "Environment & Infrastructure",
+      "target": "DEPARTMENT OF SANITATION",
+      "value": 41.0
+    },
+    {
+      "source": "General Government",
+      "target": "ADMIN FOR CHILDREN'S SERVICES",
+      "value": 0.47
+    },
+    {
+      "source": "General Government",
+      "target": "CITY UNIVERSITY OF NEW YORK",
+      "value": 415.33
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT FOR THE AGING",
+      "value": 9.42
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF CITYWIDE ADMIN SERVICE",
+      "value": 2802.2
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF CORRECTION",
+      "value": 23.52
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF FINANCE",
+      "value": 1.0
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF INFO TECH & TELECOMM",
+      "value": 474.43
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF SMALL BUSINESS SERVICES",
+      "value": 77.12
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF YOUTH & COMMUNITY DEV",
+      "value": 50.59
+    },
+    {
+      "source": "General Government",
+      "target": "LAW DEPARTMENT",
+      "value": 18.92
+    },
+    {
+      "source": "General Government",
+      "target": "MISCELLANEOUS",
+      "value": 9473.03
+    },
+    {
+      "source": "Health",
+      "target": "DEPARTMENT OF HEALTH AND MENTAL HYGIENE",
+      "value": 896.47
+    },
+    {
+      "source": "Health",
+      "target": "HEALTH AND HOSPITALS CORP",
+      "value": 144.0
+    },
+    {
+      "source": "Housing",
+      "target": "HOUSING PRESERVATION AND DEVELOPMENT",
+      "value": 477.31
+    },
+    {
+      "source": "Parks & Recreation",
+      "target": "DEPARTMENT OF PARKS AND RECREATION",
+      "value": 574.12
+    },
+    {
+      "source": "Public Safety",
+      "target": "FIRE DEPARTMENT",
+      "value": 7776.6
+    },
+    {
+      "source": "Public Safety",
+      "target": "POLICE DEPARTMENT",
+      "value": 361.01
+    },
+    {
+      "source": "Social Services",
+      "target": "DEPARTMENT OF HOMELESS SERVICES",
+      "value": 64.2
+    },
+    {
+      "source": "Social Services",
+      "target": "DEPARTMENT OF SOCIAL SERVICES",
+      "value": 9.05
+    },
+    {
+      "source": "Transportation",
+      "target": "DEPARTMENT OF TRANSPORTATION",
+      "value": 109.07
+    },
+    {
+      "source": "Education",
+      "target": "DEPARTMENT OF EDUCATION",
+      "value": 1880.29
+    },
+    {
+      "source": "Environment & Infrastructure",
+      "target": "DEPARTMENT OF ENVIRONMENTAL PROTECT.",
+      "value": 2555.08
+    },
+    {
+      "source": "Environment & Infrastructure",
+      "target": "DEPARTMENT OF SANITATION",
+      "value": 112.07
+    },
+    {
+      "source": "General Government",
+      "target": "ADMIN FOR CHILDREN'S SERVICES",
+      "value": 31.36
+    },
+    {
+      "source": "General Government",
+      "target": "CITY UNIVERSITY OF NEW YORK",
+      "value": 9.91
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT FOR THE AGING",
+      "value": 115.77
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF CITYWIDE ADMIN SERVICE",
+      "value": 115.75
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF INFO TECH & TELECOMM",
+      "value": 361.22
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF SMALL BUSINESS SERVICES",
+      "value": 915.97
+    },
+    {
+      "source": "General Government",
+      "target": "DEPARTMENT OF YOUTH & COMMUNITY DEV",
+      "value": 218.18
+    },
+    {
+      "source": "General Government",
+      "target": "LAW DEPARTMENT",
+      "value": 3.65
+    },
+    {
+      "source": "General Government",
+      "target": "MISCELLANEOUS",
+      "value": 1139.69
+    },
+    {
+      "source": "Health",
+      "target": "HEALTH AND HOSPITALS CORP",
+      "value": 0.03
+    },
+    {
+      "source": "Housing",
+      "target": "HOUSING PRESERVATION AND DEVELOPMENT",
+      "value": 12034.45
+    },
+    {
+      "source": "Parks & Recreation",
+      "target": "DEPARTMENT OF PARKS AND RECREATION",
+      "value": 202.83
+    },
+    {
+      "source": "Social Services",
+      "target": "DEPARTMENT OF HOMELESS SERVICES",
+      "value": 170.41
+    },
+    {
+      "source": "Social Services",
+      "target": "DEPARTMENT OF SOCIAL SERVICES",
+      "value": 373.42
+    },
+    {
+      "source": "Transportation",
+      "target": "DEPARTMENT OF TRANSPORTATION",
+      "value": 0.02
+    }
+  ]
+}
