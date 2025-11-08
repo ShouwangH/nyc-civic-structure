@@ -8,7 +8,7 @@ import { Legend } from '../HousingTimelapse/Legend';
 import { useHousingData } from '../../hooks/useHousingData';
 import { getDefaultZoningColors } from '../../lib/data/housingDataProcessor';
 
-const MIN_YEAR = 2010;
+const MIN_YEAR = 2014;
 const MAX_YEAR = 2024;
 
 type HousingTimelapseContentProps = {

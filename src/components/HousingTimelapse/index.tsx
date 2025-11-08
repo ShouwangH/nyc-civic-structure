@@ -9,7 +9,7 @@ import { useHousingData } from '../../hooks/useHousingData';
 import { getDefaultZoningColors } from '../../lib/data/housingDataProcessor';
 import type { HousingTimelapseProps } from './types';
 
-const MIN_YEAR = 2010;
+const MIN_YEAR = 2014;
 const MAX_YEAR = 2024;
 
 /**
@@ -108,7 +108,7 @@ export function HousingTimelapse({ onClose }: HousingTimelapseProps) {
               NYC Housing Development Timelapse
             </h2>
             <p className="text-sm text-gray-600 mt-1">
-              2.5D visualization of housing construction (2010-2024)
+              2.5D visualization of housing construction (2014-2024)
             </p>
           </div>
           <button

@@ -152,7 +152,7 @@ function processBuilding(record: HousingBuildingRecord): ProcessedBuilding | nul
   const year = parseCompletionYear(record.building_completion_date);
   const totalUnits = parseInt(record.all_counted_units || record.total_units || '0', 10);
 
-  if (!lat || !lon || !year || year < 2010 || year > 2024 || totalUnits === 0) {
+  if (!lat || !lon || !year || year < 2014 || year > 2024 || totalUnits === 0) {
     return null;
   }
 
