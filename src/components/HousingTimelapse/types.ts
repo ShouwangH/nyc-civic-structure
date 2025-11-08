@@ -69,6 +69,18 @@ export type ZoningFeature = {
 };
 
 /**
+ * Building type classification
+ */
+export type BuildingType =
+  | 'one-two-family'     // A - 1-2 family homes
+  | 'multifamily-walkup' // B - Multifamily walkup
+  | 'multifamily-elevator' // C - Multifamily elevator
+  | 'mixed-use'          // D - Mixed residential/commercial
+  | 'affordable'         // From Housing NY data
+  | 'renovation'         // Major alterations (DOB A1/A2/A3)
+  | 'unknown';
+
+/**
  * Processed building data for visualization
  */
 export type ProcessedBuilding = {
@@ -77,11 +89,16 @@ export type ProcessedBuilding = {
   coordinates: [number, number]; // [longitude, latitude]
   borough: string;
   completionYear: number;
+  completionMonth?: number; // 1-12
+  completionDate?: string; // Full date string for display
   totalUnits: number;
   affordableUnits: number;
   affordablePercentage: number;
+  buildingType: BuildingType; // Type of residential construction
+  buildingClass?: string; // PLUTO building class code
   zoningDistrict?: string;
   address: string;
+  dataSource: 'housing-ny' | 'pluto'; // Track which dataset this came from
 };
 
 /**
@@ -104,11 +121,19 @@ export type CacheMetadata = {
 };
 
 /**
- * Cached housing data
+ * Cached housing data (raw API responses)
  */
 export type CachedHousingData = {
   meta: CacheMetadata;
   buildings: HousingBuildingRecord[];
+};
+
+/**
+ * Cached processed housing data (smaller - only fields we use)
+ */
+export type CachedProcessedData = {
+  meta: CacheMetadata;
+  buildingsByYear: Record<number, ProcessedBuilding[]>;
 };
 
 /**
@@ -132,6 +157,7 @@ export type TimeSliderProps = {
   maxYear: number;
   isPlaying: boolean;
   playbackSpeed: number;
+  buildings?: ProcessedBuilding[]; // Optional: for showing month range
   onYearChange: (year: number) => void;
   onPlayPause: () => void;
   onSpeedChange: (speed: number) => void;

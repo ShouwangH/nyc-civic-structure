@@ -19,9 +19,12 @@ export function HousingTimelapse({ onClose }: HousingTimelapseProps) {
   const [currentYear, setCurrentYear] = useState(MIN_YEAR);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
-  const playbackIntervalRef = useRef<number | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
+  const lastFrameTimeRef = useRef<number>(0);
+  const currentYearFloatRef = useRef<number>(MIN_YEAR);
 
-  // Load housing data
+  // Load housing data - use Math.floor to get integer year for filtering
+  const displayYear = Math.floor(currentYear);
   const {
     buildings,
     isLoading,
@@ -29,36 +32,47 @@ export function HousingTimelapse({ onClose }: HousingTimelapseProps) {
     totalBuildings,
     totalUnits,
     affordableUnits,
-  } = useHousingData(currentYear);
+  } = useHousingData(displayYear);
 
-  // Handle playback
+  // Handle smooth playback using requestAnimationFrame
   useEffect(() => {
     if (isPlaying) {
-      // Calculate interval based on speed (1x = 1 second per year)
-      const interval = 1000 / playbackSpeed;
+      lastFrameTimeRef.current = performance.now();
+      currentYearFloatRef.current = currentYear;
 
-      playbackIntervalRef.current = window.setInterval(() => {
-        setCurrentYear((prev) => {
-          if (prev >= MAX_YEAR) {
-            setIsPlaying(false);
-            return MAX_YEAR;
-          }
-          return prev + 1;
-        });
-      }, interval);
+      const animate = (timestamp: number) => {
+        const deltaTime = timestamp - lastFrameTimeRef.current;
+        lastFrameTimeRef.current = timestamp;
+
+        // Increment based on playbackSpeed (1x = 1 year per second)
+        // deltaTime is in milliseconds, so divide by 1000
+        const increment = (deltaTime / 1000) * playbackSpeed;
+        currentYearFloatRef.current += increment;
+
+        if (currentYearFloatRef.current >= MAX_YEAR) {
+          currentYearFloatRef.current = MAX_YEAR;
+          setCurrentYear(MAX_YEAR);
+          setIsPlaying(false);
+        } else {
+          setCurrentYear(currentYearFloatRef.current);
+          animationFrameRef.current = requestAnimationFrame(animate);
+        }
+      };
+
+      animationFrameRef.current = requestAnimationFrame(animate);
     } else {
-      if (playbackIntervalRef.current !== null) {
-        clearInterval(playbackIntervalRef.current);
-        playbackIntervalRef.current = null;
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current);
+        animationFrameRef.current = null;
       }
     }
 
     return () => {
-      if (playbackIntervalRef.current !== null) {
-        clearInterval(playbackIntervalRef.current);
+      if (animationFrameRef.current !== null) {
+        cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [isPlaying, playbackSpeed]);
+  }, [isPlaying, playbackSpeed, currentYear]);
 
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
@@ -66,6 +80,7 @@ export function HousingTimelapse({ onClose }: HousingTimelapseProps) {
 
   const handleYearChange = (year: number) => {
     setCurrentYear(year);
+    currentYearFloatRef.current = year;
     setIsPlaying(false);
   };
 
@@ -108,7 +123,7 @@ export function HousingTimelapse({ onClose }: HousingTimelapseProps) {
               NYC Housing Development Timelapse
             </h2>
             <p className="text-sm text-gray-600 mt-1">
-              2.5D visualization of housing construction (2014-2024)
+              New construction + renovations visualization (2014-2024)
             </p>
           </div>
           <button
@@ -156,14 +171,14 @@ export function HousingTimelapse({ onClose }: HousingTimelapseProps) {
             <>
               <Map3D
                 buildings={buildings}
-                currentYear={currentYear}
+                currentYear={displayYear}
                 zoningColors={zoningColors}
                 width={overlayWidth}
                 height={overlayHeight - 200} // Account for header and slider
               />
               <Legend
                 zoningColors={zoningColors}
-                currentYear={currentYear}
+                currentYear={displayYear}
                 totalBuildings={totalBuildings}
                 totalUnits={totalUnits}
                 affordableUnits={affordableUnits}
@@ -180,6 +195,7 @@ export function HousingTimelapse({ onClose }: HousingTimelapseProps) {
             maxYear={MAX_YEAR}
             isPlaying={isPlaying}
             playbackSpeed={playbackSpeed}
+            buildings={buildings}
             onYearChange={handleYearChange}
             onPlayPause={handlePlayPause}
             onSpeedChange={handleSpeedChange}

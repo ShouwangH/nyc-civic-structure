@@ -41,24 +41,32 @@ export function Legend({
       {/* Color legend */}
       <div>
         <div className="text-xs font-semibold text-slate-700 mb-2">
-          Affordable Housing %
+          Building Type
         </div>
         <div className="space-y-1.5">
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgb(34, 197, 94)' }}></div>
-            <span className="text-xs text-slate-600">80%+ Affordable</span>
+            <span className="text-xs text-slate-600">Affordable Housing</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgb(249, 115, 22)' }}></div>
+            <span className="text-xs text-slate-600">Major Renovation</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgb(59, 130, 246)' }}></div>
-            <span className="text-xs text-slate-600">50-79% Affordable</span>
+            <span className="text-xs text-slate-600">Multifamily Elevator</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgb(147, 51, 234)' }}></div>
+            <span className="text-xs text-slate-600">Multifamily Walkup</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgb(251, 191, 36)' }}></div>
-            <span className="text-xs text-slate-600">20-49% Affordable</span>
+            <span className="text-xs text-slate-600">Mixed Use</span>
           </div>
           <div className="flex items-center gap-2">
             <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgb(239, 68, 68)' }}></div>
-            <span className="text-xs text-slate-600">&lt;20% Affordable</span>
+            <span className="text-xs text-slate-600">1-2 Family Homes</span>
           </div>
         </div>
       </div>
@@ -73,8 +81,11 @@ export function Legend({
       {/* Data source */}
       <div className="mt-4 pt-4 border-t border-slate-200">
         <div className="text-xs text-slate-500">
+          <strong>New construction + renovations (2014-2024)</strong><br />
           Data: NYC Open Data<br />
-          Housing New York Units by Building
+          • DOB Job Applications (primary)<br />
+          • Housing New York Units by Building<br />
+          • PLUTO (fallback)
         </div>
       </div>
     </div>
