@@ -10,8 +10,8 @@ import type {
 } from '../../components/HousingTimelapse/types';
 
 // Cache configuration
-const CACHE_KEY = 'nyc_housing_processed_v4';
-const CACHE_VERSION = '4.0.0';
+const CACHE_KEY = 'nyc_housing_processed_v5';
+const CACHE_VERSION = '5.0.0';
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 // NYC Open Data API configuration
@@ -98,7 +98,29 @@ function saveProcessedToCache(dataByYear: HousingDataByYear): void {
 }
 
 /**
- * Fetch housing data from NYC Open Data API - combines both sources
+ * Normalize BBL to standard format (removes hyphens, ensures 10 digits)
+ */
+function normalizeBBL(bbl: string | undefined): string | null {
+  if (!bbl) return null;
+
+  // Remove all non-numeric characters
+  const numeric = bbl.replace(/[^0-9]/g, '');
+
+  // BBL should be 10 digits: 1 (borough) + 5 (block) + 4 (lot)
+  if (numeric.length === 10) {
+    return numeric;
+  }
+
+  // Pad if slightly short (some datasets drop leading zeros)
+  if (numeric.length === 9) {
+    return '0' + numeric;
+  }
+
+  return null;
+}
+
+/**
+ * Fetch housing data from NYC Open Data API - joins PLUTO with Housing NY by BBL
  */
 async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
   console.info('[HousingData] Fetching from NYC Open Data APIs...');
@@ -137,11 +159,58 @@ async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
     }
   }
 
-  // Combine both datasets
-  const combinedData = [...housingNYData, ...plutoData];
-  console.info(`[HousingData] Total combined records: ${combinedData.length}`);
+  // Build BBL index from Housing NY data for O(1) lookup
+  const housingByBBL = new Map<string, any>();
+  for (const record of housingNYData) {
+    const bbl = normalizeBBL(record.bbl);
+    if (bbl) {
+      housingByBBL.set(bbl, record);
+    }
+  }
+  console.info(`[HousingData] Indexed ${housingByBBL.size} Housing NY records by BBL`);
 
-  return combinedData;
+  // Join PLUTO with Housing NY data
+  const joinedData: any[] = [];
+  let joinedCount = 0;
+
+  for (const plutoRecord of plutoData) {
+    const bbl = normalizeBBL(plutoRecord.bbl);
+    if (!bbl) continue;
+
+    const housingRecord = housingByBBL.get(bbl);
+
+    if (housingRecord) {
+      // Merge: PLUTO as base, overlay Housing NY affordable data
+      joinedData.push({
+        ...plutoRecord,
+        _affordableData: housingRecord,
+        _hasAffordable: true,
+      });
+      joinedCount++;
+      housingByBBL.delete(bbl); // Mark as joined
+    } else {
+      // PLUTO only (market-rate)
+      joinedData.push({
+        ...plutoRecord,
+        _hasAffordable: false,
+      });
+    }
+  }
+
+  // Add unmatched Housing NY records (buildings not in PLUTO post-2014 dataset)
+  for (const [, housingRecord] of housingByBBL) {
+    joinedData.push({
+      ...housingRecord,
+      _affordableData: housingRecord,
+      _hasAffordable: true,
+      _plutoMissing: true,
+    });
+  }
+
+  console.info(`[HousingData] Join complete: ${joinedCount} matched, ${housingByBBL.size} Housing NY only, ${plutoData.length - joinedCount} PLUTO only`);
+  console.info(`[HousingData] Total joined records: ${joinedData.length}`);
+
+  return joinedData;
 }
 
 /**
@@ -233,30 +302,37 @@ function getBuildingType(buildingClass: string | undefined, isAffordable: boolea
  * Process raw building record into visualization format
  */
 function processBuilding(record: any): ProcessedBuilding | null {
-  // Detect data source
-  const isHousingNY = Boolean(record.building_id || record.project_name);
+  const affordableData = record._affordableData;
+  const hasAffordable = record._hasAffordable;
+  const plutoMissing = record._plutoMissing;
+
+  // Prefer PLUTO data when available, fall back to Housing NY
   const isPLUTO = Boolean(record.yearbuilt || record.bldgclass);
 
-  // Try to extract coordinates
+  // Try to extract coordinates (prefer PLUTO, fallback to Housing NY)
   const lat = parseFloat(
     record.latitude ||
-    record.latitude_internal ||
+    affordableData?.latitude ||
+    affordableData?.latitude_internal ||
     (record.location?.coordinates?.[1]) ||
+    (affordableData?.location?.coordinates?.[1]) ||
     '0'
   );
   const lon = parseFloat(
     record.longitude ||
-    record.longitude_internal ||
+    affordableData?.longitude ||
+    affordableData?.longitude_internal ||
     (record.location?.coordinates?.[0]) ||
+    (affordableData?.location?.coordinates?.[0]) ||
     '0'
   );
 
-  // Parse date
+  // Parse date (prefer Housing NY completion date, fallback to PLUTO yearbuilt)
   let dateInfo;
-  if (isHousingNY) {
+  if (affordableData && (affordableData.building_completion_date || affordableData.completion_date)) {
     dateInfo = parseCompletionDate(
-      record.building_completion_date ||
-      record.completion_date ||
+      affordableData.building_completion_date ||
+      affordableData.completion_date ||
       ''
     );
   } else if (isPLUTO) {
@@ -267,17 +343,17 @@ function processBuilding(record: any): ProcessedBuilding | null {
     dateInfo = { year: 0 };
   }
 
-  // Extract units
+  // Extract units (prefer PLUTO, but get affordable breakdown from Housing NY)
   let totalUnits;
-  if (isHousingNY) {
+  if (isPLUTO) {
+    totalUnits = parseInt(record.unitsres || record.unitstotal || '0', 10);
+  } else if (affordableData) {
     totalUnits = parseInt(
-      record.all_counted_units ||
-      record.total_units ||
+      affordableData.all_counted_units ||
+      affordableData.total_units ||
       '0',
       10
     );
-  } else if (isPLUTO) {
-    totalUnits = parseInt(record.unitsres || record.unitstotal || '0', 10);
   } else {
     totalUnits = 0;
   }
@@ -287,15 +363,28 @@ function processBuilding(record: any): ProcessedBuilding | null {
     return null;
   }
 
-  const affordableUnits = isHousingNY ? calculateAffordableUnits(record) : 0;
-  const buildingClass = record.bldgclass || record.bldgclass;
+  // Calculate affordable units from Housing NY data if available
+  const affordableUnits = affordableData ? calculateAffordableUnits(affordableData) : 0;
+
+  // Classify building type
+  const buildingClass = record.bldgclass;
   const buildingType = getBuildingType(buildingClass, affordableUnits > 0);
 
+  // Determine data source label
+  let dataSource: 'housing-ny' | 'pluto' | 'both';
+  if (hasAffordable && isPLUTO) {
+    dataSource = 'both';
+  } else if (hasAffordable) {
+    dataSource = 'housing-ny';
+  } else {
+    dataSource = 'pluto';
+  }
+
   return {
-    id: record.building_id || record.bbl || String(Math.random()),
-    name: record.project_name || record.address || 'Building',
+    id: record.bbl || affordableData?.building_id || String(Math.random()),
+    name: affordableData?.project_name || record.address || 'Building',
     coordinates: [lon, lat],
-    borough: record.borough || 'Unknown',
+    borough: record.borough || affordableData?.borough || 'Unknown',
     completionYear: dateInfo.year,
     completionMonth: dateInfo.month,
     completionDate: dateInfo.dateStr,
@@ -305,8 +394,8 @@ function processBuilding(record: any): ProcessedBuilding | null {
     buildingType,
     buildingClass,
     zoningDistrict: record.zonedist1,
-    address: record.address || `${record.house_number || ''} ${record.street_name || ''}`.trim(),
-    dataSource: isHousingNY ? 'housing-ny' : 'pluto',
+    address: record.address || affordableData?.address || `${record.house_number || ''} ${record.street_name || ''}`.trim(),
+    dataSource: dataSource as any, // Cast to match existing type
   };
 }
 

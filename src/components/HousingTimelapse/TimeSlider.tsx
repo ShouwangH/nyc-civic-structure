@@ -83,6 +83,7 @@ export function TimeSlider({
           type="range"
           min={minYear}
           max={maxYear}
+          step="0.01"
           value={currentYear}
           onChange={handleSliderChange}
           className="flex-1 h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer slider"
