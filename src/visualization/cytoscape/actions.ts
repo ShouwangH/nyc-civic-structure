@@ -25,7 +25,7 @@ export type ClearScopeAction = Action<'CLEAR_SCOPE'>;
 export type ClearSelectionsAction = Action<'CLEAR_SELECTIONS'>;
 
 // View mode actions
-export type ChangeViewModeAction = Action<'CHANGE_VIEW_MODE', { mode: 'diagram' | 'views' }>;
+export type ChangeViewModeAction = Action<'CHANGE_VIEW_MODE', { mode: 'diagram' | 'financials' | 'maps' }>;
 
 // Control panel tab actions
 export type ChangeControlPanelTabAction = Action<'CHANGE_CONTROL_PANEL_TAB', { tab: 'details' | 'processes' }>;
@@ -81,7 +81,7 @@ export const actions = {
     type: 'CLEAR_SELECTIONS',
   }),
 
-  changeViewMode: (mode: 'diagram' | 'views'): ChangeViewModeAction => ({
+  changeViewMode: (mode: 'diagram' | 'financials' | 'maps'): ChangeViewModeAction => ({
     type: 'CHANGE_VIEW_MODE',
     payload: { mode },
   }),

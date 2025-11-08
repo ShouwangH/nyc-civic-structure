@@ -29,7 +29,7 @@ export type VisualizationState = {
   activeScope: GovernmentScope | null;
   controlsOpen: boolean;
   sidebarHover: boolean;
-  viewMode: 'diagram' | 'views';
+  viewMode: 'diagram' | 'financials' | 'maps';
   activeTab: 'details' | 'processes';
   sankeyOverlay?: {
     subview: SubviewDefinition;
