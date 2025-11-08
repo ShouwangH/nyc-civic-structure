@@ -70,8 +70,8 @@ export function Map3D({ buildings, currentYear, width, height }: Map3DProps) {
         getElevation: {
           type: 'interpolation',
           duration: 1000,
-          easing: (t) => t * (2 - t), // ease-out-quad
-          enter: (value) => [0] // Buildings start from ground
+          easing: (t: number) => t * (2 - t), // ease-out-quad
+          enter: (_value: number[]) => [0] // Buildings start from ground
         }
       },
       onHover: (info: PickingInfo) => {

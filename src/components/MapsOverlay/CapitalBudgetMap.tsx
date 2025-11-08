@@ -41,7 +41,7 @@ export function CapitalBudgetMap() {
   const { projects, isLoading, error } = useCapitalBudgetData();
   const [hoveredProject, setHoveredProject] = useState<CapitalProjectFeature | null>(null);
 
-  const layer = new GeoJsonLayer<CapitalProjectFeature>({
+  const layer = new GeoJsonLayer({
     id: 'capital-projects',
     data: projects,
     filled: true,
@@ -49,21 +49,21 @@ export function CapitalBudgetMap() {
     wireframe: true,
     pickable: true,
     elevationScale: 0.5,
-    getElevation: (d) => d.properties.allocate_total / 10000, // Scale budget to reasonable height
-    getFillColor: (d) => {
+    getElevation: (d: any) => d.properties.allocate_total / 10000, // Scale budget to reasonable height
+    getFillColor: (d: any) => {
       const color = AGENCY_COLORS[d.properties.magencyacro] || DEFAULT_COLOR;
       return [...color, 200]; // Add alpha channel
     },
     getLineColor: [80, 80, 80],
     lineWidthMinPixels: 1,
-    onHover: (info: PickingInfo<CapitalProjectFeature>) => {
+    onHover: (info: PickingInfo) => {
       if (info.object) {
-        setHoveredProject(info.object);
+        setHoveredProject(info.object as CapitalProjectFeature);
       } else {
         setHoveredProject(null);
       }
     },
-  });
+  } as any);
 
   return (
     <div className="relative w-full h-full">
