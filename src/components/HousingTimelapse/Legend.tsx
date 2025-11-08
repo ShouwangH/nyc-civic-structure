@@ -9,23 +9,23 @@ import type { ProcessedBuilding } from './types';
  */
 export function Legend({
   currentYear,
-  totalBuildings,
-  totalUnits,
-  affordableUnits,
   buildings,
 }: LegendProps & { buildings?: ProcessedBuilding[] }) {
-  // Calculate unit counts by building type
-  const buildingTypeCounts = buildings?.reduce((acc, building) => {
+  // Filter buildings up to current year (for updating counts as timeline moves)
+  const buildingsUpToYear = buildings?.filter(b => b.completionYear <= currentYear) || [];
+
+  // Calculate unit counts by building type from filtered buildings
+  const buildingTypeCounts = buildingsUpToYear.reduce((acc, building) => {
     const type = building.buildingType;
     if (!acc[type]) {
       acc[type] = 0;
     }
     acc[type] += building.totalUnits;
     return acc;
-  }, {} as Record<string, number>) || {};
+  }, {} as Record<string, number>);
 
-  // Check if any PLUTO data is being used
-  const usesPluto = buildings?.some(b => b.dataSource === 'pluto') || false;
+  // Check if any PLUTO data is being used (from filtered buildings)
+  const usesPluto = buildingsUpToYear.some(b => b.dataSource === 'pluto');
 
   return (
     <div className="absolute bottom-6 right-6 z-10 bg-white rounded-xl border border-slate-200 shadow-lg p-4 max-w-xs">
