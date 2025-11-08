@@ -63,10 +63,11 @@ export function Map3D({ buildings, currentYear, width, height }: Map3DProps) {
       },
       transitions: {
         getElevation: {
-          type: 'spring',
-          stiffness: 0.1,
-          damping: 0.5,
-          duration: 500,
+          duration: 400,
+          easing: (t) => t * (2 - t), // Ease out quad
+        },
+        getFillColor: {
+          duration: 300,
         },
       },
       onHover: (info: PickingInfo) => {

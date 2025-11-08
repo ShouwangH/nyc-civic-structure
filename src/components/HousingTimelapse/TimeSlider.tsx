@@ -27,6 +27,8 @@ export function TimeSlider({
   };
 
   // Calculate month range for current year
+  const displayYear = Math.floor(currentYear);
+
   const getMonthRange = () => {
     if (!buildings || buildings.length === 0) {
       return null;
@@ -39,7 +41,7 @@ export function TimeSlider({
 
     // Get buildings from current year with month data
     const yearBuildings = buildings.filter(
-      b => b.completionYear === currentYear && b.completionMonth
+      b => b.completionYear === displayYear && b.completionMonth
     );
 
     if (yearBuildings.length === 0) {
@@ -64,7 +66,7 @@ export function TimeSlider({
       {/* Year display */}
       <div className="flex items-center justify-between">
         <div className="flex flex-col">
-          <div className="text-2xl font-bold text-slate-900">{currentYear}</div>
+          <div className="text-2xl font-bold text-slate-900">{displayYear}</div>
           {monthRange && (
             <div className="text-sm text-slate-500">{monthRange}</div>
           )}
