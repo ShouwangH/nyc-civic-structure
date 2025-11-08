@@ -180,6 +180,7 @@ export function HousingTimelapse({ onClose }: HousingTimelapseProps) {
             maxYear={MAX_YEAR}
             isPlaying={isPlaying}
             playbackSpeed={playbackSpeed}
+            buildings={buildings}
             onYearChange={handleYearChange}
             onPlayPause={handlePlayPause}
             onSpeedChange={handleSpeedChange}

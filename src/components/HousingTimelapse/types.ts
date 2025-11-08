@@ -77,6 +77,8 @@ export type ProcessedBuilding = {
   coordinates: [number, number]; // [longitude, latitude]
   borough: string;
   completionYear: number;
+  completionMonth?: number; // 1-12
+  completionDate?: string; // Full date string for display
   totalUnits: number;
   affordableUnits: number;
   affordablePercentage: number;
@@ -132,6 +134,7 @@ export type TimeSliderProps = {
   maxYear: number;
   isPlaying: boolean;
   playbackSpeed: number;
+  buildings?: ProcessedBuilding[]; // Optional: for showing month range
   onYearChange: (year: number) => void;
   onPlayPause: () => void;
   onSpeedChange: (speed: number) => void;

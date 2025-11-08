@@ -10,12 +10,13 @@ import type {
 } from '../../components/HousingTimelapse/types';
 
 // Cache configuration
-const CACHE_KEY = 'nyc_housing_data_cache';
-const CACHE_VERSION = '1.0.0';
+const CACHE_KEY = 'nyc_housing_data_cache_v2';
+const CACHE_VERSION = '2.0.0';
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 // NYC Open Data API configuration
-const HOUSING_API_BASE = 'https://data.cityofnewyork.us/resource/hg8x-zxpr.json';
+const HOUSING_NY_API = 'https://data.cityofnewyork.us/resource/hg8x-zxpr.json'; // Affordable housing
+const PLUTO_API = 'https://data.cityofnewyork.us/resource/64uk-42ks.json'; // PLUTO data
 const DEFAULT_LIMIT = 50000; // NYC Open Data default limit
 
 /**
@@ -76,26 +77,47 @@ function saveToCache(buildings: HousingBuildingRecord[]): void {
 }
 
 /**
- * Fetch housing data from NYC Open Data API
+ * Fetch housing data from NYC Open Data API - combines both sources
  */
 async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
-  console.info('[HousingData] Fetching from NYC Open Data API...');
+  console.info('[HousingData] Fetching from NYC Open Data APIs...');
 
-  const url = `${HOUSING_API_BASE}?$limit=${DEFAULT_LIMIT}&$order=building_completion_date`;
+  // Fetch from both sources in parallel
+  const [housingNYResponse, plutoResponse] = await Promise.all([
+    fetch(`${HOUSING_NY_API}?$limit=${DEFAULT_LIMIT}&$order=building_completion_date`),
+    fetch(`${PLUTO_API}?$limit=${DEFAULT_LIMIT}`)
+  ]);
 
-  const response = await fetch(url);
-
-  if (!response.ok) {
-    throw new Error(`NYC Open Data API error: ${response.status} ${response.statusText}`);
+  if (!housingNYResponse.ok) {
+    throw new Error(`Housing NY API error: ${housingNYResponse.status} ${housingNYResponse.statusText}`);
   }
 
-  const data: HousingBuildingRecord[] = await response.json();
-  console.info(`[HousingData] Fetched ${data.length} buildings from API`);
+  if (!plutoResponse.ok) {
+    console.warn(`PLUTO API error: ${plutoResponse.status} ${plutoResponse.statusText}. Continuing with Housing NY data only.`);
+  }
+
+  const housingNYData: any[] = await housingNYResponse.json();
+  console.info(`[HousingData] Fetched ${housingNYData.length} records from Housing NY API`);
+
+  let plutoData: any[] = [];
+  if (plutoResponse.ok) {
+    plutoData = await plutoResponse.json();
+    console.info(`[HousingData] Fetched ${plutoData.length} records from PLUTO API`);
+
+    // Log first PLUTO record to understand structure
+    if (plutoData.length > 0) {
+      console.info('[HousingData] Sample PLUTO record:', plutoData[0]);
+    }
+  }
+
+  // Combine both datasets
+  const combinedData = [...housingNYData, ...plutoData];
+  console.info(`[HousingData] Total combined records: ${combinedData.length}`);
 
   // Save to cache
-  saveToCache(data);
+  saveToCache(combinedData);
 
-  return data;
+  return combinedData;
 }
 
 /**
@@ -113,20 +135,30 @@ export async function getHousingData(): Promise<HousingBuildingRecord[]> {
 }
 
 /**
- * Parse year from building completion date
+ * Parse date information from completion date string
  */
-function parseCompletionYear(dateString: string): number {
+function parseCompletionDate(dateString: string): { year: number; month?: number; dateStr?: string } {
   if (!dateString) {
-    return 0;
+    return { year: 0 };
   }
 
-  // Try parsing ISO date format (YYYY-MM-DD)
-  const match = dateString.match(/^(\d{4})/);
-  if (match) {
-    return parseInt(match[1], 10);
+  // Try parsing ISO date format (YYYY-MM-DD) or timestamp
+  const isoMatch = dateString.match(/^(\d{4})-(\d{2})-(\d{2})/);
+  if (isoMatch) {
+    return {
+      year: parseInt(isoMatch[1], 10),
+      month: parseInt(isoMatch[2], 10),
+      dateStr: dateString,
+    };
   }
 
-  return 0;
+  // Try just year
+  const yearMatch = dateString.match(/^(\d{4})/);
+  if (yearMatch) {
+    return { year: parseInt(yearMatch[1], 10) };
+  }
+
+  return { year: 0 };
 }
 
 /**
@@ -145,29 +177,59 @@ function calculateAffordableUnits(record: HousingBuildingRecord): number {
 /**
  * Process raw building record into visualization format
  */
-function processBuilding(record: HousingBuildingRecord): ProcessedBuilding | null {
-  // Validate required fields
-  const lat = parseFloat(record.latitude || record.latitude_internal);
-  const lon = parseFloat(record.longitude || record.longitude_internal);
-  const year = parseCompletionYear(record.building_completion_date);
-  const totalUnits = parseInt(record.all_counted_units || record.total_units || '0', 10);
+function processBuilding(record: any): ProcessedBuilding | null {
+  // Try to extract coordinates - handle different field names
+  const lat = parseFloat(
+    record.latitude ||
+    record.latitude_internal ||
+    record.lat ||
+    (record.location?.coordinates?.[1])
+  );
+  const lon = parseFloat(
+    record.longitude ||
+    record.longitude_internal ||
+    record.lon ||
+    (record.location?.coordinates?.[0])
+  );
 
-  if (!lat || !lon || !year || year < 2010 || year > 2024 || totalUnits === 0) {
+  // Parse date - try different field names
+  const dateInfo = parseCompletionDate(
+    record.building_completion_date ||
+    record.completion_date ||
+    record.project_completion_date ||
+    record.date ||
+    ''
+  );
+
+  // Try to extract total units - handle different field names
+  const totalUnits = parseInt(
+    record.all_counted_units ||
+    record.total_units ||
+    record.units ||
+    record.number_of_units ||
+    '0',
+    10
+  );
+
+  // Validate required fields
+  if (!lat || !lon || !dateInfo.year || dateInfo.year < 2010 || dateInfo.year > 2025 || totalUnits === 0) {
     return null;
   }
 
   const affordableUnits = calculateAffordableUnits(record);
 
   return {
-    id: record.building_id || record.bbl,
-    name: record.project_name || 'Unnamed Project',
+    id: record.building_id || record.bbl || record.id || String(Math.random()),
+    name: record.project_name || record.name || 'Unnamed Project',
     coordinates: [lon, lat],
     borough: record.borough || 'Unknown',
-    completionYear: year,
+    completionYear: dateInfo.year,
+    completionMonth: dateInfo.month,
+    completionDate: dateInfo.dateStr,
     totalUnits,
     affordableUnits,
     affordablePercentage: totalUnits > 0 ? (affordableUnits / totalUnits) * 100 : 0,
-    address: `${record.house_number || ''} ${record.street_name || ''}`.trim(),
+    address: `${record.house_number || record.address || ''} ${record.street_name || ''}`.trim(),
   };
 }
 

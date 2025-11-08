@@ -12,6 +12,7 @@ export function TimeSlider({
   maxYear,
   isPlaying,
   playbackSpeed,
+  buildings,
   onYearChange,
   onPlayPause,
   onSpeedChange,
@@ -25,11 +26,49 @@ export function TimeSlider({
     onSpeedChange(speed);
   };
 
+  // Calculate month range for current year
+  const getMonthRange = () => {
+    if (!buildings || buildings.length === 0) {
+      return null;
+    }
+
+    const monthNames = [
+      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
+      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    ];
+
+    // Get buildings from current year with month data
+    const yearBuildings = buildings.filter(
+      b => b.completionYear === currentYear && b.completionMonth
+    );
+
+    if (yearBuildings.length === 0) {
+      return null;
+    }
+
+    const months = yearBuildings.map(b => b.completionMonth!).sort((a, b) => a - b);
+    const minMonth = months[0];
+    const maxMonth = months[months.length - 1];
+
+    if (minMonth === maxMonth) {
+      return monthNames[minMonth - 1];
+    }
+
+    return `${monthNames[minMonth - 1]} - ${monthNames[maxMonth - 1]}`;
+  };
+
+  const monthRange = getMonthRange();
+
   return (
     <div className="flex flex-col gap-3 px-6 py-4 bg-slate-50 border-t border-slate-200">
       {/* Year display */}
       <div className="flex items-center justify-between">
-        <div className="text-2xl font-bold text-slate-900">{currentYear}</div>
+        <div className="flex flex-col">
+          <div className="text-2xl font-bold text-slate-900">{currentYear}</div>
+          {monthRange && (
+            <div className="text-sm text-slate-500">{monthRange}</div>
+          )}
+        </div>
         <div className="text-sm text-slate-600">
           {minYear} - {maxYear}
         </div>
