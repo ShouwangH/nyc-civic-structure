@@ -125,7 +125,7 @@ export class JsonDataService implements DataService {
     // Annotate intra nodes with tier
     const annotatedIntraNodes: StructureNode[] = intraData.nodes.map(node => ({
       ...node,
-      tier: (node.tier as 'main' | 'intra' | 'detailed' | undefined) || 'intra',
+      tier: ('tier' in node ? (node.tier as 'main' | 'intra' | 'detailed') : 'intra'),
     }));
 
     // Merge subviews from main.json, intra files, and workflow files

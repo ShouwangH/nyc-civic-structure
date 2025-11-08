@@ -1,7 +1,7 @@
 // ABOUTME: Vite middleware for serving API routes
 // ABOUTME: Handles routing requests to appropriate API handlers
 
-import type { Connect, ViteDevServer } from 'vite';
+import type { Connect } from 'vite';
 import type { IncomingMessage, ServerResponse } from 'http';
 
 type Handler = (req: Request) => Promise<Response>;
