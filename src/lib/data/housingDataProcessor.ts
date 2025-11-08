@@ -4,14 +4,14 @@
 import type {
   HousingBuildingRecord,
   ProcessedBuilding,
-  CachedHousingData,
+  CachedProcessedData,
   HousingDataByYear,
   ZoningColorMap,
 } from '../../components/HousingTimelapse/types';
 
 // Cache configuration
-const CACHE_KEY = 'nyc_housing_data_cache_v2';
-const CACHE_VERSION = '2.0.0';
+const CACHE_KEY = 'nyc_housing_processed_v3';
+const CACHE_VERSION = '3.0.0';
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 // NYC Open Data API configuration
@@ -19,7 +19,7 @@ const HOUSING_NY_API = 'https://data.cityofnewyork.us/resource/hg8x-zxpr.json'; 
 const PLUTO_API = 'https://data.cityofnewyork.us/resource/64uk-42ks.json'; // PLUTO data
 const HOUSING_NY_LIMIT = 20000; // Limit for Housing NY API
 const PLUTO_LIMIT = 5000; // Smaller limit for PLUTO
-const ENABLE_CACHE = false; // Disabled due to localStorage quota limits
+const ENABLE_CACHE = true; // Cache processed data (much smaller than raw)
 
 /**
  * Check if cached data is still valid
@@ -30,16 +30,16 @@ function isCacheValid(timestamp: number): boolean {
 }
 
 /**
- * Load data from localStorage cache
+ * Load processed data from localStorage cache
  */
-function loadFromCache(): CachedHousingData | null {
+function loadProcessedFromCache(): HousingDataByYear | null {
   try {
     const cached = localStorage.getItem(CACHE_KEY);
     if (!cached) {
       return null;
     }
 
-    const data: CachedHousingData = JSON.parse(cached);
+    const data: CachedProcessedData = JSON.parse(cached);
 
     // Check version and TTL
     if (data.meta.version !== CACHE_VERSION || !isCacheValid(data.meta.timestamp)) {
@@ -48,8 +48,14 @@ function loadFromCache(): CachedHousingData | null {
       return null;
     }
 
-    console.info(`[HousingData] Loaded ${data.buildings.length} buildings from cache`);
-    return data;
+    // Convert plain object back to Map
+    const buildingsByYear = new Map<number, ProcessedBuilding[]>();
+    for (const [year, buildings] of Object.entries(data.buildingsByYear)) {
+      buildingsByYear.set(parseInt(year, 10), buildings);
+    }
+
+    console.info(`[HousingData] Loaded ${data.meta.recordCount} processed buildings from cache`);
+    return buildingsByYear;
   } catch (error) {
     console.error('[HousingData] Failed to load from cache:', error);
     localStorage.removeItem(CACHE_KEY);
@@ -58,25 +64,34 @@ function loadFromCache(): CachedHousingData | null {
 }
 
 /**
- * Save data to localStorage cache
+ * Save processed data to localStorage cache
  */
-function saveToCache(buildings: HousingBuildingRecord[]): void {
+function saveProcessedToCache(dataByYear: HousingDataByYear): void {
   if (!ENABLE_CACHE) {
     return; // Caching disabled
   }
 
   try {
-    const data: CachedHousingData = {
+    // Convert Map to plain object for JSON serialization
+    const buildingsByYear: Record<number, ProcessedBuilding[]> = {};
+    let totalCount = 0;
+
+    for (const [year, buildings] of dataByYear.entries()) {
+      buildingsByYear[year] = buildings;
+      totalCount += buildings.length;
+    }
+
+    const data: CachedProcessedData = {
       meta: {
         timestamp: Date.now(),
         version: CACHE_VERSION,
-        recordCount: buildings.length,
+        recordCount: totalCount,
       },
-      buildings,
+      buildingsByYear,
     };
 
     localStorage.setItem(CACHE_KEY, JSON.stringify(data));
-    console.info(`[HousingData] Cached ${buildings.length} buildings`);
+    console.info(`[HousingData] Cached ${totalCount} processed buildings`);
   } catch (error) {
     console.error('[HousingData] Failed to save to cache:', error);
   }
@@ -120,29 +135,29 @@ async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
   const combinedData = [...housingNYData, ...plutoData];
   console.info(`[HousingData] Total combined records: ${combinedData.length}`);
 
-  // Save to cache
-  saveToCache(combinedData);
-
   return combinedData;
 }
 
 /**
- * Get housing data (from cache or API)
+ * Get housing data (from cache or API), returns processed data by year
  */
-export async function getHousingData(): Promise<HousingBuildingRecord[]> {
-  if (!ENABLE_CACHE) {
-    // Caching disabled - always fetch fresh data
-    return fetchFromAPI();
-  }
-
+export async function getHousingData(): Promise<HousingDataByYear> {
   // Try cache first
-  const cached = loadFromCache();
-  if (cached) {
-    return cached.buildings;
+  if (ENABLE_CACHE) {
+    const cached = loadProcessedFromCache();
+    if (cached) {
+      return cached;
+    }
   }
 
-  // Fetch from API
-  return fetchFromAPI();
+  // Fetch from API and process
+  const rawData = await fetchFromAPI();
+  const processed = processHousingData(rawData);
+
+  // Save processed data to cache
+  saveProcessedToCache(processed);
+
+  return processed;
 }
 
 /**

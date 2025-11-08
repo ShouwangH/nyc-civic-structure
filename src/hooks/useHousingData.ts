@@ -4,7 +4,6 @@
 import { useState, useEffect } from 'react';
 import {
   getHousingData,
-  processHousingData,
   getBuildingsUpToYear,
 } from '../lib/data/housingDataProcessor';
 import type { HousingDataByYear, ProcessedBuilding } from '../components/HousingTimelapse/types';
@@ -37,8 +36,8 @@ export function useHousingData(currentYear: number): UseHousingDataResult {
       setError(null);
 
       try {
-        const rawData = await getHousingData();
-        const processed = processHousingData(rawData);
+        // getHousingData now returns processed data directly
+        const processed = await getHousingData();
 
         if (isMounted) {
           setDataByYear(processed);

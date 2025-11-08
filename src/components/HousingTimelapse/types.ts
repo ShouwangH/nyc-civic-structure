@@ -120,11 +120,19 @@ export type CacheMetadata = {
 };
 
 /**
- * Cached housing data
+ * Cached housing data (raw API responses)
  */
 export type CachedHousingData = {
   meta: CacheMetadata;
   buildings: HousingBuildingRecord[];
+};
+
+/**
+ * Cached processed housing data (smaller - only fields we use)
+ */
+export type CachedProcessedData = {
+  meta: CacheMetadata;
+  buildingsByYear: Record<number, ProcessedBuilding[]>;
 };
 
 /**
