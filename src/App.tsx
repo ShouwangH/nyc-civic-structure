@@ -6,6 +6,7 @@ import { ControlsPanel } from './components/ControlsPanel';
 import { DiagramViewToggle } from './components/DiagramViewToggle';
 import { GraphCanvas, type GraphRuntime } from './components/GraphCanvas';
 import { OverlayWrapper } from './components/OverlayWrapper';
+import { HousingTimelapse } from './components/HousingTimelapse';
 import { governmentScopes } from './data/datasets';
 import type { VisualizationState } from './visualization/cytoscape/controller';
 import { initializeGraphData, type GraphData } from './data/loader';
@@ -17,6 +18,7 @@ function App() {
   const [graphData, setGraphData] = useState<GraphData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [housingTimelapseOpen, setHousingTimelapseOpen] = useState(false);
 
   // Single state object
   const [state, setState] = useState<VisualizationState>({
@@ -102,10 +104,20 @@ function App() {
     <div className="relative flex min-h-screen bg-[#eceae4] p-3 gap-3">
       <div className="flex flex-col w-1/4 gap-3">
         <header className="rounded-xl border border-slate-200 bg-slate-50 px-6 py-3 shadow-sm">
-          <h1 className="text-xl font-semibold text-slate-900">
-            <span>Maximum New York |</span>
-            <span className="text-gray-500 text-lg"> {dataset.meta.title}</span>
-          </h1>
+          <div className="flex items-center justify-between">
+            <h1 className="text-xl font-semibold text-slate-900">
+              <span>Maximum New York |</span>
+              <span className="text-gray-500 text-lg"> {dataset.meta.title}</span>
+            </h1>
+            <button
+              type="button"
+              onClick={() => setHousingTimelapseOpen(true)}
+              className="px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
+              title="Open Housing Timelapse"
+            >
+              Housing 3D
+            </button>
+          </div>
         </header>
 
         <ControlsPanel
@@ -156,6 +168,10 @@ function App() {
           inputHandler={runtime?.inputHandler ?? null}
           controlPanelWidth={window.innerWidth * 0.25}
         />
+      )}
+
+      {housingTimelapseOpen && (
+        <HousingTimelapse onClose={() => setHousingTimelapseOpen(false)} />
       )}
     </div>
   );
