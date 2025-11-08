@@ -18,7 +18,8 @@ const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 const HOUSING_NY_API = 'https://data.cityofnewyork.us/resource/hg8x-zxpr.json'; // Affordable housing
 const PLUTO_API = 'https://data.cityofnewyork.us/resource/64uk-42ks.json'; // PLUTO data
 const HOUSING_NY_LIMIT = 20000; // Limit for Housing NY API
-const PLUTO_LIMIT = 5000; // Smaller limit for PLUTO to avoid quota issues
+const PLUTO_LIMIT = 5000; // Smaller limit for PLUTO
+const ENABLE_CACHE = false; // Disabled due to localStorage quota limits
 
 /**
  * Check if cached data is still valid
@@ -60,6 +61,10 @@ function loadFromCache(): CachedHousingData | null {
  * Save data to localStorage cache
  */
 function saveToCache(buildings: HousingBuildingRecord[]): void {
+  if (!ENABLE_CACHE) {
+    return; // Caching disabled
+  }
+
   try {
     const data: CachedHousingData = {
       meta: {
@@ -86,7 +91,7 @@ async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
   // Fetch from both sources in parallel
   const [housingNYResponse, plutoResponse] = await Promise.all([
     fetch(`${HOUSING_NY_API}?$limit=${HOUSING_NY_LIMIT}&$order=building_completion_date`),
-    fetch(`${PLUTO_API}?$limit=${PLUTO_LIMIT}&$where=yearbuilt>=2010`)
+    fetch(`${PLUTO_API}?$limit=${PLUTO_LIMIT}&$where=yearbuilt>=2014`)
   ]);
 
   if (!housingNYResponse.ok) {
@@ -125,6 +130,11 @@ async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
  * Get housing data (from cache or API)
  */
 export async function getHousingData(): Promise<HousingBuildingRecord[]> {
+  if (!ENABLE_CACHE) {
+    // Caching disabled - always fetch fresh data
+    return fetchFromAPI();
+  }
+
   // Try cache first
   const cached = loadFromCache();
   if (cached) {
@@ -252,7 +262,7 @@ function processBuilding(record: any): ProcessedBuilding | null {
   }
 
   // Validate required fields
-  if (!lat || !lon || !dateInfo.year || dateInfo.year < 2010 || dateInfo.year > 2025 || totalUnits === 0) {
+  if (!lat || !lon || !dateInfo.year || dateInfo.year < 2014 || dateInfo.year > 2025 || totalUnits === 0) {
     return null;
   }
 
@@ -311,7 +321,7 @@ export function getBuildingsUpToYear(
 ): ProcessedBuilding[] {
   const buildings: ProcessedBuilding[] = [];
 
-  for (let year = 2010; year <= targetYear; year++) {
+  for (let year = 2014; year <= targetYear; year++) {
     const yearBuildings = dataByYear.get(year);
     if (yearBuildings) {
       buildings.push(...yearBuildings);

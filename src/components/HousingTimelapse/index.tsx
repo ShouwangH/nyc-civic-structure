@@ -9,7 +9,7 @@ import { useHousingData } from '../../hooks/useHousingData';
 import { getDefaultZoningColors } from '../../lib/data/housingDataProcessor';
 import type { HousingTimelapseProps } from './types';
 
-const MIN_YEAR = 2010;
+const MIN_YEAR = 2014;
 const MAX_YEAR = 2024;
 
 /**
