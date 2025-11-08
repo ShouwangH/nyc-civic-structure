@@ -19,7 +19,7 @@ const HOUSING_NY_API = 'https://data.cityofnewyork.us/resource/hg8x-zxpr.json'; 
 const PLUTO_API = 'https://data.cityofnewyork.us/resource/64uk-42ks.json'; // PLUTO data
 const HOUSING_NY_LIMIT = 20000; // Limit for Housing NY API
 const PLUTO_LIMIT = 50000; // Increased limit for PLUTO (was 5000)
-const ENABLE_CACHE = true; // Cache processed data (much smaller than raw)
+const ENABLE_CACHE = false; // Disabled: localStorage quota exceeded with ~16K buildings
 
 /**
  * Check if cached data is still valid
@@ -430,13 +430,17 @@ function processBuilding(record: any): ProcessedBuilding | null {
  */
 export function processHousingData(rawData: HousingBuildingRecord[]): HousingDataByYear {
   const byYear = new Map<number, ProcessedBuilding[]>();
+  let validCount = 0;
+  let invalidCount = 0;
 
   for (const record of rawData) {
     const building = processBuilding(record);
     if (!building) {
+      invalidCount++;
       continue;
     }
 
+    validCount++;
     const year = building.completionYear;
     if (!byYear.has(year)) {
       byYear.set(year, []);
@@ -444,6 +448,11 @@ export function processHousingData(rawData: HousingBuildingRecord[]): HousingDat
 
     byYear.get(year)!.push(building);
   }
+
+  console.info(`[HousingData] Processed ${validCount} valid buildings, ${invalidCount} invalid/filtered`);
+  console.info(`[HousingData] Year distribution:`,
+    Array.from(byYear.entries()).map(([year, buildings]) => `${year}: ${buildings.length}`).join(', ')
+  );
 
   return byYear;
 }

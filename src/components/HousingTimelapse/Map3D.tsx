@@ -80,7 +80,7 @@ export function Map3D({ buildings, currentYear, width, height }: Map3DProps) {
         }
       },
     });
-  }, [buildings, displayYear]);
+  }, [displayYear]); // buildings are stable after load, only year changes
 
   // Tooltip for hovered building
   const renderTooltip = () => {
