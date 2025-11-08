@@ -10,6 +10,7 @@ import { HousingTimelapse } from './components/HousingTimelapse';
 import { governmentScopes } from './data/datasets';
 import type { VisualizationState } from './visualization/cytoscape/controller';
 import { initializeGraphData, type GraphData } from './data/loader';
+import { actions } from './visualization/cytoscape/actions';
 
 cytoscape.use(cytoscapeElk);
 
@@ -18,7 +19,6 @@ function App() {
   const [graphData, setGraphData] = useState<GraphData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [housingTimelapseOpen, setHousingTimelapseOpen] = useState(false);
 
   // Single state object
   const [state, setState] = useState<VisualizationState>({
@@ -104,20 +104,10 @@ function App() {
     <div className="relative flex min-h-screen bg-[#eceae4] p-3 gap-3">
       <div className="flex flex-col w-1/4 gap-3">
         <header className="rounded-xl border border-slate-200 bg-slate-50 px-6 py-3 shadow-sm">
-          <div className="flex items-center justify-between">
-            <h1 className="text-xl font-semibold text-slate-900">
-              <span>Maximum New York |</span>
-              <span className="text-gray-500 text-lg"> {dataset.meta.title}</span>
-            </h1>
-            <button
-              type="button"
-              onClick={() => setHousingTimelapseOpen(true)}
-              className="px-3 py-1.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:bg-blue-50 rounded-lg transition-colors"
-              title="Open Housing Timelapse"
-            >
-              Housing 3D
-            </button>
-          </div>
+          <h1 className="text-xl font-semibold text-slate-900">
+            <span>Maximum New York |</span>
+            <span className="text-gray-500 text-lg"> {dataset.meta.title}</span>
+          </h1>
         </header>
 
         <ControlsPanel
@@ -162,7 +152,7 @@ function App() {
         </main>
       </div>
 
-      {viewMode === 'views' && (
+      {viewMode === 'financials' && (
         <OverlayWrapper
           overlaySubviews={overlaySubviews}
           inputHandler={runtime?.inputHandler ?? null}
@@ -170,8 +160,13 @@ function App() {
         />
       )}
 
-      {housingTimelapseOpen && (
-        <HousingTimelapse onClose={() => setHousingTimelapseOpen(false)} />
+      {viewMode === 'maps' && (
+        <HousingTimelapse
+          onClose={() => {
+            if (!runtime?.inputHandler) return;
+            void runtime.inputHandler.enqueue(actions.changeViewMode('diagram'));
+          }}
+        />
       )}
     </div>
   );
