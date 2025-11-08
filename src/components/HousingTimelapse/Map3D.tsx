@@ -64,11 +64,11 @@ export function Map3D({ buildings, currentYear, width, height }: Map3DProps) {
       },
       transitions: {
         getElevation: {
-          duration: 600,
-          easing: (t) => 1 - Math.pow(1 - t, 3), // Ease out cubic - smoother deceleration
+          duration: 250, // Fast enough to not lag behind playback
+          easing: (t) => 1 - Math.pow(1 - t, 3), // Ease out cubic
         },
         getFillColor: {
-          duration: 400,
+          duration: 200,
         },
       },
       onHover: (info: PickingInfo) => {

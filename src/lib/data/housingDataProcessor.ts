@@ -156,18 +156,28 @@ async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
     // Log first PLUTO record to understand structure
     if (plutoData.length > 0) {
       console.info('[HousingData] Sample PLUTO record:', plutoData[0]);
+      console.info('[HousingData] PLUTO fields:', Object.keys(plutoData[0]));
     }
+  }
+
+  // Debug: Log Housing NY fields
+  if (housingNYData.length > 0) {
+    console.info('[HousingData] Sample Housing NY record:', housingNYData[0]);
+    console.info('[HousingData] Housing NY fields:', Object.keys(housingNYData[0]));
   }
 
   // Build BBL index from Housing NY data for O(1) lookup
   const housingByBBL = new Map<string, any>();
+  let housingNYWithBBL = 0;
   for (const record of housingNYData) {
     const bbl = normalizeBBL(record.bbl);
     if (bbl) {
       housingByBBL.set(bbl, record);
+      housingNYWithBBL++;
     }
   }
   console.info(`[HousingData] Indexed ${housingByBBL.size} Housing NY records by BBL`);
+  console.info(`[HousingData] Housing NY records with BBL: ${housingNYWithBBL} / ${housingNYData.length}`);
 
   // Debug: Sample BBL formats from both datasets
   console.info('[HousingData] Sample Housing NY BBLs:',
@@ -180,11 +190,13 @@ async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
   // Join PLUTO with Housing NY data
   const joinedData: any[] = [];
   let joinedCount = 0;
+  let plutoWithBBL = 0;
 
   for (const plutoRecord of plutoData) {
     const bbl = normalizeBBL(plutoRecord.bbl);
     if (!bbl) continue;
 
+    plutoWithBBL++;
     const housingRecord = housingByBBL.get(bbl);
 
     if (housingRecord) {
@@ -215,6 +227,7 @@ async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
     });
   }
 
+  console.info(`[HousingData] PLUTO records with BBL: ${plutoWithBBL} / ${plutoData.length}`);
   console.info(`[HousingData] Join complete: ${joinedCount} matched, ${housingByBBL.size} Housing NY only, ${plutoData.length - joinedCount} PLUTO only`);
   console.info(`[HousingData] Total joined records: ${joinedData.length}`);
 
