@@ -30,12 +30,12 @@ export function Map3D({ buildings, currentYear, width, height }: Map3DProps) {
     return new ColumnLayer({
       id: 'buildings-layer',
       data: buildings,
+      getPosition: (d) => d.coordinates,
       diskResolution: 12,
       radius: 20,
       extruded: true,
       pickable: true,
       elevationScale: 4,
-      getPosition: (d) => d.coordinates,
       // Conditionally show buildings - future buildings have elevation 0
       getElevation: (d) => d.completionYear <= currentYear ? d.totalUnits : 0,
       getFillColor: (d) => {
@@ -59,16 +59,13 @@ export function Map3D({ buildings, currentYear, width, height }: Map3DProps) {
       getLineWidth: 1,
       lineWidthMinPixels: 1,
       updateTriggers: {
-        getFillColor: [currentYear],
         getElevation: [currentYear],
       },
       transitions: {
         getElevation: {
-          duration: 250, // Fast enough to not lag behind playback
-          easing: (t) => 1 - Math.pow(1 - t, 3), // Ease out cubic
-        },
-        getFillColor: {
-          duration: 200,
+          duration: 300,
+          easing: (t) => t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t, // Ease in-out quad
+          enter: () => [0], // Start from 0 height
         },
       },
       onHover: (info: PickingInfo) => {

@@ -10,8 +10,8 @@ import type {
 } from '../../components/HousingTimelapse/types';
 
 // Cache configuration
-const CACHE_KEY = 'nyc_housing_processed_v5';
-const CACHE_VERSION = '5.0.0';
+const CACHE_KEY = 'nyc_housing_processed_v6';
+const CACHE_VERSION = '6.0.0';
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 // NYC Open Data API configuration
@@ -98,13 +98,18 @@ function saveProcessedToCache(dataByYear: HousingDataByYear): void {
 }
 
 /**
- * Normalize BBL to standard format (removes hyphens, ensures 10 digits)
+ * Normalize BBL to standard format (removes hyphens, decimals, ensures 10 digits)
  */
 function normalizeBBL(bbl: string | undefined): string | null {
   if (!bbl) return null;
 
-  // Remove all non-numeric characters
-  const numeric = bbl.replace(/[^0-9]/g, '');
+  // Handle PLUTO format with decimals (e.g., "4118580011.00000000")
+  // Split on decimal and take only the integer part
+  const parts = String(bbl).split('.');
+  const integerPart = parts[0];
+
+  // Remove all non-numeric characters from integer part
+  const numeric = integerPart.replace(/[^0-9]/g, '');
 
   // BBL should be 10 digits: 1 (borough) + 5 (block) + 4 (lot)
   if (numeric.length === 10) {
