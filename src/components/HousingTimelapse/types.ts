@@ -69,6 +69,17 @@ export type ZoningFeature = {
 };
 
 /**
+ * Building type classification
+ */
+export type BuildingType =
+  | 'one-two-family'     // A - 1-2 family homes
+  | 'multifamily-walkup' // B - Multifamily walkup
+  | 'multifamily-elevator' // C - Multifamily elevator
+  | 'mixed-use'          // D - Mixed residential/commercial
+  | 'affordable'         // From Housing NY data
+  | 'unknown';
+
+/**
  * Processed building data for visualization
  */
 export type ProcessedBuilding = {
@@ -82,8 +93,11 @@ export type ProcessedBuilding = {
   totalUnits: number;
   affordableUnits: number;
   affordablePercentage: number;
+  buildingType: BuildingType; // Type of residential construction
+  buildingClass?: string; // PLUTO building class code
   zoningDistrict?: string;
   address: string;
+  dataSource: 'housing-ny' | 'pluto'; // Track which dataset this came from
 };
 
 /**

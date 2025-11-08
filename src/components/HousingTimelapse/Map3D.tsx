@@ -38,16 +38,20 @@ export function Map3D({ buildings, currentYear, width, height }: Map3DProps) {
       getPosition: (d) => d.coordinates,
       getElevation: (d) => d.totalUnits,
       getFillColor: (d) => {
-        // Color based on affordable housing percentage
-        const percentage = d.affordablePercentage;
-        if (percentage >= 80) {
-          return [34, 197, 94]; // Green (high affordable)
-        } else if (percentage >= 50) {
-          return [59, 130, 246]; // Blue (moderate affordable)
-        } else if (percentage >= 20) {
-          return [251, 191, 36]; // Yellow (some affordable)
-        } else {
-          return [239, 68, 68]; // Red (low/no affordable)
+        // Color based on building type
+        switch (d.buildingType) {
+          case 'affordable':
+            return [34, 197, 94]; // Green - Affordable housing
+          case 'multifamily-elevator':
+            return [59, 130, 246]; // Blue - High-rise multifamily
+          case 'multifamily-walkup':
+            return [147, 51, 234]; // Purple - Mid-rise multifamily
+          case 'mixed-use':
+            return [251, 191, 36]; // Yellow - Mixed residential/commercial
+          case 'one-two-family':
+            return [239, 68, 68]; // Red - Single/two-family homes
+          default:
+            return [156, 163, 175]; // Gray - Unknown
         }
       },
       getLineColor: [255, 255, 255, 80],
