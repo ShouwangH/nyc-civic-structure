@@ -16,6 +16,27 @@ const INITIAL_VIEW_STATE = {
   bearing: 0,
 };
 
+// Color by managing agency
+const AGENCY_COLORS: Record<string, [number, number, number]> = {
+  DDC: [220, 38, 38],      // red - Design & Construction (largest)
+  DPR: [34, 197, 94],      // green - Parks & Recreation
+  EDC: [37, 99, 235],      // blue - Economic Development
+  CUNY: [234, 179, 8],     // yellow - City University
+  HHC: [168, 85, 247],     // purple - Health & Hospitals
+  DCLA: [236, 72, 153],    // pink - Cultural Affairs
+  DCAS: [20, 184, 166],    // teal - Citywide Admin Services
+  DOT: [249, 115, 22],     // orange - Transportation
+  HPD: [132, 204, 22],     // lime - Housing Preservation
+  DEP: [14, 165, 233],     // sky blue - Environmental Protection
+  TGI: [163, 163, 163],    // gray - Governors Island
+  NYPD: [30, 58, 138],     // dark blue - Police
+  FDNY: [185, 28, 28],     // dark red - Fire
+  BNY: [91, 33, 182],      // deep purple - Brooklyn Navy Yard
+  DHS: [217, 119, 6],      // amber - Homeless Services
+};
+
+const DEFAULT_COLOR: [number, number, number] = [150, 150, 150]; // gray for others
+
 export function CapitalBudgetMap() {
   const { projects, isLoading, error } = useCapitalBudgetData();
   const [hoveredProject, setHoveredProject] = useState<CapitalProjectFeature | null>(null);
@@ -29,7 +50,10 @@ export function CapitalBudgetMap() {
     pickable: true,
     elevationScale: 0.5,
     getElevation: (d) => d.properties.allocate_total / 10000, // Scale budget to reasonable height
-    getFillColor: [37, 99, 235, 200], // Uniform blue color
+    getFillColor: (d) => {
+      const color = AGENCY_COLORS[d.properties.magencyacro] || DEFAULT_COLOR;
+      return [...color, 200]; // Add alpha channel
+    },
     getLineColor: [80, 80, 80],
     lineWidthMinPixels: 1,
     onHover: (info: PickingInfo<CapitalProjectFeature>) => {
@@ -90,14 +114,25 @@ export function CapitalBudgetMap() {
       )}
 
       {/* Legend */}
-      <div className="absolute bottom-4 right-4 bg-white rounded-lg shadow-lg p-4 z-10">
-        <div className="font-semibold text-gray-900 mb-2">Legend</div>
-        <div className="text-xs text-gray-600 space-y-1">
-          <div>
-            <strong>Footprint:</strong> Project area
-          </div>
-          <div>
+      <div className="absolute bottom-4 right-4 bg-white rounded-lg shadow-lg p-4 max-w-xs z-10">
+        <div className="font-semibold text-gray-900 mb-2">Top Agencies</div>
+        <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
+          {Object.entries(AGENCY_COLORS).slice(0, 10).map(([agency, color]) => (
+            <div key={agency} className="flex items-center gap-1">
+              <div
+                className="w-3 h-3 rounded flex-shrink-0"
+                style={{ backgroundColor: `rgb(${color.join(',')})` }}
+              />
+              <span className="truncate">{agency}</span>
+            </div>
+          ))}
+        </div>
+        <div className="mt-2 pt-2 border-t border-gray-200 space-y-1">
+          <div className="text-xs text-gray-600">
             <strong>Height:</strong> Allocated budget
+          </div>
+          <div className="text-xs text-gray-600">
+            <strong>Filter:</strong> 2025 active projects
           </div>
         </div>
       </div>
