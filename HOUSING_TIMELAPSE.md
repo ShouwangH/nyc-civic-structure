@@ -4,7 +4,7 @@
 Create a 2.5D map showing NYC construction over time with zoning-based colors and building height representing housing units.
 
 ## Core Requirements
-- Interactive timeline slider (2010-2024)
+- Interactive timeline slider (2014-2024)
 - Building extrusions proportional to total housing units
 - Color coding by zoning district
 - Highlight affordable housing percentage

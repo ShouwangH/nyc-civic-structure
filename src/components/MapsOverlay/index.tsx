@@ -17,7 +17,7 @@ const MAP_OPTIONS: MapOption[] = [
   {
     id: 'housing',
     label: 'Housing Development Timelapse',
-    description: '2.5D visualization of housing construction (2010-2024)',
+    description: '2.5D visualization of housing construction (2014-2024)',
   },
   {
     id: 'capital-budget',
