@@ -159,19 +159,19 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
       console.log('Depth below clicked node:', depthBelow);
       console.log('Has children:', !!p.children, 'count:', p.children?.length || 0);
 
-      // Only allow zoom in if node has at least 2 levels below it (to show 2 rings)
-      // Or if clicking the same node/parent to zoom out
+      // Only allow zoom in if node has at least 1 level below it (has children)
+      // If clicking the same node, zoom out to parent
       if (currentFocus === p) {
         console.log('Decision: Zoom out (clicked current focus)');
         // Zoom out to parent
         currentFocus = (p.parent as NodeWithCurrent) || root;
-      } else if (maxDepthBelow(p) < 2) {
-        console.log('Decision: Zoom out (not enough depth below)');
-        // Not enough depth below - treat as zoom out click on parent
+      } else if (depthBelow < 1 || !p.children || p.children.length === 0) {
+        console.log('Decision: Zoom out (no children / leaf node)');
+        // Leaf node or no depth below - treat as zoom out click on parent
         currentFocus = (p.parent as NodeWithCurrent) || root;
       } else {
-        console.log('Decision: Zoom in (enough depth)');
-        // Zoom in - enough depth
+        console.log('Decision: Zoom in (has children)');
+        // Has children - zoom in
         currentFocus = p;
       }
 

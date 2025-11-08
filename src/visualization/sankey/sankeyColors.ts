@@ -64,8 +64,12 @@ const ASSET_CLASS_COLORS = {
 
   // === BUDGET SANKEY COLORS ===
 
-  // System root (budget)
+  // System root (budget) - by ID
   'NYC_Finances': '#111827',              // Gray 900 (root)
+  'NYC_Expense_FY2025': '#111827',        // Gray 900 (root - FY2025)
+
+  // System root (budget) - by label (for backward compatibility)
+  'NYC Expense Budget FY2025 (External Funding Only)': '#111827', // Gray 900 (root)
 
   // Revenue Classes: Distinct colors for each major revenue category
   'Taxes': '#dc2626',                     // Red 600 (largest revenue source)
@@ -73,23 +77,53 @@ const ASSET_CLASS_COLORS = {
   'Charges & Fees': '#059669',            // Emerald 600
   'Other Revenues': '#71717a',            // Zinc 500
 
-  // Budget Funds: Medium tones
+  // Budget Funds - by ID
+  'fund:city_funds': '#ea580c',           // Orange 600
+  'fund:federal_funds': '#3b82f6',        // Blue 500
+  'fund:state_funds': '#8b5cf6',          // Violet 500
+  'fund:other_categorical': '#6b7280',    // Gray 500
+  'fund:community_development': '#7c2d12', // Orange 900
+
+  // Budget Funds - by label (for backward compatibility)
   'City Funds': '#ea580c',                // Orange 600
   'Federal Funds': '#3b82f6',             // Blue 500
   'State Funds': '#8b5cf6',               // Violet 500
+  'Other Categorical': '#6b7280',         // Gray 500
   'Other Funds': '#6b7280',               // Gray 500
+  'Community Development': '#7c2d12',     // Orange 900
 
-  // Government Functions: Distinct colors
+  // Service Categories - by ID
+  'cat:education_libraries': '#b91c1c',   // Red 700 (largest category)
+  'cat:public_safety_justice': '#1e40af', // Blue 800
+  'cat:health_mental_hygiene': '#047857', // Emerald 700
+  'cat:social_services_homelessness': '#7c3aed', // Violet 600
+  'cat:transportation': '#d97706',        // Amber 600
+  'cat:sanitation_parks_environment': '#16a34a', // Green 600
+  'cat:housing_economic_development': '#ea580c', // Orange 600
+  'cat:government_admin_oversight': '#475569', // Slate 600
+
+  // Service Categories - by label (for backward compatibility)
+  'Education & Libraries': '#b91c1c',     // Red 700 (largest category)
+  'Public Safety & Justice': '#1e40af',   // Blue 800
+  'Health & Mental Hygiene': '#047857',   // Emerald 700
+  'Social Services & Homelessness': '#7c3aed', // Violet 600
+  'Transportation': '#d97706',            // Amber 600
+  'Sanitation, Parks & Environment': '#16a34a', // Green 600
+  'Housing & Economic Development': '#ea580c', // Orange 600
+  'Government, Admin & Oversight': '#475569', // Slate 600
+
+  // Government Functions: Distinct colors (legacy)
   'Education': '#b91c1c',                 // Red 700 (largest function)
   'Public Safety': '#1e40af',             // Blue 800
   'Health': '#047857',                    // Emerald 700
   'Social Services': '#7c3aed',           // Violet 600
-  'Transportation': '#d97706',            // Amber 600
   'Environmental Protection': '#16a34a',  // Green 600
   'Housing': '#ea580c',                   // Orange 600
   'Cultural & Recreation': '#db2777',     // Pink 600
   'General Government': '#475569',        // Slate 600
-  'Community Development': '#7c2d12',     // Orange 900
+
+  // Major Agencies: Default to light gray (will use DEFAULT_NODE_COLOR)
+  // Individual agency colors can be added here if specific coloring is needed
 } as const;
 
 // Default color for unlabeled nodes (pension managers, budget revenue sources)

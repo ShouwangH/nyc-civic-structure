@@ -2,7 +2,7 @@
 // ABOUTME: Combines datasets, transforms nodes, and builds indexes efficiently
 
 import type { LayoutOptions } from 'cytoscape';
-import { governmentDatasets } from './datasets';
+import { loadGovernmentDatasets } from './datasets';
 import type { GovernmentScope, GovernmentDataset } from './datasets';
 import type { SubviewDefinition, StructureNode, RawEdge } from './types';
 import type { GraphConfig, GraphEdgeInfo, GraphNodeInfo } from '../visualization/cytoscape/types';
@@ -83,8 +83,11 @@ const createElkLayout = (nodesHavePreset: boolean): LayoutOptions =>
  * Loads and transforms all graph data in a single efficient pass.
  * Combines datasets, creates anchors, transforms nodes, and builds indexes.
  */
-export function loadGraphData(): GraphData {
+export async function loadGraphData(): Promise<GraphData> {
   const scopes: GovernmentScope[] = ['federal', 'state', 'city'];
+
+  // Load all datasets
+  const governmentDatasets = await loadGovernmentDatasets();
 
   // Anchor node/edge definitions
   const anchorDefs = [
@@ -128,7 +131,7 @@ export function loadGraphData(): GraphData {
   // Add dataset nodes
   scopes.forEach((scope) => {
     const dataset = governmentDatasets[scope];
-    dataset.nodes.forEach((rawNode) => {
+    dataset.nodes.forEach((rawNode: StructureNode) => {
       const node = transformNode(rawNode);
       allNodes.push(node);
       nodesById.set(node.id, node);
@@ -148,7 +151,7 @@ export function loadGraphData(): GraphData {
 
   // Add dataset edges
   scopes.forEach((scope) => {
-    governmentDatasets[scope].edges.forEach((rawEdge) => {
+    governmentDatasets[scope].edges.forEach((rawEdge: RawEdge) => {
       const edge = transformEdge(rawEdge);
       allEdges.push(edge);
       edgesById.set(edge.id, edge);
@@ -161,8 +164,8 @@ export function loadGraphData(): GraphData {
 
     // Attach anchor to main tier nodes in its scope
     dataset.nodes
-      .filter((node) => node.tier === 'main' || node.tier === undefined)
-      .forEach((node) => {
+      .filter((node: StructureNode) => node.tier === 'main' || node.tier === undefined)
+      .forEach((node: StructureNode) => {
         const edge: GraphEdgeInfo = {
           source: anchorId,
           target: node.id,
@@ -222,7 +225,7 @@ export function loadGraphData(): GraphData {
 
   scopes.forEach((scope) => {
     const subviews = governmentDatasets[scope].subviews ?? [];
-    subviews.forEach((subview) => {
+    subviews.forEach((subview: SubviewDefinition) => {
       allSubviews.push(subview);
       subviewById.set(subview.id, subview);
 
@@ -287,6 +290,24 @@ export function loadGraphData(): GraphData {
 }
 
 /**
- * Static graph data - computed once at module load.
+ * Initialize graph data (async)
+ * Call this once at app startup
  */
-export const GRAPH_DATA = loadGraphData();
+let GRAPH_DATA_CACHE: GraphData | null = null;
+
+export async function initializeGraphData(): Promise<GraphData> {
+  if (!GRAPH_DATA_CACHE) {
+    GRAPH_DATA_CACHE = await loadGraphData();
+  }
+  return GRAPH_DATA_CACHE;
+}
+
+/**
+ * Get cached graph data (must call initializeGraphData first)
+ */
+export function getGraphData(): GraphData {
+  if (!GRAPH_DATA_CACHE) {
+    throw new Error('Graph data not initialized. Call initializeGraphData() first.');
+  }
+  return GRAPH_DATA_CACHE;
+}

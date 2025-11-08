@@ -1,0 +1,417 @@
+{
+  "meta": {
+    "description": "NYC FY2025 Revenue\u2192Fund\u2192Function Sankey (includes Other Categorical fund node).",
+    "units": "USD (millions)",
+    "levels": [
+      "Revenue Source",
+      "Fund Group",
+      "Function"
+    ],
+    "value_cutoff_million": 0.01
+  },
+  "nodes": [
+    {
+      "id": "Charges & Fees",
+      "label": "Charges & Fees",
+      "level": 0,
+      "type": "revenue_source"
+    },
+    {
+      "id": "Fines & Forfeitures",
+      "label": "Fines & Forfeitures",
+      "level": 0,
+      "type": "revenue_source"
+    },
+    {
+      "id": "Income Taxes",
+      "label": "Income Taxes",
+      "level": 0,
+      "type": "revenue_source"
+    },
+    {
+      "id": "Miscellaneous",
+      "label": "Miscellaneous",
+      "level": 0,
+      "type": "revenue_source"
+    },
+    {
+      "id": "Other",
+      "label": "Other",
+      "level": 0,
+      "type": "revenue_source"
+    },
+    {
+      "id": "Other Taxes",
+      "label": "Other Taxes",
+      "level": 0,
+      "type": "revenue_source"
+    },
+    {
+      "id": "Other Revenues",
+      "label": "Other Revenues",
+      "level": 0,
+      "type": "revenue_source"
+    },
+    {
+      "id": "City Funds",
+      "label": "City Funds",
+      "level": 1,
+      "type": "fund_source"
+    },
+    {
+      "id": "State Funds",
+      "label": "State Funds",
+      "level": 1,
+      "type": "fund_source"
+    },
+    {
+      "id": "Federal Funds",
+      "label": "Federal Funds",
+      "level": 1,
+      "type": "fund_source"
+    },
+    {
+      "id": "Other Categorical",
+      "label": "Other Categorical",
+      "level": 1,
+      "type": "fund_source"
+    },
+    {
+      "id": "Debt & Pensions",
+      "label": "Debt & Pensions",
+      "level": 2,
+      "type": "function"
+    },
+    {
+      "id": "Education",
+      "label": "Education",
+      "level": 2,
+      "type": "function"
+    },
+    {
+      "id": "Environment & Infrastructure",
+      "label": "Environment & Infrastructure",
+      "level": 2,
+      "type": "function"
+    },
+    {
+      "id": "General Government",
+      "label": "General Government",
+      "level": 2,
+      "type": "function"
+    },
+    {
+      "id": "Health",
+      "label": "Health",
+      "level": 2,
+      "type": "function"
+    },
+    {
+      "id": "Housing",
+      "label": "Housing",
+      "level": 2,
+      "type": "function"
+    },
+    {
+      "id": "Parks & Recreation",
+      "label": "Parks & Recreation",
+      "level": 2,
+      "type": "function"
+    },
+    {
+      "id": "Public Safety",
+      "label": "Public Safety",
+      "level": 2,
+      "type": "function"
+    },
+    {
+      "id": "Social Services",
+      "label": "Social Services",
+      "level": 2,
+      "type": "function"
+    },
+    {
+      "id": "Transportation",
+      "label": "Transportation",
+      "level": 2,
+      "type": "function"
+    }
+  ],
+  "links": [
+    {
+      "source": "Charges & Fees",
+      "target": "City Funds",
+      "value": 148674.98
+    },
+    {
+      "source": "Fines & Forfeitures",
+      "target": "City Funds",
+      "value": 31591.72
+    },
+    {
+      "source": "Income Taxes",
+      "target": "City Funds",
+      "value": 5998.6
+    },
+    {
+      "source": "Miscellaneous",
+      "target": "City Funds",
+      "value": 22056.38
+    },
+    {
+      "source": "Other",
+      "target": "City Funds",
+      "value": 25761.03
+    },
+    {
+      "source": "Other Taxes",
+      "target": "City Funds",
+      "value": 1857681.86
+    },
+    {
+      "source": "Other Revenues",
+      "target": "Other Categorical",
+      "value": 50.0
+    },
+    {
+      "source": "City Funds",
+      "target": "Debt & Pensions",
+      "value": 419284.91
+    },
+    {
+      "source": "City Funds",
+      "target": "Education",
+      "value": 395817.05
+    },
+    {
+      "source": "City Funds",
+      "target": "Environment & Infrastructure",
+      "value": 88727.32
+    },
+    {
+      "source": "City Funds",
+      "target": "General Government",
+      "value": 527813.15
+    },
+    {
+      "source": "City Funds",
+      "target": "Health",
+      "value": 60037.15
+    },
+    {
+      "source": "City Funds",
+      "target": "Housing",
+      "value": 10583.23
+    },
+    {
+      "source": "City Funds",
+      "target": "Parks & Recreation",
+      "value": 19130.26
+    },
+    {
+      "source": "City Funds",
+      "target": "Public Safety",
+      "value": 207813.24
+    },
+    {
+      "source": "City Funds",
+      "target": "Social Services",
+      "value": 281602.74
+    },
+    {
+      "source": "City Funds",
+      "target": "Transportation",
+      "value": 20441.64
+    },
+    {
+      "source": "State Funds",
+      "target": "Debt & Pensions",
+      "value": 1224.5
+    },
+    {
+      "source": "State Funds",
+      "target": "Education",
+      "value": 337837.5
+    },
+    {
+      "source": "State Funds",
+      "target": "Environment & Infrastructure",
+      "value": 118.0
+    },
+    {
+      "source": "State Funds",
+      "target": "General Government",
+      "value": 77046.25
+    },
+    {
+      "source": "State Funds",
+      "target": "Health",
+      "value": 18851.51
+    },
+    {
+      "source": "State Funds",
+      "target": "Housing",
+      "value": 437.78
+    },
+    {
+      "source": "State Funds",
+      "target": "Parks & Recreation",
+      "value": 76.99
+    },
+    {
+      "source": "State Funds",
+      "target": "Public Safety",
+      "value": 1945.98
+    },
+    {
+      "source": "State Funds",
+      "target": "Social Services",
+      "value": 34427.57
+    },
+    {
+      "source": "State Funds",
+      "target": "Transportation",
+      "value": 3526.55
+    },
+    {
+      "source": "Federal Funds",
+      "target": "Debt & Pensions",
+      "value": 5075.11
+    },
+    {
+      "source": "Federal Funds",
+      "target": "Education",
+      "value": 84541.94
+    },
+    {
+      "source": "Federal Funds",
+      "target": "Environment & Infrastructure",
+      "value": 5356.78
+    },
+    {
+      "source": "Federal Funds",
+      "target": "General Government",
+      "value": 71874.96
+    },
+    {
+      "source": "Federal Funds",
+      "target": "Health",
+      "value": 30356.7
+    },
+    {
+      "source": "Federal Funds",
+      "target": "Housing",
+      "value": 18358.82
+    },
+    {
+      "source": "Federal Funds",
+      "target": "Parks & Recreation",
+      "value": 370.69
+    },
+    {
+      "source": "Federal Funds",
+      "target": "Public Safety",
+      "value": 11265.46
+    },
+    {
+      "source": "Federal Funds",
+      "target": "Social Services",
+      "value": 73231.38
+    },
+    {
+      "source": "Federal Funds",
+      "target": "Transportation",
+      "value": 3407.66
+    },
+    {
+      "source": "Other Categorical",
+      "target": "Debt & Pensions",
+      "value": 605.37
+    },
+    {
+      "source": "Other Categorical",
+      "target": "Education",
+      "value": 5631.12
+    },
+    {
+      "source": "Other Categorical",
+      "target": "Environment & Infrastructure",
+      "value": 307.23
+    },
+    {
+      "source": "Other Categorical",
+      "target": "General Government",
+      "value": 14150.4
+    },
+    {
+      "source": "Other Categorical",
+      "target": "Health",
+      "value": 1040.47
+    },
+    {
+      "source": "Other Categorical",
+      "target": "Housing",
+      "value": 477.31
+    },
+    {
+      "source": "Other Categorical",
+      "target": "Parks & Recreation",
+      "value": 590.89
+    },
+    {
+      "source": "Other Categorical",
+      "target": "Public Safety",
+      "value": 8137.6
+    },
+    {
+      "source": "Other Categorical",
+      "target": "Social Services",
+      "value": 73.25
+    },
+    {
+      "source": "Other Categorical",
+      "target": "Transportation",
+      "value": 109.07
+    },
+    {
+      "source": "Community Development",
+      "target": "Education",
+      "value": 1880.29
+    },
+    {
+      "source": "Community Development",
+      "target": "Environment & Infrastructure",
+      "value": 2667.14
+    },
+    {
+      "source": "Community Development",
+      "target": "General Government",
+      "value": 8293.14
+    },
+    {
+      "source": "Community Development",
+      "target": "Health",
+      "value": 0.03
+    },
+    {
+      "source": "Community Development",
+      "target": "Housing",
+      "value": 12034.45
+    },
+    {
+      "source": "Community Development",
+      "target": "Parks & Recreation",
+      "value": 209.28
+    },
+    {
+      "source": "Community Development",
+      "target": "Social Services",
+      "value": 543.83
+    },
+    {
+      "source": "Community Development",
+      "target": "Transportation",
+      "value": 0.02
+    }
+  ]
+}

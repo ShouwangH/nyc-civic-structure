@@ -27,6 +27,9 @@ export type ClearSelectionsAction = Action<'CLEAR_SELECTIONS'>;
 // View mode actions
 export type ChangeViewModeAction = Action<'CHANGE_VIEW_MODE', { mode: 'diagram' | 'views' }>;
 
+// Control panel tab actions
+export type ChangeControlPanelTabAction = Action<'CHANGE_CONTROL_PANEL_TAB', { tab: 'details' | 'processes' }>;
+
 // Union of all possible actions
 export type GraphAction =
   | NodeClickAction
@@ -37,7 +40,8 @@ export type GraphAction =
   | ChangeScopeAction
   | ClearScopeAction
   | ClearSelectionsAction
-  | ChangeViewModeAction;
+  | ChangeViewModeAction
+  | ChangeControlPanelTabAction;
 
 // Action creators for convenience
 export const actions = {
@@ -80,5 +84,10 @@ export const actions = {
   changeViewMode: (mode: 'diagram' | 'views'): ChangeViewModeAction => ({
     type: 'CHANGE_VIEW_MODE',
     payload: { mode },
+  }),
+
+  changeControlPanelTab: (tab: 'details' | 'processes'): ChangeControlPanelTabAction => ({
+    type: 'CHANGE_CONTROL_PANEL_TAB',
+    payload: { tab },
   }),
 };
