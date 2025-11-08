@@ -7,6 +7,33 @@ import { verifyAuth } from '../lib/auth';
 import { eq, and } from 'drizzle-orm';
 import { registerRoute } from '../api-middleware';
 
+interface CreateOverlayBody {
+  id: string;
+  scopeId: string;
+  anchorNodeId: string;
+  label: string;
+  description?: string;
+  type: string;
+  renderTarget?: string;
+  dataSource?: string;
+  dataSnapshot?: unknown;
+  metadata?: unknown;
+  lastFetched?: string;
+}
+
+interface UpdateOverlayBody {
+  scopeId?: string;
+  anchorNodeId?: string;
+  label?: string;
+  description?: string;
+  type?: string;
+  renderTarget?: string;
+  dataSource?: string;
+  dataSnapshot?: unknown;
+  metadata?: unknown;
+  lastFetched?: string;
+}
+
 /**
  * GET /api/overlays
  * List all overlays, optionally filtered by scope or anchor node
@@ -106,7 +133,7 @@ async function createOverlay(request: Request) {
   }
 
   try {
-    const body = await request.json();
+    const body = await request.json() as CreateOverlayBody;
 
     // Validate required fields
     if (!body.id || !body.scopeId || !body.anchorNodeId || !body.label || !body.type) {
@@ -173,13 +200,21 @@ async function updateOverlay(request: Request) {
       );
     }
 
-    const body = await request.json();
+    const body = await request.json() as UpdateOverlayBody;
 
     // Update overlay
     const updatedOverlay = await db
       .update(overlays)
       .set({
-        ...body,
+        scopeId: body.scopeId,
+        anchorNodeId: body.anchorNodeId,
+        label: body.label,
+        description: body.description,
+        type: body.type,
+        renderTarget: body.renderTarget,
+        dataSource: body.dataSource,
+        dataSnapshot: body.dataSnapshot,
+        metadata: body.metadata,
         updatedAt: new Date(),
         lastFetched: body.lastFetched ? new Date(body.lastFetched) : undefined,
       })
