@@ -6,7 +6,7 @@ import { ControlsPanel } from './components/ControlsPanel';
 import { DiagramViewToggle } from './components/DiagramViewToggle';
 import { GraphCanvas, type GraphRuntime } from './components/GraphCanvas';
 import { OverlayWrapper } from './components/OverlayWrapper';
-import { HousingTimelapse } from './components/HousingTimelapse';
+import { MapsOverlay } from './components/MapsOverlay';
 import { governmentScopes } from './data/datasets';
 import type { VisualizationState } from './visualization/cytoscape/controller';
 import { initializeGraphData, type GraphData } from './data/loader';
@@ -161,7 +161,7 @@ function App() {
       )}
 
       {viewMode === 'maps' && (
-        <HousingTimelapse
+        <MapsOverlay
           onClose={() => {
             if (!runtime?.inputHandler) return;
             void runtime.inputHandler.enqueue(actions.changeViewMode('diagram'));
