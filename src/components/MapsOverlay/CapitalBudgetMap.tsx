@@ -136,15 +136,6 @@ export function CapitalBudgetMap() {
           </div>
         </div>
       </div>
-
-      {/* Info banner - data source */}
-      {!isLoading && !error && (
-        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-blue-50 border border-blue-200 rounded-lg px-4 py-2 z-10">
-          <div className="text-sm text-blue-800">
-            <span className="font-medium">Live Data:</span> NYC Capital Projects Database (CPDB) - {projects.length} projects loaded
-          </div>
-        </div>
-      )}
     </div>
   );
 }
