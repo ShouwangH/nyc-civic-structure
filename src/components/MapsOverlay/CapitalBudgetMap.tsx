@@ -6,72 +6,7 @@ import { Map } from 'react-map-gl/maplibre';
 import { DeckGL } from '@deck.gl/react';
 import { GeoJsonLayer } from '@deck.gl/layers';
 import type { PickingInfo } from '@deck.gl/core';
-import type { Feature, Polygon, Point } from 'geojson';
-
-// GeoJSON Feature properties for capital projects
-type CapitalProjectProperties = {
-  maprojid: string;
-  description: string;
-  managingagency: string;
-  borough: string;
-  totalcost: number;
-  projecttype: string;
-  status: string;
-  fy: string;
-};
-
-// GeoJSON Feature type for capital projects (supports both Point and Polygon)
-type CapitalProjectFeature = Feature<Polygon | Point, CapitalProjectProperties>;
-
-// Mock GeoJSON data - will be replaced with real API fetch from CPDB Polygons dataset (9jkp-n57r)
-const MOCK_PROJECTS: CapitalProjectFeature[] = [
-  {
-    type: 'Feature',
-    geometry: {
-      type: 'Polygon',
-      coordinates: [[
-        [-74.008, 40.712],
-        [-74.004, 40.712],
-        [-74.004, 40.714],
-        [-74.008, 40.714],
-        [-74.008, 40.712],
-      ]],
-    },
-    properties: {
-      maprojid: 'DOT001',
-      description: 'Brooklyn Bridge Rehabilitation',
-      managingagency: 'DOT',
-      borough: 'Manhattan',
-      totalcost: 5000000,
-      projecttype: 'Reconstruction',
-      status: 'In Construction',
-      fy: '2025',
-    },
-  },
-  {
-    type: 'Feature',
-    geometry: {
-      type: 'Polygon',
-      coordinates: [[
-        [-73.936, 40.677],
-        [-73.933, 40.677],
-        [-73.933, 40.679],
-        [-73.936, 40.679],
-        [-73.936, 40.677],
-      ]],
-    },
-    properties: {
-      maprojid: 'PARKS002',
-      description: 'Prospect Park Renovation',
-      managingagency: 'Parks',
-      borough: 'Brooklyn',
-      totalcost: 2000000,
-      projecttype: 'Reconstruction',
-      status: 'In Design',
-      fy: '2025',
-    },
-  },
-];
+import { useCapitalBudgetData, type CapitalProjectFeature } from '../../hooks/useCapitalBudgetData';
 
 const INITIAL_VIEW_STATE = {
   longitude: -73.935,
@@ -91,7 +26,7 @@ const BOROUGH_COLORS: Record<string, [number, number, number]> = {
 };
 
 export function CapitalBudgetMap() {
-  const [projects] = useState<CapitalProjectFeature[]>(MOCK_PROJECTS);
+  const { projects, isLoading, error } = useCapitalBudgetData();
   const [hoveredProject, setHoveredProject] = useState<CapitalProjectFeature | null>(null);
 
   const layer = new GeoJsonLayer<CapitalProjectFeature>({
@@ -117,6 +52,24 @@ export function CapitalBudgetMap() {
 
   return (
     <div className="relative w-full h-full">
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-20">
+          <div className="text-center">
+            <div className="text-slate-900 text-xl mb-2">Loading capital projects...</div>
+            <div className="text-slate-600">Fetching from NYC Open Data</div>
+          </div>
+        </div>
+      )}
+
+      {error && (
+        <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-20">
+          <div className="text-center max-w-md">
+            <div className="text-red-600 text-xl mb-2">Failed to Load Data</div>
+            <div className="text-slate-700">{error}</div>
+          </div>
+        </div>
+      )}
+
       <DeckGL
         initialViewState={INITIAL_VIEW_STATE}
         controller={true}
@@ -165,12 +118,14 @@ export function CapitalBudgetMap() {
         </div>
       </div>
 
-      {/* Info banner - data source placeholder */}
-      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-yellow-50 border border-yellow-200 rounded-lg px-4 py-2 z-10">
-        <div className="text-sm text-yellow-800">
-          <span className="font-medium">Note:</span> Using mock data. Connect to CPDB Polygons dataset (9jkp-n57r) for actual project footprints.
+      {/* Info banner - data source */}
+      {!isLoading && !error && (
+        <div className="absolute top-4 left-1/2 transform -translate-x-1/2 bg-blue-50 border border-blue-200 rounded-lg px-4 py-2 z-10">
+          <div className="text-sm text-blue-800">
+            <span className="font-medium">Live Data:</span> NYC Capital Projects Database (CPDB) - {projects.length} projects loaded
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

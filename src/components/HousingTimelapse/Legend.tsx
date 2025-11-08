@@ -15,11 +15,7 @@ export function Legend({
   const affordablePercentage = totalUnits > 0 ? (affordableUnits / totalUnits) * 100 : 0;
 
   return (
-    <div className="absolute top-6 left-6 z-10 bg-white rounded-xl border border-slate-200 shadow-lg p-4 max-w-xs">
-      <h3 className="text-sm font-semibold text-slate-900 mb-3">
-        Housing Development Through {currentYear}
-      </h3>
-
+    <div className="absolute bottom-6 right-6 z-10 bg-white rounded-xl border border-slate-200 shadow-lg p-4 max-w-xs">
       {/* Statistics */}
       <div className="space-y-2 mb-4 pb-4 border-b border-slate-200">
         <div className="flex justify-between text-sm">
@@ -31,9 +27,15 @@ export function Legend({
           <span className="font-semibold text-slate-900">{totalUnits.toLocaleString()}</span>
         </div>
         <div className="flex justify-between text-sm">
-          <span className="text-slate-600">Affordable Units:</span>
+          <span className="text-slate-600">Affordable:</span>
           <span className="font-semibold text-slate-900">
-            {affordableUnits.toLocaleString()} ({affordablePercentage.toFixed(1)}%)
+            {affordableUnits.toLocaleString()}
+          </span>
+        </div>
+        <div className="flex justify-between text-sm">
+          <span className="text-slate-600">Market Rate:</span>
+          <span className="font-semibold text-slate-900">
+            {(totalUnits - affordableUnits).toLocaleString()}
           </span>
         </div>
       </div>
