@@ -364,7 +364,6 @@ function getBuildingType(
  */
 function processBuilding(record: any): ProcessedBuilding | null {
   const affordableData = record._affordableData;
-  const _hasAffordable = record._hasAffordable;
   const dataSource = record._dataSource; // 'dob' or 'pluto'
   const isDOB = dataSource === 'dob';
   const isPLUTO = dataSource === 'pluto';
