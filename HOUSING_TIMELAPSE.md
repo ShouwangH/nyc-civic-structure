@@ -11,7 +11,7 @@ Create a 2.5D map showing NYC construction over time with zoning-based colors an
 - Smooth animations between time periods
 
 ## Data Sources
-1. Housing New York Units: https://data.cityofnewyork.us/Housing-Development/Housing-New-York-Units-by-Building/hg8x-zxpr
+1. Housing New York Units: https://data.cityofnewyork.us/api/v3/views/64uk-42ks/query.json
 2. NYC Zoning: https://data.cityofnewyork.us/City-Government/Department-of-City-Planning-Zoning-Features/7qct-p7rj
 3. DOB Filings: https://data.cityofnewyork.us/Housing-Development/DOB-Job-Application-Filings/ic3t-wcy2
 
