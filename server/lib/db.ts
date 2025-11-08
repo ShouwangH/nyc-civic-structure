@@ -3,7 +3,7 @@
 
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
-import * as schema from '../../api/admin/_drizzle/schema';
+import * as schema from '../../shared/db/schema';
 
 // Get DATABASE_URL from environment
 const connectionString = process.env.DATABASE_URL;
