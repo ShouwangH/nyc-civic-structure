@@ -10,6 +10,7 @@ let cachedData: {
   housingNyData: any[];
   dobData: any[];
   plutoData: any[];
+  demolitionData: any[];
 } | null = null;
 
 // NYC Open Data API configuration
@@ -36,27 +37,30 @@ async function fetchAndProcessHousingData() {
   console.log('[Housing Data API] Fetching from NYC Open Data...');
 
   try {
-    // Fetch all three data sources in parallel
-    const [housingNyResponse, dobResponse, plutoResponse] = await Promise.all([
+    // Fetch all four data sources in parallel
+    const [housingNyResponse, dobResponse, plutoResponse, demolitionResponse] = await Promise.all([
       fetch(`${HOUSING_NY_API}?$limit=${HOUSING_NY_LIMIT}&$order=reporting_construction_type DESC`),
       fetch(`${DOB_API}?$limit=${DOB_LIMIT}&$where=(job_status_descrp='SIGNED OFF' OR job_status_descrp='PERMIT ISSUED - ENTIRE JOB/WORK' OR job_status_descrp='PLAN EXAM - APPROVED' OR job_status_descrp='COMPLETED')&$order=latest_action_date DESC`),
-      fetch(`${PLUTO_API}?$limit=${PLUTO_LIMIT}&$where=yearbuilt>=2014&$order=yearbuilt DESC`)
+      fetch(`${PLUTO_API}?$limit=${PLUTO_LIMIT}&$where=yearbuilt>=2014&$order=yearbuilt DESC`),
+      fetch(`${DOB_API}?$limit=${DOB_LIMIT}&$where=job_type='DM' AND (job_status_descrp='SIGNED OFF' OR job_status_descrp='PERMIT ISSUED - ENTIRE JOB/WORK' OR job_status_descrp='PLAN EXAM - APPROVED' OR job_status_descrp='COMPLETED')&$order=latest_action_date DESC`)
     ]);
 
-    if (!housingNyResponse.ok || !dobResponse.ok || !plutoResponse.ok) {
+    if (!housingNyResponse.ok || !dobResponse.ok || !plutoResponse.ok || !demolitionResponse.ok) {
       throw new Error('Failed to fetch from one or more NYC Open Data APIs');
     }
 
-    const [housingNyData, dobData, plutoData] = await Promise.all([
+    const [housingNyData, dobData, plutoData, demolitionData] = await Promise.all([
       housingNyResponse.json(),
       dobResponse.json(),
-      plutoResponse.json()
+      plutoResponse.json(),
+      demolitionResponse.json()
     ]);
 
     console.log('[Housing Data API] Fetched:', {
       housingNy: housingNyData.length,
       dob: dobData.length,
-      pluto: plutoData.length
+      pluto: plutoData.length,
+      demolitions: demolitionData.length
     });
 
     // Store in cache
@@ -64,13 +68,15 @@ async function fetchAndProcessHousingData() {
       timestamp: Date.now(),
       housingNyData,
       dobData,
-      plutoData
+      plutoData,
+      demolitionData
     };
 
     return {
       housingNyData,
       dobData,
-      plutoData
+      plutoData,
+      demolitionData
     };
   } catch (error) {
     console.error('[Housing Data API] Error fetching data:', error);
@@ -97,6 +103,7 @@ async function getHousingData(request: Request) {
           housingNyData: cachedData!.housingNyData,
           dobData: cachedData!.dobData,
           plutoData: cachedData!.plutoData,
+          demolitionData: cachedData!.demolitionData,
         },
       });
     }
@@ -111,6 +118,7 @@ async function getHousingData(request: Request) {
         housingNyData: data.housingNyData,
         dobData: data.dobData,
         plutoData: data.plutoData,
+        demolitionData: data.demolitionData,
       },
     });
   } catch (error) {
