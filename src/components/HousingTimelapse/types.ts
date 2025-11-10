@@ -99,6 +99,7 @@ export type ProcessedBuilding = {
   zoningDistrict?: string;
   address: string;
   dataSource: 'housing-ny' | 'pluto'; // Track which dataset this came from
+  isRenovation?: boolean; // True if this is a renovation (A1/A2/A3) rather than new construction
 };
 
 /**

@@ -45,9 +45,9 @@ export function useCapitalBudgetData(): UseCapitalBudgetDataReturn {
         setError(null);
 
         // Fetch from CPDB Polygons dataset (9jkp-n57r)
-        // Filter to 2025 active projects with allocated budgets
+        // Filter to active/future projects with allocated budgets (not completed before 2025)
         const response = await fetch(
-          'https://data.cityofnewyork.us/resource/9jkp-n57r.geojson?$where=mindate<=\'2025-12-31\' AND maxdate>=\'2025-01-01\' AND allocate_total>0&$limit=1200'
+          'https://data.cityofnewyork.us/resource/9jkp-n57r.geojson?$where=maxdate>=\'2025-01-01\' AND allocate_total>0&$limit=10000'
         );
 
         if (!response.ok) {

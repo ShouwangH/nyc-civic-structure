@@ -135,7 +135,7 @@ export function CapitalBudgetMap() {
             <strong>Height:</strong> Allocated budget
           </div>
           <div className="text-xs text-gray-600">
-            <strong>Filter:</strong> 2025 active projects
+            <strong>Filter:</strong> Active/future projects
           </div>
         </div>
       </div>

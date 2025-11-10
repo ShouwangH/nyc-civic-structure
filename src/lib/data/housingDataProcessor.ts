@@ -144,8 +144,9 @@ function constructBBL(borough: string, block: string, lot: string): string | nul
   const boroughCode = boroughMap[borough.toUpperCase()] || borough;
 
   // Pad block to 5 digits, lot to 4 digits
-  const paddedBlock = block.padStart(5, '0');
-  const paddedLot = lot.padStart(4, '0');
+  // Parse as integers first to handle already-padded values from DOB
+  const paddedBlock = parseInt(block, 10).toString().padStart(5, '0');
+  const paddedLot = parseInt(lot, 10).toString().padStart(4, '0');
 
   return boroughCode + paddedBlock + paddedLot;
 }
@@ -198,6 +199,18 @@ async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
   }
   console.info(`[HousingData] Indexed ${housingByBBL.size} Housing NY records by BBL`);
 
+  // Group DOB records by BBL to aggregate multiple jobs
+  const dobByBBL = new Map<string, any[]>();
+  for (const dobRecord of dobData) {
+    const bbl = constructBBL(dobRecord.borough, dobRecord.block, dobRecord.lot);
+    if (!bbl) continue;
+
+    if (!dobByBBL.has(bbl)) {
+      dobByBBL.set(bbl, []);
+    }
+    dobByBBL.get(bbl)!.push(dobRecord);
+  }
+
   // Track which BBLs are covered by DOB
   const dobBBLs = new Set<string>();
   const joinedData: any[] = [];
@@ -205,43 +218,62 @@ async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
   let dobProcessed = 0;
   let dobSkipped = 0;
 
-  // Process DOB records (primary source)
-  for (const dobRecord of dobData) {
-    const bbl = constructBBL(dobRecord.borough, dobRecord.block, dobRecord.lot);
-    if (!bbl) continue;
-
-    // Calculate net new units (proposed - existing)
-    const existingUnits = parseInt(dobRecord.existing_dwelling_units || '0', 10);
-    const proposedUnits = parseInt(dobRecord.proposed_dwelling_units || '0', 10);
-    const netUnits = proposedUnits - existingUnits;
-
-    // Check if this is a renovation (A1/A2/A3 alteration)
-    const jobType = dobRecord.job_type || '';
-    const isRenovation = ['A1', 'A2', 'A3'].includes(jobType.toUpperCase());
-
-    // Check for affordable housing match
+  // Process each BBL (aggregating all jobs)
+  for (const [bbl, jobs] of dobByBBL.entries()) {
     const housingRecord = housingByBBL.get(bbl);
 
-    // Determine units for visualization
+    // Aggregate units from all jobs
+    let newConstructionUnits = 0; // From NB jobs
+    let renovationUnits = 0; // From A1/A2/A3 jobs
+    let latestSignoffDate: string | null = null;
+    let latestJob: any = null;
+
+    for (const job of jobs) {
+      const jobType = (job.job_type || '').toUpperCase();
+      const existingUnits = parseInt(job.existing_dwelling_units || '0', 10);
+      const proposedUnits = parseInt(job.proposed_dwelling_units || '0', 10);
+      const netUnits = proposedUnits - existingUnits;
+
+      // Track latest job (for metadata)
+      const signoffDate = job.signoff_date || job.latest_action_date;
+      if (!latestSignoffDate || (signoffDate && signoffDate > latestSignoffDate)) {
+        latestSignoffDate = signoffDate;
+        latestJob = job;
+      }
+
+      // Aggregate units by job type
+      if (jobType === 'NB') {
+        // New building: add net new units
+        newConstructionUnits += Math.max(0, netUnits);
+      } else if (['A1', 'A2', 'A3'].includes(jobType)) {
+        // Renovation: add net change (can be 0 or positive)
+        renovationUnits += Math.max(0, netUnits);
+      }
+    }
+
+    // Determine total units and classification
     let unitsForVisualization;
-    if (isRenovation && housingRecord) {
-      // For renovations with affordable data, use affordable housing unit count
+    let isRenovation;
+
+    if (housingRecord) {
+      // Has affordable housing data - use that for units
       unitsForVisualization = parseInt(
         housingRecord.all_counted_units || housingRecord.total_units || '0',
         10
       );
-    } else if (netUnits > 0) {
-      // For new construction, use net units
-      unitsForVisualization = netUnits;
-    } else if (isRenovation && proposedUnits > 0) {
-      // For renovations without affordable match, use proposed units
-      unitsForVisualization = proposedUnits;
+      // Classify as renovation if renovation units >= new construction units
+      isRenovation = renovationUnits >= newConstructionUnits;
     } else {
-      unitsForVisualization = 0;
+      // No affordable data - use aggregated DOB units
+      const totalUnits = newConstructionUnits + renovationUnits;
+      unitsForVisualization = totalUnits;
+      // Classify as renovation if renovation contributed more units
+      isRenovation = renovationUnits > newConstructionUnits;
     }
 
-    // Include if we have units from any source
-    const shouldInclude = unitsForVisualization > 0;
+    // Include if we have units OR any renovation work was done
+    const hasRenovationWork = jobs.some(j => ['A1', 'A2', 'A3'].includes((j.job_type || '').toUpperCase()));
+    const shouldInclude = unitsForVisualization > 0 || hasRenovationWork;
 
     if (!shouldInclude) {
       dobSkipped++;
@@ -255,11 +287,15 @@ async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
       dobAffordableMatches++;
     }
 
+    // Use latest job for metadata
     joinedData.push({
-      ...dobRecord,
+      ...latestJob,
       _netUnits: unitsForVisualization,
       _affordableData: housingRecord || null,
       _hasAffordable: Boolean(housingRecord),
+      _isRenovation: isRenovation,
+      _newConstructionUnits: newConstructionUnits,
+      _renovationUnits: renovationUnits,
       _dataSource: 'dob',
     });
   }
@@ -358,11 +394,11 @@ function calculateAffordableUnits(record: HousingBuildingRecord): number {
 function getBuildingType(
   buildingClass: string | undefined,
   _jobType: string | undefined,
-  isAffordable: boolean,
+  affordablePercentage: number,
   isRenovation: boolean
 ): any {
-  // Priority 1: Affordable housing
-  if (isAffordable) {
+  // Priority 1: Predominantly affordable housing (>50% affordable)
+  if (affordablePercentage > 50) {
     return 'affordable';
   }
 
@@ -371,7 +407,7 @@ function getBuildingType(
     return 'renovation';
   }
 
-  // Priority 3: PLUTO building class
+  // Priority 3: PLUTO/DOB building class
   if (buildingClass) {
     const classPrefix = buildingClass.charAt(0).toUpperCase();
     switch (classPrefix) {
@@ -456,21 +492,26 @@ function processBuilding(record: any): ProcessedBuilding | null {
     totalUnits = 0;
   }
 
+  // Determine if renovation (needed for validation)
+  const jobType = record.job_type || '';
+  const isRenovation = isDOB && ['A1', 'A2', 'A3'].includes(jobType.toUpperCase());
+
   // Validate required fields
-  if (!lat || !lon || !dateInfo.year || dateInfo.year < 2014 || dateInfo.year > 2025 || totalUnits === 0) {
+  // Renovations are allowed to have 0 units since they represent significant housing work
+  if (!lat || !lon || !dateInfo.year || dateInfo.year < 2014 || dateInfo.year > 2025 || (totalUnits === 0 && !isRenovation)) {
     return null;
   }
 
   // Calculate affordable units
   const affordableUnits = affordableData ? calculateAffordableUnits(affordableData) : 0;
 
-  // Determine if renovation
-  const jobType = record.job_type || '';
-  const isRenovation = isDOB && ['A1', 'A2', 'A3'].includes(jobType.toUpperCase());
+  // Calculate affordable percentage for classification
+  const affordablePercentage = totalUnits > 0 ? (affordableUnits / totalUnits) * 100 : 0;
 
   // Classify building type
-  const buildingClass = record.bldgclass;
-  const buildingType = getBuildingType(buildingClass, jobType, affordableUnits > 0, isRenovation);
+  // DOB uses 'building_class', PLUTO uses 'bldgclass'
+  const buildingClass = record.building_class || record.bldgclass;
+  const buildingType = getBuildingType(buildingClass, jobType, affordablePercentage, isRenovation);
 
   return {
     id: record.bbl || record.job || affordableData?.building_id || String(Math.random()),
@@ -482,12 +523,13 @@ function processBuilding(record: any): ProcessedBuilding | null {
     completionDate: dateInfo.dateStr,
     totalUnits,
     affordableUnits,
-    affordablePercentage: totalUnits > 0 ? (affordableUnits / totalUnits) * 100 : 0,
+    affordablePercentage,
     buildingType,
     buildingClass,
     zoningDistrict: record.zonedist1,
     address: record.address || affordableData?.address || `${record.house_number || ''} ${record.street_name || ''}`.trim(),
     dataSource: (isDOB ? 'dob' : isPLUTO ? 'pluto' : 'housing-ny') as any,
+    isRenovation,
   };
 }
 
