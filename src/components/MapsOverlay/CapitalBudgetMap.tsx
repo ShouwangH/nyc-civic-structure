@@ -4,7 +4,7 @@
 import { useState, useMemo } from 'react';
 import { Map } from 'react-map-gl/maplibre';
 import { DeckGL } from '@deck.gl/react';
-import { GeoJsonLayer, ScatterplotLayer } from '@deck.gl/layers';
+import { GeoJsonLayer, ColumnLayer } from '@deck.gl/layers';
 import type { PickingInfo } from '@deck.gl/core';
 import { useCapitalBudgetData, type CapitalProjectFeature } from '../../hooks/useCapitalBudgetData';
 import type { Polygon, MultiPolygon } from 'geojson';
@@ -88,25 +88,23 @@ export function CapitalBudgetMap() {
     : null;
 
   // Layer 1: Columns at project locations (height = budget)
-  const columnsLayer = new ScatterplotLayer({
+  const columnsLayer = new ColumnLayer({
     id: 'capital-columns',
     data: projectsWithCentroids,
     getPosition: (d: any) => d.centroid,
-    getRadius: 30,
+    diskResolution: 12,
+    radius: 30,
+    extruded: true,
+    pickable: true,
+    elevationScale: 0.5,
+    getElevation: (d: any) => d.properties.allocate_total / 10000, // Scale budget to reasonable height
     getFillColor: (d: any) => {
       const color = AGENCY_COLORS[d.properties.magencyacro] || DEFAULT_COLOR;
       return [...color, 200];
     },
     getLineColor: [80, 80, 80],
+    getLineWidth: 1,
     lineWidthMinPixels: 1,
-    stroked: true,
-    filled: true,
-    pickable: true,
-    radiusUnits: 'meters',
-    // Extrusion for 3D effect
-    extruded: true,
-    getElevation: (d: any) => d.properties.allocate_total / 10000, // Scale budget to reasonable height
-    elevationScale: 0.5,
     onHover: (info: PickingInfo) => {
       if (info.object) {
         setHoveredProject(info.object as CapitalProjectFeature);
@@ -184,6 +182,12 @@ export function CapitalBudgetMap() {
         initialViewState={INITIAL_VIEW_STATE}
         controller={true}
         layers={layers}
+        onClick={(info: PickingInfo) => {
+          // Deselect when clicking on background (empty space)
+          if (!info.object) {
+            setSelectedProjectId(null);
+          }
+        }}
       >
         <Map
           mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
