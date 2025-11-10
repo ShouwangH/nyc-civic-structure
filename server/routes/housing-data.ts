@@ -7,8 +7,9 @@ import { registerRoute } from '../api-middleware';
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 let cachedData: {
   timestamp: number;
-  dataByYear: Record<number, any[]>;
-  demolitionStats: any;
+  housingNyData: any[];
+  dobData: any[];
+  plutoData: any[];
 } | null = null;
 
 // NYC Open Data API configuration
@@ -58,28 +59,18 @@ async function fetchAndProcessHousingData() {
       pluto: plutoData.length
     });
 
-    // Import and use the processing logic from the client-side module
-    // For now, return raw data - client can still process it
-    // TODO: Move full processing logic to server
-    const dataByYear: Record<number, any[]> = {};
-    const demolitionStats = {
-      totalDemolishedUnits: 0,
-      standaloneDemolishedUnits: 0,
-      byYear: {}
-    };
-
     // Store in cache
     cachedData = {
       timestamp: Date.now(),
-      dataByYear,
-      demolitionStats
+      housingNyData,
+      dobData,
+      plutoData
     };
 
     return {
       housingNyData,
       dobData,
-      plutoData,
-      demolitionStats
+      plutoData
     };
   } catch (error) {
     console.error('[Housing Data API] Error fetching data:', error);
@@ -102,7 +93,11 @@ async function getHousingData(request: Request) {
       return Response.json({
         success: true,
         cached: true,
-        data: cachedData,
+        data: {
+          housingNyData: cachedData!.housingNyData,
+          dobData: cachedData!.dobData,
+          plutoData: cachedData!.plutoData,
+        },
       });
     }
 
@@ -116,7 +111,6 @@ async function getHousingData(request: Request) {
         housingNyData: data.housingNyData,
         dobData: data.dobData,
         plutoData: data.plutoData,
-        demolitionStats: data.demolitionStats,
       },
     });
   } catch (error) {
