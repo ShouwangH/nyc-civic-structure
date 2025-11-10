@@ -6,16 +6,18 @@ import {
   getHousingData,
   getBuildingsUpToYear,
 } from '../lib/data/housingDataProcessor';
-import type { HousingDataByYear, ProcessedBuilding } from '../components/HousingTimelapse/types';
+import type { HousingDataByYear, ProcessedBuilding, DemolitionStats } from '../components/HousingTimelapse/types';
 
 type UseHousingDataResult = {
   buildings: ProcessedBuilding[];
   dataByYear: HousingDataByYear | null;
+  demolitionStats: DemolitionStats | null;
   isLoading: boolean;
   error: string | null;
   totalBuildings: number;
   totalUnits: number;
   affordableUnits: number;
+  netNewUnits: number;
 };
 
 /**
@@ -24,6 +26,7 @@ type UseHousingDataResult = {
  */
 export function useHousingData(currentYear: number): UseHousingDataResult {
   const [dataByYear, setDataByYear] = useState<HousingDataByYear | null>(null);
+  const [demolitionStats, setDemolitionStats] = useState<DemolitionStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -36,11 +39,12 @@ export function useHousingData(currentYear: number): UseHousingDataResult {
       setError(null);
 
       try {
-        // getHousingData now returns processed data directly
-        const processed = await getHousingData();
+        // getHousingData now returns both dataByYear and demolitionStats
+        const { dataByYear: processedData, demolitionStats: demoStats } = await getHousingData();
 
         if (isMounted) {
-          setDataByYear(processed);
+          setDataByYear(processedData);
+          setDemolitionStats(demoStats);
           setIsLoading(false);
         }
       } catch (err) {
@@ -70,13 +74,25 @@ export function useHousingData(currentYear: number): UseHousingDataResult {
   const totalUnits = buildingsUpToYear.reduce((sum, b) => sum + b.totalUnits, 0);
   const affordableUnits = buildingsUpToYear.reduce((sum, b) => sum + b.affordableUnits, 0);
 
+  // Calculate standalone demolitions up to current year
+  const standaloneDemolishedUpToYear = demolitionStats?.byYear
+    ? Array.from(demolitionStats.byYear.entries())
+        .filter(([year]) => year <= currentYear)
+        .reduce((sum, [, units]) => sum + units, 0)
+    : 0;
+
+  // Net new units = gross new units - standalone demolitions
+  const netNewUnits = totalUnits - standaloneDemolishedUpToYear;
+
   return {
     buildings: allBuildings, // Pass ALL buildings for stable deck.gl data array
     dataByYear,
+    demolitionStats,
     isLoading,
     error,
     totalBuildings,
     totalUnits,
     affordableUnits,
+    netNewUnits,
   };
 }

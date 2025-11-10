@@ -76,12 +76,6 @@ const GraphCanvas = ({
       nodeScopeIndex,
       nodeInfosById: nodesById,
       edgeInfosById,
-      runMainGraphLayout: async () => {
-        const layout = cy.layout(mainGraph.layout);
-        const layoutPromise = layout.promiseOn('layoutstop');
-        layout.run();
-        await layoutPromise;
-      },
     });
 
     // 3. Wire up input handler (pure event translation)

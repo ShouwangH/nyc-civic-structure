@@ -9,6 +9,7 @@ import type {
   CachedProcessedData,
   HousingDataByYear,
   ZoningColorMap,
+  DemolitionStats,
 } from '../../components/HousingTimelapse/types';
 
 // Cache configuration
@@ -16,13 +17,9 @@ const CACHE_KEY = 'nyc_housing_processed_v6';
 const CACHE_VERSION = '6.0.0';
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
-// NYC Open Data API configuration
-const HOUSING_NY_API = 'https://data.cityofnewyork.us/resource/hg8x-zxpr.json'; // Affordable housing
+// NYC Open Data API configuration (server-side)
 const DOB_API = 'https://data.cityofnewyork.us/resource/ic3t-wcy2.json'; // DOB Job Applications
-const PLUTO_API = 'https://data.cityofnewyork.us/resource/64uk-42ks.json'; // PLUTO data (fallback)
-const HOUSING_NY_LIMIT = 20000;
 const DOB_LIMIT = 50000;
-const PLUTO_LIMIT = 20000; // Reduced - only fallback for missing DOB records
 const ENABLE_CACHE = false; // Disabled: localStorage quota exceeded
 
 /**
@@ -154,42 +151,95 @@ function constructBBL(borough: string, block: string, lot: string): string | nul
 }
 
 /**
+ * Fetch demolition records from DOB API and calculate statistics
+ */
+async function fetchDemolitionStats(newConstructionBBLs: Set<string>): Promise<DemolitionStats> {
+  console.info('[HousingData] Fetching demolition records...');
+
+  const demolitionQuery = `${DOB_API}?$limit=${DOB_LIMIT}&$where=job_type='DM' AND (job_status_descrp='SIGNED OFF' OR job_status_descrp='PERMIT ISSUED - ENTIRE JOB/WORK' OR job_status_descrp='PLAN EXAM - APPROVED' OR job_status_descrp='COMPLETED')&$order=latest_action_date DESC`;
+
+  const response = await fetch(demolitionQuery);
+  if (!response.ok) {
+    throw new Error(`Demolition API failed: ${response.status}`);
+  }
+
+  const demolitions: any[] = await response.json();
+  console.info(`[HousingData] Fetched ${demolitions.length} demolition records`);
+
+  let totalDemolishedUnits = 0;
+  let standaloneDemolishedUnits = 0;
+  const byYear = new Map<number, number>();
+
+  for (const record of demolitions) {
+    // Parse existing dwelling units
+    const existingUnitsStr = record.existing_dwelling_units || record.existingdwellingunits || '0';
+    const existingUnits = parseInt(String(existingUnitsStr).replace(/[^0-9]/g, ''), 10) || 0;
+
+    if (existingUnits === 0) continue;
+
+    totalDemolishedUnits += existingUnits;
+
+    // Check if this BBL had new construction
+    const bbl = normalizeBBL(record.bbl) || constructBBL(record.borough, record.block, record.lot);
+    const isStandalone = bbl ? !newConstructionBBLs.has(bbl) : true;
+
+    if (isStandalone) {
+      standaloneDemolishedUnits += existingUnits;
+    }
+
+    // Try to extract year from latest_action_date
+    const dateStr = record.latest_action_date || record.issuance_date || '';
+    if (dateStr) {
+      const yearMatch = String(dateStr).match(/^(\d{4})/);
+      if (yearMatch) {
+        const year = parseInt(yearMatch[1], 10);
+        if (year >= 2014 && year <= 2024 && isStandalone) {
+          byYear.set(year, (byYear.get(year) || 0) + existingUnits);
+        }
+      }
+    }
+  }
+
+  console.info(`[HousingData] Demolition stats: ${totalDemolishedUnits} total units, ${standaloneDemolishedUnits} standalone`);
+
+  return {
+    totalDemolishedUnits,
+    standaloneDemolishedUnits,
+    byYear,
+  };
+}
+
+/**
  * Fetch housing data from NYC Open Data APIs - DOB primary, PLUTO fallback, Housing NY overlay
  */
 async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
-  console.info('[HousingData] Fetching from NYC Open Data APIs (DOB primary + PLUTO fallback + Housing NY)...');
+  console.info('[HousingData] Fetching from server API (with 24-hour caching)...');
 
-  // Fetch from all three sources in parallel
-  const [housingNYResponse, dobResponse, plutoResponse] = await Promise.all([
-    fetch(`${HOUSING_NY_API}?$limit=${HOUSING_NY_LIMIT}&$order=building_completion_date`),
-    fetch(`${DOB_API}?$limit=${DOB_LIMIT}&$where=(job_status_descrp='SIGNED OFF' OR job_status_descrp='PERMIT ISSUED - ENTIRE JOB/WORK' OR job_status_descrp='PLAN EXAM - APPROVED' OR job_status_descrp='COMPLETED')&$order=latest_action_date DESC`),
-    fetch(`${PLUTO_API}?$limit=${PLUTO_LIMIT}&$where=yearbuilt>=2014`)
-  ]);
+  // Fetch from server API
+  const response = await fetch('/api/housing-data');
 
-  if (!housingNYResponse.ok) {
-    throw new Error(`Housing NY API error: ${housingNYResponse.status}`);
+  if (!response.ok) {
+    throw new Error(`Server API error: ${response.status}`);
   }
 
-  const housingNYData: any[] = await housingNYResponse.json();
+  const result = await response.json();
+
+  if (!result.success) {
+    throw new Error(result.message || 'Failed to fetch housing data');
+  }
+
+  // Extract data from server response
+  const housingNYData: any[] = result.data.housingNyData;
+  const dobData: any[] = result.data.dobData;
+  const plutoData: any[] = result.data.plutoData;
+
   console.info(`[HousingData] Fetched ${housingNYData.length} Housing NY records`);
-
-  let dobData: any[] = [];
-  if (dobResponse.ok) {
-    dobData = await dobResponse.json();
-    console.info(`[HousingData] Fetched ${dobData.length} DOB records (approved/completed only)`);
-    if (dobData.length > 0) {
-      console.info('[HousingData] Sample DOB record:', dobData[0]);
-      console.info('[HousingData] DOB fields:', Object.keys(dobData[0]));
-    }
-  } else {
-    console.warn(`[HousingData] DOB API error: ${dobResponse.status}. Will use PLUTO only.`);
+  console.info(`[HousingData] Fetched ${dobData.length} DOB records (approved/completed only)`);
+  if (dobData.length > 0) {
+    console.info('[HousingData] Sample DOB record:', dobData[0]);
+    console.info('[HousingData] DOB fields:', Object.keys(dobData[0]));
   }
-
-  let plutoData: any[] = [];
-  if (plutoResponse.ok) {
-    plutoData = await plutoResponse.json();
-    console.info(`[HousingData] Fetched ${plutoData.length} PLUTO records (fallback)`);
-  }
+  console.info(`[HousingData] Fetched ${plutoData.length} PLUTO records (fallback)`)
 
   // Build BBL index from Housing NY data for O(1) lookup
   const housingByBBL = new Map<string, any>();
@@ -329,14 +379,24 @@ async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
 }
 
 /**
- * Get housing data (from cache or API), returns processed data by year
+ * Get housing data (from cache or API), returns processed data by year and demolition stats
  */
-export async function getHousingData(): Promise<HousingDataByYear> {
+export async function getHousingData(): Promise<{ dataByYear: HousingDataByYear; demolitionStats: DemolitionStats }> {
   // Try cache first
   if (ENABLE_CACHE) {
     const cached = loadProcessedFromCache();
     if (cached) {
-      return cached;
+      // For cached data, we need to fetch demolitions separately
+      // Extract BBLs from cached buildings
+      const bbls = new Set<string>();
+      for (const buildings of cached.values()) {
+        for (const building of buildings) {
+          const bbl = building.id.split('-')[0]; // Extract BBL from building ID
+          if (bbl) bbls.add(bbl);
+        }
+      }
+      const demolitionStats = await fetchDemolitionStats(bbls);
+      return { dataByYear: cached, demolitionStats };
     }
   }
 
@@ -344,10 +404,22 @@ export async function getHousingData(): Promise<HousingDataByYear> {
   const rawData = await fetchFromAPI();
   const processed = processHousingData(rawData);
 
+  // Extract BBLs from processed buildings for demolition matching
+  const newConstructionBBLs = new Set<string>();
+  for (const buildings of processed.values()) {
+    for (const building of buildings) {
+      const bbl = building.id.split('-')[0]; // Extract BBL from building ID (format: BBL-jobNumber)
+      if (bbl) newConstructionBBLs.add(bbl);
+    }
+  }
+
+  // Fetch demolition statistics
+  const demolitionStats = await fetchDemolitionStats(newConstructionBBLs);
+
   // Save processed data to cache
   saveProcessedToCache(processed);
 
-  return processed;
+  return { dataByYear: processed, demolitionStats };
 }
 
 /**
@@ -417,7 +489,8 @@ function getPhysicalBuildingType(buildingClass: string | undefined): BuildingTyp
         return 'mixed-use';  // Catch-all for unusual residential conversions
     }
   }
-  return 'unknown';
+  // Default to mixed-use for buildings without building class data
+  return 'mixed-use';
 }
 
 /**

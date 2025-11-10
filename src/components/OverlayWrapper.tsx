@@ -99,11 +99,11 @@ const OverlayWrapper = ({
     return null;
   }
 
-  // Calculate overlay dimensions (90% of viewport minus control panel)
+  // Calculate overlay dimensions (95% of viewport)
   const viewportWidth = window.innerWidth;
   const viewportHeight = window.innerHeight;
-  const overlayWidth = (viewportWidth - controlPanelWidth) * 0.9;
-  const overlayHeight = viewportHeight * 0.9;
+  const overlayWidth = viewportWidth * 0.95;
+  const overlayHeight = viewportHeight * 0.95;
 
   // Handle backdrop click to close
   const handleBackdropClick = (event: React.MouseEvent) => {
