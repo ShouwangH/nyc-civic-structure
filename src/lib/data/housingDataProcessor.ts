@@ -385,7 +385,14 @@ export async function getHousingData(): Promise<{ dataByYear: HousingDataByYear;
   }
 
   // Process demolition statistics from server data
+  console.info(`[HousingData] Processing demolitions for ${newConstructionBBLs.size} new construction BBLs`);
   const demolitionStats = processDemolitionStats(demolitionData, newConstructionBBLs);
+  console.info(`[HousingData] Demolition stats calculated:`, {
+    totalDemolished: demolitionStats.totalDemolishedUnits,
+    standaloneDemolished: demolitionStats.standaloneDemolishedUnits,
+    yearCount: demolitionStats.byYear.size,
+    yearBreakdown: Array.from(demolitionStats.byYear.entries()).sort((a, b) => a[0] - b[0])
+  });
 
   // Save processed data to cache
   saveProcessedToCache(processed);

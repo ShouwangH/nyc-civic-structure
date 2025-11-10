@@ -8,11 +8,18 @@ import {
 } from '../lib/data/housingDataProcessor';
 import type { HousingDataByYear, ProcessedBuilding, DemolitionStats } from '../components/HousingTimelapse/types';
 
+type LoadingStatus =
+  | { stage: 'idle' }
+  | { stage: 'fetching'; message: string }
+  | { stage: 'processing'; message: string }
+  | { stage: 'complete' };
+
 type UseHousingDataResult = {
   buildings: ProcessedBuilding[];
   dataByYear: HousingDataByYear | null;
   demolitionStats: DemolitionStats | null;
   isLoading: boolean;
+  loadingStatus: LoadingStatus;
   error: string | null;
   totalBuildings: number;
   totalUnits: number;
@@ -28,6 +35,7 @@ export function useHousingData(currentYear: number): UseHousingDataResult {
   const [dataByYear, setDataByYear] = useState<HousingDataByYear | null>(null);
   const [demolitionStats, setDemolitionStats] = useState<DemolitionStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [loadingStatus, setLoadingStatus] = useState<LoadingStatus>({ stage: 'idle' });
   const [error, setError] = useState<string | null>(null);
 
   // Load data on mount
@@ -37,20 +45,27 @@ export function useHousingData(currentYear: number): UseHousingDataResult {
     const loadData = async () => {
       setIsLoading(true);
       setError(null);
+      setLoadingStatus({ stage: 'fetching', message: 'Fetching NYC Open Data (Housing NY, DOB, PLUTO)' });
 
       try {
         // getHousingData now returns both dataByYear and demolitionStats
         const { dataByYear: processedData, demolitionStats: demoStats } = await getHousingData();
 
         if (isMounted) {
+          setLoadingStatus({ stage: 'processing', message: 'Rendering map layers' });
+          // Small delay to show processing message
+          await new Promise(resolve => setTimeout(resolve, 100));
+
           setDataByYear(processedData);
           setDemolitionStats(demoStats);
+          setLoadingStatus({ stage: 'complete' });
           setIsLoading(false);
         }
       } catch (err) {
         console.error('[useHousingData] Failed to load data:', err);
         if (isMounted) {
           setError(err instanceof Error ? err.message : 'Failed to load housing data');
+          setLoadingStatus({ stage: 'idle' });
           setIsLoading(false);
         }
       }
@@ -89,6 +104,7 @@ export function useHousingData(currentYear: number): UseHousingDataResult {
     dataByYear,
     demolitionStats,
     isLoading,
+    loadingStatus,
     error,
     totalBuildings,
     totalUnits,
