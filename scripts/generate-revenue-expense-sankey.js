@@ -14,17 +14,23 @@ const REVENUE_DATASET_ID = 'ugzk-a6x4'; // Revenue Budget & Financial Plan
 const EXPENSE_DATASET_ID = '39g5-gbp3'; // Expense Budget Funding
 const EXPENSE_PUBLICATION_DATE = '20240630'; // Latest FY2025 publication
 
-// Revenue category hierarchy
-const REVENUE_CATEGORIES = {
-  'Property Tax': ['Real Property Tax', 'Property Tax', 'Real Estate Tax'],
-  'Personal Income Tax': ['Personal Income Tax'],
-  'Sales Tax': ['Sales Tax', 'General Sales Tax'],
-  'Business Income Tax': ['General Corporation Tax', 'Banking Corporation Tax', 'Unincorporated Business Tax'],
-  'Other Taxes': ['Mortgage Recording Tax', 'Utility Tax', 'Commercial Rent Tax', 'Hotel Room Occupancy Tax', 'Cigarette Tax'],
-  'Federal Grants': ['Federal', 'Federal Aid'],
-  'State Grants': ['State', 'State Aid'],
-  'Other Revenue': ['Water', 'Sewer', 'Licenses', 'Permits', 'Rental Income', 'Fines', 'Forfeitures', 'Miscellaneous', 'Other', 'Investment', 'Non-Governmental']
-};
+// Map native Comptroller revenue categories to simplified top-level groups
+function categorizeRevenueByComptrollerCategory(categoryName) {
+  const normalized = categoryName.toUpperCase();
+
+  if (normalized.includes('TAXES')) {
+    return 'Taxes';
+  }
+  if (normalized.includes('FEDERAL GRANTS')) {
+    return 'Federal Grants';
+  }
+  if (normalized.includes('STATE GRANTS')) {
+    return 'State Grants';
+  }
+
+  // Everything else: Charges, Fines, Interest, Misc, Non-Gov Grants, etc.
+  return 'Other Revenue';
+}
 
 // Expense category mappings
 const AGENCY_CATEGORIES = {
@@ -57,20 +63,6 @@ const AGENCY_CATEGORIES = {
   'PENSION CONTRIBUTIONS': 'Government, Admin & Oversight',
   'CITYWIDE PENSION CONTRIBUTIONS': 'Government, Admin & Oversight',
 };
-
-function categorizeRevenue(revenueName) {
-  const normalized = revenueName.toUpperCase();
-
-  for (const [category, keywords] of Object.entries(REVENUE_CATEGORIES)) {
-    for (const keyword of keywords) {
-      if (normalized.includes(keyword.toUpperCase())) {
-        return category;
-      }
-    }
-  }
-
-  return 'Other Revenue';
-}
 
 function categorizeAgency(agencyName) {
   const normalized = agencyName.toUpperCase().trim();
@@ -181,10 +173,11 @@ function processRevenueData(records) {
     const amount = parseFloat(record.current_modified_budget_amount || record.adopted_budget_amount || 0);
     if (amount === 0) continue;
 
-    const revenueName = record.revenue_source_name || record.revenue_class_name || 'Unknown';
-    const category = categorizeRevenue(revenueName);
+    // Use native Comptroller category from API
+    const comptrollerCategory = record.revenue_category_name || 'Unknown';
+    const topLevelCategory = categorizeRevenueByComptrollerCategory(comptrollerCategory);
 
-    revenueByCategory.set(category, (revenueByCategory.get(category) || 0) + amount);
+    revenueByCategory.set(topLevelCategory, (revenueByCategory.get(topLevelCategory) || 0) + amount);
     totalRevenue += amount;
   }
 

@@ -7,14 +7,10 @@
     "total_revenue": 123844584236,
     "total_expense": 114735017913,
     "revenue_categories": {
-      "State Grants": 3881494142,
-      "Other Revenue": 50970249270,
-      "Property Tax": 34614000000,
-      "Other Taxes": 476500000,
-      "Federal Grants": 123100824,
-      "Business Income Tax": 7451000000,
-      "Sales Tax": 10324240000,
-      "Personal Income Tax": 16004000000
+      "State Grants": 20926405995,
+      "Taxes": 80350447000,
+      "Other Revenue": 11526660470,
+      "Federal Grants": 11041070771
     },
     "expense_categories": {
       "Government, Admin & Oversight": 36235092803,
@@ -30,32 +26,8 @@
   },
   "nodes": [
     {
-      "id": "revenue:other_revenue",
-      "label": "Other Revenue",
-      "level": 0,
-      "type": "revenue_source"
-    },
-    {
-      "id": "revenue:property_tax",
-      "label": "Property Tax",
-      "level": 0,
-      "type": "revenue_source"
-    },
-    {
-      "id": "revenue:personal_income_tax",
-      "label": "Personal Income Tax",
-      "level": 0,
-      "type": "revenue_source"
-    },
-    {
-      "id": "revenue:sales_tax",
-      "label": "Sales Tax",
-      "level": 0,
-      "type": "revenue_source"
-    },
-    {
-      "id": "revenue:business_income_tax",
-      "label": "Business Income Tax",
+      "id": "revenue:taxes",
+      "label": "Taxes",
       "level": 0,
       "type": "revenue_source"
     },
@@ -66,8 +38,8 @@
       "type": "revenue_source"
     },
     {
-      "id": "revenue:other_taxes",
-      "label": "Other Taxes",
+      "id": "revenue:other_revenue",
+      "label": "Other Revenue",
       "level": 0,
       "type": "revenue_source"
     },
@@ -134,51 +106,27 @@
   ],
   "links": [
     {
-      "source": "revenue:other_revenue",
+      "source": "revenue:taxes",
       "target": "general_fund",
-      "value": 50970249270,
-      "type": "revenue_to_fund"
-    },
-    {
-      "source": "revenue:property_tax",
-      "target": "general_fund",
-      "value": 34614000000,
-      "type": "revenue_to_fund"
-    },
-    {
-      "source": "revenue:personal_income_tax",
-      "target": "general_fund",
-      "value": 16004000000,
-      "type": "revenue_to_fund"
-    },
-    {
-      "source": "revenue:sales_tax",
-      "target": "general_fund",
-      "value": 10324240000,
-      "type": "revenue_to_fund"
-    },
-    {
-      "source": "revenue:business_income_tax",
-      "target": "general_fund",
-      "value": 7451000000,
+      "value": 80350447000,
       "type": "revenue_to_fund"
     },
     {
       "source": "revenue:state_grants",
       "target": "general_fund",
-      "value": 3881494142,
+      "value": 20926405995,
       "type": "revenue_to_fund"
     },
     {
-      "source": "revenue:other_taxes",
+      "source": "revenue:other_revenue",
       "target": "general_fund",
-      "value": 476500000,
+      "value": 11526660470,
       "type": "revenue_to_fund"
     },
     {
       "source": "revenue:federal_grants",
       "target": "general_fund",
-      "value": 123100824,
+      "value": 11041070771,
       "type": "revenue_to_fund"
     },
     {
