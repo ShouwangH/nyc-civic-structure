@@ -165,6 +165,13 @@
       ],
       "factoid": "Elected chief executive responsible for enforcing state laws, proposing the budget, and appointing officials."
     },
+        {
+      "id": "state:state_comptroller",
+      "label": "State Comptroller",
+      "type": "office",
+      "branch": "executive",
+      "factoid": "Independent fiscal officer overseeing state finances, audits, and the public pension system."
+    },
     {
       "id": "state:state_legislature",
       "label": "NY State Legislature",
@@ -182,13 +189,6 @@
       "type": "body",
       "branch": "judicial",
       "factoid": "Unified court system led by the Chief Judge and Court of Appeals, interpreting the Constitution and laws of New York."
-    },
-    {
-      "id": "state:state_comptroller",
-      "label": "State Comptroller",
-      "type": "office",
-      "branch": "executive",
-      "factoid": "Independent fiscal officer overseeing state finances, audits, and the public pension system."
     },
     {
       "id": "state:state_budget",
@@ -241,69 +241,6 @@
       "type": "category",
       "branch": "law",
       "factoid": "Legal frameworks establishing public authorities across city, state, and interstate jurisdictions."
-    },
-    {
-      "id": "state:mta",
-      "label": "Metropolitan Transportation Authority (MTA)",
-      "type": "authority",
-      "branch": "transportation",
-      "factoid": "State authority managing NYC subway, buses, and regional commuter rail systems."
-    },
-    {
-      "id": "state:nys_thruway",
-      "label": "New York State Thruway Authority",
-      "type": "authority",
-      "branch": "transportation",
-      "factoid": "State authority operating the Thruway highway system across New York."
-    },
-    {
-      "id": "state:nypa",
-      "label": "New York Power Authority (NYPA)",
-      "type": "authority",
-      "branch": "energy",
-      "factoid": "State authority providing electric power generation and transmission."
-    },
-    {
-      "id": "state:dasny",
-      "label": "Dormitory Authority (DASNY)",
-      "type": "authority",
-      "branch": "finance",
-      "factoid": "State authority financing construction of schools, hospitals, and public facilities."
-    },
-    {
-      "id": "state:esd",
-      "label": "Empire State Development (ESD)",
-      "type": "authority",
-      "branch": "economic",
-      "factoid": "State authority for economic development and business incentives."
-    },
-    {
-      "id": "state:battery_park_city_authority",
-      "label": "Battery Park City Authority (BPCA)",
-      "type": "authority",
-      "branch": "development",
-      "factoid": "State authority managing Battery Park City neighborhood in Manhattan."
-    },
-    {
-      "id": "state:roosevelt_island",
-      "label": "Roosevelt Island Operating Corporation (RIOC)",
-      "type": "authority",
-      "branch": "development",
-      "factoid": "State authority overseeing Roosevelt Island operations."
-    },
-    {
-      "id": "state:port_authority",
-      "label": "Port Authority of New York and New Jersey",
-      "type": "bi_state_authority",
-      "branch": "infrastructure",
-      "factoid": "Bi-state agency managing bridges, tunnels, airports, and seaports in the NY-NJ region."
-    },
-    {
-      "id": "state:nycha",
-      "label": "New York City Housing Authority (NYCHA)",
-      "type": "city_authority",
-      "branch": "housing",
-      "factoid": "City public authority providing affordable housing for NYC residents."
     },
     {
       "id": "federal:us_constitution",
@@ -511,6 +448,11 @@
       "target": "state:governor_ny",
       "relation": "establishes"
     },
+        {
+      "source": "state:ny_state_constitution",
+      "target": "state:state_comptroller",
+      "relation": "establishes"
+    },
     {
       "source": "state:ny_state_constitution",
       "target": "state:state_legislature",
@@ -519,11 +461,6 @@
     {
       "source": "state:ny_state_constitution",
       "target": "state:state_judiciary",
-      "relation": "establishes"
-    },
-    {
-      "source": "state:ny_state_constitution",
-      "target": "state:state_comptroller",
       "relation": "establishes"
     },
     {
@@ -575,51 +512,6 @@
       "source": "state:state_legislature",
       "target": "state:public_authorities",
       "relation": "creates"
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:mta",
-      "relation": "includes"
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:nys_thruway",
-      "relation": "includes"
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:nypa",
-      "relation": "includes"
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:dasny",
-      "relation": "includes"
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:esd",
-      "relation": "includes"
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:battery_park_city_authority",
-      "relation": "includes"
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:roosevelt_island",
-      "relation": "includes"
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:port_authority",
-      "relation": "includes"
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:nycha",
-      "relation": "includes"
     },
     {
       "source": "federal:us_constitution",
@@ -686,60 +578,6 @@
       "relation": "promulgates",
       "category": "administrative",
       "hierarchical": true
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:mta",
-      "relation": "establishes",
-      "detail": "Article 5, Title 11"
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:nys_thruway",
-      "relation": "establishes",
-      "detail": "Article 2, Title 9"
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:nypa",
-      "relation": "establishes",
-      "detail": "Article 5, Title 1"
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:dasny",
-      "relation": "establishes",
-      "detail": "Article 8, Title 4"
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:esd",
-      "relation": "establishes",
-      "detail": "Article 10-A"
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:battery_park_city_authority",
-      "relation": "establishes",
-      "detail": "Article 8, Title 12"
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:roosevelt_island",
-      "relation": "establishes",
-      "detail": "Article 8, Title 8"
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:port_authority",
-      "relation": "creates",
-      "detail": "Congressional approval 1921"
-    },
-    {
-      "source": "state:public_authorities",
-      "target": "state:nycha",
-      "relation": "enables",
-      "detail": "Article 3"
     }
   ],
   "subviews": [

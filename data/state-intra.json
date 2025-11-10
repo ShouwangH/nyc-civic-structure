@@ -803,6 +803,69 @@
       "type": "committee",
       "branch": "legislative",
       "factoid": "Reviews health policy, Medicaid, hospital regulation, and public health programs."
+    },
+        {
+      "id": "state:mta",
+      "label": "Metropolitan Transportation Authority (MTA)",
+      "type": "authority",
+      "branch": "transportation",
+      "factoid": "State authority managing NYC subway, buses, and regional commuter rail systems."
+    },
+    {
+      "id": "state:nys_thruway",
+      "label": "New York State Thruway Authority",
+      "type": "authority",
+      "branch": "transportation",
+      "factoid": "State authority operating the Thruway highway system across New York."
+    },
+    {
+      "id": "state:nypa",
+      "label": "New York Power Authority (NYPA)",
+      "type": "authority",
+      "branch": "energy",
+      "factoid": "State authority providing electric power generation and transmission."
+    },
+    {
+      "id": "state:dasny",
+      "label": "Dormitory Authority (DASNY)",
+      "type": "authority",
+      "branch": "finance",
+      "factoid": "State authority financing construction of schools, hospitals, and public facilities."
+    },
+    {
+      "id": "state:esd",
+      "label": "Empire State Development (ESD)",
+      "type": "authority",
+      "branch": "economic",
+      "factoid": "State authority for economic development and business incentives."
+    },
+    {
+      "id": "state:battery_park_city_authority",
+      "label": "Battery Park City Authority (BPCA)",
+      "type": "authority",
+      "branch": "development",
+      "factoid": "State authority managing Battery Park City neighborhood in Manhattan."
+    },
+    {
+      "id": "state:roosevelt_island",
+      "label": "Roosevelt Island Operating Corporation (RIOC)",
+      "type": "authority",
+      "branch": "development",
+      "factoid": "State authority overseeing Roosevelt Island operations."
+    },
+    {
+      "id": "state:port_authority",
+      "label": "Port Authority of New York and New Jersey",
+      "type": "bi_state_authority",
+      "branch": "infrastructure",
+      "factoid": "Bi-state agency managing bridges, tunnels, airports, and seaports in the NY-NJ region."
+    },
+    {
+      "id": "state:nycha",
+      "label": "New York City Housing Authority (NYCHA)",
+      "type": "city_authority",
+      "branch": "housing",
+      "factoid": "City public authority providing affordable housing for NYC residents."
     }
   ],
   "edges": [],
