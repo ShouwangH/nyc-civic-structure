@@ -156,7 +156,6 @@ function App() {
         <OverlayWrapper
           overlaySubviews={overlaySubviews}
           inputHandler={runtime?.inputHandler ?? null}
-          controlPanelWidth={window.innerWidth * 0.25}
         />
       )}
 

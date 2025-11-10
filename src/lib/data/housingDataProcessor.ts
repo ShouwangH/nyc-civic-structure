@@ -15,51 +15,8 @@ import type {
 // Cache configuration
 const CACHE_KEY = 'nyc_housing_processed_v6';
 const CACHE_VERSION = '6.0.0';
-const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 const ENABLE_CACHE = false; // Disabled: localStorage quota exceeded
-
-/**
- * Check if cached data is still valid
- */
-function isCacheValid(timestamp: number): boolean {
-  const now = Date.now();
-  return now - timestamp < CACHE_TTL_MS;
-}
-
-/**
- * Load processed data from localStorage cache
- */
-function loadProcessedFromCache(): HousingDataByYear | null {
-  try {
-    const cached = localStorage.getItem(CACHE_KEY);
-    if (!cached) {
-      return null;
-    }
-
-    const data: CachedProcessedData = JSON.parse(cached);
-
-    // Check version and TTL
-    if (data.meta.version !== CACHE_VERSION || !isCacheValid(data.meta.timestamp)) {
-      console.info('[HousingData] Cache expired or version mismatch');
-      localStorage.removeItem(CACHE_KEY);
-      return null;
-    }
-
-    // Convert plain object back to Map
-    const buildingsByYear = new Map<number, ProcessedBuilding[]>();
-    for (const [year, buildings] of Object.entries(data.buildingsByYear)) {
-      buildingsByYear.set(parseInt(year, 10), buildings);
-    }
-
-    console.info(`[HousingData] Loaded ${data.meta.recordCount} processed buildings from cache`);
-    return buildingsByYear;
-  } catch (error) {
-    console.error('[HousingData] Failed to load from cache:', error);
-    localStorage.removeItem(CACHE_KEY);
-    return null;
-  }
-}
 
 /**
  * Save processed data to localStorage cache

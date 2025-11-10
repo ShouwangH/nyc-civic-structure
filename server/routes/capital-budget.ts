@@ -40,7 +40,7 @@ async function fetchAndProcessCapitalBudget() {
       throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
     }
 
-    const data = await response.json();
+    const data = await response.json() as any;
 
     // Transform features to add derived properties
     const features = data.features.map((feature: any) => {

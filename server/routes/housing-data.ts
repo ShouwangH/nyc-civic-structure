@@ -50,10 +50,10 @@ async function fetchAndProcessHousingData() {
     }
 
     const [housingNyData, dobData, plutoData, demolitionData] = await Promise.all([
-      housingNyResponse.json(),
-      dobResponse.json(),
-      plutoResponse.json(),
-      demolitionResponse.json()
+      housingNyResponse.json() as Promise<any[]>,
+      dobResponse.json() as Promise<any[]>,
+      plutoResponse.json() as Promise<any[]>,
+      demolitionResponse.json() as Promise<any[]>
     ]);
 
     console.log('[Housing Data API] Fetched:', {
