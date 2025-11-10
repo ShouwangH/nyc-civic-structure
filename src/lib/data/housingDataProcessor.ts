@@ -219,10 +219,29 @@ async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
     const jobType = dobRecord.job_type || '';
     const isRenovation = ['A1', 'A2', 'A3'].includes(jobType.toUpperCase());
 
-    // Include if:
-    // 1. Net positive units (new construction), OR
-    // 2. Renovation (A1/A2/A3) with existing units
-    const shouldInclude = netUnits > 0 || (isRenovation && proposedUnits > 0);
+    // Check for affordable housing match
+    const housingRecord = housingByBBL.get(bbl);
+
+    // Determine units for visualization
+    let unitsForVisualization;
+    if (isRenovation && housingRecord) {
+      // For renovations with affordable data, use affordable housing unit count
+      unitsForVisualization = parseInt(
+        housingRecord.all_counted_units || housingRecord.total_units || '0',
+        10
+      );
+    } else if (netUnits > 0) {
+      // For new construction, use net units
+      unitsForVisualization = netUnits;
+    } else if (isRenovation && proposedUnits > 0) {
+      // For renovations without affordable match, use proposed units
+      unitsForVisualization = proposedUnits;
+    } else {
+      unitsForVisualization = 0;
+    }
+
+    // Include if we have units from any source
+    const shouldInclude = unitsForVisualization > 0;
 
     if (!shouldInclude) {
       dobSkipped++;
@@ -232,13 +251,9 @@ async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
     dobBBLs.add(bbl);
     dobProcessed++;
 
-    const housingRecord = housingByBBL.get(bbl);
     if (housingRecord) {
       dobAffordableMatches++;
     }
-
-    // For renovations with no net new units, use proposedUnits
-    const unitsForVisualization = netUnits > 0 ? netUnits : proposedUnits;
 
     joinedData.push({
       ...dobRecord,
