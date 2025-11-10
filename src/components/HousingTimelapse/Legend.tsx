@@ -10,7 +10,8 @@ import type { ProcessedBuilding } from './types';
 export function Legend({
   currentYear,
   buildings,
-}: LegendProps & { buildings?: ProcessedBuilding[] }) {
+  netNewUnits,
+}: LegendProps & { buildings?: ProcessedBuilding[]; netNewUnits?: number }) {
   // Filter buildings up to current year (for updating counts as timeline moves)
   const buildingsUpToYear = buildings?.filter(b => b.completionYear <= currentYear) || [];
 
@@ -63,8 +64,38 @@ export function Legend({
   // Check if any PLUTO data is being used (from filtered buildings)
   const usesPluto = buildingsUpToYear.some(b => b.dataSource === 'pluto');
 
+  // Calculate gross units (sum of all totalUnits)
+  const grossUnits = buildingsUpToYear.reduce((sum, b) => sum + b.totalUnits, 0);
+
   return (
     <div className="absolute bottom-6 right-6 z-10 bg-white rounded-xl border border-slate-200 shadow-lg p-4 max-w-xs">
+      {/* Summary statistics */}
+      <div className="mb-3 pb-3 border-b border-slate-200">
+        <div className="space-y-1">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-xs text-slate-600">Gross New Units</span>
+            <span className="text-xs font-semibold text-slate-900">
+              {grossUnits.toLocaleString()}
+            </span>
+          </div>
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-xs text-slate-600">Net New Units</span>
+            <span className="text-xs font-semibold text-slate-900">
+              {(netNewUnits ?? grossUnits).toLocaleString()}
+            </span>
+          </div>
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded" style={{ backgroundColor: 'rgb(34, 197, 94)' }}></div>
+              <span className="text-xs text-slate-600">Affordable Units</span>
+            </div>
+            <span className="text-xs font-semibold text-green-600">
+              {totalAffordableUnits.toLocaleString()}
+            </span>
+          </div>
+        </div>
+      </div>
+
       {/* Color legend */}
       <div>
         <div className="text-xs font-semibold text-slate-700 mb-2">
@@ -73,29 +104,11 @@ export function Legend({
         <div className="space-y-1.5">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgb(34, 197, 94)' }}></div>
-              <span className="text-xs text-slate-600">Affordable Housing</span>
-            </div>
-            <span className="text-xs font-medium text-slate-700">
-              {(buildingTypeCounts['affordable'] || 0).toLocaleString()}
-            </span>
-          </div>
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgb(249, 115, 22)' }}></div>
-              <span className="text-xs text-slate-600">Major Renovation</span>
-            </div>
-            <span className="text-xs font-medium text-slate-700">
-              {(buildingTypeCounts['renovation'] || 0).toLocaleString()}
-            </span>
-          </div>
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2">
               <div className="w-4 h-4 rounded" style={{ backgroundColor: 'rgb(59, 130, 246)' }}></div>
               <span className="text-xs text-slate-600">Multifamily Elevator</span>
             </div>
             <span className="text-xs font-medium text-slate-700">
-              {(buildingTypeCounts['multifamily-elevator'] || 0).toLocaleString()}
+              {(physicalTypeCounts['multifamily-elevator'] || 0).toLocaleString()}
             </span>
           </div>
           <div className="flex items-center justify-between gap-2">
@@ -104,7 +117,7 @@ export function Legend({
               <span className="text-xs text-slate-600">Multifamily Walkup</span>
             </div>
             <span className="text-xs font-medium text-slate-700">
-              {(buildingTypeCounts['multifamily-walkup'] || 0).toLocaleString()}
+              {(physicalTypeCounts['multifamily-walkup'] || 0).toLocaleString()}
             </span>
           </div>
           <div className="flex items-center justify-between gap-2">
@@ -113,7 +126,7 @@ export function Legend({
               <span className="text-xs text-slate-600">Mixed Use</span>
             </div>
             <span className="text-xs font-medium text-slate-700">
-              {(buildingTypeCounts['mixed-use'] || 0).toLocaleString()}
+              {(physicalTypeCounts['mixed-use'] || 0).toLocaleString()}
             </span>
           </div>
           <div className="flex items-center justify-between gap-2">
@@ -122,7 +135,7 @@ export function Legend({
               <span className="text-xs text-slate-600">1-2 Family Homes</span>
             </div>
             <span className="text-xs font-medium text-slate-700">
-              {(buildingTypeCounts['one-two-family'] || 0).toLocaleString()}
+              {(physicalTypeCounts['one-two-family'] || 0).toLocaleString()}
             </span>
           </div>
         </div>

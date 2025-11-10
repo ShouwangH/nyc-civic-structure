@@ -32,6 +32,7 @@ export function HousingTimelapse({ onClose }: HousingTimelapseProps) {
     totalBuildings,
     totalUnits,
     affordableUnits,
+    netNewUnits,
   } = useHousingData(displayYear);
 
   // Handle smooth playback using requestAnimationFrame
@@ -183,6 +184,7 @@ export function HousingTimelapse({ onClose }: HousingTimelapseProps) {
                 totalUnits={totalUnits}
                 affordableUnits={affordableUnits}
                 buildings={buildings}
+                netNewUnits={netNewUnits}
               />
             </>
           )}

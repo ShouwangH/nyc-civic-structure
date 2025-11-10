@@ -127,6 +127,15 @@ export type ZoningColorMap = Record<string, string>;
 export type HousingDataByYear = Map<number, ProcessedBuilding[]>;
 
 /**
+ * Demolition statistics for calculating net housing
+ */
+export type DemolitionStats = {
+  totalDemolishedUnits: number;
+  standaloneDemolishedUnits: number; // Units demolished where BBL had no new construction
+  byYear: Map<number, number>; // Demolished units by year
+};
+
+/**
  * Cache metadata for NYC Open Data
  */
 export type CacheMetadata = {
