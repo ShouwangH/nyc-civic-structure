@@ -215,8 +215,16 @@ async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
     const proposedUnits = parseInt(dobRecord.proposed_dwelling_units || '0', 10);
     const netUnits = proposedUnits - existingUnits;
 
-    // Skip if negative (exclude renovations that remove units)
-    if (netUnits <= 0) {
+    // Check if this is a renovation (A1/A2/A3 alteration)
+    const jobType = dobRecord.job_type || '';
+    const isRenovation = ['A1', 'A2', 'A3'].includes(jobType.toUpperCase());
+
+    // Include if:
+    // 1. Net positive units (new construction), OR
+    // 2. Renovation (A1/A2/A3) with existing units
+    const shouldInclude = netUnits > 0 || (isRenovation && proposedUnits > 0);
+
+    if (!shouldInclude) {
       dobSkipped++;
       continue;
     }
@@ -229,16 +237,19 @@ async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
       dobAffordableMatches++;
     }
 
+    // For renovations with no net new units, use proposedUnits
+    const unitsForVisualization = netUnits > 0 ? netUnits : proposedUnits;
+
     joinedData.push({
       ...dobRecord,
-      _netUnits: netUnits,
+      _netUnits: unitsForVisualization,
       _affordableData: housingRecord || null,
       _hasAffordable: Boolean(housingRecord),
       _dataSource: 'dob',
     });
   }
 
-  console.info(`[HousingData] DOB: ${dobProcessed} valid (net+ units), ${dobSkipped} skipped (net zero/negative)`);
+  console.info(`[HousingData] DOB: ${dobProcessed} valid (net+ units + renovations), ${dobSkipped} skipped (invalid)`);
   console.info(`[HousingData] DOB affordable matches: ${dobAffordableMatches}`);
 
   // Add PLUTO records as fallback (only for BBLs not in DOB)
