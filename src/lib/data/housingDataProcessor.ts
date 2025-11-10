@@ -395,8 +395,8 @@ function processBuilding(record: any): ProcessedBuilding | null {
   const isPLUTO = dataSource === 'pluto';
 
   // Extract coordinates
-  // DOB doesn't have direct coords, PLUTO and Housing NY do
   const lat = parseFloat(
+    record.gis_latitude ||
     record.latitude ||
     affordableData?.latitude ||
     affordableData?.latitude_internal ||
@@ -405,6 +405,7 @@ function processBuilding(record: any): ProcessedBuilding | null {
     '0'
   );
   const lon = parseFloat(
+    record.gis_longitude ||
     record.longitude ||
     affordableData?.longitude ||
     affordableData?.longitude_internal ||
