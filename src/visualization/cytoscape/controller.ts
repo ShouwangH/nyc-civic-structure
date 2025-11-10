@@ -154,7 +154,7 @@ export function createController(config: ControllerConfig): Controller {
   // ============================================================================
 
   const activateSubview = async (subviewId: string): Promise<void> => {
-    console.log('[Controller] activateSubview START:', subviewId, {
+    // console.log('[Controller] activateSubview START:', subviewId, {
       transitionInProgress,
       activeSubviewId: activeSubview?.id,
     });
@@ -177,7 +177,7 @@ export function createController(config: ControllerConfig): Controller {
       return;
     }
 
-    console.log('[Controller] activateSubview PROCEED:', {
+    // console.log('[Controller] activateSubview PROCEED:', {
       subviewType: subview.type,
       renderTarget: subview.renderTarget,
     });
@@ -363,13 +363,13 @@ export function createController(config: ControllerConfig): Controller {
     layout.run();
     await layoutPromise;
 
-    console.log('[Controller] activateSubview: layout complete, checking if cancelled');
+    // console.log('[Controller] activateSubview: layout complete, checking if cancelled');
 
     // Check if we should abort (deactivateSubview was called during layout)
     // If nodes were removed, they won't exist in the graph anymore
     const firstAddedNode = addedNodeIds.values().next().value;
     const firstNodeExists = firstAddedNode ? cy.getElementById(firstAddedNode).length > 0 : false;
-    console.log('[Controller] activateSubview: cancellation check after layout', {
+    // console.log('[Controller] activateSubview: cancellation check after layout', {
       firstAddedNode,
       firstNodeExists,
       addedNodeIdsSize: addedNodeIds.size,
@@ -399,11 +399,11 @@ export function createController(config: ControllerConfig): Controller {
         .catch(() => {});
     }
 
-    console.log('[Controller] activateSubview: animation complete, final cancellation check');
+    // console.log('[Controller] activateSubview: animation complete, final cancellation check');
 
     // Final check: if nodes were removed during animation, abort
     const finalNodeExists = firstAddedNode ? cy.getElementById(firstAddedNode).length > 0 : false;
-    console.log('[Controller] activateSubview: final check', {
+    // console.log('[Controller] activateSubview: final check', {
       firstAddedNode,
       finalNodeExists,
     });
@@ -414,7 +414,7 @@ export function createController(config: ControllerConfig): Controller {
       return;
     }
 
-    console.log('[Controller] activateSubview: storing active state');
+    // console.log('[Controller] activateSubview: storing active state');
 
     // Store active state
     activeSubview = {
@@ -427,7 +427,7 @@ export function createController(config: ControllerConfig): Controller {
     };
 
     transitionInProgress = false;
-    console.log('[Controller] activateSubview COMPLETE:', subview.id);
+    // console.log('[Controller] activateSubview COMPLETE:', subview.id);
 
     // Determine scope - use subview jurisdiction if it's a valid scope (not 'multi')
     const subviewScope = subview.jurisdiction !== 'multi' ? subview.jurisdiction : null;
@@ -446,7 +446,7 @@ export function createController(config: ControllerConfig): Controller {
   };
 
   const deactivateSubview = async (): Promise<void> => {
-    console.log('[Controller] deactivateSubview START:', {
+    // console.log('[Controller] deactivateSubview START:', {
       transitionInProgress,
       activeSubviewId: activeSubview?.id,
     });
@@ -455,7 +455,7 @@ export function createController(config: ControllerConfig): Controller {
 
     // Handle overlay subviews (Sankey, Sunburst, etc.) - they don't have activeSubview state
     if (currentState.sankeyOverlay) {
-      console.log('[Controller] deactivateSubview: clearing sankeyOverlay');
+      // console.log('[Controller] deactivateSubview: clearing sankeyOverlay');
       transitionVisualizationState({
         sankeyOverlay: null,
         activeSubviewId: null,
@@ -466,7 +466,7 @@ export function createController(config: ControllerConfig): Controller {
     }
 
     if (currentState.sunburstOverlay) {
-      console.log('[Controller] deactivateSubview: clearing sunburstOverlay');
+      // console.log('[Controller] deactivateSubview: clearing sunburstOverlay');
       transitionVisualizationState({
         sunburstOverlay: null,
         activeSubviewId: null,
@@ -478,7 +478,7 @@ export function createController(config: ControllerConfig): Controller {
 
     const currentSubview = activeSubview;
     if (!currentSubview) {
-      console.log('[Controller] deactivateSubview: no active subview, clearing state');
+      // console.log('[Controller] deactivateSubview: no active subview, clearing state');
       transitionVisualizationState({
         // Keep activeScope - only clear subview state
         activeSubviewId: null,
@@ -488,7 +488,7 @@ export function createController(config: ControllerConfig): Controller {
       return;
     }
 
-    console.log('[Controller] deactivateSubview: removing subview elements', {
+    // console.log('[Controller] deactivateSubview: removing subview elements', {
       subviewId: currentSubview.id,
       addedNodeCount: currentSubview.addedNodeIds.size,
       addedEdgeCount: currentSubview.addedEdgeIds.size,
@@ -564,7 +564,7 @@ export function createController(config: ControllerConfig): Controller {
     activeSubview = null;
     transitionInProgress = false;
 
-    console.log('[Controller] deactivateSubview COMPLETE: cleaned up subview');
+    // console.log('[Controller] deactivateSubview COMPLETE: cleaned up subview');
 
     // Update React state
     transitionVisualizationState({
@@ -637,19 +637,19 @@ export function createController(config: ControllerConfig): Controller {
   // ============================================================================
 
   const handleBackgroundClick = async (): Promise<void> => {
-    console.log('[Controller] handleBackgroundClick:', {
+    // console.log('[Controller] handleBackgroundClick:', {
       transitionInProgress,
       activeSubviewId: activeSubview?.id,
     });
 
     // Guard: Don't allow background clicks during transitions
     if (transitionInProgress) {
-      console.log('[Controller] handleBackgroundClick ABORT: transition in progress');
+      // console.log('[Controller] handleBackgroundClick ABORT: transition in progress');
       return;
     }
 
     const currentState = getState();
-    console.log('[Controller] handleBackgroundClick state:', {
+    // console.log('[Controller] handleBackgroundClick state:', {
       sankeyOverlay: !!currentState.sankeyOverlay,
       sunburstOverlay: !!currentState.sunburstOverlay,
       selectedNodeId: currentState.selectedNodeId,
@@ -661,14 +661,14 @@ export function createController(config: ControllerConfig): Controller {
 
     // If there's an overlay open, close it (preserve node selection)
     if (currentState.sankeyOverlay || currentState.sunburstOverlay) {
-      console.log('[Controller] handleBackgroundClick: closing overlay');
+      // console.log('[Controller] handleBackgroundClick: closing overlay');
       await deactivateSubview();
       return;
     }
 
     // If there's a selected node or edge, clear only selections (keep activeScope)
     if (currentState.selectedNodeId || currentState.selectedEdgeId) {
-      console.log('[Controller] handleBackgroundClick: clearing selections');
+      // console.log('[Controller] handleBackgroundClick: clearing selections');
       clearSelections();
       return;
     }
@@ -676,14 +676,14 @@ export function createController(config: ControllerConfig): Controller {
     // If there's an active subview, deactivate it (keep activeScope)
     // Check INTERNAL controller state, not React state (which may be stale due to async updates)
     if (activeSubview) {
-      console.log('[Controller] handleBackgroundClick: deactivating subview (using internal state)');
+      // console.log('[Controller] handleBackgroundClick: deactivating subview (using internal state)');
       await deactivateSubview();
       return;
     }
 
     // If there's an active scope but no selections/subview, clear the scope
     if (currentState.activeScope) {
-      console.log('[Controller] handleBackgroundClick: clearing scope');
+      // console.log('[Controller] handleBackgroundClick: clearing scope');
       clearNodeFocus();
       transitionVisualizationState({
         activeScope: null,
@@ -756,7 +756,7 @@ export function createController(config: ControllerConfig): Controller {
    * Central dispatch function - all user interactions route through here.
    */
   const dispatch = async (action: GraphAction): Promise<void> => {
-    console.log('[Controller] Dispatch:', action.type, {
+    // console.log('[Controller] Dispatch:', action.type, {
       transitionInProgress,
       activeSubviewId: activeSubview?.id,
       payload: 'payload' in action ? action.payload : undefined,
