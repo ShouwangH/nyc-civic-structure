@@ -77,10 +77,17 @@ export function CapitalBudgetMap() {
 
   // Transform projects to include centroids for column layer
   const projectsWithCentroids = useMemo(() => {
-    return projects.map((project) => ({
-      ...project,
-      centroid: calculateCentroid(project.geometry as Polygon | MultiPolygon),
-    }));
+    return projects.map((project) => {
+      const centroid = calculateCentroid(project.geometry as Polygon | MultiPolygon);
+      // Add small random offset to prevent overlapping columns at same location
+      // 0.0002 degrees ≈ 22 meters at NYC latitude
+      const offsetLon = (Math.random() - 0.5) * 0.0002;
+      const offsetLat = (Math.random() - 0.5) * 0.0002;
+      return {
+        ...project,
+        centroid: [centroid[0] + offsetLon, centroid[1] + offsetLat] as [number, number],
+      };
+    });
   }, [projects]);
 
   const selectedProject = selectedProjectId
