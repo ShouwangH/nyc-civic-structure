@@ -110,14 +110,26 @@ function constructBBL(borough: string, block: string, lot: string): string | nul
 function processDemolitionStats(demolitions: any[], newConstructionBBLs: Set<string>): DemolitionStats {
   console.info(`[HousingData] Processing ${demolitions.length} demolition records`);
 
+  // Debug: Check structure of first few demolition records
+  if (demolitions.length > 0) {
+    console.info('[HousingData] Sample demolition record fields:', Object.keys(demolitions[0]));
+    console.info('[HousingData] First 3 demolition records:', demolitions.slice(0, 3));
+  }
+
   let totalDemolishedUnits = 0;
   let standaloneDemolishedUnits = 0;
   const byYear = new Map<number, number>();
+  let recordsWithBBL = 0;
+  let recordsWithUnits = 0;
+  let recordsWithDate = 0;
+  let standaloneCount = 0;
 
   for (const record of demolitions) {
     // Parse existing dwelling units
     const existingUnitsStr = record.existing_dwelling_units || record.existingdwellingunits || '0';
     const existingUnits = parseInt(String(existingUnitsStr).replace(/[^0-9]/g, ''), 10) || 0;
+
+    if (existingUnits > 0) recordsWithUnits++;
 
     if (existingUnits === 0) continue;
 
@@ -125,26 +137,69 @@ function processDemolitionStats(demolitions: any[], newConstructionBBLs: Set<str
 
     // Check if this BBL had new construction
     const bbl = normalizeBBL(record.bbl) || constructBBL(record.borough, record.block, record.lot);
+    if (bbl) recordsWithBBL++;
+
     const isStandalone = bbl ? !newConstructionBBLs.has(bbl) : true;
 
     if (isStandalone) {
       standaloneDemolishedUnits += existingUnits;
+      standaloneCount++;
     }
 
     // Try to extract year from latest_action_date
     const dateStr = record.latest_action_date || record.issuance_date || '';
     if (dateStr) {
-      const yearMatch = String(dateStr).match(/^(\d{4})/);
-      if (yearMatch) {
-        const year = parseInt(yearMatch[1], 10);
+      recordsWithDate++;
+
+      // Try multiple date formats:
+      // 1. YYYY-MM-DD or YYYY/MM/DD (ISO format, year at start)
+      // 2. MM/DD/YYYY or MM-DD-YYYY (US format, year at end)
+      let year: number | null = null;
+
+      const isoMatch = String(dateStr).match(/^(\d{4})/);
+      if (isoMatch) {
+        year = parseInt(isoMatch[1], 10);
+      } else {
+        const usMatch = String(dateStr).match(/\/(\d{4})$/);
+        if (usMatch) {
+          year = parseInt(usMatch[1], 10);
+        }
+      }
+
+      if (year !== null) {
+        // Debug: Log first few date extractions
+        if (recordsWithDate <= 5) {
+          console.info(`[HousingData] Date extraction sample ${recordsWithDate}:`, {
+            dateStr,
+            year,
+            inRange: year >= 2014 && year <= 2024,
+            isStandalone,
+            existingUnits
+          });
+        }
+
         if (year >= 2014 && year <= 2024 && isStandalone) {
           byYear.set(year, (byYear.get(year) || 0) + existingUnits);
+        }
+      } else {
+        // Debug: Log first few failed extractions
+        if (recordsWithDate <= 5) {
+          console.warn(`[HousingData] Failed to extract year from date:`, dateStr);
         }
       }
     }
   }
 
-  console.info(`[HousingData] Demolition stats: ${totalDemolishedUnits} total units, ${standaloneDemolishedUnits} standalone`);
+  console.info(`[HousingData] Demolition processing summary:`, {
+    totalRecords: demolitions.length,
+    recordsWithUnits,
+    recordsWithBBL,
+    recordsWithDate,
+    standaloneCount,
+    totalDemolishedUnits,
+    standaloneDemolishedUnits,
+    yearBreakdownSize: byYear.size
+  });
 
   return {
     totalDemolishedUnits,

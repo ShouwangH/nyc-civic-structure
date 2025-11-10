@@ -99,6 +99,22 @@ export function useHousingData(currentYear: number): UseHousingDataResult {
   // Net new units = gross new units - standalone demolitions
   const netNewUnits = totalUnits - standaloneDemolishedUpToYear;
 
+  // Debug: Log net calculation for this year
+  if (demolitionStats && !isLoading) {
+    const demolitionsByYear = Array.from(demolitionStats.byYear.entries())
+      .filter(([year]) => year <= currentYear)
+      .sort((a, b) => a[0] - b[0]);
+
+    console.info(`[useHousingData] Year ${currentYear}:`, {
+      grossNewUnits: totalUnits,
+      standaloneDemolitions: standaloneDemolishedUpToYear,
+      netNewUnits,
+      demolitionsByYear: demolitionsByYear.length > 0
+        ? Object.fromEntries(demolitionsByYear)
+        : 'none'
+    });
+  }
+
   return {
     buildings: allBuildings, // Pass ALL buildings for stable deck.gl data array
     dataByYear,

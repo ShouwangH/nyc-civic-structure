@@ -1,12 +1,13 @@
 // ABOUTME: Capital budget projects 3D map visualization
-// ABOUTME: Shows NYC capital projects as extruded polygons/footprints based on budget amounts
+// ABOUTME: Shows projects as columns (height = budget) with footprints on click
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Map } from 'react-map-gl/maplibre';
 import { DeckGL } from '@deck.gl/react';
-import { GeoJsonLayer } from '@deck.gl/layers';
+import { GeoJsonLayer, ScatterplotLayer } from '@deck.gl/layers';
 import type { PickingInfo } from '@deck.gl/core';
 import { useCapitalBudgetData, type CapitalProjectFeature } from '../../hooks/useCapitalBudgetData';
+import type { Polygon, MultiPolygon } from 'geojson';
 
 const INITIAL_VIEW_STATE = {
   longitude: -73.935,
@@ -37,25 +38,75 @@ const AGENCY_COLORS: Record<string, [number, number, number]> = {
 
 const DEFAULT_COLOR: [number, number, number] = [150, 150, 150]; // gray for others
 
+// Small fixed height for footprint visibility (in deck.gl units)
+const FOOTPRINT_HEIGHT = 10;
+
+/**
+ * Calculate centroid of a polygon or multipolygon
+ */
+function calculateCentroid(geometry: Polygon | MultiPolygon): [number, number] {
+  let totalX = 0;
+  let totalY = 0;
+  let totalPoints = 0;
+
+  const processRing = (ring: number[][]) => {
+    ring.forEach(([lon, lat]) => {
+      totalX += lon;
+      totalY += lat;
+      totalPoints++;
+    });
+  };
+
+  if (geometry.type === 'Polygon') {
+    // Process outer ring only
+    processRing(geometry.coordinates[0]);
+  } else if (geometry.type === 'MultiPolygon') {
+    // Process outer ring of each polygon
+    geometry.coordinates.forEach((polygon) => {
+      processRing(polygon[0]);
+    });
+  }
+
+  return [totalX / totalPoints, totalY / totalPoints];
+}
+
 export function CapitalBudgetMap() {
   const { projects, isLoading, error } = useCapitalBudgetData();
   const [hoveredProject, setHoveredProject] = useState<CapitalProjectFeature | null>(null);
+  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
 
-  const layer = new GeoJsonLayer({
-    id: 'capital-projects',
-    data: projects,
-    filled: true,
-    extruded: true,
-    wireframe: true,
-    pickable: true,
-    elevationScale: 0.5,
-    getElevation: (d: any) => d.properties.allocate_total / 10000, // Scale budget to reasonable height
+  // Transform projects to include centroids for column layer
+  const projectsWithCentroids = useMemo(() => {
+    return projects.map((project) => ({
+      ...project,
+      centroid: calculateCentroid(project.geometry as Polygon | MultiPolygon),
+    }));
+  }, [projects]);
+
+  const selectedProject = selectedProjectId
+    ? projectsWithCentroids.find(p => p.properties.maprojid === selectedProjectId)
+    : null;
+
+  // Layer 1: Columns at project locations (height = budget)
+  const columnsLayer = new ScatterplotLayer({
+    id: 'capital-columns',
+    data: projectsWithCentroids,
+    getPosition: (d: any) => d.centroid,
+    getRadius: 30,
     getFillColor: (d: any) => {
       const color = AGENCY_COLORS[d.properties.magencyacro] || DEFAULT_COLOR;
-      return [...color, 200]; // Add alpha channel
+      return [...color, 200];
     },
     getLineColor: [80, 80, 80],
     lineWidthMinPixels: 1,
+    stroked: true,
+    filled: true,
+    pickable: true,
+    radiusUnits: 'meters',
+    // Extrusion for 3D effect
+    extruded: true,
+    getElevation: (d: any) => d.properties.allocate_total / 10000, // Scale budget to reasonable height
+    elevationScale: 0.5,
     onHover: (info: PickingInfo) => {
       if (info.object) {
         setHoveredProject(info.object as CapitalProjectFeature);
@@ -63,7 +114,51 @@ export function CapitalBudgetMap() {
         setHoveredProject(null);
       }
     },
+    onClick: (info: PickingInfo) => {
+      if (info.object) {
+        const project = info.object as any;
+        setSelectedProjectId(
+          selectedProjectId === project.properties.maprojid
+            ? null
+            : project.properties.maprojid
+        );
+      }
+    },
   } as any);
+
+  // Layer 2: Footprint polygon (shown only when selected)
+  const footprintLayer = selectedProject ? new GeoJsonLayer({
+    id: 'capital-footprint',
+    data: [selectedProject],
+    filled: true,
+    extruded: true,
+    wireframe: true,
+    pickable: true,
+    elevationScale: 1,
+    getElevation: FOOTPRINT_HEIGHT, // Small fixed height for visibility
+    getFillColor: (d: any) => {
+      const color = AGENCY_COLORS[d.properties.magencyacro] || DEFAULT_COLOR;
+      return [...color, 150]; // Slightly transparent
+    },
+    getLineColor: [60, 60, 60],
+    lineWidthMinPixels: 2,
+    // Animation
+    transitions: {
+      getElevation: {
+        type: 'interpolation',
+        duration: 300,
+        easing: (t: number) => t * (2 - t), // ease-out
+        enter: () => [0], // Start from 0 height
+      },
+      getFillColor: {
+        type: 'interpolation',
+        duration: 300,
+        easing: (t: number) => t * (2 - t),
+      },
+    },
+  } as any) : null;
+
+  const layers = [columnsLayer, footprintLayer].filter(Boolean);
 
   return (
     <div className="relative w-full h-full">
@@ -88,7 +183,7 @@ export function CapitalBudgetMap() {
       <DeckGL
         initialViewState={INITIAL_VIEW_STATE}
         controller={true}
-        layers={[layer]}
+        layers={layers}
       >
         <Map
           mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
@@ -132,7 +227,10 @@ export function CapitalBudgetMap() {
         </div>
         <div className="mt-2 pt-2 border-t border-gray-200 space-y-1">
           <div className="text-xs text-gray-600">
-            <strong>Height:</strong> Allocated budget
+            <strong>Column Height:</strong> Allocated budget
+          </div>
+          <div className="text-xs text-gray-600">
+            <strong>Click:</strong> Show/hide project footprint
           </div>
           <div className="text-xs text-gray-600">
             <strong>Filter:</strong> Active/future projects
