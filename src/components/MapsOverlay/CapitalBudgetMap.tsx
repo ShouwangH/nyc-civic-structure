@@ -39,7 +39,7 @@ const AGENCY_COLORS: Record<string, [number, number, number]> = {
 const DEFAULT_COLOR: [number, number, number] = [150, 150, 150]; // gray for others
 
 // Small fixed height for footprint visibility (in deck.gl units)
-const FOOTPRINT_HEIGHT = 10;
+const FOOTPRINT_HEIGHT = 30;
 
 /**
  * Calculate centroid of a polygon or multipolygon
@@ -88,9 +88,10 @@ export function CapitalBudgetMap() {
     : null;
 
   // Layer 1: Columns at project locations (height = budget)
+  // Filter out selected project from columns when showing footprint
   const columnsLayer = new ColumnLayer({
     id: 'capital-columns',
-    data: projectsWithCentroids,
+    data: projectsWithCentroids.filter(p => p.properties.maprojid !== selectedProjectId),
     getPosition: (d: any) => d.centroid,
     diskResolution: 12,
     radius: 30,
@@ -140,6 +141,10 @@ export function CapitalBudgetMap() {
     },
     getLineColor: [60, 60, 60],
     lineWidthMinPixels: 2,
+    // Click on footprint to deselect
+    onClick: () => {
+      setSelectedProjectId(null);
+    },
     // Animation
     transitions: {
       getElevation: {
