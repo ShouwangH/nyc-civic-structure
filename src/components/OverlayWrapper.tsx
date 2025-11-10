@@ -180,7 +180,7 @@ const OverlayWrapper = ({
             )}
             {selectedSubview.type === 'sunburst' && (
               <p className="text-xs text-gray-500 mt-1">
-                Click on a segment to zoom in. Click the center or same segment to zoom out.
+                Click the center to zoom out.
               </p>
             )}
           </div>

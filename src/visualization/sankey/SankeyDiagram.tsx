@@ -176,6 +176,48 @@ export function SankeyDiagram({
             )
           );
 
+          // Calculate if label would extend past midpoint
+          const isLeftSide = node.x0! < width / 2;
+          const labelX = isLeftSide ? node.x1! + 6 : node.x0! - 6;
+          const labelY = (node.y0! + node.y1!) / 2;
+
+          // Rough estimate of text width (avg character width ~0.6 * fontSize)
+          const estimatedCharWidth = fontSize * 0.6;
+          const estimatedLabelWidth = node.label.length * estimatedCharWidth;
+          const midpoint = width / 2;
+
+          // Check if label would cross midpoint
+          const wouldCrossMidpoint = isLeftSide
+            ? (labelX + estimatedLabelWidth > midpoint)
+            : (labelX - estimatedLabelWidth < midpoint);
+
+          // Split label into words for wrapping
+          const words = node.label.split(' ');
+          let lines: string[] = [];
+
+          if (wouldCrossMidpoint && words.length > 1) {
+            // Split into multiple lines
+            const maxLineWidth = isLeftSide
+              ? (midpoint - labelX - 10) // Leave 10px margin from midpoint
+              : (labelX - midpoint - 10);
+
+            let currentLine = '';
+            for (const word of words) {
+              const testLine = currentLine ? `${currentLine} ${word}` : word;
+              const testWidth = testLine.length * estimatedCharWidth;
+
+              if (testWidth > maxLineWidth && currentLine) {
+                lines.push(currentLine);
+                currentLine = word;
+              } else {
+                currentLine = testLine;
+              }
+            }
+            if (currentLine) lines.push(currentLine);
+          } else {
+            lines = [node.label];
+          }
+
           return (
             <g key={`node-${i}`}>
               {/* Node rectangle */}
@@ -195,27 +237,34 @@ export function SankeyDiagram({
                 onMouseLeave={handleNodeMouseLeave}
               />
 
-              {/* Node label */}
+              {/* Node label (multi-line support) */}
               <text
-                x={node.x0! < width / 2 ? node.x1! + 6 : node.x0! - 6}
-                y={(node.y0! + node.y1!) / 2}
-                dy="0.35em"
-                textAnchor={node.x0! < width / 2 ? 'start' : 'end'}
+                x={labelX}
+                y={labelY}
+                textAnchor={isLeftSide ? 'start' : 'end'}
                 fontSize={fontSize}
                 fontFamily="SF Pro Display, sans-serif"
                 fill="#374151"
                 style={{ pointerEvents: 'none', userSelect: 'none' }}
               >
-                {node.label}
+                {lines.map((line, idx) => (
+                  <tspan
+                    key={idx}
+                    x={labelX}
+                    dy={idx === 0 ? '0.35em' : '1.2em'}
+                  >
+                    {line}
+                  </tspan>
+                ))}
               </text>
 
               {/* Value label (show on hover or for important nodes) */}
               {isHovered && node.value && (
                 <text
-                  x={node.x0! < width / 2 ? node.x1! + 6 : node.x0! - 6}
-                  y={(node.y0! + node.y1!) / 2 + Math.max(12, fontSize * 0.6)}
+                  x={labelX}
+                  y={labelY + (lines.length * fontSize * 1.2)}
                   dy="0.35em"
-                  textAnchor={node.x0! < width / 2 ? 'start' : 'end'}
+                  textAnchor={isLeftSide ? 'start' : 'end'}
                   fontSize={Math.max(8, fontSize * 0.6)}
                   fontFamily="SF Pro Display, sans-serif"
                   fill="#6b7280"
