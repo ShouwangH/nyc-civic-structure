@@ -101,8 +101,8 @@ function App() {
   const selectedEdgeTarget = activeEdge ? nodesById.get(activeEdge.target) ?? null : null;
 
   return (
-    <div className="relative flex min-h-screen bg-[#eceae4] p-3 gap-3">
-      <div className="flex flex-col w-1/4 gap-3">
+    <div className="relative flex h-screen bg-[#eceae4] p-3 gap-3">
+      <div className="flex flex-col w-1/4 gap-3 h-full overflow-hidden">
         <header className="rounded-xl border border-slate-200 bg-slate-50 px-6 py-3 shadow-sm">
           <h1 className="text-xl font-semibold text-slate-900">
             <span>Maximum New York |</span>
@@ -156,7 +156,6 @@ function App() {
         <OverlayWrapper
           overlaySubviews={overlaySubviews}
           inputHandler={runtime?.inputHandler ?? null}
-          controlPanelWidth={window.innerWidth * 0.25}
         />
       )}
 

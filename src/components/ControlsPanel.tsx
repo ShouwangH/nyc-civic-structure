@@ -69,7 +69,7 @@ const ControlsPanel = ({
 
   return (
     <aside
-      className="relative flex flex-1 flex-col rounded-xl border border-slate-200 bg-slate-50 shadow-sm"
+      className="relative flex flex-1 flex-col rounded-xl border border-slate-200 bg-slate-50 shadow-sm h-full max-h-screen overflow-hidden"
       aria-label="Controls menu"
     >
       {/* Scope Toggle - Above Tabs */}
@@ -128,7 +128,7 @@ const ControlsPanel = ({
       </div>
 
       {/* Tab Content */}
-      <div className="flex flex-1 flex-col overflow-y-auto px-4 py-5">
+      <div className="flex flex-1 flex-col overflow-y-auto px-4 py-5 min-h-0">
         {activeTab === 'details' ? (
           <Details
             activeNode={activeNode}

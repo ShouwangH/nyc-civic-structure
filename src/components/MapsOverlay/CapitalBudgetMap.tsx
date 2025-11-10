@@ -1,12 +1,13 @@
 // ABOUTME: Capital budget projects 3D map visualization
-// ABOUTME: Shows NYC capital projects as extruded polygons/footprints based on budget amounts
+// ABOUTME: Shows projects as columns (height = budget) with footprints on click
 
-import { useState } from 'react';
+import { useState, useMemo } from 'react';
 import { Map } from 'react-map-gl/maplibre';
 import { DeckGL } from '@deck.gl/react';
-import { GeoJsonLayer } from '@deck.gl/layers';
+import { GeoJsonLayer, ColumnLayer } from '@deck.gl/layers';
 import type { PickingInfo } from '@deck.gl/core';
 import { useCapitalBudgetData, type CapitalProjectFeature } from '../../hooks/useCapitalBudgetData';
+import type { Polygon, MultiPolygon } from 'geojson';
 
 const INITIAL_VIEW_STATE = {
   longitude: -73.935,
@@ -37,24 +38,81 @@ const AGENCY_COLORS: Record<string, [number, number, number]> = {
 
 const DEFAULT_COLOR: [number, number, number] = [150, 150, 150]; // gray for others
 
+// Small fixed height for footprint visibility (in deck.gl units)
+const FOOTPRINT_HEIGHT = 30;
+
+/**
+ * Calculate centroid of a polygon or multipolygon
+ */
+function calculateCentroid(geometry: Polygon | MultiPolygon): [number, number] {
+  let totalX = 0;
+  let totalY = 0;
+  let totalPoints = 0;
+
+  const processRing = (ring: number[][]) => {
+    ring.forEach(([lon, lat]) => {
+      totalX += lon;
+      totalY += lat;
+      totalPoints++;
+    });
+  };
+
+  if (geometry.type === 'Polygon') {
+    // Process outer ring only
+    processRing(geometry.coordinates[0]);
+  } else if (geometry.type === 'MultiPolygon') {
+    // Process outer ring of each polygon
+    geometry.coordinates.forEach((polygon) => {
+      processRing(polygon[0]);
+    });
+  }
+
+  return [totalX / totalPoints, totalY / totalPoints];
+}
+
 export function CapitalBudgetMap() {
   const { projects, isLoading, error } = useCapitalBudgetData();
   const [hoveredProject, setHoveredProject] = useState<CapitalProjectFeature | null>(null);
+  const [selectedProjectIds, setSelectedProjectIds] = useState<Set<string>>(new Set());
 
-  const layer = new GeoJsonLayer({
-    id: 'capital-projects',
-    data: projects,
-    filled: true,
+  // Transform projects to include centroids for column layer
+  const projectsWithCentroids = useMemo(() => {
+    return projects.map((project) => {
+      const centroid = calculateCentroid(project.geometry as Polygon | MultiPolygon);
+      // Add small random offset to prevent overlapping columns at same location
+      // 0.0002 degrees ≈ 22 meters at NYC latitude
+      const offsetLon = (Math.random() - 0.5) * 0.0002;
+      const offsetLat = (Math.random() - 0.5) * 0.0002;
+      return {
+        ...project,
+        centroid: [centroid[0] + offsetLon, centroid[1] + offsetLat] as [number, number],
+      };
+    });
+  }, [projects]);
+
+  // Get all selected projects for footprint display
+  const selectedProjects = projectsWithCentroids.filter(p =>
+    selectedProjectIds.has(p.properties.maprojid)
+  );
+
+  // Layer 1: Columns at project locations (height = budget)
+  // Filter out selected projects from columns when showing footprints
+  const columnsLayer = new ColumnLayer({
+    id: 'capital-columns',
+    data: projectsWithCentroids.filter(p => !selectedProjectIds.has(p.properties.maprojid)),
+    getPosition: (d: any) => d.centroid,
+    diskResolution: 12,
+    radius: 30,
     extruded: true,
-    wireframe: true,
     pickable: true,
     elevationScale: 0.5,
     getElevation: (d: any) => d.properties.allocate_total / 10000, // Scale budget to reasonable height
     getFillColor: (d: any) => {
       const color = AGENCY_COLORS[d.properties.magencyacro] || DEFAULT_COLOR;
-      return [...color, 200]; // Add alpha channel
+      return [...color, 200];
     },
     getLineColor: [80, 80, 80],
+    getLineWidth: 1,
     lineWidthMinPixels: 1,
     onHover: (info: PickingInfo) => {
       if (info.object) {
@@ -63,7 +121,68 @@ export function CapitalBudgetMap() {
         setHoveredProject(null);
       }
     },
+    onClick: (info: PickingInfo) => {
+      if (info.object) {
+        const project = info.object as any;
+        const id = project.properties.maprojid;
+        setSelectedProjectIds(prev => {
+          const next = new Set(prev);
+          if (next.has(id)) {
+            next.delete(id);
+          } else {
+            next.add(id);
+          }
+          return next;
+        });
+      }
+    },
   } as any);
+
+  // Layer 2: Footprint polygons (shown for all selected projects)
+  const footprintLayer = selectedProjects.length > 0 ? new GeoJsonLayer({
+    id: 'capital-footprint',
+    data: selectedProjects,
+    filled: true,
+    extruded: true,
+    wireframe: true,
+    pickable: true,
+    elevationScale: 1,
+    getElevation: FOOTPRINT_HEIGHT, // Small fixed height for visibility
+    getFillColor: (d: any) => {
+      const color = AGENCY_COLORS[d.properties.magencyacro] || DEFAULT_COLOR;
+      return [...color, 150]; // Slightly transparent
+    },
+    getLineColor: [60, 60, 60],
+    lineWidthMinPixels: 2,
+    // Click on footprint to toggle it back to column view
+    onClick: (info: PickingInfo) => {
+      if (info.object) {
+        const project = info.object as any;
+        const id = project.properties.maprojid;
+        setSelectedProjectIds(prev => {
+          const next = new Set(prev);
+          next.delete(id);
+          return next;
+        });
+      }
+    },
+    // Animation
+    transitions: {
+      getElevation: {
+        type: 'interpolation',
+        duration: 300,
+        easing: (t: number) => t * (2 - t), // ease-out
+        enter: () => [0], // Start from 0 height
+      },
+      getFillColor: {
+        type: 'interpolation',
+        duration: 300,
+        easing: (t: number) => t * (2 - t),
+      },
+    },
+  } as any) : null;
+
+  const layers = [columnsLayer, footprintLayer].filter(Boolean);
 
   return (
     <div className="relative w-full h-full">
@@ -88,7 +207,7 @@ export function CapitalBudgetMap() {
       <DeckGL
         initialViewState={INITIAL_VIEW_STATE}
         controller={true}
-        layers={[layer]}
+        layers={layers}
       >
         <Map
           mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
@@ -118,7 +237,11 @@ export function CapitalBudgetMap() {
 
       {/* Legend */}
       <div className="absolute bottom-4 right-4 bg-white rounded-lg shadow-lg p-4 max-w-xs z-10">
-        <div className="font-semibold text-gray-900 mb-2">Top Agencies</div>
+        <div className="font-semibold text-gray-900 mb-2">Capital Projects</div>
+        <div className="text-xs text-gray-600 mb-3">
+          Click column to show footprint. Click footprint to return to column view.
+        </div>
+        <div className="font-semibold text-gray-900 mb-2 text-sm">Top Agencies</div>
         <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
           {Object.entries(AGENCY_COLORS).slice(0, 10).map(([agency, color]) => (
             <div key={agency} className="flex items-center gap-1">
@@ -132,7 +255,7 @@ export function CapitalBudgetMap() {
         </div>
         <div className="mt-2 pt-2 border-t border-gray-200 space-y-1">
           <div className="text-xs text-gray-600">
-            <strong>Height:</strong> Allocated budget
+            <strong>Column Height:</strong> Allocated budget
           </div>
           <div className="text-xs text-gray-600">
             <strong>Filter:</strong> Active/future projects

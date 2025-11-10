@@ -1,0 +1,181 @@
+{
+  "meta": {
+    "source": "NYC Open Data - Revenue (ugzk-a6x4) & Expense (39g5-gbp3)",
+    "description": "NYC FY2025 Revenue Sources → General Fund → Expense Categories",
+    "fiscal_year": 2025,
+    "currency": "USD",
+    "total_revenue": 123844584236,
+    "total_expense": 114735017913,
+    "revenue_categories": {
+      "State Grants": 20926405995,
+      "Taxes": 80350447000,
+      "Other Revenue": 11526660470,
+      "Federal Grants": 11041070771
+    },
+    "expense_categories": {
+      "Government, Admin & Oversight": 36235092803,
+      "Education & Libraries": 34529275537,
+      "Public Safety & Justice": 11045753654,
+      "Social Services & Homelessness": 20055544709,
+      "Housing & Economic Development": 1939369012,
+      "Health & Mental Hygiene": 5695667653,
+      "Sanitation, Parks & Environment": 4108154440,
+      "Transportation": 1126160105
+    },
+    "note": "Revenue and expense flows are independent aggregations connected through the General Fund. Specific revenue sources are not directly tracked to specific expenses in the city budget system."
+  },
+  "nodes": [
+    {
+      "id": "revenue:taxes",
+      "label": "Taxes",
+      "level": 0,
+      "type": "revenue_source"
+    },
+    {
+      "id": "revenue:state_grants",
+      "label": "State Grants",
+      "level": 0,
+      "type": "revenue_source"
+    },
+    {
+      "id": "revenue:other_revenue",
+      "label": "Other Revenue",
+      "level": 0,
+      "type": "revenue_source"
+    },
+    {
+      "id": "revenue:federal_grants",
+      "label": "Federal Grants",
+      "level": 0,
+      "type": "revenue_source"
+    },
+    {
+      "id": "general_fund",
+      "label": "NYC General Fund FY2025",
+      "level": 1,
+      "type": "fund"
+    },
+    {
+      "id": "expense:government_admin_oversight",
+      "label": "Government, Admin & Oversight",
+      "level": 2,
+      "type": "expense_category"
+    },
+    {
+      "id": "expense:education_libraries",
+      "label": "Education & Libraries",
+      "level": 2,
+      "type": "expense_category"
+    },
+    {
+      "id": "expense:social_services_homelessness",
+      "label": "Social Services & Homelessness",
+      "level": 2,
+      "type": "expense_category"
+    },
+    {
+      "id": "expense:public_safety_justice",
+      "label": "Public Safety & Justice",
+      "level": 2,
+      "type": "expense_category"
+    },
+    {
+      "id": "expense:health_mental_hygiene",
+      "label": "Health & Mental Hygiene",
+      "level": 2,
+      "type": "expense_category"
+    },
+    {
+      "id": "expense:sanitation_parks_environment",
+      "label": "Sanitation, Parks & Environment",
+      "level": 2,
+      "type": "expense_category"
+    },
+    {
+      "id": "expense:housing_economic_development",
+      "label": "Housing & Economic Development",
+      "level": 2,
+      "type": "expense_category"
+    },
+    {
+      "id": "expense:transportation",
+      "label": "Transportation",
+      "level": 2,
+      "type": "expense_category"
+    }
+  ],
+  "links": [
+    {
+      "source": "revenue:taxes",
+      "target": "general_fund",
+      "value": 80350447000,
+      "type": "revenue_to_fund"
+    },
+    {
+      "source": "revenue:state_grants",
+      "target": "general_fund",
+      "value": 20926405995,
+      "type": "revenue_to_fund"
+    },
+    {
+      "source": "revenue:other_revenue",
+      "target": "general_fund",
+      "value": 11526660470,
+      "type": "revenue_to_fund"
+    },
+    {
+      "source": "revenue:federal_grants",
+      "target": "general_fund",
+      "value": 11041070771,
+      "type": "revenue_to_fund"
+    },
+    {
+      "source": "general_fund",
+      "target": "expense:government_admin_oversight",
+      "value": 36235092803,
+      "type": "fund_to_expense"
+    },
+    {
+      "source": "general_fund",
+      "target": "expense:education_libraries",
+      "value": 34529275537,
+      "type": "fund_to_expense"
+    },
+    {
+      "source": "general_fund",
+      "target": "expense:social_services_homelessness",
+      "value": 20055544709,
+      "type": "fund_to_expense"
+    },
+    {
+      "source": "general_fund",
+      "target": "expense:public_safety_justice",
+      "value": 11045753654,
+      "type": "fund_to_expense"
+    },
+    {
+      "source": "general_fund",
+      "target": "expense:health_mental_hygiene",
+      "value": 5695667653,
+      "type": "fund_to_expense"
+    },
+    {
+      "source": "general_fund",
+      "target": "expense:sanitation_parks_environment",
+      "value": 4108154440,
+      "type": "fund_to_expense"
+    },
+    {
+      "source": "general_fund",
+      "target": "expense:housing_economic_development",
+      "value": 1939369012,
+      "type": "fund_to_expense"
+    },
+    {
+      "source": "general_fund",
+      "target": "expense:transportation",
+      "value": 1126160105,
+      "type": "fund_to_expense"
+    }
+  ]
+}

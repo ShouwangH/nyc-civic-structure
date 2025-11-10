@@ -13,13 +13,11 @@ import type { SunburstData } from '../visualization/sunburst/types';
 type OverlayWrapperProps = {
   overlaySubviews: SubviewDefinition[];
   inputHandler: InputHandler | null;
-  controlPanelWidth: number;
 };
 
 const OverlayWrapper = ({
   overlaySubviews,
   inputHandler,
-  controlPanelWidth,
 }: OverlayWrapperProps) => {
   const [selectedSubviewId, setSelectedSubviewId] = useState<string | null>(
     overlaySubviews.length > 0 ? overlaySubviews[0].id : null
@@ -182,7 +180,7 @@ const OverlayWrapper = ({
             )}
             {selectedSubview.type === 'sunburst' && (
               <p className="text-xs text-gray-500 mt-1">
-                Click on a segment to zoom in. Click the center or same segment to zoom out.
+                Click the center to zoom out.
               </p>
             )}
           </div>

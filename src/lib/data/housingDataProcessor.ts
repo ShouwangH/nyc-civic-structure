@@ -15,54 +15,8 @@ import type {
 // Cache configuration
 const CACHE_KEY = 'nyc_housing_processed_v6';
 const CACHE_VERSION = '6.0.0';
-const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
-// NYC Open Data API configuration (server-side)
-const DOB_API = 'https://data.cityofnewyork.us/resource/ic3t-wcy2.json'; // DOB Job Applications
-const DOB_LIMIT = 50000;
 const ENABLE_CACHE = false; // Disabled: localStorage quota exceeded
-
-/**
- * Check if cached data is still valid
- */
-function isCacheValid(timestamp: number): boolean {
-  const now = Date.now();
-  return now - timestamp < CACHE_TTL_MS;
-}
-
-/**
- * Load processed data from localStorage cache
- */
-function loadProcessedFromCache(): HousingDataByYear | null {
-  try {
-    const cached = localStorage.getItem(CACHE_KEY);
-    if (!cached) {
-      return null;
-    }
-
-    const data: CachedProcessedData = JSON.parse(cached);
-
-    // Check version and TTL
-    if (data.meta.version !== CACHE_VERSION || !isCacheValid(data.meta.timestamp)) {
-      console.info('[HousingData] Cache expired or version mismatch');
-      localStorage.removeItem(CACHE_KEY);
-      return null;
-    }
-
-    // Convert plain object back to Map
-    const buildingsByYear = new Map<number, ProcessedBuilding[]>();
-    for (const [year, buildings] of Object.entries(data.buildingsByYear)) {
-      buildingsByYear.set(parseInt(year, 10), buildings);
-    }
-
-    console.info(`[HousingData] Loaded ${data.meta.recordCount} processed buildings from cache`);
-    return buildingsByYear;
-  } catch (error) {
-    console.error('[HousingData] Failed to load from cache:', error);
-    localStorage.removeItem(CACHE_KEY);
-    return null;
-  }
-}
 
 /**
  * Save processed data to localStorage cache
@@ -151,29 +105,31 @@ function constructBBL(borough: string, block: string, lot: string): string | nul
 }
 
 /**
- * Fetch demolition records from DOB API and calculate statistics
+ * Process demolition records and calculate statistics
  */
-async function fetchDemolitionStats(newConstructionBBLs: Set<string>): Promise<DemolitionStats> {
-  console.info('[HousingData] Fetching demolition records...');
+function processDemolitionStats(demolitions: any[], newConstructionBBLs: Set<string>): DemolitionStats {
+  console.info(`[HousingData] Processing ${demolitions.length} demolition records`);
 
-  const demolitionQuery = `${DOB_API}?$limit=${DOB_LIMIT}&$where=job_type='DM' AND (job_status_descrp='SIGNED OFF' OR job_status_descrp='PERMIT ISSUED - ENTIRE JOB/WORK' OR job_status_descrp='PLAN EXAM - APPROVED' OR job_status_descrp='COMPLETED')&$order=latest_action_date DESC`;
-
-  const response = await fetch(demolitionQuery);
-  if (!response.ok) {
-    throw new Error(`Demolition API failed: ${response.status}`);
+  // Debug: Check structure of first few demolition records
+  if (demolitions.length > 0) {
+    console.info('[HousingData] Sample demolition record fields:', Object.keys(demolitions[0]));
+    console.info('[HousingData] First 3 demolition records:', demolitions.slice(0, 3));
   }
-
-  const demolitions: any[] = await response.json();
-  console.info(`[HousingData] Fetched ${demolitions.length} demolition records`);
 
   let totalDemolishedUnits = 0;
   let standaloneDemolishedUnits = 0;
   const byYear = new Map<number, number>();
+  let recordsWithBBL = 0;
+  let recordsWithUnits = 0;
+  let recordsWithDate = 0;
+  let standaloneCount = 0;
 
   for (const record of demolitions) {
     // Parse existing dwelling units
     const existingUnitsStr = record.existing_dwelling_units || record.existingdwellingunits || '0';
     const existingUnits = parseInt(String(existingUnitsStr).replace(/[^0-9]/g, ''), 10) || 0;
+
+    if (existingUnits > 0) recordsWithUnits++;
 
     if (existingUnits === 0) continue;
 
@@ -181,26 +137,69 @@ async function fetchDemolitionStats(newConstructionBBLs: Set<string>): Promise<D
 
     // Check if this BBL had new construction
     const bbl = normalizeBBL(record.bbl) || constructBBL(record.borough, record.block, record.lot);
+    if (bbl) recordsWithBBL++;
+
     const isStandalone = bbl ? !newConstructionBBLs.has(bbl) : true;
 
     if (isStandalone) {
       standaloneDemolishedUnits += existingUnits;
+      standaloneCount++;
     }
 
     // Try to extract year from latest_action_date
     const dateStr = record.latest_action_date || record.issuance_date || '';
     if (dateStr) {
-      const yearMatch = String(dateStr).match(/^(\d{4})/);
-      if (yearMatch) {
-        const year = parseInt(yearMatch[1], 10);
+      recordsWithDate++;
+
+      // Try multiple date formats:
+      // 1. YYYY-MM-DD or YYYY/MM/DD (ISO format, year at start)
+      // 2. MM/DD/YYYY or MM-DD-YYYY (US format, year at end)
+      let year: number | null = null;
+
+      const isoMatch = String(dateStr).match(/^(\d{4})/);
+      if (isoMatch) {
+        year = parseInt(isoMatch[1], 10);
+      } else {
+        const usMatch = String(dateStr).match(/\/(\d{4})$/);
+        if (usMatch) {
+          year = parseInt(usMatch[1], 10);
+        }
+      }
+
+      if (year !== null) {
+        // Debug: Log first few date extractions
+        if (recordsWithDate <= 5) {
+          console.info(`[HousingData] Date extraction sample ${recordsWithDate}:`, {
+            dateStr,
+            year,
+            inRange: year >= 2014 && year <= 2024,
+            isStandalone,
+            existingUnits
+          });
+        }
+
         if (year >= 2014 && year <= 2024 && isStandalone) {
           byYear.set(year, (byYear.get(year) || 0) + existingUnits);
+        }
+      } else {
+        // Debug: Log first few failed extractions
+        if (recordsWithDate <= 5) {
+          console.warn(`[HousingData] Failed to extract year from date:`, dateStr);
         }
       }
     }
   }
 
-  console.info(`[HousingData] Demolition stats: ${totalDemolishedUnits} total units, ${standaloneDemolishedUnits} standalone`);
+  console.info(`[HousingData] Demolition processing summary:`, {
+    totalRecords: demolitions.length,
+    recordsWithUnits,
+    recordsWithBBL,
+    recordsWithDate,
+    standaloneCount,
+    totalDemolishedUnits,
+    standaloneDemolishedUnits,
+    yearBreakdownSize: byYear.size
+  });
 
   return {
     totalDemolishedUnits,
@@ -212,7 +211,7 @@ async function fetchDemolitionStats(newConstructionBBLs: Set<string>): Promise<D
 /**
  * Fetch housing data from NYC Open Data APIs - DOB primary, PLUTO fallback, Housing NY overlay
  */
-async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
+async function fetchFromAPI(): Promise<{ joinedData: HousingBuildingRecord[]; demolitionData: any[] }> {
   console.info('[HousingData] Fetching from server API (with 24-hour caching)...');
 
   // Fetch from server API
@@ -232,6 +231,7 @@ async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
   const housingNYData: any[] = result.data.housingNyData;
   const dobData: any[] = result.data.dobData;
   const plutoData: any[] = result.data.plutoData;
+  const demolitionData: any[] = result.data.demolitionData;
 
   console.info(`[HousingData] Fetched ${housingNYData.length} Housing NY records`);
   console.info(`[HousingData] Fetched ${dobData.length} DOB records (approved/completed only)`);
@@ -240,6 +240,7 @@ async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
     console.info('[HousingData] DOB fields:', Object.keys(dobData[0]));
   }
   console.info(`[HousingData] Fetched ${plutoData.length} PLUTO records (fallback)`)
+  console.info(`[HousingData] Fetched ${demolitionData.length} demolition records`)
 
   // Build BBL index from Housing NY data for O(1) lookup
   const housingByBBL = new Map<string, any>();
@@ -375,34 +376,16 @@ async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
   console.info(`[HousingData] PLUTO fallback: ${plutoFallback} records (BBLs not in DOB)`);
   console.info(`[HousingData] Total joined records: ${joinedData.length}`);
 
-  return joinedData;
+  return { joinedData, demolitionData };
 }
 
 /**
  * Get housing data (from cache or API), returns processed data by year and demolition stats
  */
 export async function getHousingData(): Promise<{ dataByYear: HousingDataByYear; demolitionStats: DemolitionStats }> {
-  // Try cache first
-  if (ENABLE_CACHE) {
-    const cached = loadProcessedFromCache();
-    if (cached) {
-      // For cached data, we need to fetch demolitions separately
-      // Extract BBLs from cached buildings
-      const bbls = new Set<string>();
-      for (const buildings of cached.values()) {
-        for (const building of buildings) {
-          const bbl = building.id.split('-')[0]; // Extract BBL from building ID
-          if (bbl) bbls.add(bbl);
-        }
-      }
-      const demolitionStats = await fetchDemolitionStats(bbls);
-      return { dataByYear: cached, demolitionStats };
-    }
-  }
-
   // Fetch from API and process
-  const rawData = await fetchFromAPI();
-  const processed = processHousingData(rawData);
+  const { joinedData, demolitionData } = await fetchFromAPI();
+  const processed = processHousingData(joinedData);
 
   // Extract BBLs from processed buildings for demolition matching
   const newConstructionBBLs = new Set<string>();
@@ -413,8 +396,15 @@ export async function getHousingData(): Promise<{ dataByYear: HousingDataByYear;
     }
   }
 
-  // Fetch demolition statistics
-  const demolitionStats = await fetchDemolitionStats(newConstructionBBLs);
+  // Process demolition statistics from server data
+  console.info(`[HousingData] Processing demolitions for ${newConstructionBBLs.size} new construction BBLs`);
+  const demolitionStats = processDemolitionStats(demolitionData, newConstructionBBLs);
+  console.info(`[HousingData] Demolition stats calculated:`, {
+    totalDemolished: demolitionStats.totalDemolishedUnits,
+    standaloneDemolished: demolitionStats.standaloneDemolishedUnits,
+    yearCount: demolitionStats.byYear.size,
+    yearBreakdown: Array.from(demolitionStats.byYear.entries()).sort((a, b) => a[0] - b[0])
+  });
 
   // Save processed data to cache
   saveProcessedToCache(processed);

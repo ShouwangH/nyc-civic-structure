@@ -26,10 +26,12 @@ export function HousingTimelapseContent({ width, height }: HousingTimelapseConte
   const {
     buildings,
     isLoading,
+    loadingStatus,
     error,
     totalBuildings,
     totalUnits,
     affordableUnits,
+    netNewUnits,
   } = useHousingData(currentYear);
 
   // Handle playback
@@ -79,8 +81,33 @@ export function HousingTimelapseContent({ width, height }: HousingTimelapseConte
     return (
       <div className="flex items-center justify-center h-full">
         <div className="text-center">
-          <div className="text-slate-900 text-xl mb-2">Loading housing data...</div>
-          <div className="text-slate-600">This may take a moment on first load</div>
+          {/* Spinner */}
+          <div className="inline-block mb-4">
+            <div className="w-16 h-16 border-4 border-slate-200 border-t-blue-600 rounded-full animate-spin"></div>
+          </div>
+
+          <div className="text-slate-900 text-xl font-semibold mb-2">
+            {loadingStatus.stage === 'fetching' && loadingStatus.message}
+            {loadingStatus.stage === 'processing' && loadingStatus.message}
+            {loadingStatus.stage === 'idle' && 'Loading housing data...'}
+          </div>
+
+          <div className="text-slate-600 max-w-md mx-auto">
+            {loadingStatus.stage === 'fetching' && (
+              <div className="space-y-1">
+                <div>• DOB Job Applications (construction permits)</div>
+                <div>• Housing NY (affordable housing)</div>
+                <div>• PLUTO (property data)</div>
+                <div>• Demolition records</div>
+              </div>
+            )}
+            {loadingStatus.stage === 'processing' && (
+              <div>Preparing 3D visualization...</div>
+            )}
+            {loadingStatus.stage === 'idle' && (
+              <div>This may take a moment on first load</div>
+            )}
+          </div>
         </div>
       </div>
     );
@@ -114,6 +141,7 @@ export function HousingTimelapseContent({ width, height }: HousingTimelapseConte
           totalUnits={totalUnits}
           affordableUnits={affordableUnits}
           buildings={buildings}
+          netNewUnits={netNewUnits}
         />
       </div>
       <TimeSlider

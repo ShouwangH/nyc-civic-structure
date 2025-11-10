@@ -1,10 +1,10 @@
 {
   "meta": {
     "source": "NYC Open Data - Expense Budget Funding (FY2025)",
-    "description": "Citywide external funding flows: Funding Source → Broad Category → Major Agencies",
+    "description": "Citywide funding flows: Funding Source → Broad Category → Major Agencies",
     "fiscal_year": 2025,
     "currency": "USD",
-    "external_total": 114735017913,
+    "total": 114735017913,
     "fund_totals": {
       "City Funds": 80772652013,
       "Federal Funds": 12507556923,
@@ -22,12 +22,12 @@
       "Sanitation, Parks & Environment": 4108154440,
       "Transportation": 1126160105
     },
-    "note": "Top 15 agencies by external funding shown individually; others aggregated into 'Other ... Agencies'"
+    "note": "Top 15 agencies by funding shown individually; others aggregated into 'Other ... Agencies'"
   },
   "nodes": [
     {
       "id": "NYC_Expense_FY2025",
-      "label": "NYC Expense Budget FY2025 (External Funding Only)",
+      "label": "NYC Expense Budget FY2025",
       "level": 0,
       "type": "system"
     },
