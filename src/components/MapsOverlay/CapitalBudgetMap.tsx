@@ -194,12 +194,6 @@ export function CapitalBudgetMap() {
         initialViewState={INITIAL_VIEW_STATE}
         controller={true}
         layers={layers}
-        onClick={(info: PickingInfo) => {
-          // Deselect when clicking on background (empty space)
-          if (!info.object) {
-            setSelectedProjectId(null);
-          }
-        }}
       >
         <Map
           mapStyle="https://basemaps.cartocdn.com/gl/positron-gl-style/style.json"
@@ -229,7 +223,11 @@ export function CapitalBudgetMap() {
 
       {/* Legend */}
       <div className="absolute bottom-4 right-4 bg-white rounded-lg shadow-lg p-4 max-w-xs z-10">
-        <div className="font-semibold text-gray-900 mb-2">Top Agencies</div>
+        <div className="font-semibold text-gray-900 mb-2">Capital Projects</div>
+        <div className="text-xs text-gray-600 mb-3">
+          Click column to show footprint. Click footprint to return to column view.
+        </div>
+        <div className="font-semibold text-gray-900 mb-2 text-sm">Top Agencies</div>
         <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
           {Object.entries(AGENCY_COLORS).slice(0, 10).map(([agency, color]) => (
             <div key={agency} className="flex items-center gap-1">
@@ -244,9 +242,6 @@ export function CapitalBudgetMap() {
         <div className="mt-2 pt-2 border-t border-gray-200 space-y-1">
           <div className="text-xs text-gray-600">
             <strong>Column Height:</strong> Allocated budget
-          </div>
-          <div className="text-xs text-gray-600">
-            <strong>Click:</strong> Show/hide project footprint
           </div>
           <div className="text-xs text-gray-600">
             <strong>Filter:</strong> Active/future projects
