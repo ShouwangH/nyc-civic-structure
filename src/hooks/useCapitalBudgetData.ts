@@ -18,6 +18,7 @@ export type CapitalProjectProperties = {
   spent_total: number;
   plannedcommit_total: number;
   fiscalYear?: number; // Derived from mindate
+  completionYear?: number; // Derived from maxdate
 };
 
 // GeoJSON Feature type for capital projects
@@ -62,6 +63,11 @@ export function useCapitalBudgetData(): UseCapitalBudgetDataReturn {
             ? parseInt(feature.properties.mindate.substring(0, 4), 10)
             : undefined;
 
+          // Extract completion year from maxdate
+          const completionYear = feature.properties.maxdate
+            ? parseInt(feature.properties.maxdate.substring(0, 4), 10)
+            : undefined;
+
           return {
             type: 'Feature',
             geometry: feature.geometry,
@@ -78,6 +84,7 @@ export function useCapitalBudgetData(): UseCapitalBudgetDataReturn {
               spent_total: parseFloat(feature.properties.spent_total || '0'),
               plannedcommit_total: parseFloat(feature.properties.plannedcommit_total || '0'),
               fiscalYear,
+              completionYear,
             },
           };
         });

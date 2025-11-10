@@ -107,7 +107,10 @@ export function CapitalBudgetMap() {
             <div><span className="font-medium">Committed:</span> ${(hoveredProject.properties.commit_total / 1000000).toFixed(1)}M</div>
             <div><span className="font-medium">Spent:</span> ${(hoveredProject.properties.spent_total / 1000000).toFixed(1)}M</div>
             {hoveredProject.properties.fiscalYear && (
-              <div><span className="font-medium">Fiscal Year:</span> {hoveredProject.properties.fiscalYear}</div>
+              <div><span className="font-medium">Start Year:</span> {hoveredProject.properties.fiscalYear}</div>
+            )}
+            {hoveredProject.properties.completionYear && (
+              <div><span className="font-medium">Est. Completion:</span> {hoveredProject.properties.completionYear}</div>
             )}
           </div>
         </div>
