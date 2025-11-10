@@ -392,15 +392,29 @@ function calculateAffordableUnits(record: HousingBuildingRecord): number {
 
 /**
  * Get physical building type from building class alone (no affordability/renovation overlay)
+ * NYC PLUTO building class codes: https://www1.nyc.gov/assets/planning/download/pdf/data-maps/open-data/bldg_class_code_101.pdf
  */
 function getPhysicalBuildingType(buildingClass: string | undefined): BuildingType {
   if (buildingClass) {
     const classPrefix = buildingClass.charAt(0).toUpperCase();
     switch (classPrefix) {
-      case 'A': return 'one-two-family';
-      case 'B': return 'multifamily-walkup';
-      case 'C': return 'multifamily-elevator';
-      case 'D': return 'mixed-use';
+      case 'A': return 'one-two-family';  // One and two family
+      case 'B': return 'multifamily-walkup';  // Multifamily walk-up
+      case 'C': return 'multifamily-elevator';  // Multifamily elevator
+      case 'D': return 'mixed-use';  // Mixed residential/commercial
+      case 'R': return 'multifamily-elevator';  // Condos/co-ops (typically elevator buildings)
+      case 'S': return 'mixed-use';  // Mixed residential
+      case 'L': return 'multifamily-elevator';  // Lofts (converted industrial, typically elevator)
+      // Non-residential but may have housing units:
+      case 'H': return 'mixed-use';  // Hotels (some have residential)
+      case 'O': return 'mixed-use';  // Office (some have residential conversion)
+      case 'K': return 'mixed-use';  // Retail (some have residential above)
+      case 'E': case 'F': case 'G':  // Warehouses, factories, garages
+      case 'I': case 'J': case 'M':  // Hospitals, theaters, churches
+      case 'N': case 'P': case 'Q':  // Institutions, assembly, recreation
+      case 'T': case 'U': case 'V':  // Transport, misc, vacant
+      case 'W': case 'Y': case 'Z':  // Education, government, misc
+        return 'mixed-use';  // Catch-all for unusual residential conversions
     }
   }
   return 'unknown';
