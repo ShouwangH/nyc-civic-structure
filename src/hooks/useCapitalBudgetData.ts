@@ -44,52 +44,21 @@ export function useCapitalBudgetData(): UseCapitalBudgetDataReturn {
         setIsLoading(true);
         setError(null);
 
-        // Fetch from CPDB Polygons dataset (9jkp-n57r)
-        // Filter to active/future projects with allocated budgets (not completed before 2025)
-        const response = await fetch(
-          'https://data.cityofnewyork.us/resource/9jkp-n57r.geojson?$where=maxdate>=\'2025-01-01\' AND allocate_total>0&$limit=10000'
-        );
+        // Fetch from server API (with 24-hour caching)
+        const response = await fetch('/api/capital-budget');
 
         if (!response.ok) {
           throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
         }
 
-        const data = await response.json();
+        const result = await response.json();
 
-        // Transform to our expected format
-        const features: CapitalProjectFeature[] = data.features.map((feature: any) => {
-          // Extract fiscal year from mindate (format: "2024-06-20T00:00:00.000")
-          const fiscalYear = feature.properties.mindate
-            ? parseInt(feature.properties.mindate.substring(0, 4), 10)
-            : undefined;
+        if (!result.success) {
+          throw new Error(result.message || 'Failed to fetch capital budget data');
+        }
 
-          // Extract completion year from maxdate
-          const completionYear = feature.properties.maxdate
-            ? parseInt(feature.properties.maxdate.substring(0, 4), 10)
-            : undefined;
-
-          return {
-            type: 'Feature',
-            geometry: feature.geometry,
-            properties: {
-              maprojid: feature.properties.maprojid || 'Unknown',
-              description: feature.properties.description || 'Unnamed Project',
-              magencyname: feature.properties.magencyname || 'Unknown Agency',
-              magencyacro: feature.properties.magencyacro || 'N/A',
-              typecategory: feature.properties.typecategory || 'Unknown',
-              mindate: feature.properties.mindate || '',
-              maxdate: feature.properties.maxdate || '',
-              allocate_total: parseFloat(feature.properties.allocate_total || '0'),
-              commit_total: parseFloat(feature.properties.commit_total || '0'),
-              spent_total: parseFloat(feature.properties.spent_total || '0'),
-              plannedcommit_total: parseFloat(feature.properties.plannedcommit_total || '0'),
-              fiscalYear,
-              completionYear,
-            },
-          };
-        });
-
-        setProjects(features);
+        // Server already transforms the data to our expected format
+        setProjects(result.data);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
         setError(errorMessage);

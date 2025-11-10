@@ -28,6 +28,24 @@ server/
 
 ## Available Endpoints
 
+### NYC Open Data Proxies
+
+**Get housing data:**
+```bash
+GET /api/housing-data
+GET /api/housing-data?refresh=true  # Force cache refresh
+```
+
+Returns processed housing data from Housing NY, DOB, and PLUTO datasets with 24-hour server-side caching.
+
+**Get capital budget data:**
+```bash
+GET /api/capital-budget
+GET /api/capital-budget?refresh=true  # Force cache refresh
+```
+
+Returns NYC capital budget projects from CPDB dataset with 24-hour server-side caching.
+
 ### Overlays
 
 **List overlays:**
@@ -72,6 +90,17 @@ Content-Type: application/json
   "lastFetched": "2025-01-07T10:00:00Z"
 }
 ```
+
+### Civic Structure Data
+
+**Get complete dataset for a scope:**
+```bash
+GET /api/scopes/city/dataset
+GET /api/scopes/state/dataset
+GET /api/scopes/federal/dataset
+```
+
+Returns nodes, edges, and subviews for a government scope.
 
 ## Database Schema
 

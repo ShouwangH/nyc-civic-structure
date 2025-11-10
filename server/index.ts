@@ -3,5 +3,7 @@
 
 import './routes/overlays';
 import './routes/data';
+import './routes/housing-data';
+import './routes/capital-budget';
 
 export { createApiMiddleware } from './api-middleware';
