@@ -4,6 +4,8 @@
 import type {
   HousingBuildingRecord,
   ProcessedBuilding,
+  BuildingSegment,
+  BuildingType,
   CachedProcessedData,
   HousingDataByYear,
   ZoningColorMap,
@@ -531,6 +533,76 @@ function processBuilding(record: any): ProcessedBuilding | null {
     dataSource: (isDOB ? 'dob' : isPLUTO ? 'pluto' : 'housing-ny') as any,
     isRenovation,
   };
+}
+
+/**
+ * Get RGBA color for a building type
+ */
+function getBuildingTypeColor(buildingType: BuildingType): [number, number, number, number] {
+  switch (buildingType) {
+    case 'affordable':
+      return [34, 197, 94, 200]; // Green
+    case 'renovation':
+      return [249, 115, 22, 200]; // Orange
+    case 'multifamily-elevator':
+      return [59, 130, 246, 200]; // Blue
+    case 'multifamily-walkup':
+      return [147, 51, 234, 200]; // Purple
+    case 'mixed-use':
+      return [251, 191, 36, 200]; // Yellow
+    case 'one-two-family':
+      return [239, 68, 68, 200]; // Red
+    default:
+      return [156, 163, 175, 200]; // Gray
+  }
+}
+
+/**
+ * Transform buildings into segments for stacked visualization
+ * Buildings with both affordable and market-rate units are split into two segments
+ */
+export function createBuildingSegments(buildings: ProcessedBuilding[]): BuildingSegment[] {
+  const segments: BuildingSegment[] = [];
+
+  for (const building of buildings) {
+    const hasAffordable = building.affordableUnits > 0;
+    const hasMarket = building.totalUnits > building.affordableUnits;
+
+    if (hasAffordable && hasMarket) {
+      // Mixed building - create two segments
+      // Bottom segment: affordable units (green)
+      segments.push({
+        buildingId: building.id,
+        segmentType: 'affordable',
+        baseElevation: 0,
+        segmentHeight: building.affordableUnits,
+        color: [34, 197, 94, 200], // Green
+        parentBuilding: building,
+      });
+
+      // Top segment: market-rate units (colored by building type)
+      segments.push({
+        buildingId: building.id,
+        segmentType: 'market-rate',
+        baseElevation: building.affordableUnits,
+        segmentHeight: building.totalUnits - building.affordableUnits,
+        color: getBuildingTypeColor(building.buildingType),
+        parentBuilding: building,
+      });
+    } else {
+      // Single-type building - create one segment
+      segments.push({
+        buildingId: building.id,
+        segmentType: hasAffordable ? 'affordable' : 'market-rate',
+        baseElevation: 0,
+        segmentHeight: building.totalUnits,
+        color: hasAffordable ? [34, 197, 94, 200] : getBuildingTypeColor(building.buildingType),
+        parentBuilding: building,
+      });
+    }
+  }
+
+  return segments;
 }
 
 /**

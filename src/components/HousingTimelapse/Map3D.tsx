@@ -6,7 +6,8 @@ import { Map } from 'react-map-gl/maplibre';
 import { DeckGL } from '@deck.gl/react';
 import { ColumnLayer } from '@deck.gl/layers';
 import type { PickingInfo } from '@deck.gl/core';
-import type { Map3DProps } from './types';
+import type { Map3DProps, BuildingSegment } from './types';
+import { createBuildingSegments } from '../../lib/data/housingDataProcessor';
 
 // NYC center coordinates
 const INITIAL_VIEW_STATE = {
@@ -29,60 +30,94 @@ export function Map3D({ buildings, currentYear, width, height }: Map3DProps) {
   // Use integer year for stable transitions
   const displayYear = Math.floor(currentYear);
 
-  const layer = useMemo(() => {
-    return new ColumnLayer({
-      id: 'buildings-layer',
-      data: buildings,
-      getPosition: (d) => d.coordinates,
+  // Transform buildings into stacked segments
+  const segments = useMemo(() => createBuildingSegments(buildings), [buildings]);
+
+  // Create layers for stacked visualization
+  // We need separate layers for affordable (bottom) and market (top) segments
+  const layers = useMemo(() => {
+    // Affordable segments (rendered from ground)
+    const affordableLayer = new ColumnLayer({
+      id: 'affordable-segments',
+      data: segments.filter((s) => s.segmentType === 'affordable'),
+      getPosition: (d: BuildingSegment) => d.parentBuilding.coordinates,
       diskResolution: 12,
       radius: 20,
       extruded: true,
       pickable: true,
       elevationScale: 4,
-      // Conditionally show buildings - future buildings have elevation 0
-      getElevation: (d) => d.completionYear <= displayYear ? d.totalUnits : 0,
-      getFillColor: (d) => {
-        // Color based on building type
-        switch (d.buildingType) {
-          case 'affordable':
-            return [34, 197, 94]; // Green - Affordable housing
-          case 'renovation':
-            return [249, 115, 22]; // Orange - Major renovations/alterations
-          case 'multifamily-elevator':
-            return [59, 130, 246]; // Blue - High-rise multifamily
-          case 'multifamily-walkup':
-            return [147, 51, 234]; // Purple - Mid-rise multifamily
-          case 'mixed-use':
-            return [251, 191, 36]; // Yellow - Mixed residential/commercial
-          case 'one-two-family':
-            return [239, 68, 68]; // Red - Single/two-family homes
-          default:
-            return [156, 163, 175]; // Gray - Unknown
-        }
-      },
+      // Conditionally show based on parent building completion year
+      getElevation: (d: BuildingSegment) =>
+        d.parentBuilding.completionYear <= displayYear ? d.segmentHeight : 0,
+      getFillColor: (d: BuildingSegment) => d.color,
       getLineColor: [255, 255, 255, 80],
       getLineWidth: 1,
       lineWidthMinPixels: 1,
       updateTriggers: {
-        getElevation: [displayYear], // Only trigger on integer year change
+        getElevation: [displayYear],
       },
       transitions: {
         getElevation: {
           type: 'interpolation',
           duration: 1000,
-          easing: (t: number) => t * (2 - t), // ease-out-quad
-          enter: (_value: number[]) => [0] // Buildings start from ground
-        }
+          easing: (t: number) => t * (2 - t),
+          enter: (_value: number[]) => [0],
+        },
       },
       onHover: (info: PickingInfo) => {
         if (info.object) {
-          setHoveredBuilding(info.object.id);
+          setHoveredBuilding((info.object as BuildingSegment).buildingId);
         } else {
           setHoveredBuilding(null);
         }
       },
     });
-  }, [displayYear]); // buildings are stable after load, only year changes
+
+    // Market-rate segments (need to be visually stacked on top)
+    // Note: ColumnLayer doesn't support baseElevation natively
+    // This is a limitation - segments render from ground level
+    // For now, we offset horizontally slightly to show both segments
+    const marketLayer = new ColumnLayer({
+      id: 'market-segments',
+      data: segments.filter((s) => s.segmentType === 'market-rate'),
+      getPosition: (d: BuildingSegment) => {
+        // Slight horizontal offset to show market segment next to affordable
+        const [lon, lat] = d.parentBuilding.coordinates;
+        return [lon + 0.0001, lat]; // Small offset in longitude
+      },
+      diskResolution: 12,
+      radius: 20,
+      extruded: true,
+      pickable: true,
+      elevationScale: 4,
+      getElevation: (d: BuildingSegment) =>
+        d.parentBuilding.completionYear <= displayYear ? d.segmentHeight : 0,
+      getFillColor: (d: BuildingSegment) => d.color,
+      getLineColor: [255, 255, 255, 80],
+      getLineWidth: 1,
+      lineWidthMinPixels: 1,
+      updateTriggers: {
+        getElevation: [displayYear],
+      },
+      transitions: {
+        getElevation: {
+          type: 'interpolation',
+          duration: 1000,
+          easing: (t: number) => t * (2 - t),
+          enter: (_value: number[]) => [0],
+        },
+      },
+      onHover: (info: PickingInfo) => {
+        if (info.object) {
+          setHoveredBuilding((info.object as BuildingSegment).buildingId);
+        } else {
+          setHoveredBuilding(null);
+        }
+      },
+    });
+
+    return [affordableLayer, marketLayer];
+  }, [segments, displayYear]);
 
   // Tooltip for hovered building
   const renderTooltip = () => {
@@ -94,6 +129,9 @@ export function Map3D({ buildings, currentYear, width, height }: Map3DProps) {
     if (!building) {
       return null;
     }
+
+    const hasMixedUnits = building.affordableUnits > 0 && building.affordableUnits < building.totalUnits;
+    const marketUnits = building.totalUnits - building.affordableUnits;
 
     return (
       <div
@@ -111,7 +149,25 @@ export function Map3D({ buildings, currentYear, width, height }: Map3DProps) {
             <div>{building.borough}</div>
             <div className="pt-1 border-t border-slate-200 mt-1">
               <div>Total Units: {building.totalUnits.toLocaleString()}</div>
-              <div>Affordable: {building.affordableUnits.toLocaleString()} ({building.affordablePercentage.toFixed(1)}%)</div>
+              {hasMixedUnits ? (
+                <>
+                  <div className="ml-2">
+                    <span className="inline-block w-2 h-2 rounded-full bg-green-500 mr-1"></span>
+                    Affordable: {building.affordableUnits.toLocaleString()} ({building.affordablePercentage.toFixed(1)}%)
+                  </div>
+                  <div className="ml-2">
+                    <span className="inline-block w-2 h-2 rounded-full mr-1" style={{
+                      backgroundColor: `rgb(${building.buildingType === 'multifamily-elevator' ? '59, 130, 246' :
+                        building.buildingType === 'multifamily-walkup' ? '147, 51, 234' :
+                        building.buildingType === 'mixed-use' ? '251, 191, 36' :
+                        building.buildingType === 'one-two-family' ? '239, 68, 68' : '156, 163, 175'})`
+                    }}></span>
+                    Market-rate: {marketUnits.toLocaleString()} ({((marketUnits / building.totalUnits) * 100).toFixed(1)}%)
+                  </div>
+                </>
+              ) : (
+                <div>Affordable: {building.affordableUnits.toLocaleString()} ({building.affordablePercentage.toFixed(1)}%)</div>
+              )}
               <div>Completed: {building.completionYear}</div>
             </div>
           </div>
@@ -125,7 +181,7 @@ export function Map3D({ buildings, currentYear, width, height }: Map3DProps) {
       <DeckGL
         initialViewState={INITIAL_VIEW_STATE}
         controller={true}
-        layers={[layer]}
+        layers={layers}
         style={{ position: 'absolute', width: `${width}px`, height: `${height}px` }}
       >
         <Map

@@ -103,6 +103,19 @@ export type ProcessedBuilding = {
 };
 
 /**
+ * Building segment for stacked visualization
+ * Represents a vertical slice of a building (affordable or market-rate units)
+ */
+export type BuildingSegment = {
+  buildingId: string;
+  segmentType: 'affordable' | 'market-rate';
+  baseElevation: number; // Starting height (0 for affordable, affordableUnits for market)
+  segmentHeight: number; // Height of this segment
+  color: [number, number, number, number]; // RGBA color
+  parentBuilding: ProcessedBuilding; // Full building data for tooltips
+};
+
+/**
  * Zoning district color mapping
  */
 export type ZoningColorMap = Record<string, string>;
