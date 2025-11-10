@@ -159,7 +159,7 @@ async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
   // Fetch from all three sources in parallel
   const [housingNYResponse, dobResponse, plutoResponse] = await Promise.all([
     fetch(`${HOUSING_NY_API}?$limit=${HOUSING_NY_LIMIT}&$order=building_completion_date`),
-    fetch(`${DOB_API}?$limit=${DOB_LIMIT}&$where=latest_action_date>='2014-01-01' AND (job_status_descrp='APPROVED' OR job_status_descrp='COMPLETED')`),
+    fetch(`${DOB_API}?$limit=${DOB_LIMIT}&$where=(job_status_descrp='SIGNED OFF' OR job_status_descrp='PERMIT ISSUED - ENTIRE JOB/WORK' OR job_status_descrp='PLAN EXAM - APPROVED' OR job_status_descrp='COMPLETED')&$order=latest_action_date DESC`),
     fetch(`${PLUTO_API}?$limit=${PLUTO_LIMIT}&$where=yearbuilt>=2014`)
   ]);
 
