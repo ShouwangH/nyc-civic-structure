@@ -73,7 +73,7 @@ function calculateCentroid(geometry: Polygon | MultiPolygon): [number, number] {
 export function CapitalBudgetMap() {
   const { projects, isLoading, error } = useCapitalBudgetData();
   const [hoveredProject, setHoveredProject] = useState<CapitalProjectFeature | null>(null);
-  const [selectedProjectId, setSelectedProjectId] = useState<string | null>(null);
+  const [selectedProjectIds, setSelectedProjectIds] = useState<Set<string>>(new Set());
 
   // Transform projects to include centroids for column layer
   const projectsWithCentroids = useMemo(() => {
@@ -90,15 +90,16 @@ export function CapitalBudgetMap() {
     });
   }, [projects]);
 
-  const selectedProject = selectedProjectId
-    ? projectsWithCentroids.find(p => p.properties.maprojid === selectedProjectId)
-    : null;
+  // Get all selected projects for footprint display
+  const selectedProjects = projectsWithCentroids.filter(p =>
+    selectedProjectIds.has(p.properties.maprojid)
+  );
 
   // Layer 1: Columns at project locations (height = budget)
-  // Filter out selected project from columns when showing footprint
+  // Filter out selected projects from columns when showing footprints
   const columnsLayer = new ColumnLayer({
     id: 'capital-columns',
-    data: projectsWithCentroids.filter(p => p.properties.maprojid !== selectedProjectId),
+    data: projectsWithCentroids.filter(p => !selectedProjectIds.has(p.properties.maprojid)),
     getPosition: (d: any) => d.centroid,
     diskResolution: 12,
     radius: 30,
@@ -123,19 +124,24 @@ export function CapitalBudgetMap() {
     onClick: (info: PickingInfo) => {
       if (info.object) {
         const project = info.object as any;
-        setSelectedProjectId(
-          selectedProjectId === project.properties.maprojid
-            ? null
-            : project.properties.maprojid
-        );
+        const id = project.properties.maprojid;
+        setSelectedProjectIds(prev => {
+          const next = new Set(prev);
+          if (next.has(id)) {
+            next.delete(id);
+          } else {
+            next.add(id);
+          }
+          return next;
+        });
       }
     },
   } as any);
 
-  // Layer 2: Footprint polygon (shown only when selected)
-  const footprintLayer = selectedProject ? new GeoJsonLayer({
+  // Layer 2: Footprint polygons (shown for all selected projects)
+  const footprintLayer = selectedProjects.length > 0 ? new GeoJsonLayer({
     id: 'capital-footprint',
-    data: [selectedProject],
+    data: selectedProjects,
     filled: true,
     extruded: true,
     wireframe: true,
@@ -148,9 +154,17 @@ export function CapitalBudgetMap() {
     },
     getLineColor: [60, 60, 60],
     lineWidthMinPixels: 2,
-    // Click on footprint to deselect
-    onClick: () => {
-      setSelectedProjectId(null);
+    // Click on footprint to toggle it back to column view
+    onClick: (info: PickingInfo) => {
+      if (info.object) {
+        const project = info.object as any;
+        const id = project.properties.maprojid;
+        setSelectedProjectIds(prev => {
+          const next = new Set(prev);
+          next.delete(id);
+          return next;
+        });
+      }
     },
     // Animation
     transitions: {
