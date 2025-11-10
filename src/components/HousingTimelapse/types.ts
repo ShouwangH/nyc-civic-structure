@@ -94,7 +94,8 @@ export type ProcessedBuilding = {
   totalUnits: number;
   affordableUnits: number;
   affordablePercentage: number;
-  buildingType: BuildingType; // Type of residential construction
+  buildingType: BuildingType; // Primary classification (affordable/renovation/physical type)
+  physicalBuildingType: BuildingType; // Physical building type (multifamily-elevator, walkup, etc.)
   buildingClass?: string; // PLUTO building class code
   zoningDistrict?: string;
   address: string;

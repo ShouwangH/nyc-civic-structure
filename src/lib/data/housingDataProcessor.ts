@@ -391,6 +391,22 @@ function calculateAffordableUnits(record: HousingBuildingRecord): number {
 }
 
 /**
+ * Get physical building type from building class alone (no affordability/renovation overlay)
+ */
+function getPhysicalBuildingType(buildingClass: string | undefined): BuildingType {
+  if (buildingClass) {
+    const classPrefix = buildingClass.charAt(0).toUpperCase();
+    switch (classPrefix) {
+      case 'A': return 'one-two-family';
+      case 'B': return 'multifamily-walkup';
+      case 'C': return 'multifamily-elevator';
+      case 'D': return 'mixed-use';
+    }
+  }
+  return 'unknown';
+}
+
+/**
  * Determine building type from PLUTO building class or DOB job type
  */
 function getBuildingType(
@@ -410,17 +426,7 @@ function getBuildingType(
   }
 
   // Priority 3: PLUTO/DOB building class
-  if (buildingClass) {
-    const classPrefix = buildingClass.charAt(0).toUpperCase();
-    switch (classPrefix) {
-      case 'A': return 'one-two-family';
-      case 'B': return 'multifamily-walkup';
-      case 'C': return 'multifamily-elevator';
-      case 'D': return 'mixed-use';
-    }
-  }
-
-  return 'unknown';
+  return getPhysicalBuildingType(buildingClass);
 }
 
 /**
@@ -514,6 +520,7 @@ function processBuilding(record: any): ProcessedBuilding | null {
   // DOB uses 'building_class', PLUTO uses 'bldgclass'
   const buildingClass = record.building_class || record.bldgclass;
   const buildingType = getBuildingType(buildingClass, jobType, affordablePercentage, isRenovation);
+  const physicalBuildingType = getPhysicalBuildingType(buildingClass);
 
   return {
     id: record.bbl || record.job || affordableData?.building_id || String(Math.random()),
@@ -527,6 +534,7 @@ function processBuilding(record: any): ProcessedBuilding | null {
     affordableUnits,
     affordablePercentage,
     buildingType,
+    physicalBuildingType,
     buildingClass,
     zoningDistrict: record.zonedist1,
     address: record.address || affordableData?.address || `${record.house_number || ''} ${record.street_name || ''}`.trim(),
@@ -580,13 +588,13 @@ export function createBuildingSegments(buildings: ProcessedBuilding[]): Building
         parentBuilding: building,
       });
 
-      // Top segment: market-rate units (colored by building type)
+      // Top segment: market-rate units (colored by physical building type)
       segments.push({
         buildingId: building.id,
         segmentType: 'market-rate',
         baseElevation: building.affordableUnits,
         segmentHeight: building.totalUnits - building.affordableUnits,
-        color: getBuildingTypeColor(building.buildingType),
+        color: getBuildingTypeColor(building.physicalBuildingType),
         parentBuilding: building,
       });
     } else {
@@ -596,7 +604,7 @@ export function createBuildingSegments(buildings: ProcessedBuilding[]): Building
         segmentType: hasAffordable ? 'affordable' : 'market-rate',
         baseElevation: 0,
         segmentHeight: building.totalUnits,
-        color: hasAffordable ? [34, 197, 94, 200] : getBuildingTypeColor(building.buildingType),
+        color: hasAffordable ? [34, 197, 94, 200] : getBuildingTypeColor(building.physicalBuildingType),
         parentBuilding: building,
       });
     }

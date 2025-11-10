@@ -98,7 +98,7 @@ export function Legend({
           <strong>Height</strong> = Total housing units in building
         </div>
         <div className="text-xs text-slate-600 mt-1">
-          Mixed buildings show affordable (green) and market-rate (colored by type) segments side-by-side
+          Buildings colored by type; affordable units shown as green overlay from base
         </div>
       </div>
 

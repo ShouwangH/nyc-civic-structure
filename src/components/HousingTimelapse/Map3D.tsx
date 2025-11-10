@@ -6,8 +6,7 @@ import { Map } from 'react-map-gl/maplibre';
 import { DeckGL } from '@deck.gl/react';
 import { ColumnLayer } from '@deck.gl/layers';
 import type { PickingInfo } from '@deck.gl/core';
-import type { Map3DProps, BuildingSegment } from './types';
-import { createBuildingSegments } from '../../lib/data/housingDataProcessor';
+import type { Map3DProps } from './types';
 
 // NYC center coordinates
 const INITIAL_VIEW_STATE = {
@@ -30,26 +29,72 @@ export function Map3D({ buildings, currentYear, width, height }: Map3DProps) {
   // Use integer year for stable transitions
   const displayYear = Math.floor(currentYear);
 
-  // Transform buildings into stacked segments
-  const segments = useMemo(() => createBuildingSegments(buildings), [buildings]);
-
-  // Create layers for stacked visualization
-  // We need separate layers for affordable (bottom) and market (top) segments
+  // Two-layer approach for stacking:
+  // 1. Bottom layer: Full buildings colored by physical type
+  // 2. Top layer: Affordable segments (green overlay) - renders on top
   const layers = useMemo(() => {
-    // Affordable segments (rendered from ground)
+    // Layer 1: All buildings at full height, colored by physical building type
+    const buildingsLayer = new ColumnLayer({
+      id: 'buildings-full',
+      data: buildings,
+      getPosition: (d) => d.coordinates,
+      diskResolution: 12,
+      radius: 20,
+      extruded: true,
+      pickable: true,
+      elevationScale: 4,
+      getElevation: (d) => d.completionYear <= displayYear ? d.totalUnits : 0,
+      getFillColor: (d) => {
+        // Color by physical building type
+        switch (d.physicalBuildingType) {
+          case 'multifamily-elevator':
+            return [59, 130, 246, 200]; // Blue
+          case 'multifamily-walkup':
+            return [147, 51, 234, 200]; // Purple
+          case 'mixed-use':
+            return [251, 191, 36, 200]; // Yellow
+          case 'one-two-family':
+            return [239, 68, 68, 200]; // Red
+          default:
+            return [156, 163, 175, 200]; // Gray - Unknown
+        }
+      },
+      getLineColor: [255, 255, 255, 80],
+      getLineWidth: 1,
+      lineWidthMinPixels: 1,
+      updateTriggers: {
+        getElevation: [displayYear],
+      },
+      transitions: {
+        getElevation: {
+          type: 'interpolation',
+          duration: 1000,
+          easing: (t: number) => t * (2 - t),
+          enter: (_value: number[]) => [0],
+        },
+      },
+      onHover: (info: PickingInfo) => {
+        if (info.object) {
+          setHoveredBuilding(info.object.id);
+        } else {
+          setHoveredBuilding(null);
+        }
+      },
+    });
+
+    // Layer 2: Affordable segments (green) rendered on top
+    // This creates the stacked effect: green from 0 to affordableUnits
     const affordableLayer = new ColumnLayer({
-      id: 'affordable-segments',
-      data: segments.filter((s) => s.segmentType === 'affordable'),
-      getPosition: (d: BuildingSegment) => d.parentBuilding.coordinates,
+      id: 'affordable-overlay',
+      data: buildings.filter((b) => b.affordableUnits > 0),
+      getPosition: (d) => d.coordinates,
       diskResolution: 12,
       radius: 20,
       extruded: true,
       pickable: true,
       elevationScale: 4,
-      // Conditionally show based on parent building completion year
-      getElevation: (d: BuildingSegment) =>
-        d.parentBuilding.completionYear <= displayYear ? d.segmentHeight : 0,
-      getFillColor: (d: BuildingSegment) => d.color,
+      getElevation: (d) => d.completionYear <= displayYear ? d.affordableUnits : 0,
+      getFillColor: [34, 197, 94, 200], // Green for affordable
       getLineColor: [255, 255, 255, 80],
       getLineWidth: 1,
       lineWidthMinPixels: 1,
@@ -66,58 +111,15 @@ export function Map3D({ buildings, currentYear, width, height }: Map3DProps) {
       },
       onHover: (info: PickingInfo) => {
         if (info.object) {
-          setHoveredBuilding((info.object as BuildingSegment).buildingId);
+          setHoveredBuilding(info.object.id);
         } else {
           setHoveredBuilding(null);
         }
       },
     });
 
-    // Market-rate segments (need to be visually stacked on top)
-    // Note: ColumnLayer doesn't support baseElevation natively
-    // This is a limitation - segments render from ground level
-    // For now, we offset horizontally slightly to show both segments
-    const marketLayer = new ColumnLayer({
-      id: 'market-segments',
-      data: segments.filter((s) => s.segmentType === 'market-rate'),
-      getPosition: (d: BuildingSegment) => {
-        // Slight horizontal offset to show market segment next to affordable
-        const [lon, lat] = d.parentBuilding.coordinates;
-        return [lon + 0.0001, lat]; // Small offset in longitude
-      },
-      diskResolution: 12,
-      radius: 20,
-      extruded: true,
-      pickable: true,
-      elevationScale: 4,
-      getElevation: (d: BuildingSegment) =>
-        d.parentBuilding.completionYear <= displayYear ? d.segmentHeight : 0,
-      getFillColor: (d: BuildingSegment) => d.color,
-      getLineColor: [255, 255, 255, 80],
-      getLineWidth: 1,
-      lineWidthMinPixels: 1,
-      updateTriggers: {
-        getElevation: [displayYear],
-      },
-      transitions: {
-        getElevation: {
-          type: 'interpolation',
-          duration: 1000,
-          easing: (t: number) => t * (2 - t),
-          enter: (_value: number[]) => [0],
-        },
-      },
-      onHover: (info: PickingInfo) => {
-        if (info.object) {
-          setHoveredBuilding((info.object as BuildingSegment).buildingId);
-        } else {
-          setHoveredBuilding(null);
-        }
-      },
-    });
-
-    return [affordableLayer, marketLayer];
-  }, [segments, displayYear]);
+    return [buildingsLayer, affordableLayer];
+  }, [buildings, displayYear]);
 
   // Tooltip for hovered building
   const renderTooltip = () => {
@@ -157,10 +159,10 @@ export function Map3D({ buildings, currentYear, width, height }: Map3DProps) {
                   </div>
                   <div className="ml-2">
                     <span className="inline-block w-2 h-2 rounded-full mr-1" style={{
-                      backgroundColor: `rgb(${building.buildingType === 'multifamily-elevator' ? '59, 130, 246' :
-                        building.buildingType === 'multifamily-walkup' ? '147, 51, 234' :
-                        building.buildingType === 'mixed-use' ? '251, 191, 36' :
-                        building.buildingType === 'one-two-family' ? '239, 68, 68' : '156, 163, 175'})`
+                      backgroundColor: `rgb(${building.physicalBuildingType === 'multifamily-elevator' ? '59, 130, 246' :
+                        building.physicalBuildingType === 'multifamily-walkup' ? '147, 51, 234' :
+                        building.physicalBuildingType === 'mixed-use' ? '251, 191, 36' :
+                        building.physicalBuildingType === 'one-two-family' ? '239, 68, 68' : '156, 163, 175'})`
                     }}></span>
                     Market-rate: {marketUnits.toLocaleString()} ({((marketUnits / building.totalUnits) * 100).toFixed(1)}%)
                   </div>
