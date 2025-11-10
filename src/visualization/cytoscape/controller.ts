@@ -6,7 +6,6 @@ import type { SubviewDefinition, SubviewType } from '../../data/types';
 import type { GraphNodeInfo, GraphEdgeInfo } from './types';
 import type { SankeyData } from '../sankey/types';
 import type { SunburstData } from '../sunburst/types';
-import type { MainLayoutOptions} from './layout';
 import {
   copyPosition,
   getViewportMetrics,
@@ -63,7 +62,6 @@ export type ControllerConfig = {
   nodeScopeIndex: Map<string, GovernmentScope>;
   nodeInfosById: Map<string, GraphNodeInfo>;
   edgeInfosById: Map<string, GraphEdgeInfo>;
-  runMainGraphLayout: (options?: MainLayoutOptions) => Promise<void>;
 };
 
 type ActiveSubviewState = {
@@ -84,7 +82,6 @@ export function createController(config: ControllerConfig): Controller {
     scopeNodeIds,
     nodeScopeIndex,
     nodeInfosById,
-    runMainGraphLayout,
   } = config;
 
   let activeSubview: ActiveSubviewState | null = null;
@@ -157,20 +154,33 @@ export function createController(config: ControllerConfig): Controller {
   // ============================================================================
 
   const activateSubview = async (subviewId: string): Promise<void> => {
+    console.log('[Controller] activateSubview START:', subviewId, {
+      transitionInProgress,
+      activeSubviewId: activeSubview?.id,
+    });
+
     const subview = subviewById.get(subviewId);
     if (!subview) {
+      console.log('[Controller] activateSubview ABORT: subview not found');
       return;
     }
 
     // Guard: check transition lock
     if (transitionInProgress) {
+      console.log('[Controller] activateSubview ABORT: transition in progress');
       return;
     }
 
     // Guard: check duplicate activation
     if (activeSubview?.id === subview.id) {
+      console.log('[Controller] activateSubview ABORT: already active');
       return;
     }
+
+    console.log('[Controller] activateSubview PROCEED:', {
+      subviewType: subview.type,
+      renderTarget: subview.renderTarget,
+    });
 
     // Special handling for overlay renderTarget (e.g., Sankey, Sunburst)
     // Overlays are additive - they don't replace node selection or manipulate Cytoscape
@@ -353,6 +363,25 @@ export function createController(config: ControllerConfig): Controller {
     layout.run();
     await layoutPromise;
 
+    console.log('[Controller] activateSubview: layout complete, checking if cancelled');
+
+    // Check if we should abort (deactivateSubview was called during layout)
+    // If nodes were removed, they won't exist in the graph anymore
+    const firstAddedNode = addedNodeIds.values().next().value;
+    const firstNodeExists = firstAddedNode ? cy.getElementById(firstAddedNode).length > 0 : false;
+    console.log('[Controller] activateSubview: cancellation check after layout', {
+      firstAddedNode,
+      firstNodeExists,
+      addedNodeIdsSize: addedNodeIds.size,
+    });
+
+    if (firstAddedNode && cy.getElementById(firstAddedNode).length === 0) {
+      // Nodes were removed - activation was cancelled, abort
+      console.log('[Controller] activateSubview ABORT: nodes removed during layout');
+      transitionInProgress = false;
+      return;
+    }
+
     // Fit viewport to new elements
     const fitPadding = subview.type === 'workflow' ? 140 : 200;
     if (subviewNodes.length > 0) {
@@ -370,6 +399,23 @@ export function createController(config: ControllerConfig): Controller {
         .catch(() => {});
     }
 
+    console.log('[Controller] activateSubview: animation complete, final cancellation check');
+
+    // Final check: if nodes were removed during animation, abort
+    const finalNodeExists = firstAddedNode ? cy.getElementById(firstAddedNode).length > 0 : false;
+    console.log('[Controller] activateSubview: final check', {
+      firstAddedNode,
+      finalNodeExists,
+    });
+
+    if (firstAddedNode && cy.getElementById(firstAddedNode).length === 0) {
+      console.log('[Controller] activateSubview ABORT: nodes removed during animation');
+      transitionInProgress = false;
+      return;
+    }
+
+    console.log('[Controller] activateSubview: storing active state');
+
     // Store active state
     activeSubview = {
       id: subview.id,
@@ -381,6 +427,7 @@ export function createController(config: ControllerConfig): Controller {
     };
 
     transitionInProgress = false;
+    console.log('[Controller] activateSubview COMPLETE:', subview.id);
 
     // Determine scope - use subview jurisdiction if it's a valid scope (not 'multi')
     const subviewScope = subview.jurisdiction !== 'multi' ? subview.jurisdiction : null;
@@ -399,10 +446,16 @@ export function createController(config: ControllerConfig): Controller {
   };
 
   const deactivateSubview = async (): Promise<void> => {
+    console.log('[Controller] deactivateSubview START:', {
+      transitionInProgress,
+      activeSubviewId: activeSubview?.id,
+    });
+
     const currentState = getState();
 
     // Handle overlay subviews (Sankey, Sunburst, etc.) - they don't have activeSubview state
     if (currentState.sankeyOverlay) {
+      console.log('[Controller] deactivateSubview: clearing sankeyOverlay');
       transitionVisualizationState({
         sankeyOverlay: null,
         activeSubviewId: null,
@@ -413,6 +466,7 @@ export function createController(config: ControllerConfig): Controller {
     }
 
     if (currentState.sunburstOverlay) {
+      console.log('[Controller] deactivateSubview: clearing sunburstOverlay');
       transitionVisualizationState({
         sunburstOverlay: null,
         activeSubviewId: null,
@@ -423,7 +477,8 @@ export function createController(config: ControllerConfig): Controller {
     }
 
     const currentSubview = activeSubview;
-    if (!currentSubview || transitionInProgress) {
+    if (!currentSubview) {
+      console.log('[Controller] deactivateSubview: no active subview, clearing state');
       transitionVisualizationState({
         // Keep activeScope - only clear subview state
         activeSubviewId: null,
@@ -433,6 +488,14 @@ export function createController(config: ControllerConfig): Controller {
       return;
     }
 
+    console.log('[Controller] deactivateSubview: removing subview elements', {
+      subviewId: currentSubview.id,
+      addedNodeCount: currentSubview.addedNodeIds.size,
+      addedEdgeCount: currentSubview.addedEdgeIds.size,
+    });
+
+    // If already transitioning, we still need to clean up
+    // Setting this flag will cancel ongoing animations and prevent new actions
     transitionInProgress = true;
 
     // Remove CSS classes
@@ -483,14 +546,25 @@ export function createController(config: ControllerConfig): Controller {
       await focusNodes(nodeIds);
     } else {
       // No scope - clear all styling and refit to entire graph
+      // Don't run layout since we just restored positions - just fit viewport
       clearNodeFocus();
       const fitPadding = currentSubview.type === 'workflow' ? 220 : 200;
-      await runMainGraphLayout({ animateFit: true, fitPadding });
+      await cy
+        .animation({
+          fit: { eles: cy.elements(), padding: fitPadding },
+          duration: ANIMATION_DURATION,
+          easing: ANIMATION_EASING,
+        })
+        .play()
+        .promise()
+        .catch(() => {}); // Ignore cancelled animations
     }
 
     // Clear state
     activeSubview = null;
     transitionInProgress = false;
+
+    console.log('[Controller] deactivateSubview COMPLETE: cleaned up subview');
 
     // Update React state
     transitionVisualizationState({
@@ -563,33 +637,53 @@ export function createController(config: ControllerConfig): Controller {
   // ============================================================================
 
   const handleBackgroundClick = async (): Promise<void> => {
+    console.log('[Controller] handleBackgroundClick:', {
+      transitionInProgress,
+      activeSubviewId: activeSubview?.id,
+    });
+
     // Guard: Don't allow background clicks during transitions
     if (transitionInProgress) {
+      console.log('[Controller] handleBackgroundClick ABORT: transition in progress');
       return;
     }
 
     const currentState = getState();
+    console.log('[Controller] handleBackgroundClick state:', {
+      sankeyOverlay: !!currentState.sankeyOverlay,
+      sunburstOverlay: !!currentState.sunburstOverlay,
+      selectedNodeId: currentState.selectedNodeId,
+      selectedEdgeId: currentState.selectedEdgeId,
+      activeSubviewId: currentState.activeSubviewId,
+      activeScope: currentState.activeScope,
+      internalActiveSubview: activeSubview?.id,
+    });
 
     // If there's an overlay open, close it (preserve node selection)
     if (currentState.sankeyOverlay || currentState.sunburstOverlay) {
+      console.log('[Controller] handleBackgroundClick: closing overlay');
       await deactivateSubview();
       return;
     }
 
     // If there's a selected node or edge, clear only selections (keep activeScope)
     if (currentState.selectedNodeId || currentState.selectedEdgeId) {
+      console.log('[Controller] handleBackgroundClick: clearing selections');
       clearSelections();
       return;
     }
 
     // If there's an active subview, deactivate it (keep activeScope)
-    if (currentState.activeSubviewId) {
+    // Check INTERNAL controller state, not React state (which may be stale due to async updates)
+    if (activeSubview) {
+      console.log('[Controller] handleBackgroundClick: deactivating subview (using internal state)');
       await deactivateSubview();
       return;
     }
 
     // If there's an active scope but no selections/subview, clear the scope
     if (currentState.activeScope) {
+      console.log('[Controller] handleBackgroundClick: clearing scope');
       clearNodeFocus();
       transitionVisualizationState({
         activeScope: null,
@@ -662,8 +756,11 @@ export function createController(config: ControllerConfig): Controller {
    * Central dispatch function - all user interactions route through here.
    */
   const dispatch = async (action: GraphAction): Promise<void> => {
-    // TODO: Add logging here for debugging
-    // console.log('[Controller] Action:', action.type, action);
+    console.log('[Controller] Dispatch:', action.type, {
+      transitionInProgress,
+      activeSubviewId: activeSubview?.id,
+      payload: 'payload' in action ? action.payload : undefined,
+    });
 
     switch (action.type) {
       case 'NODE_CLICK': {

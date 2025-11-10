@@ -20,6 +20,23 @@ export type InputHandler = {
  * All user interactions (clicks, buttons, callbacks) should go through enqueue().
  * This prevents race conditions where async operations interleave and read stale state.
  */
+/**
+ * Check if two actions are equivalent (same type and payload)
+ */
+function areActionsEquivalent(a: GraphAction, b: GraphAction): boolean {
+  if (a.type !== b.type) {
+    return false;
+  }
+
+  // For actions with payloads, compare them
+  if ('payload' in a && 'payload' in b) {
+    return JSON.stringify(a.payload) === JSON.stringify(b.payload);
+  }
+
+  // For actions without payloads, type match is enough
+  return !('payload' in a) && !('payload' in b);
+}
+
 export function setupInputHandler(config: InputHandlerConfig): InputHandler {
   const { cy, controller } = config;
 
@@ -31,6 +48,13 @@ export function setupInputHandler(config: InputHandlerConfig): InputHandler {
    * All components should call this instead of controller.dispatch() directly.
    */
   const enqueue = async (action: GraphAction): Promise<void> => {
+    // Deduplicate: Don't queue consecutive identical actions
+    // This prevents rapid clicking from toggling states repeatedly
+    const lastAction = queue[queue.length - 1];
+    if (lastAction && areActionsEquivalent(lastAction, action)) {
+      return;
+    }
+
     queue.push(action);
 
     // Start processing if not already running
