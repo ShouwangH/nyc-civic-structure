@@ -18,6 +18,7 @@ export type CapitalProjectProperties = {
   spent_total: number;
   plannedcommit_total: number;
   fiscalYear?: number; // Derived from mindate
+  completionYear?: number; // Derived from maxdate
 };
 
 // GeoJSON Feature type for capital projects
@@ -44,9 +45,9 @@ export function useCapitalBudgetData(): UseCapitalBudgetDataReturn {
         setError(null);
 
         // Fetch from CPDB Polygons dataset (9jkp-n57r)
-        // Filter to 2025 active projects with allocated budgets
+        // Filter to active/future projects with allocated budgets (not completed before 2025)
         const response = await fetch(
-          'https://data.cityofnewyork.us/resource/9jkp-n57r.geojson?$where=mindate<=\'2025-12-31\' AND maxdate>=\'2025-01-01\' AND allocate_total>0&$limit=1200'
+          'https://data.cityofnewyork.us/resource/9jkp-n57r.geojson?$where=maxdate>=\'2025-01-01\' AND allocate_total>0&$limit=10000'
         );
 
         if (!response.ok) {
@@ -60,6 +61,11 @@ export function useCapitalBudgetData(): UseCapitalBudgetDataReturn {
           // Extract fiscal year from mindate (format: "2024-06-20T00:00:00.000")
           const fiscalYear = feature.properties.mindate
             ? parseInt(feature.properties.mindate.substring(0, 4), 10)
+            : undefined;
+
+          // Extract completion year from maxdate
+          const completionYear = feature.properties.maxdate
+            ? parseInt(feature.properties.maxdate.substring(0, 4), 10)
             : undefined;
 
           return {
@@ -78,6 +84,7 @@ export function useCapitalBudgetData(): UseCapitalBudgetDataReturn {
               spent_total: parseFloat(feature.properties.spent_total || '0'),
               plannedcommit_total: parseFloat(feature.properties.plannedcommit_total || '0'),
               fiscalYear,
+              completionYear,
             },
           };
         });

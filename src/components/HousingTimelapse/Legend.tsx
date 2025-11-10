@@ -24,6 +24,42 @@ export function Legend({
     return acc;
   }, {} as Record<string, number>);
 
+  // Debug logging
+  console.group('Legend Debug - Building Type Counts');
+  console.log('Total buildings:', buildingsUpToYear.length);
+  console.log('Building type counts:', buildingTypeCounts);
+
+  // Count affordable units separately
+  const totalAffordableUnits = buildingsUpToYear.reduce((sum, b) => sum + b.affordableUnits, 0);
+  console.log('Total affordable units (sum of all affordableUnits):', totalAffordableUnits);
+
+  // Count buildings by physicalBuildingType
+  const physicalTypeCounts = buildingsUpToYear.reduce((acc, building) => {
+    const type = building.physicalBuildingType;
+    if (!acc[type]) {
+      acc[type] = 0;
+    }
+    acc[type] += building.totalUnits;
+    return acc;
+  }, {} as Record<string, number>);
+  console.log('Physical building type counts:', physicalTypeCounts);
+
+  // Check for unknown/gray buildings
+  const unknownBuildings = buildingsUpToYear.filter(b =>
+    b.physicalBuildingType === 'unknown' || !b.physicalBuildingType
+  );
+  console.log('Unknown/gray buildings:', unknownBuildings.length);
+  if (unknownBuildings.length > 0) {
+    console.log('Sample unknown buildings:', unknownBuildings.slice(0, 5).map(b => ({
+      id: b.id,
+      buildingType: b.buildingType,
+      physicalBuildingType: b.physicalBuildingType,
+      buildingClass: b.buildingClass,
+      address: b.address
+    })));
+  }
+  console.groupEnd();
+
   // Check if any PLUTO data is being used (from filtered buildings)
   const usesPluto = buildingsUpToYear.some(b => b.dataSource === 'pluto');
 
@@ -96,6 +132,9 @@ export function Legend({
       <div className="mt-4 pt-4 border-t border-slate-200">
         <div className="text-xs text-slate-600">
           <strong>Height</strong> = Total housing units in building
+        </div>
+        <div className="text-xs text-slate-600 mt-1">
+          Buildings colored by type; affordable units shown as green overlay from base
         </div>
       </div>
 

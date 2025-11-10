@@ -94,11 +94,26 @@ export type ProcessedBuilding = {
   totalUnits: number;
   affordableUnits: number;
   affordablePercentage: number;
-  buildingType: BuildingType; // Type of residential construction
+  buildingType: BuildingType; // Primary classification (affordable/renovation/physical type)
+  physicalBuildingType: BuildingType; // Physical building type (multifamily-elevator, walkup, etc.)
   buildingClass?: string; // PLUTO building class code
   zoningDistrict?: string;
   address: string;
   dataSource: 'housing-ny' | 'pluto'; // Track which dataset this came from
+  isRenovation?: boolean; // True if this is a renovation (A1/A2/A3) rather than new construction
+};
+
+/**
+ * Building segment for stacked visualization
+ * Represents a vertical slice of a building (affordable or market-rate units)
+ */
+export type BuildingSegment = {
+  buildingId: string;
+  segmentType: 'affordable' | 'market-rate';
+  baseElevation: number; // Starting height (0 for affordable, affordableUnits for market)
+  segmentHeight: number; // Height of this segment
+  color: [number, number, number, number]; // RGBA color
+  parentBuilding: ProcessedBuilding; // Full building data for tooltips
 };
 
 /**

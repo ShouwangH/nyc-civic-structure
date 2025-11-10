@@ -4,6 +4,8 @@
 import type {
   HousingBuildingRecord,
   ProcessedBuilding,
+  BuildingSegment,
+  BuildingType,
   CachedProcessedData,
   HousingDataByYear,
   ZoningColorMap,
@@ -144,8 +146,9 @@ function constructBBL(borough: string, block: string, lot: string): string | nul
   const boroughCode = boroughMap[borough.toUpperCase()] || borough;
 
   // Pad block to 5 digits, lot to 4 digits
-  const paddedBlock = block.padStart(5, '0');
-  const paddedLot = lot.padStart(4, '0');
+  // Parse as integers first to handle already-padded values from DOB
+  const paddedBlock = parseInt(block, 10).toString().padStart(5, '0');
+  const paddedLot = parseInt(lot, 10).toString().padStart(4, '0');
 
   return boroughCode + paddedBlock + paddedLot;
 }
@@ -159,7 +162,7 @@ async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
   // Fetch from all three sources in parallel
   const [housingNYResponse, dobResponse, plutoResponse] = await Promise.all([
     fetch(`${HOUSING_NY_API}?$limit=${HOUSING_NY_LIMIT}&$order=building_completion_date`),
-    fetch(`${DOB_API}?$limit=${DOB_LIMIT}&$where=latest_action_date>='2014-01-01' AND (job_status_descrp='APPROVED' OR job_status_descrp='COMPLETED')`),
+    fetch(`${DOB_API}?$limit=${DOB_LIMIT}&$where=(job_status_descrp='SIGNED OFF' OR job_status_descrp='PERMIT ISSUED - ENTIRE JOB/WORK' OR job_status_descrp='PLAN EXAM - APPROVED' OR job_status_descrp='COMPLETED')&$order=latest_action_date DESC`),
     fetch(`${PLUTO_API}?$limit=${PLUTO_LIMIT}&$where=yearbuilt>=2014`)
   ]);
 
@@ -198,6 +201,18 @@ async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
   }
   console.info(`[HousingData] Indexed ${housingByBBL.size} Housing NY records by BBL`);
 
+  // Group DOB records by BBL to aggregate multiple jobs
+  const dobByBBL = new Map<string, any[]>();
+  for (const dobRecord of dobData) {
+    const bbl = constructBBL(dobRecord.borough, dobRecord.block, dobRecord.lot);
+    if (!bbl) continue;
+
+    if (!dobByBBL.has(bbl)) {
+      dobByBBL.set(bbl, []);
+    }
+    dobByBBL.get(bbl)!.push(dobRecord);
+  }
+
   // Track which BBLs are covered by DOB
   const dobBBLs = new Set<string>();
   const joinedData: any[] = [];
@@ -205,18 +220,64 @@ async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
   let dobProcessed = 0;
   let dobSkipped = 0;
 
-  // Process DOB records (primary source)
-  for (const dobRecord of dobData) {
-    const bbl = constructBBL(dobRecord.borough, dobRecord.block, dobRecord.lot);
-    if (!bbl) continue;
+  // Process each BBL (aggregating all jobs)
+  for (const [bbl, jobs] of dobByBBL.entries()) {
+    const housingRecord = housingByBBL.get(bbl);
 
-    // Calculate net new units (proposed - existing)
-    const existingUnits = parseInt(dobRecord.existing_dwelling_units || '0', 10);
-    const proposedUnits = parseInt(dobRecord.proposed_dwelling_units || '0', 10);
-    const netUnits = proposedUnits - existingUnits;
+    // Aggregate units from all jobs
+    let newConstructionUnits = 0; // From NB jobs
+    let renovationUnits = 0; // From A1/A2/A3 jobs
+    let latestSignoffDate: string | null = null;
+    let latestJob: any = null;
 
-    // Skip if negative (exclude renovations that remove units)
-    if (netUnits <= 0) {
+    for (const job of jobs) {
+      const jobType = (job.job_type || '').toUpperCase();
+      const existingUnits = parseInt(job.existing_dwelling_units || '0', 10);
+      const proposedUnits = parseInt(job.proposed_dwelling_units || '0', 10);
+      const netUnits = proposedUnits - existingUnits;
+
+      // Track latest job (for metadata)
+      const signoffDate = job.signoff_date || job.latest_action_date;
+      if (!latestSignoffDate || (signoffDate && signoffDate > latestSignoffDate)) {
+        latestSignoffDate = signoffDate;
+        latestJob = job;
+      }
+
+      // Aggregate units by job type
+      if (jobType === 'NB') {
+        // New building: add net new units
+        newConstructionUnits += Math.max(0, netUnits);
+      } else if (['A1', 'A2', 'A3'].includes(jobType)) {
+        // Renovation: add net change (can be 0 or positive)
+        renovationUnits += Math.max(0, netUnits);
+      }
+    }
+
+    // Determine total units and classification
+    let unitsForVisualization;
+    let isRenovation;
+
+    if (housingRecord) {
+      // Has affordable housing data - use that for units
+      unitsForVisualization = parseInt(
+        housingRecord.all_counted_units || housingRecord.total_units || '0',
+        10
+      );
+      // Classify as renovation if renovation units >= new construction units
+      isRenovation = renovationUnits >= newConstructionUnits;
+    } else {
+      // No affordable data - use aggregated DOB units
+      const totalUnits = newConstructionUnits + renovationUnits;
+      unitsForVisualization = totalUnits;
+      // Classify as renovation if renovation contributed more units
+      isRenovation = renovationUnits > newConstructionUnits;
+    }
+
+    // Include if we have units OR any renovation work was done
+    const hasRenovationWork = jobs.some(j => ['A1', 'A2', 'A3'].includes((j.job_type || '').toUpperCase()));
+    const shouldInclude = unitsForVisualization > 0 || hasRenovationWork;
+
+    if (!shouldInclude) {
       dobSkipped++;
       continue;
     }
@@ -224,21 +285,24 @@ async function fetchFromAPI(): Promise<HousingBuildingRecord[]> {
     dobBBLs.add(bbl);
     dobProcessed++;
 
-    const housingRecord = housingByBBL.get(bbl);
     if (housingRecord) {
       dobAffordableMatches++;
     }
 
+    // Use latest job for metadata
     joinedData.push({
-      ...dobRecord,
-      _netUnits: netUnits,
+      ...latestJob,
+      _netUnits: unitsForVisualization,
       _affordableData: housingRecord || null,
       _hasAffordable: Boolean(housingRecord),
+      _isRenovation: isRenovation,
+      _newConstructionUnits: newConstructionUnits,
+      _renovationUnits: renovationUnits,
       _dataSource: 'dob',
     });
   }
 
-  console.info(`[HousingData] DOB: ${dobProcessed} valid (net+ units), ${dobSkipped} skipped (net zero/negative)`);
+  console.info(`[HousingData] DOB: ${dobProcessed} valid (net+ units + renovations), ${dobSkipped} skipped (invalid)`);
   console.info(`[HousingData] DOB affordable matches: ${dobAffordableMatches}`);
 
   // Add PLUTO records as fallback (only for BBLs not in DOB)
@@ -327,16 +391,46 @@ function calculateAffordableUnits(record: HousingBuildingRecord): number {
 }
 
 /**
+ * Get physical building type from building class alone (no affordability/renovation overlay)
+ * NYC PLUTO building class codes: https://www1.nyc.gov/assets/planning/download/pdf/data-maps/open-data/bldg_class_code_101.pdf
+ */
+function getPhysicalBuildingType(buildingClass: string | undefined): BuildingType {
+  if (buildingClass) {
+    const classPrefix = buildingClass.charAt(0).toUpperCase();
+    switch (classPrefix) {
+      case 'A': return 'one-two-family';  // One and two family
+      case 'B': return 'multifamily-walkup';  // Multifamily walk-up
+      case 'C': return 'multifamily-elevator';  // Multifamily elevator
+      case 'D': return 'mixed-use';  // Mixed residential/commercial
+      case 'R': return 'multifamily-elevator';  // Condos/co-ops (typically elevator buildings)
+      case 'S': return 'mixed-use';  // Mixed residential
+      case 'L': return 'multifamily-elevator';  // Lofts (converted industrial, typically elevator)
+      // Non-residential but may have housing units:
+      case 'H': return 'mixed-use';  // Hotels (some have residential)
+      case 'O': return 'mixed-use';  // Office (some have residential conversion)
+      case 'K': return 'mixed-use';  // Retail (some have residential above)
+      case 'E': case 'F': case 'G':  // Warehouses, factories, garages
+      case 'I': case 'J': case 'M':  // Hospitals, theaters, churches
+      case 'N': case 'P': case 'Q':  // Institutions, assembly, recreation
+      case 'T': case 'U': case 'V':  // Transport, misc, vacant
+      case 'W': case 'Y': case 'Z':  // Education, government, misc
+        return 'mixed-use';  // Catch-all for unusual residential conversions
+    }
+  }
+  return 'unknown';
+}
+
+/**
  * Determine building type from PLUTO building class or DOB job type
  */
 function getBuildingType(
   buildingClass: string | undefined,
   _jobType: string | undefined,
-  isAffordable: boolean,
+  affordablePercentage: number,
   isRenovation: boolean
 ): any {
-  // Priority 1: Affordable housing
-  if (isAffordable) {
+  // Priority 1: Predominantly affordable housing (>50% affordable)
+  if (affordablePercentage > 50) {
     return 'affordable';
   }
 
@@ -345,18 +439,8 @@ function getBuildingType(
     return 'renovation';
   }
 
-  // Priority 3: PLUTO building class
-  if (buildingClass) {
-    const classPrefix = buildingClass.charAt(0).toUpperCase();
-    switch (classPrefix) {
-      case 'A': return 'one-two-family';
-      case 'B': return 'multifamily-walkup';
-      case 'C': return 'multifamily-elevator';
-      case 'D': return 'mixed-use';
-    }
-  }
-
-  return 'unknown';
+  // Priority 3: PLUTO/DOB building class
+  return getPhysicalBuildingType(buildingClass);
 }
 
 /**
@@ -369,8 +453,8 @@ function processBuilding(record: any): ProcessedBuilding | null {
   const isPLUTO = dataSource === 'pluto';
 
   // Extract coordinates
-  // DOB doesn't have direct coords, PLUTO and Housing NY do
   const lat = parseFloat(
+    record.gis_latitude ||
     record.latitude ||
     affordableData?.latitude ||
     affordableData?.latitude_internal ||
@@ -379,6 +463,7 @@ function processBuilding(record: any): ProcessedBuilding | null {
     '0'
   );
   const lon = parseFloat(
+    record.gis_longitude ||
     record.longitude ||
     affordableData?.longitude ||
     affordableData?.longitude_internal ||
@@ -429,21 +514,27 @@ function processBuilding(record: any): ProcessedBuilding | null {
     totalUnits = 0;
   }
 
+  // Determine if renovation (needed for validation)
+  const jobType = record.job_type || '';
+  const isRenovation = isDOB && ['A1', 'A2', 'A3'].includes(jobType.toUpperCase());
+
   // Validate required fields
-  if (!lat || !lon || !dateInfo.year || dateInfo.year < 2014 || dateInfo.year > 2025 || totalUnits === 0) {
+  // Renovations are allowed to have 0 units since they represent significant housing work
+  if (!lat || !lon || !dateInfo.year || dateInfo.year < 2014 || dateInfo.year > 2025 || (totalUnits === 0 && !isRenovation)) {
     return null;
   }
 
   // Calculate affordable units
   const affordableUnits = affordableData ? calculateAffordableUnits(affordableData) : 0;
 
-  // Determine if renovation
-  const jobType = record.job_type || '';
-  const isRenovation = isDOB && ['A1', 'A2', 'A3'].includes(jobType.toUpperCase());
+  // Calculate affordable percentage for classification
+  const affordablePercentage = totalUnits > 0 ? (affordableUnits / totalUnits) * 100 : 0;
 
   // Classify building type
-  const buildingClass = record.bldgclass;
-  const buildingType = getBuildingType(buildingClass, jobType, affordableUnits > 0, isRenovation);
+  // DOB uses 'building_class', PLUTO uses 'bldgclass'
+  const buildingClass = record.building_class || record.bldgclass;
+  const buildingType = getBuildingType(buildingClass, jobType, affordablePercentage, isRenovation);
+  const physicalBuildingType = getPhysicalBuildingType(buildingClass);
 
   return {
     id: record.bbl || record.job || affordableData?.building_id || String(Math.random()),
@@ -455,13 +546,85 @@ function processBuilding(record: any): ProcessedBuilding | null {
     completionDate: dateInfo.dateStr,
     totalUnits,
     affordableUnits,
-    affordablePercentage: totalUnits > 0 ? (affordableUnits / totalUnits) * 100 : 0,
+    affordablePercentage,
     buildingType,
+    physicalBuildingType,
     buildingClass,
     zoningDistrict: record.zonedist1,
     address: record.address || affordableData?.address || `${record.house_number || ''} ${record.street_name || ''}`.trim(),
     dataSource: (isDOB ? 'dob' : isPLUTO ? 'pluto' : 'housing-ny') as any,
+    isRenovation,
   };
+}
+
+/**
+ * Get RGBA color for a building type
+ */
+function getBuildingTypeColor(buildingType: BuildingType): [number, number, number, number] {
+  switch (buildingType) {
+    case 'affordable':
+      return [34, 197, 94, 200]; // Green
+    case 'renovation':
+      return [249, 115, 22, 200]; // Orange
+    case 'multifamily-elevator':
+      return [59, 130, 246, 200]; // Blue
+    case 'multifamily-walkup':
+      return [147, 51, 234, 200]; // Purple
+    case 'mixed-use':
+      return [251, 191, 36, 200]; // Yellow
+    case 'one-two-family':
+      return [239, 68, 68, 200]; // Red
+    default:
+      return [156, 163, 175, 200]; // Gray
+  }
+}
+
+/**
+ * Transform buildings into segments for stacked visualization
+ * Buildings with both affordable and market-rate units are split into two segments
+ */
+export function createBuildingSegments(buildings: ProcessedBuilding[]): BuildingSegment[] {
+  const segments: BuildingSegment[] = [];
+
+  for (const building of buildings) {
+    const hasAffordable = building.affordableUnits > 0;
+    const hasMarket = building.totalUnits > building.affordableUnits;
+
+    if (hasAffordable && hasMarket) {
+      // Mixed building - create two segments
+      // Bottom segment: affordable units (green)
+      segments.push({
+        buildingId: building.id,
+        segmentType: 'affordable',
+        baseElevation: 0,
+        segmentHeight: building.affordableUnits,
+        color: [34, 197, 94, 200], // Green
+        parentBuilding: building,
+      });
+
+      // Top segment: market-rate units (colored by physical building type)
+      segments.push({
+        buildingId: building.id,
+        segmentType: 'market-rate',
+        baseElevation: building.affordableUnits,
+        segmentHeight: building.totalUnits - building.affordableUnits,
+        color: getBuildingTypeColor(building.physicalBuildingType),
+        parentBuilding: building,
+      });
+    } else {
+      // Single-type building - create one segment
+      segments.push({
+        buildingId: building.id,
+        segmentType: hasAffordable ? 'affordable' : 'market-rate',
+        baseElevation: 0,
+        segmentHeight: building.totalUnits,
+        color: hasAffordable ? [34, 197, 94, 200] : getBuildingTypeColor(building.physicalBuildingType),
+        parentBuilding: building,
+      });
+    }
+  }
+
+  return segments;
 }
 
 /**
