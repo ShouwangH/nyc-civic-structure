@@ -1,7 +1,7 @@
 # NYC Civic Structure - Housing Data Refactor Status
 
 **Last Updated:** 2025-11-11
-**Branch:** `claude/refactor-reorganize-codebase-011CV1b3tqtT8x54s6Szy54H`
+**Branch:** `claude/housing-dcp-refactor-011CV2eGW58Y98wJjPmvPYTR`
 
 ## 📋 Overview
 
