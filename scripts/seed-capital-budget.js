@@ -92,7 +92,7 @@ async function main() {
 
   try {
     // Step 1: Clear existing data
-    await clearTable(db, capitalProjects, 'capital_projects');
+    await clearTable(db, 'capital_projects', 'capital_projects');
 
     // Step 2: Fetch CPDB data (GeoJSON format)
     console.log('--- STEP 1: Fetch Capital Projects Data ---\n');

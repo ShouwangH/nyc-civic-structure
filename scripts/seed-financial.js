@@ -363,8 +363,8 @@ async function main() {
 
   try {
     // Clear existing data
-    await clearTable(db, sankeyDatasets, 'sankey_datasets');
-    await clearTable(db, sunburstDatasets, 'sunburst_datasets');
+    await clearTable(db, 'sankey_datasets', 'sankey_datasets');
+    await clearTable(db, 'sunburst_datasets', 'sunburst_datasets');
 
     // Generate all visualizations
     console.log('--- STEP 1: Generate Budget Sankey ---\n');

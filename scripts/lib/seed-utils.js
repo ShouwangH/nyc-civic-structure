@@ -2,6 +2,7 @@
 // ABOUTME: Provides database connection, progress logging, and error handling helpers
 
 import { drizzle } from 'drizzle-orm/postgres-js';
+import { sql } from 'drizzle-orm';
 import postgres from 'postgres';
 import * as schema from '../../server/lib/schema.ts';
 
@@ -154,16 +155,18 @@ export async function batchInsert(db, table, records, options = {}) {
 /**
  * Clear table before seeding (for fresh seed)
  * @param {object} db - Drizzle database instance
- * @param {object} table - Drizzle table definition
+ * @param {string} tableName - Table name (string)
  * @param {string} label - Table label for logging
  */
-export async function clearTable(db, table, label) {
+export async function clearTable(db, tableName, label) {
   console.log(`[Clear] Clearing ${label} table...`);
 
   try {
-    const result = await db.delete(table).execute();
+    // Use TRUNCATE for faster, more reliable table clearing
+    // RESTART IDENTITY resets auto-increment sequences
+    // CASCADE removes dependent rows
+    await db.execute(sql.raw(`TRUNCATE TABLE "${tableName}" RESTART IDENTITY CASCADE`));
     console.log(`[Clear] Cleared ${label} table\n`);
-    return result;
   } catch (error) {
     console.error(`[Clear] Error clearing ${label}:`, error.message);
     throw error;

@@ -405,8 +405,8 @@ async function main() {
 
   try {
     // Step 1: Clear existing data
-    await clearTable(db, housingBuildings, 'housing_buildings');
-    await clearTable(db, housingDemolitions, 'housing_demolitions');
+    await clearTable(db, 'housing_buildings', 'housing_buildings');
+    await clearTable(db, 'housing_demolitions', 'housing_demolitions');
 
     // Step 2: Fetch Housing NY data
     console.log('--- STEP 1: Fetch Housing NY Data ---\n');
