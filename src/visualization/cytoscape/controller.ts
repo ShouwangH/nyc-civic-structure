@@ -200,16 +200,23 @@ export function createController(config: ControllerConfig): Controller {
           ...(subviewScope ? { activeScope: subviewScope } : {}),
         });
 
-        // Load Sankey data file from public directory
+        // Load Sankey data from API or file
         try {
-          const dataPath = subview.sankeyData.path.endsWith('.json')
-            ? subview.sankeyData.path
-            : `${subview.sankeyData.path}.json`;
-          const response = await fetch(dataPath);
+          let dataUrl: string;
+          if (subview.sankeyData.type === 'api') {
+            dataUrl = `/api/financial-data/sankey/${subview.sankeyData.id}`;
+          } else {
+            dataUrl = subview.sankeyData.path.endsWith('.json')
+              ? subview.sankeyData.path
+              : `${subview.sankeyData.path}.json`;
+          }
+
+          const response = await fetch(dataUrl);
           if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
-          const sankeyData: SankeyData = await response.json();
+          const json = await response.json();
+          const sankeyData: SankeyData = json.success ? json.data : json;
 
           // Update state to add Sankey overlay (preserves selectedNodeId and activeSubviewId)
           transitionVisualizationState({

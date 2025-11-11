@@ -6,7 +6,7 @@
 
 ---
 
-## 📊 Overall Progress: 65% Complete
+## 📊 Overall Progress: 75% Complete
 
 ```
 Phase 1: Database Schema         ████████████████████  100% ✅
@@ -146,15 +146,19 @@ Phase 6: Testing & Verification  ████████░░░░░░░�
   - `scripts/seed-housing.js`
   - `src/components/HousingTimelapse/Legend.tsx`
 
-### 3.5: Capital Budget Route ⏳ DEFERRED
-- ⏳ Capital budget route migration deferred
-- **Current:** Still using existing implementation
-- **Target:** Query `capital_projects` table
+### 3.5: Capital Budget Route ✅ DONE
+- ✅ Backend route already existed and queries database
+- ✅ Frontend refactored to modular pattern (Map3D, Legend, Tooltip)
+- ✅ Consistent architecture with housing timelapse
+- **File:** `server/routes/capital-budget.ts`, `src/components/CapitalBudget/`
 
-### 3.6: Financial Data Route ⏳ DEFERRED
-- ⏳ Financial data route migration deferred
-- **Current:** Still using existing implementation
-- **Target:** Query `sankey_datasets` and `sunburst_datasets` tables
+### 3.6: Financial Data Route ✅ DONE
+- ✅ Backend route already existed (`/api/financial-data`)
+- ✅ Updated type definitions to support `type: 'api'` with IDs
+- ✅ Updated OverlayWrapper to fetch from API endpoint
+- ✅ Updated controller.ts to support API-based sankeyData
+- ✅ Updated subview definitions to use API (pension-2025, budget-fy2025, revenue-fy2025, expense-fy2025)
+- **Files:** `src/data/types.ts`, `src/components/OverlayWrapper.tsx`, `src/visualization/cytoscape/controller.ts`, `data/city-intra.json`
 
 ---
 
@@ -351,15 +355,15 @@ Phase 6: Testing & Verification  ████████░░░░░░░�
 | Data Source | Schema | Seed Script | Backend Route | Frontend | Status |
 |-------------|--------|-------------|---------------|----------|--------|
 | Housing | ✅ 100% | ✅ 100% | ✅ 100% | ✅ 100% | **✅ Complete** |
-| Capital | ✅ 100% | ✅ 100% | ⏳ Deferred | ⏳ Deferred | **🟡 Partial** |
-| Financial | ✅ 100% | ✅ 100% | ⏳ Deferred | ⏳ Deferred | **🟡 Partial** |
+| Capital | ✅ 100% | ✅ 100% | ✅ 100% | ✅ 100% | **✅ Complete** |
+| Financial | ✅ 100% | ✅ 100% | ✅ 100% | ✅ 100% | **✅ Complete** |
 
 ### By Phase
 | Phase | Tasks | Completed | In Progress | Not Started | % Complete |
 |-------|-------|-----------|-------------|-------------|------------|
 | 1 | 6 | 6 | 0 | 0 | 100% |
 | 2 | 7 | 7 | 0 | 0 | 100% |
-| 3 | 6 | 4 | 0 | 2 | 67% |
+| 3 | 6 | 6 | 0 | 0 | 100% |
 | 4 | 9 | 0 | 0 | 9 | 0% |
 | 5 | 6 | 0 | 2 | 4 | 20% |
 | 6 | 7 | 3 | 1 | 3 | 50% |
@@ -396,10 +400,10 @@ The refactor will be complete when:
 2. ~~**Deduplication:** How to handle multiple jobs for same building?~~ ✅ RESOLVED - BBL + year
 3. ~~**Affordable merging:** Confirm DCP totalUnits INCLUDES affordable units?~~ ✅ RESOLVED - Yes
 4. **Cron schedule:** How often to refresh housing/capital/financial data?
-5. **Capital/Financial routes:** Migrate to database or keep current implementation?
+5. ~~**Capital/Financial routes:** Migrate to database or keep current implementation?~~ ✅ RESOLVED - Migrated
 
 ---
 
 **Last Updated:** 2025-11-11
-**Current Focus:** Phase 3 housing complete - Next: Phase 4 code reorganization or Phase 3.5/3.6 optional migrations
-**Overall Status:** 🟢 In Progress - 65% Complete
+**Current Focus:** Phase 3 complete! All data now database-backed - Next: Phase 4 code reorganization
+**Overall Status:** 🟢 In Progress - 75% Complete

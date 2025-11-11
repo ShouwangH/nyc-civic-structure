@@ -46,24 +46,37 @@ const OverlayWrapper = ({
     const loadData = async () => {
       setIsLoading(true);
       try {
-        let dataPath: string;
+        let dataUrl: string;
+
+        // Determine data source (API or file)
         if (subview.type === 'sankey' && subview.sankeyData) {
-          dataPath = subview.sankeyData.path.endsWith('.json')
-            ? subview.sankeyData.path
-            : `${subview.sankeyData.path}.json`;
+          if (subview.sankeyData.type === 'api') {
+            dataUrl = `/api/financial-data/sankey/${subview.sankeyData.id}`;
+          } else {
+            dataUrl = subview.sankeyData.path.endsWith('.json')
+              ? subview.sankeyData.path
+              : `${subview.sankeyData.path}.json`;
+          }
         } else if (subview.type === 'sunburst' && subview.sunburstData) {
-          dataPath = subview.sunburstData.path.endsWith('.json')
-            ? subview.sunburstData.path
-            : `${subview.sunburstData.path}.json`;
+          if (subview.sunburstData.type === 'api') {
+            dataUrl = `/api/financial-data/sunburst/${subview.sunburstData.id}`;
+          } else {
+            dataUrl = subview.sunburstData.path.endsWith('.json')
+              ? subview.sunburstData.path
+              : `${subview.sunburstData.path}.json`;
+          }
         } else {
           return;
         }
 
-        const response = await fetch(dataPath);
+        const response = await fetch(dataUrl);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const data = await response.json();
+        const json = await response.json();
+
+        // Extract data from API response if needed
+        const data = json.success ? json.data : json;
 
         setLoadedData(prev => new Map(prev).set(selectedSubviewId, data));
       } catch (error) {
