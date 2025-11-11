@@ -8,7 +8,15 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate",
+    "db:push": "drizzle-kit push",
+    "db:studio": "drizzle-kit studio",
+    "seed:housing": "node --env-file=.env scripts/seed-housing.js",
+    "seed:capital": "node --env-file=.env scripts/seed-capital-budget.js",
+    "seed:financial": "node --env-file=.env scripts/seed-financial.js",
+    "seed:all": "bun run seed:housing && bun run seed:capital && bun run seed:financial"
   },
   "dependencies": {
     "@deck.gl/core": "^9.2.2",
@@ -54,6 +62,7 @@
     "@vitejs/plugin-react": "^5.0.4",
     "autoprefixer": "^10.4.21",
     "connect": "^3.7.0",
+    "drizzle-kit": "^0.30.0",
     "eslint": "^9.36.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.22",
