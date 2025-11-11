@@ -1,0 +1,607 @@
+{
+  "meta": {
+    "source": "NYC Open Data - Expense Budget Funding (FY2025)",
+    "description": "Citywide external funding flows: Funding Source → Broad Category → Major Agencies",
+    "fiscal_year": 2025,
+    "currency": "USD",
+    "external_total": 114735017913,
+    "fund_totals": {
+      "City Funds": 80772652013,
+      "Federal Funds": 12507556923,
+      "State Funds": 20019620959,
+      "Other Categorical": 1043874682,
+      "Community Development": 391313336
+    },
+    "category_totals": {
+      "Government, Admin & Oversight": 36235092803,
+      "Education & Libraries": 34529275537,
+      "Public Safety & Justice": 11045753654,
+      "Social Services & Homelessness": 20055544709,
+      "Housing & Economic Development": 1939369012,
+      "Health & Mental Hygiene": 5695667653,
+      "Sanitation, Parks & Environment": 4108154440,
+      "Transportation": 1126160105
+    },
+    "note": "Top 15 agencies by external funding shown individually; others aggregated into 'Other ... Agencies'"
+  },
+  "nodes": [
+    {
+      "id": "NYC_Expense_FY2025",
+      "label": "NYC Expense Budget FY2025 (External Funding Only)",
+      "level": 0,
+      "type": "system"
+    },
+    {
+      "id": "fund:city_funds",
+      "label": "City Funds",
+      "level": 1,
+      "type": "funding_source"
+    },
+    {
+      "id": "fund:state_funds",
+      "label": "State Funds",
+      "level": 1,
+      "type": "funding_source"
+    },
+    {
+      "id": "fund:federal_funds",
+      "label": "Federal Funds",
+      "level": 1,
+      "type": "funding_source"
+    },
+    {
+      "id": "fund:other_categorical",
+      "label": "Other Categorical",
+      "level": 1,
+      "type": "funding_source"
+    },
+    {
+      "id": "fund:community_development",
+      "label": "Community Development",
+      "level": 1,
+      "type": "funding_source"
+    },
+    {
+      "id": "cat:education_libraries",
+      "label": "Education & Libraries",
+      "level": 2,
+      "type": "service_category"
+    },
+    {
+      "id": "cat:government_admin_oversight",
+      "label": "Government, Admin & Oversight",
+      "level": 2,
+      "type": "service_category"
+    },
+    {
+      "id": "cat:health_mental_hygiene",
+      "label": "Health & Mental Hygiene",
+      "level": 2,
+      "type": "service_category"
+    },
+    {
+      "id": "cat:housing_economic_development",
+      "label": "Housing & Economic Development",
+      "level": 2,
+      "type": "service_category"
+    },
+    {
+      "id": "cat:public_safety_justice",
+      "label": "Public Safety & Justice",
+      "level": 2,
+      "type": "service_category"
+    },
+    {
+      "id": "cat:sanitation_parks_environment",
+      "label": "Sanitation, Parks & Environment",
+      "level": 2,
+      "type": "service_category"
+    },
+    {
+      "id": "cat:social_services_homelessness",
+      "label": "Social Services & Homelessness",
+      "level": 2,
+      "type": "service_category"
+    },
+    {
+      "id": "cat:transportation",
+      "label": "Transportation",
+      "level": 2,
+      "type": "service_category"
+    },
+    {
+      "id": "agency:department_of_education",
+      "label": "Department of Education",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "agency:miscellaneous",
+      "label": "Miscellaneous",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "agency:department_of_social_services",
+      "label": "Department of Social Services",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "agency:pension_contributions",
+      "label": "Pension Contributions",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "agency:debt_service",
+      "label": "Debt Service",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "agency:police_department",
+      "label": "Police Department",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "agency:department_of_homeless_services",
+      "label": "Department of Homeless Services",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "agency:admin_for_children_s_services",
+      "label": "Admin for Children's Services",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "agency:health_and_hospitals_corp",
+      "label": "Health and Hospitals Corp",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "agency:fire_department",
+      "label": "Fire Department",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "agency:department_of_health_and_mental_hygiene",
+      "label": "Department of Health and Mental Hygiene",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "agency:department_of_sanitation",
+      "label": "Department of Sanitation",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "agency:housing_preservation_and_development",
+      "label": "Housing Preservation and Development",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "agency:department_of_environmental_protect_",
+      "label": "Department of Environmental Protect.",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "agency:city_university_of_new_york",
+      "label": "City University of New York",
+      "level": 3,
+      "type": "agency"
+    },
+    {
+      "id": "agency_other:public_safety_justice",
+      "label": "Other Public Safety & Justice Agencies",
+      "level": 3,
+      "type": "agency_group"
+    },
+    {
+      "id": "agency_other:government_admin_oversight",
+      "label": "Other Government, Admin & Oversight Agencies",
+      "level": 3,
+      "type": "agency_group"
+    },
+    {
+      "id": "agency_other:transportation",
+      "label": "Other Transportation Agencies",
+      "level": 3,
+      "type": "agency_group"
+    },
+    {
+      "id": "agency_other:sanitation_parks_environment",
+      "label": "Other Sanitation, Parks & Environment Agencies",
+      "level": 3,
+      "type": "agency_group"
+    },
+    {
+      "id": "agency_other:education_libraries",
+      "label": "Other Education & Libraries Agencies",
+      "level": 3,
+      "type": "agency_group"
+    }
+  ],
+  "links": [
+    {
+      "source": "NYC_Expense_FY2025",
+      "target": "fund:city_funds",
+      "value": 80772652013,
+      "type": "root_to_fund"
+    },
+    {
+      "source": "NYC_Expense_FY2025",
+      "target": "fund:state_funds",
+      "value": 20019620959,
+      "type": "root_to_fund"
+    },
+    {
+      "source": "NYC_Expense_FY2025",
+      "target": "fund:federal_funds",
+      "value": 12507556923,
+      "type": "root_to_fund"
+    },
+    {
+      "source": "NYC_Expense_FY2025",
+      "target": "fund:other_categorical",
+      "value": 1043874682,
+      "type": "root_to_fund"
+    },
+    {
+      "source": "NYC_Expense_FY2025",
+      "target": "fund:community_development",
+      "value": 391313336,
+      "type": "root_to_fund"
+    },
+    {
+      "source": "fund:city_funds",
+      "target": "cat:education_libraries",
+      "value": 16073178117,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:state_funds",
+      "target": "cat:education_libraries",
+      "value": 13441752476,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:federal_funds",
+      "target": "cat:education_libraries",
+      "value": 4734139032,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:other_categorical",
+      "target": "cat:education_libraries",
+      "value": 276855968,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:community_development",
+      "target": "cat:education_libraries",
+      "value": 3349944,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:city_funds",
+      "target": "cat:government_admin_oversight",
+      "value": 32916627086,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:state_funds",
+      "target": "cat:government_admin_oversight",
+      "value": 2140715377,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:federal_funds",
+      "target": "cat:government_admin_oversight",
+      "value": 728588497,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:other_categorical",
+      "target": "cat:government_admin_oversight",
+      "value": 352301189,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:community_development",
+      "target": "cat:government_admin_oversight",
+      "value": 96860654,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:city_funds",
+      "target": "cat:health_mental_hygiene",
+      "value": 3781675504,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:state_funds",
+      "target": "cat:health_mental_hygiene",
+      "value": 800225879,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:federal_funds",
+      "target": "cat:health_mental_hygiene",
+      "value": 1013214708,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:other_categorical",
+      "target": "cat:health_mental_hygiene",
+      "value": 100551562,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:city_funds",
+      "target": "cat:housing_economic_development",
+      "value": 872936829,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:state_funds",
+      "target": "cat:housing_economic_development",
+      "value": 1105000,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:federal_funds",
+      "target": "cat:housing_economic_development",
+      "value": 767312103,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:other_categorical",
+      "target": "cat:housing_economic_development",
+      "value": 10631235,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:community_development",
+      "target": "cat:housing_economic_development",
+      "value": 287383845,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:city_funds",
+      "target": "cat:public_safety_justice",
+      "value": 10307001414,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:state_funds",
+      "target": "cat:public_safety_justice",
+      "value": 137262687,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:federal_funds",
+      "target": "cat:public_safety_justice",
+      "value": 340587756,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:other_categorical",
+      "target": "cat:public_safety_justice",
+      "value": 260901797,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:city_funds",
+      "target": "cat:sanitation_parks_environment",
+      "value": 3641115414,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:state_funds",
+      "target": "cat:sanitation_parks_environment",
+      "value": 3020330,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:federal_funds",
+      "target": "cat:sanitation_parks_environment",
+      "value": 426677144,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:other_categorical",
+      "target": "cat:sanitation_parks_environment",
+      "value": 34340659,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:community_development",
+      "target": "cat:sanitation_parks_environment",
+      "value": 3000893,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:city_funds",
+      "target": "cat:social_services_homelessness",
+      "value": 12322874691,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:state_funds",
+      "target": "cat:social_services_homelessness",
+      "value": 3360146678,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:federal_funds",
+      "target": "cat:social_services_homelessness",
+      "value": 4368805340,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:other_categorical",
+      "target": "cat:social_services_homelessness",
+      "value": 3000000,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:community_development",
+      "target": "cat:social_services_homelessness",
+      "value": 718000,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:city_funds",
+      "target": "cat:transportation",
+      "value": 857242958,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:state_funds",
+      "target": "cat:transportation",
+      "value": 135392532,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:federal_funds",
+      "target": "cat:transportation",
+      "value": 128232343,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "fund:other_categorical",
+      "target": "cat:transportation",
+      "value": 5292272,
+      "type": "fund_to_category"
+    },
+    {
+      "source": "cat:education_libraries",
+      "target": "agency:department_of_education",
+      "value": 32986087432,
+      "type": "category_to_agency"
+    },
+    {
+      "source": "cat:government_admin_oversight",
+      "target": "agency:miscellaneous",
+      "value": 13549071053,
+      "type": "category_to_agency"
+    },
+    {
+      "source": "cat:social_services_homelessness",
+      "target": "agency:department_of_social_services",
+      "value": 12590227344,
+      "type": "category_to_agency"
+    },
+    {
+      "source": "cat:government_admin_oversight",
+      "target": "agency:pension_contributions",
+      "value": 9222918018,
+      "type": "category_to_agency"
+    },
+    {
+      "source": "cat:government_admin_oversight",
+      "target": "agency:debt_service",
+      "value": 6763921416,
+      "type": "category_to_agency"
+    },
+    {
+      "source": "cat:public_safety_justice",
+      "target": "agency:police_department",
+      "value": 6373648077,
+      "type": "category_to_agency"
+    },
+    {
+      "source": "cat:social_services_homelessness",
+      "target": "agency:department_of_homeless_services",
+      "value": 4009164386,
+      "type": "category_to_agency"
+    },
+    {
+      "source": "cat:social_services_homelessness",
+      "target": "agency:admin_for_children_s_services",
+      "value": 3456152979,
+      "type": "category_to_agency"
+    },
+    {
+      "source": "cat:health_mental_hygiene",
+      "target": "agency:health_and_hospitals_corp",
+      "value": 3032709133,
+      "type": "category_to_agency"
+    },
+    {
+      "source": "cat:public_safety_justice",
+      "target": "agency:fire_department",
+      "value": 2759704243,
+      "type": "category_to_agency"
+    },
+    {
+      "source": "cat:health_mental_hygiene",
+      "target": "agency:department_of_health_and_mental_hygiene",
+      "value": 2662958520,
+      "type": "category_to_agency"
+    },
+    {
+      "source": "cat:sanitation_parks_environment",
+      "target": "agency:department_of_sanitation",
+      "value": 1954228878,
+      "type": "category_to_agency"
+    },
+    {
+      "source": "cat:housing_economic_development",
+      "target": "agency:housing_preservation_and_development",
+      "value": 1939369012,
+      "type": "category_to_agency"
+    },
+    {
+      "source": "cat:sanitation_parks_environment",
+      "target": "agency:department_of_environmental_protect_",
+      "value": 1604115334,
+      "type": "category_to_agency"
+    },
+    {
+      "source": "cat:education_libraries",
+      "target": "agency:city_university_of_new_york",
+      "value": 1249395050,
+      "type": "category_to_agency"
+    },
+    {
+      "source": "cat:public_safety_justice",
+      "target": "agency_other:public_safety_justice",
+      "value": 1912401334,
+      "type": "category_to_agency"
+    },
+    {
+      "source": "cat:government_admin_oversight",
+      "target": "agency_other:government_admin_oversight",
+      "value": 6699182316,
+      "type": "category_to_agency"
+    },
+    {
+      "source": "cat:transportation",
+      "target": "agency_other:transportation",
+      "value": 1126160105,
+      "type": "category_to_agency"
+    },
+    {
+      "source": "cat:sanitation_parks_environment",
+      "target": "agency_other:sanitation_parks_environment",
+      "value": 549810228,
+      "type": "category_to_agency"
+    },
+    {
+      "source": "cat:education_libraries",
+      "target": "agency_other:education_libraries",
+      "value": 293793055,
+      "type": "category_to_agency"
+    }
+  ]
+}

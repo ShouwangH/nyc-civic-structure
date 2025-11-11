@@ -72,6 +72,23 @@ function categorizeAgency(agencyName) {
   return 'Government, Admin & Oversight'; // Default
 }
 
+// Convert to title case for display
+function toTitleCase(str) {
+  return str
+    .toLowerCase()
+    .split(' ')
+    .map(word => {
+      // Keep certain words lowercase
+      if (['and', 'of', 'the', 'for', 'in', 'on', 'at', 'to'].includes(word)) {
+        return word;
+      }
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join(' ')
+    // Capitalize first word
+    .replace(/^./, match => match.toUpperCase());
+}
+
 async function fetchBudgetData() {
   console.log(`Fetching FY${FISCAL_YEAR} budget data (published ${PUBLICATION_DATE}) from NYC Open Data...`);
 
@@ -251,7 +268,7 @@ function transformToSankey(records) {
     const agencyId = `agency:${agency.name.toLowerCase().replace(/[^a-z0-9]+/g, '_')}`;
     nodes.push({
       id: agencyId,
-      label: agency.name,
+      label: toTitleCase(agency.name),
       level: 3,
       type: 'agency'
     });
