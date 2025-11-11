@@ -358,6 +358,69 @@ function overlayAffordableData(dcpBuildings, housingNyMap) {
 }
 
 /**
+ * Deduplicate buildings (same BBL + year + units = duplicate job entries)
+ */
+function deduplicateBuildings(buildings) {
+  console.log('[Deduplicate] Removing duplicate buildings (same BBL + year + units)...');
+
+  const uniqueBuildings = [];
+  const duplicateGroups = new Map(); // key: "BBL-year-units" -> buildings[]
+
+  // Group buildings by BBL + completion year + total units
+  for (const building of buildings) {
+    const key = `${building.bbl || 'NO_BBL'}-${building.completionYear}-${building.totalUnits}`;
+
+    if (!duplicateGroups.has(key)) {
+      duplicateGroups.set(key, []);
+    }
+    duplicateGroups.get(key).push(building);
+  }
+
+  // Process each group
+  let deduplicatedCount = 0;
+  const deduplicatedExamples = [];
+
+  for (const [key, group] of duplicateGroups.entries()) {
+    if (group.length === 1) {
+      // No duplicates - keep the only building
+      uniqueBuildings.push(group[0]);
+    } else {
+      // Multiple buildings with same BBL + year + units -> duplicates
+      // Keep the first one (or could prefer by job number, data source, etc.)
+      uniqueBuildings.push(group[0]);
+
+      deduplicatedCount += (group.length - 1);
+
+      // Log first few examples
+      if (deduplicatedExamples.length < 5) {
+        deduplicatedExamples.push({
+          bbl: group[0].bbl,
+          year: group[0].completionYear,
+          units: group[0].totalUnits,
+          duplicateCount: group.length,
+          jobNumbers: group.map(b => b.jobNumber).join(', '),
+          kept: group[0].jobNumber
+        });
+      }
+    }
+  }
+
+  console.log(`[Deduplicate] Original buildings: ${formatNumber(buildings.length)}`);
+  console.log(`[Deduplicate] After deduplication: ${formatNumber(uniqueBuildings.length)}`);
+  console.log(`[Deduplicate] Removed: ${formatNumber(deduplicatedCount)} duplicate entries`);
+
+  if (deduplicatedExamples.length > 0) {
+    console.log(`[Deduplicate] Sample deduplications:`);
+    for (const example of deduplicatedExamples) {
+      console.log(`  - BBL ${example.bbl}, ${example.year}, ${example.units} units: ${example.duplicateCount} jobs found, kept ${example.kept}`);
+    }
+  }
+  console.log('');
+
+  return uniqueBuildings;
+}
+
+/**
  * Process DCP demolition records
  */
 function processDCPDemolitions(records) {
@@ -485,7 +548,11 @@ async function main() {
 
     // Step 7: Overlay affordable data
     console.log('--- STEP 6: Overlay Affordable Data ---\n');
-    const buildings = overlayAffordableData(dcpBuildings, housingNyMap);
+    const buildingsWithOverlay = overlayAffordableData(dcpBuildings, housingNyMap);
+
+    // Step 7.5: Deduplicate buildings (same BBL + year + units)
+    console.log('--- STEP 6.5: Deduplicate Buildings ---\n');
+    const buildings = deduplicateBuildings(buildingsWithOverlay);
 
     // Step 8: Process demolitions
     console.log('--- STEP 7: Process Demolitions ---\n');
