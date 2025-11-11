@@ -358,17 +358,24 @@ function overlayAffordableData(dcpBuildings, housingNyMap) {
 }
 
 /**
- * Deduplicate buildings (same BBL + year + units = duplicate job entries)
+ * Deduplicate buildings (same BBL + year = same building)
+ * When multiple jobs exist for same BBL+year, keep the one with highest unit count
  */
 function deduplicateBuildings(buildings) {
-  console.log('[Deduplicate] Removing duplicate buildings (same BBL + year + units)...');
+  console.log('[Deduplicate] Removing duplicate buildings (same BBL + year)...');
 
   const uniqueBuildings = [];
-  const duplicateGroups = new Map(); // key: "BBL-year-units" -> buildings[]
+  const duplicateGroups = new Map(); // key: "BBL-year" -> buildings[]
 
-  // Group buildings by BBL + completion year + total units
+  // Group buildings by BBL + completion year (NOT unit count!)
   for (const building of buildings) {
-    const key = `${building.bbl || 'NO_BBL'}-${building.completionYear}-${building.totalUnits}`;
+    // Skip buildings without BBL (can't deduplicate without it)
+    if (!building.bbl) {
+      uniqueBuildings.push(building);
+      continue;
+    }
+
+    const key = `${building.bbl}-${building.completionYear}`;
 
     if (!duplicateGroups.has(key)) {
       duplicateGroups.set(key, []);
@@ -385,21 +392,35 @@ function deduplicateBuildings(buildings) {
       // No duplicates - keep the only building
       uniqueBuildings.push(group[0]);
     } else {
-      // Multiple buildings with same BBL + year + units -> duplicates
-      // Keep the first one (or could prefer by job number, data source, etc.)
-      uniqueBuildings.push(group[0]);
+      // Multiple buildings with same BBL + year -> duplicates
+      // Prefer: 1) highest unit count, 2) has affordable overlay, 3) most recent job number
+      const bestBuilding = group.reduce((best, current) => {
+        // Prefer higher unit count (more complete data)
+        if (current.totalUnits > best.totalUnits) return current;
+        if (current.totalUnits < best.totalUnits) return best;
 
+        // Same units - prefer affordable overlay
+        if (current.hasAffordableOverlay && !best.hasAffordableOverlay) return current;
+        if (!current.hasAffordableOverlay && best.hasAffordableOverlay) return best;
+
+        // Same units and overlay status - prefer higher job number (more recent)
+        if (current.jobNumber > best.jobNumber) return current;
+        return best;
+      });
+
+      uniqueBuildings.push(bestBuilding);
       deduplicatedCount += (group.length - 1);
 
       // Log first few examples
-      if (deduplicatedExamples.length < 5) {
+      if (deduplicatedExamples.length < 10) {
         deduplicatedExamples.push({
-          bbl: group[0].bbl,
-          year: group[0].completionYear,
-          units: group[0].totalUnits,
+          bbl: bestBuilding.bbl,
+          year: bestBuilding.completionYear,
           duplicateCount: group.length,
-          jobNumbers: group.map(b => b.jobNumber).join(', '),
-          kept: group[0].jobNumber
+          kept: bestBuilding.jobNumber,
+          keptUnits: bestBuilding.totalUnits,
+          keptAddress: bestBuilding.address,
+          allJobs: group.map(b => `${b.jobNumber} (${b.totalUnits} units, ${b.address})`).join(' | ')
         });
       }
     }
@@ -412,7 +433,10 @@ function deduplicateBuildings(buildings) {
   if (deduplicatedExamples.length > 0) {
     console.log(`[Deduplicate] Sample deduplications:`);
     for (const example of deduplicatedExamples) {
-      console.log(`  - BBL ${example.bbl}, ${example.year}, ${example.units} units: ${example.duplicateCount} jobs found, kept ${example.kept}`);
+      console.log(`  - BBL ${example.bbl}, ${example.year}: ${example.duplicateCount} jobs -> kept ${example.kept} (${example.keptUnits} units, ${example.keptAddress})`);
+      if (example.duplicateCount <= 3) {
+        console.log(`    All jobs: ${example.allJobs}`);
+      }
     }
   }
   console.log('');
