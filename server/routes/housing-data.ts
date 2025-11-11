@@ -1,25 +1,18 @@
-// ABOUTME: API endpoint for fetching and caching NYC housing data
-// ABOUTME: Combines Housing NY, DOB, and PLUTO sources with server-side caching
+// ABOUTME: API endpoint for NYC housing data - serves from database with optional cache
+// ABOUTME: Replaces NYC Open Data API fetching with database queries for faster response
 
 import { registerRoute } from '../api-middleware';
+import { db } from '../lib/db';
+import { housingBuildings, housingDemolitions } from '../lib/schema';
+import { gte } from 'drizzle-orm';
 
-// Cache configuration
+// Cache configuration (in-memory)
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 let cachedData: {
   timestamp: number;
-  housingNyData: any[];
-  dobData: any[];
-  plutoData: any[];
-  demolitionData: any[];
+  buildings: any[];
+  demolitions: any[];
 } | null = null;
-
-// NYC Open Data API configuration
-const HOUSING_NY_API = 'https://data.cityofnewyork.us/resource/hg8x-zxpr.json';
-const DOB_API = 'https://data.cityofnewyork.us/resource/ic3t-wcy2.json';
-const PLUTO_API = 'https://data.cityofnewyork.us/resource/64uk-42ks.json';
-const HOUSING_NY_LIMIT = 20000;
-const DOB_LIMIT = 50000;
-const PLUTO_LIMIT = 20000;
 
 /**
  * Check if cached data is still valid
@@ -31,52 +24,41 @@ function isCacheValid(): boolean {
 }
 
 /**
- * Fetch data from NYC Open Data APIs and process
+ * Fetch housing data from database
  */
-async function fetchAndProcessHousingData() {
-  console.log('[Housing Data API] Fetching from NYC Open Data...');
+async function fetchHousingData() {
+  console.log('[Housing Data API] Fetching from database...');
 
   try {
-    // Fetch all four data sources in parallel
-    const [housingNyResponse, dobResponse, plutoResponse, demolitionResponse] = await Promise.all([
-      fetch(`${HOUSING_NY_API}?$limit=${HOUSING_NY_LIMIT}&$order=reporting_construction_type DESC`),
-      fetch(`${DOB_API}?$limit=${DOB_LIMIT}&$where=(job_status_descrp='SIGNED OFF' OR job_status_descrp='PERMIT ISSUED - ENTIRE JOB/WORK' OR job_status_descrp='PLAN EXAM - APPROVED' OR job_status_descrp='COMPLETED')&$order=latest_action_date DESC`),
-      fetch(`${PLUTO_API}?$limit=${PLUTO_LIMIT}&$where=yearbuilt>=2014&$order=yearbuilt DESC`),
-      fetch(`${DOB_API}?$limit=${DOB_LIMIT}&$where=job_type='DM' AND (job_status_descrp='SIGNED OFF' OR job_status_descrp='PERMIT ISSUED - ENTIRE JOB/WORK' OR job_status_descrp='PLAN EXAM - APPROVED' OR job_status_descrp='COMPLETED')&$order=latest_action_date DESC`)
-    ]);
+    // Fetch all buildings (already processed during seed)
+    const buildings = await db
+      .select()
+      .from(housingBuildings)
+      .where(gte(housingBuildings.completionYear, 2014))
+      .execute();
 
-    if (!housingNyResponse.ok || !dobResponse.ok || !plutoResponse.ok || !demolitionResponse.ok) {
-      throw new Error('Failed to fetch from one or more NYC Open Data APIs');
-    }
-
-    const [housingNyData, dobData, plutoData, demolitionData] = await Promise.all([
-      housingNyResponse.json() as Promise<any[]>,
-      dobResponse.json() as Promise<any[]>,
-      plutoResponse.json() as Promise<any[]>,
-      demolitionResponse.json() as Promise<any[]>
-    ]);
+    // Fetch all demolitions
+    const demolitions = await db
+      .select()
+      .from(housingDemolitions)
+      .where(gte(housingDemolitions.demolitionYear, 2014))
+      .execute();
 
     console.log('[Housing Data API] Fetched:', {
-      housingNy: housingNyData.length,
-      dob: dobData.length,
-      pluto: plutoData.length,
-      demolitions: demolitionData.length
+      buildings: buildings.length,
+      demolitions: demolitions.length,
     });
 
     // Store in cache
     cachedData = {
       timestamp: Date.now(),
-      housingNyData,
-      dobData,
-      plutoData,
-      demolitionData
+      buildings,
+      demolitions,
     };
 
     return {
-      housingNyData,
-      dobData,
-      plutoData,
-      demolitionData
+      buildings,
+      demolitions,
     };
   } catch (error) {
     console.error('[Housing Data API] Error fetching data:', error);
@@ -86,7 +68,7 @@ async function fetchAndProcessHousingData() {
 
 /**
  * GET /api/housing-data
- * Returns processed housing data with server-side caching
+ * Returns processed housing data from database with in-memory caching
  */
 async function getHousingData(request: Request) {
   try {
@@ -100,25 +82,21 @@ async function getHousingData(request: Request) {
         success: true,
         cached: true,
         data: {
-          housingNyData: cachedData!.housingNyData,
-          dobData: cachedData!.dobData,
-          plutoData: cachedData!.plutoData,
-          demolitionData: cachedData!.demolitionData,
+          buildings: cachedData!.buildings,
+          demolitions: cachedData!.demolitions,
         },
       });
     }
 
-    // Fetch fresh data
-    const data = await fetchAndProcessHousingData();
+    // Fetch fresh data from database
+    const data = await fetchHousingData();
 
     return Response.json({
       success: true,
       cached: false,
       data: {
-        housingNyData: data.housingNyData,
-        dobData: data.dobData,
-        plutoData: data.plutoData,
-        demolitionData: data.demolitionData,
+        buildings: data.buildings,
+        demolitions: data.demolitions,
       },
     });
   } catch (error) {
