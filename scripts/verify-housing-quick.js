@@ -5,6 +5,11 @@
 import { initDb, closeDb, formatNumber } from './lib/seed-utils.js';
 import { sql } from 'drizzle-orm';
 
+// Helper to normalize result structure from db.execute
+function getRows(result) {
+  return Array.isArray(result) ? result : (result.rows || []);
+}
+
 async function main() {
   const { db, client } = initDb();
 
@@ -15,7 +20,8 @@ async function main() {
 
     // Total count
     const count = await db.execute(sql`SELECT COUNT(*) as count FROM housing_buildings`);
-    console.log(`Total Buildings: ${formatNumber(count.rows[0].count)}\n`);
+    const countResult = getRows(count);
+    console.log(`Total Buildings: ${formatNumber(countResult[0]?.count || 0)}\n`);
 
     // By year with units
     const byYear = await db.execute(sql`
@@ -30,13 +36,15 @@ async function main() {
       ORDER BY completion_year DESC
     `);
 
+    const byYearResult = getRows(byYear);
+
     console.log('Year | Buildings | Total Units | Affordable Units');
     console.log('-----|-----------|-------------|------------------');
     let totalBuildings = 0;
     let totalUnits = 0;
     let totalAffordable = 0;
 
-    for (const row of byYear.rows) {
+    for (const row of byYearResult) {
       totalBuildings += parseInt(row.buildings);
       totalUnits += parseInt(row.units || 0);
       totalAffordable += parseInt(row.affordable || 0);
@@ -66,10 +74,12 @@ async function main() {
       ORDER BY units DESC NULLS LAST
     `);
 
+    const byBoroughResult = getRows(byBorough);
+
     console.log('\n=== BY BOROUGH ===');
     console.log('Borough        | Buildings | Total Units');
     console.log('---------------|-----------|------------');
-    for (const row of byBorough.rows) {
+    for (const row of byBoroughResult) {
       console.log(
         `${(row.borough || 'Unknown').padEnd(14)} | ${String(row.buildings).padStart(9)} | ${formatNumber(row.units || 0).padStart(11)}`
       );
@@ -84,10 +94,12 @@ async function main() {
       FROM housing_buildings
     `);
 
+    const qualityResult = getRows(quality);
+
     console.log('\n=== DATA QUALITY ===');
-    console.log('Missing Coordinates:', quality.rows[0].missing_coords);
-    console.log('Zero Units:', quality.rows[0].zero_units);
-    console.log('Missing BBL:', quality.rows[0].missing_bbl);
+    console.log('Missing Coordinates:', qualityResult[0]?.missing_coords || 0);
+    console.log('Zero Units:', qualityResult[0]?.zero_units || 0);
+    console.log('Missing BBL:', qualityResult[0]?.missing_bbl || 0);
 
     console.log('\n===================================\n');
 
