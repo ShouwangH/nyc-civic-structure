@@ -1,393 +1,3485 @@
 {
   "meta": {
-    "source": "NYC Comptroller White Book FY2025 \u2013 Schedule G2 (Revenues vs Budget by Category)",
+    "source": "NYC Open Data - Revenue Budget & Financial Plan (Dataset: ugzk-a6x4)",
     "fiscal_year": 2025,
-    "fund_group": "City Funds",
-    "total_revenue_billion": 120.6
+    "fund_group": "All Funds",
+    "total_revenue_billion": 123.84,
+    "generated_at": "2025-11-10T23:46:45.467Z"
   },
   "data": {
     "name": "NYC Revenue FY2025",
     "children": [
+      {
+        "name": "Categorical Aid",
+        "children": [
           {
-            "name": "Taxes",
+            "name": "State Grants and Contracts-Categorical",
             "children": [
               {
-                "name": "Real Estate Taxes",
+                "name": "SOCIAL SERVICES",
                 "children": [
                   {
-                    "name": "Real Estate Taxes (Net of Refunds)",
-                    "value": 34756900278,
-                    "actualValue": 34756900278,
+                    "name": "100% STATE",
+                    "value": 1497186058,
+                    "actualValue": 1497186058,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "ADMINISTRATION",
+                    "value": 367447,
+                    "actualValue": 367447,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "ADOPTION",
+                    "value": 80888116,
+                    "actualValue": 80888116,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "ADULT SHELTER CAP",
+                    "value": 68992099,
+                    "actualValue": 68992099,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "CHILD SUPPORT ADMINISTRATION",
+                    "value": 308,
+                    "actualValue": 308,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "EMERGENCY ASSIST FOR ADULT",
+                    "value": 31513882,
+                    "actualValue": 31513882,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "FAMILY + CHILDREN SERVICES",
+                    "value": 85000,
+                    "actualValue": 85000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "FOSTER CARE BLOCK GRANT",
+                    "value": 216726203,
+                    "actualValue": 216726203,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "GUIDE DOGS",
+                    "value": 106272,
+                    "actualValue": 106272,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "HOME RELIEF AID",
+                    "value": 2251000,
+                    "actualValue": 2251000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "MEDICAID-HEALTH & MEDICAL CARE",
+                    "value": 82551734,
+                    "actualValue": 82551734,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "MEDICAL ASSISTANCE ADMINISTRAT",
+                    "value": 248287119,
+                    "actualValue": 248287119,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PROTECTIVE SERVICES",
+                    "value": 59786673,
+                    "actualValue": 59786673,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Safe Harbour for Exploited Children",
+                    "value": 50000,
+                    "actualValue": 50000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SAFETY-NET",
+                    "value": 707585700,
+                    "actualValue": 707585700,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SHELTERS",
+                    "value": 14079271,
+                    "actualValue": 14079271,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SPECIAL PROJECTS",
+                    "value": 50500000,
+                    "actualValue": 50500000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "STATE DOSS FRINGE BENEFITS",
+                    "value": 188169703,
+                    "actualValue": 188169703,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "STATE PREVENTIVE SERVICES",
+                    "value": 576273404,
+                    "actualValue": 576273404,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TEMP ASSIST FOR NEEDY FAMILIES",
+                    "value": 475000,
+                    "actualValue": 475000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TRAINING",
+                    "value": 2466530,
+                    "actualValue": 2466530,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "WELFARE TO WORK",
+                    "value": 231620,
+                    "actualValue": 231620,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "WORK NOW",
+                    "value": 115492116,
+                    "actualValue": 115492116,
                     "isNegative": false
                   }
                 ]
               },
               {
-                "name": "Sales and Use Taxes",
+                "name": "MISCELLANEOUS",
                 "children": [
                   {
-                    "name": "General Sales",
-                    "value": 10364781495,
-                    "actualValue": 10364781495,
+                    "name": "911 GRANT",
+                    "value": 262482,
+                    "actualValue": 262482,
                     "isNegative": false
                   },
                   {
-                    "name": "Cigarette",
-                    "value": 12802220,
-                    "actualValue": 12802220,
+                    "name": "EMERGENCY MEDICAL SERVICES PGM",
+                    "value": 583519,
+                    "actualValue": 583519,
                     "isNegative": false
                   },
                   {
-                    "name": "Commercial Motor Vehicle",
-                    "value": 65886362,
-                    "actualValue": 65886362,
+                    "name": "NATURAL HERITAGE TRUST #1",
+                    "value": 508986,
+                    "actualValue": 508986,
                     "isNegative": false
                   },
                   {
-                    "name": "Mortgage",
-                    "value": 773174335,
-                    "actualValue": 773174335,
+                    "name": "PARTIAL REIMB. D.A.'S SALARY",
+                    "value": 39870,
+                    "actualValue": 39870,
                     "isNegative": false
                   },
                   {
-                    "name": "Auto Use",
-                    "value": 29555250,
-                    "actualValue": 29555250,
+                    "name": "STATE AID-COMMUNITY COLLEGES",
+                    "value": 250915017,
+                    "actualValue": 250915017,
                     "isNegative": false
                   },
                   {
-                    "name": "Other",
-                    "value": 17998548,
-                    "actualValue": 17998548,
+                    "name": "STATE AID-SENIOR COLLEGES",
+                    "value": 35000000,
+                    "actualValue": 35000000,
                     "isNegative": false
                   }
                 ]
               },
               {
-                "name": "Income Taxes",
+                "name": "EDUCATION",
                 "children": [
                   {
-                    "name": "Personal Income",
-                    "value": 16102462407,
-                    "actualValue": 16102462407,
+                    "name": "ACADEMIC IMPROVEMENT",
+                    "value": 35833137,
+                    "actualValue": 35833137,
                     "isNegative": false
                   },
                   {
-                    "name": "General Corporation",
-                    "value": 7365442430,
-                    "actualValue": 7365442430,
+                    "name": "BUILDING AID FOR LEASES",
+                    "value": 36324512,
+                    "actualValue": 36324512,
                     "isNegative": false
                   },
                   {
-                    "name": "Financial Corporation",
-                    "value": 21724296,
-                    "actualValue": 21724296,
+                    "name": "CHAPTER 721 REIMBURSEMENT    C",
+                    "value": 10000000,
+                    "actualValue": 10000000,
                     "isNegative": false
                   },
                   {
-                    "name": "Unincorporated Business Income",
-                    "value": 3641034609,
-                    "actualValue": 3641034609,
+                    "name": "Charter Schools",
+                    "value": 323234225,
+                    "actualValue": 323234225,
                     "isNegative": false
                   },
                   {
-                    "name": "Pass-through Entity",
-                    "value": 2363772380,
-                    "actualValue": 2363772380,
+                    "name": "COLLEGE DISCOVERY PROGRAM",
+                    "value": 1862000,
+                    "actualValue": 1862000,
                     "isNegative": false
                   },
                   {
-                    "name": "Personal Income (Non-Resident City Employees)",
-                    "value": 243695460,
-                    "actualValue": 243695460,
+                    "name": "COMMUNITY COLLEGE CHILD CARE",
+                    "value": 3595000,
+                    "actualValue": 3595000,
                     "isNegative": false
                   },
                   {
-                    "name": "Utility",
-                    "value": 482525517,
-                    "actualValue": 482525517,
+                    "name": "COMMUNITY COLLEGE RENTS",
+                    "value": 8948000,
+                    "actualValue": 8948000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "DATA PROCESSING PROGRAM",
+                    "value": 25742503,
+                    "actualValue": 25742503,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "DEAF AND BLIND REIMBURSEMENT",
+                    "value": 63249000,
+                    "actualValue": 63249000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "EDUCATION GRANTS",
+                    "value": 1200000,
+                    "actualValue": 1200000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "EDUCATION RELATED SUPPORT SVCS",
+                    "value": 31166186,
+                    "actualValue": 31166186,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "EDUCATION TECHNOLOGY INCENTIVE",
+                    "value": 80668280,
+                    "actualValue": 80668280,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "EMPLOYMENT PREP. EDUC.",
+                    "value": 30285596,
+                    "actualValue": 30285596,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "FOUNDATION AID",
+                    "value": 9910573443,
+                    "actualValue": 9910573443,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "HANDICAP.PUPIL-SUMMER SCHOOL",
+                    "value": 135009017,
+                    "actualValue": 135009017,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "HARDWARE AID",
+                    "value": 11136981,
+                    "actualValue": 11136981,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "HIGH COST EXCESS COST AID",
+                    "value": 247124600,
+                    "actualValue": 247124600,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "INVENTORY PLANNING PROJECT",
+                    "value": 61991,
+                    "actualValue": 61991,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "LIBRARY MATERIALS",
+                    "value": 7281737,
+                    "actualValue": 7281737,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "OCCUPATIONAL EDUCATION AID",
+                    "value": 118181125,
+                    "actualValue": 118181125,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PRE-KINDERGARTEN ADMIN COST",
+                    "value": 7300000,
+                    "actualValue": 7300000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PRESCHOOL SPECIAL EDUCATION",
+                    "value": 543653017,
+                    "actualValue": 543653017,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PRESERVATION LIBRARY RESEARCH",
+                    "value": 10182,
+                    "actualValue": 10182,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PRIVATE EXCESS COST AID",
+                    "value": 166901728,
+                    "actualValue": 166901728,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "P.S. AID/TEXTBOOKS",
+                    "value": 67448083,
+                    "actualValue": 67448083,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "P.S. AID&TRANSPORT/NET SUPPORT",
+                    "value": 1800000,
+                    "actualValue": 1800000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SCA BASED BUILDING AID",
+                    "value": 1624361298,
+                    "actualValue": 1624361298,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SCHOOL LUNCH",
+                    "value": 7612460,
+                    "actualValue": 7612460,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SCHOOL TO CAREER PROGRAM",
+                    "value": 2000000,
+                    "actualValue": 2000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SOFTWARE AID",
+                    "value": 17452869,
+                    "actualValue": 17452869,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SPECIAL GRANTS-MISCELLANEOUS",
+                    "value": 29500000,
+                    "actualValue": 29500000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "STATE BREAKFAST REIMBURSEMENT",
+                    "value": 8907551,
+                    "actualValue": 8907551,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TEACHER CENTER PROGRAM",
+                    "value": 7028996,
+                    "actualValue": 7028996,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TEACHERS OF TOMORROW",
+                    "value": 15000000,
+                    "actualValue": 15000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TRANSPORTATION AID",
+                    "value": 752160374,
+                    "actualValue": 752160374,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Universal Pre-Kindergarten",
+                    "value": 550858443,
+                    "actualValue": 550858443,
                     "isNegative": false
                   }
                 ]
               },
               {
-                "name": "Other Taxes",
+                "name": "CRIMINAL JUSTICE",
                 "children": [
                   {
-                    "name": "Payment in Lieu of Taxes",
-                    "value": 865443211,
-                    "actualValue": 865443211,
+                    "name": "AID TO CRIME LABS",
+                    "value": 628717,
+                    "actualValue": 628717,
                     "isNegative": false
                   },
                   {
-                    "name": "Hotel Room Occupancy",
-                    "value": 791568193,
-                    "actualValue": 791568193,
+                    "name": "AID TO LAW ENFORCEMENT",
+                    "value": 969455,
+                    "actualValue": 969455,
                     "isNegative": false
                   },
                   {
-                    "name": "Commercial Rent",
-                    "value": 1010198226,
-                    "actualValue": 1010198226,
+                    "name": "AID TO PROSECUTION",
+                    "value": 107376645,
+                    "actualValue": 107376645,
                     "isNegative": false
                   },
                   {
-                    "name": "Conveyance of Real Property",
-                    "value": 1255559762,
-                    "actualValue": 1255559762,
+                    "name": "CRIMES AGAINST REVENUES",
+                    "value": 9134244,
+                    "actualValue": 9134244,
                     "isNegative": false
                   },
                   {
-                    "name": "Beer and Liquor Excise",
-                    "value": 22582254,
-                    "actualValue": 22582254,
+                    "name": "FORFEITURE LAW ENFORCEMENT",
+                    "value": 31040460,
+                    "actualValue": 31040460,
                     "isNegative": false
                   },
                   {
-                    "name": "Taxi Medallion Transfer",
-                    "value": 849376,
-                    "actualValue": 849376,
+                    "name": "GUN INTERDICTION PROGRAM",
+                    "value": 88916,
+                    "actualValue": 88916,
                     "isNegative": false
                   },
                   {
-                    "name": "Surcharge on Liquor Licenses",
-                    "value": 6420895,
-                    "actualValue": 6420895,
+                    "name": "MOTOR VEHICLE THEFT INSU FRAUD",
+                    "value": 1508323,
+                    "actualValue": 1508323,
                     "isNegative": false
                   },
                   {
-                    "name": "Refunds of Other Taxes",
-                    "value": 55470502,
-                    "actualValue": -55470502,
+                    "name": "OCME DNA LAB",
+                    "value": 898168,
+                    "actualValue": 898168,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "OCME TOXICOLOGY LAB",
+                    "value": 161981,
+                    "actualValue": 161981,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SPECIAL NARCOTICS PROSECUTION",
+                    "value": 1127000,
+                    "actualValue": 1127000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "STATE LOCAL INITIATIVE",
+                    "value": 1287063,
+                    "actualValue": 1287063,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "TRANSPORTATION",
+                "children": [
+                  {
+                    "name": "ARTERIAL HIGHWAY REIMBURSEMENT",
+                    "value": 6831406,
+                    "actualValue": 6831406,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "ARTERIAL MAINTENANCE",
+                    "value": 10570599,
+                    "actualValue": 10570599,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "CONSOLIDATED HIWAY IMPROVEMENT",
+                    "value": 108899067,
+                    "actualValue": 108899067,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "HIGHWAY EMERGENCY LOCAL PATROL",
+                    "value": 32239,
+                    "actualValue": 32239,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "HIGHWAY SAFETY",
+                    "value": 4165866,
+                    "actualValue": 4165866,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "State Operating Assistance Bus",
+                    "value": 158658025,
+                    "actualValue": 158658025,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "State Operating Assistance Ferry",
+                    "value": 59370150,
+                    "actualValue": 59370150,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TRANSPORTATION IMPROVEMENT",
+                    "value": 1692226,
+                    "actualValue": 1692226,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "MENTAL HEALTH",
+                "children": [
+                  {
+                    "name": "ASSISSTED OUTPATIENT TREATMENT PROGRAM",
+                    "value": 2546501,
+                    "actualValue": 2546501,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "CHILDREN FAMILY SUPPORT STATE",
+                    "value": 8000029,
+                    "actualValue": 8000029,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "COMMUNITY M HEALTH REINVEST",
+                    "value": 57491318,
+                    "actualValue": 57491318,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "COMMUNITY SUPPORT SYSTEM",
+                    "value": 20304287,
+                    "actualValue": 20304287,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "COORDINATED CHILDREN SERV ST",
+                    "value": 1767334,
+                    "actualValue": 1767334,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "INTENSIVE CASE MANAGEMENT",
+                    "value": 29728396,
+                    "actualValue": 29728396,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "MEDICATION GRANT PROGRAM",
+                    "value": 440425,
+                    "actualValue": 440425,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "MENTAL H ALT TO INCARCERATION",
+                    "value": 1943026,
+                    "actualValue": 1943026,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "MENTALLY ILL CHEMICAL ABUSERS",
+                    "value": 339411,
+                    "actualValue": 339411,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "NYS- NY C INITIATIVE",
+                    "value": 61393192,
+                    "actualValue": 61393192,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "OUTPATIENT STATE AID",
+                    "value": 1997472,
+                    "actualValue": 1997472,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PEER SUPPORT STATE AID",
+                    "value": 1820652,
+                    "actualValue": 1820652,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PSYCHIATRIC EMERGENCY STATE AID (CPEP)",
+                    "value": 2257677,
+                    "actualValue": 2257677,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "STATE AID FOR  C.O.L.A.",
+                    "value": 7674483,
+                    "actualValue": 7674483,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "STATE AID MENTAL HEALTH",
+                    "value": 36876462,
+                    "actualValue": 36876462,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SUPPORTED HOUSING SERVICES",
+                    "value": 20524951,
+                    "actualValue": 20524951,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "THERAPEUTIC NURSERY",
+                    "value": 12425,
+                    "actualValue": 12425,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "PARKS AND RECREATION",
+                "children": [
+                  {
+                    "name": "BRONX RIVER",
+                    "value": 581236,
+                    "actualValue": 581236,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "ENFORCEMENT OF NAVIGATION LAWS",
+                    "value": 200000,
+                    "actualValue": 200000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PARKS RECREATION AND CONSERVATION",
+                    "value": 135727,
+                    "actualValue": 135727,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "MOTOR VEHICLES",
+                "children": [
+                  {
+                    "name": "BUCKLE UP NEW YORK PROGRAM",
+                    "value": 423818,
+                    "actualValue": 423818,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "COMBAT AGGRESSIVE DRIVING PROGRAM",
+                    "value": 172517,
+                    "actualValue": 172517,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "STOP DRIVING WHILE INTOXICATED",
+                    "value": 843867,
+                    "actualValue": 843867,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "MENTAL RETARDATION",
+                "children": [
+                  {
+                    "name": "CHAPTER 620 DEVELOPMENTAL DISABILITY",
+                    "value": 4197733,
+                    "actualValue": 4197733,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "STATE AID DEVELOPMENTAL DISABILITY",
+                    "value": 1973991,
+                    "actualValue": 1973991,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "HEALTH",
+                "children": [
+                  {
+                    "name": "CHILDREN AND FAMILY EMERGENCY SERVICES",
+                    "value": 8600459,
+                    "actualValue": 8600459,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "EARLY INTERVENTION SERVICES",
+                    "value": 175515480,
+                    "actualValue": 175515480,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "EMERGENCY MED TECH TRAINING",
+                    "value": 59800,
+                    "actualValue": 59800,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "ENHANCED DRINKING WATER PROTECTION",
+                    "value": 324000,
+                    "actualValue": 324000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Health Care and Mental Hygiene Worker",
+                    "value": 1219729,
+                    "actualValue": 1219729,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "HIV EDUCATION & PREVENTION",
+                    "value": 1228938,
+                    "actualValue": 1228938,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "HIV PARTNER NOTIFICATION",
+                    "value": 1860016,
+                    "actualValue": 1860016,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "MH CLINICAL INFRASTRUCTURE",
+                    "value": 1317078,
+                    "actualValue": 1317078,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "NYS-NYC LEAD POISONING",
+                    "value": 417550,
+                    "actualValue": 417550,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PUBLIC HEALTH-LOCAL ASSISTANCE",
+                    "value": 148516486,
+                    "actualValue": 148516486,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PUBLIC HEALTH PRIORITIES",
+                    "value": 6503448,
+                    "actualValue": 6503448,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "STATE-AID RESPITE + RECREATION",
+                    "value": 1034897,
+                    "actualValue": 1034897,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "STATE FELONY PROGRAM(EDDCP)",
+                    "value": 82986,
+                    "actualValue": 82986,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SUPPORTED HOUSING 50M PROGRAM",
+                    "value": 9475100,
+                    "actualValue": 9475100,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TB CONTROL AND PREVENTION",
+                    "value": 1579350,
+                    "actualValue": 1579350,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "YOUTH TOBACCO ENFORCEMENT",
+                    "value": 1532568,
+                    "actualValue": 1532568,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "STATE",
+                "children": [
+                  {
+                    "name": "Communications Improvement",
+                    "value": 20370677,
+                    "actualValue": 20370677,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "INDIGENT LEGAL SERVICES FUND",
+                    "value": 76048419,
+                    "actualValue": 76048419,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "OFFICER INDUCTION TRAINING SCH",
+                    "value": 989000,
+                    "actualValue": 989000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "STATE EMERGENCY AID",
+                    "value": 205078,
+                    "actualValue": 205078,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "AGING",
+                "children": [
+                  {
+                    "name": "COMMUNITY SERVICES FOR AGING",
+                    "value": 10072924,
+                    "actualValue": 10072924,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "CONGREGATE SERVICES INITIATIVE",
+                    "value": 152288,
+                    "actualValue": 152288,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "EXPANDED IN-HOMES SERVICES",
+                    "value": 37847742,
+                    "actualValue": 37847742,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "FOSTER GRANDPARENTS PGM STATE",
+                    "value": 18443,
+                    "actualValue": 18443,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SUPPLE.NUTRITION ASSIST. PROG.",
+                    "value": 10509762,
+                    "actualValue": 10509762,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "JUDICIARY",
+                "children": [
+                  {
+                    "name": "COURT INTEREST REIMBURSEMENT",
+                    "value": 2308000,
+                    "actualValue": 2308000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "COURT OPERATION + MAINTENANCE",
+                    "value": 61937192,
+                    "actualValue": 61937192,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "STATE APPELLATE COURTS",
+                    "value": 14467296,
+                    "actualValue": 14467296,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TENANT WORK",
+                    "value": 4775000,
+                    "actualValue": 4775000,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "CRIME VICTIMS COMPENSATION",
+                "children": [
+                  {
+                    "name": "CRIME VICTIMS COMPENSATION BD.",
+                    "value": 1991785,
+                    "actualValue": 1991785,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "CRIME VICTIMS PROGRAM",
+                    "value": 505352,
+                    "actualValue": 505352,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "OTHER",
+                "children": [
+                  {
+                    "name": "ELECTION FUNDING",
+                    "value": 10190515,
+                    "actualValue": 10190515,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "LOCAL GOVERNMENT RECORDS MGMT",
+                    "value": 1034963,
+                    "actualValue": 1034963,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "NYS DORMITORY AUTHORITY GRANT",
+                    "value": 14010448,
+                    "actualValue": 14010448,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "STATE AID",
+                    "value": 246596465,
+                    "actualValue": 246596465,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "STATE AID-PENSION REIMBURSEMNT",
+                    "value": 32025000,
+                    "actualValue": 32025000,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "ENVIRONMENTAL CONSERVATION",
+                "children": [
+                  {
+                    "name": "ENVIRONMENTAL CONSERVATION",
+                    "value": 961930,
+                    "actualValue": 961930,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "N Y S LOCAL WATERFRONT REVITAL",
+                    "value": 318461,
+                    "actualValue": 318461,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "AGRICULTURE AND MARKETS",
+                "children": [
+                  {
+                    "name": "GASOLINE INSPECTIONS",
+                    "value": 109810,
+                    "actualValue": 109810,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "PROBATION",
+                "children": [
+                  {
+                    "name": "JUVENILE INTENSIVE SUPERVISION",
+                    "value": 4198121,
+                    "actualValue": 4198121,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "STATE AID TO DEPT OF PROBATION",
+                    "value": 15175640,
+                    "actualValue": 15175640,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "YOUTH",
+                "children": [
+                  {
+                    "name": "NON-SECURE DETENTION SERVICES",
+                    "value": 3291889,
+                    "actualValue": 3291889,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "RUNAWAY & HOMELESS YOUTH",
+                    "value": 1708294,
+                    "actualValue": 1708294,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SECURE DETENTION SERVICES",
+                    "value": 41073218,
+                    "actualValue": 41073218,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "STATE AID FOR YOUTH SERVICES",
+                    "value": 10820368,
+                    "actualValue": 10820368,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TRANSITIONAL INDEPENDENT LIVIN",
+                    "value": 2358706,
+                    "actualValue": 2358706,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "VETERANS AFFAIRS",
+                "children": [
+                  {
+                    "name": "NYC VETERANS SERVICE AGENCY",
+                    "value": 435000,
+                    "actualValue": 435000,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "ENERGY OFFICE  ENERGY",
+                "children": [
+                  {
+                    "name": "NYS ENERGY CONSERVATION PROGRAM",
+                    "value": 3021258,
+                    "actualValue": 3021258,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "ALCOHOL AND SUBSTANCE ABUSE",
+                "children": [
+                  {
+                    "name": "SCHOOL PROGRAM GRANT",
+                    "value": 2000000,
+                    "actualValue": 2000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "STATE AID ALCOHOLISM",
+                    "value": 51187623,
+                    "actualValue": 51187623,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "TAXATION AND FINANCE",
+                "children": [
+                  {
+                    "name": "STATE AID FOR ASSESSMENTS",
+                    "value": 437500,
+                    "actualValue": 437500,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "CORRECTIONAL SERVICES",
+                "children": [
+                  {
+                    "name": "STATE AID-TRANSPORT. OF PRISON",
+                    "value": 1049000,
+                    "actualValue": 1049000,
+                    "isNegative": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Federal Grants and Contracts-Categorical",
+            "children": [
+              {
+                "name": "Health and Human Services",
+                "children": [
+                  {
+                    "name": "ADOPTION ASSISTANCE",
+                    "value": 102360044,
+                    "actualValue": 102360044,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "ADOPTION ASSISTANCE -  ADMINISTRATION",
+                    "value": 1291074,
+                    "actualValue": 1291074,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "ADOPTION INCENTIVE PAYMENTS",
+                    "value": 25000,
+                    "actualValue": 25000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Adult Viral Hepatitis Prevention and Control",
+                    "value": 802916,
+                    "actualValue": 802916,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "AGING TITLE IV & II DESCRETIONARY PGM",
+                    "value": 705326,
+                    "actualValue": 705326,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "AIDS HIV SURVEILLANCE",
+                    "value": 2952729,
+                    "actualValue": 2952729,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "AIDS PREVENTION SURVEILLANCE",
+                    "value": 50537743,
+                    "actualValue": 50537743,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Capacity Building Assistance (CBA) for High-Impact HIV Preve",
+                    "value": 1129538,
+                    "actualValue": 1129538,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "CASE MANAGEMENT SERVICES PHCP",
+                    "value": 447537,
+                    "actualValue": 447537,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "CDC Collaboration with Academia to Strengthen Public Health",
+                    "value": 6345880,
+                    "actualValue": 6345880,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "CHILD CARE & DEVEL.BLOCK GRANT",
+                    "value": 1420657103,
+                    "actualValue": 1420657103,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "CHILDHOOD INJURY PREVENTION",
+                    "value": 3068812,
+                    "actualValue": 3068812,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "CHILDHOOD LEAD SCREENING PREV",
+                    "value": 818009,
+                    "actualValue": 818009,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "CHILDREN FAMILY COMMUNITY SUP",
+                    "value": 2084386,
+                    "actualValue": 2084386,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "CHILD SUPPORT ADMINISTRATION",
+                    "value": 71501877,
+                    "actualValue": 71501877,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "COMMUNITY SERVICE BLOCK GRANT",
+                    "value": 70087253,
+                    "actualValue": 70087253,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "CSELS Partnership: Strengthening Public Health Laboratories",
+                    "value": 219069,
+                    "actualValue": 219069,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "DAY CARE INSPECTIONS",
+                    "value": 19419842,
+                    "actualValue": 19419842,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Drug Abuse and Addiction Research Programs",
+                    "value": 142407,
+                    "actualValue": 142407,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Elder Abuse Prevention Intervention Projects",
+                    "value": 2956784,
+                    "actualValue": 2956784,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "EMERGENCY INCOME MAINTANCE ADM",
+                    "value": 2855817,
+                    "actualValue": 2855817,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Ending the HIV Epidemic: A Plan for America - Ryan White HIV",
+                    "value": 20671044,
+                    "actualValue": 20671044,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "ENVOIRMENTAL PUBLIC HEALTH & EMERGENCY",
+                    "value": 216955,
+                    "actualValue": 216955,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Epidemiology and Laboratory Capacity for Infectious Diseases",
+                    "value": 133483885,
+                    "actualValue": 133483885,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "FEDERAL CSS",
+                    "value": 16396964,
+                    "actualValue": 16396964,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "FOSTER CARE TITLE IV-E",
+                    "value": 85515957,
+                    "actualValue": 85515957,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "FOSTER CARE TITLE IV-E PREVENTIVE SVCS",
+                    "value": 22515811,
+                    "actualValue": 22515811,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Guardianship Assistance",
+                    "value": 2920187,
+                    "actualValue": 2920187,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "HEAD START GRANT",
+                    "value": 70726850,
+                    "actualValue": 70726850,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "HEALTH INSURANCE ASSISTANCE PM",
+                    "value": 728396,
+                    "actualValue": 728396,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Healthy Brain Initiative",
+                    "value": 267350,
+                    "actualValue": 267350,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "HEALTHY START INITIATIVE",
+                    "value": 496460,
+                    "actualValue": 496460,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "HIV Demo, Research, and Education Projects",
+                    "value": 91884,
+                    "actualValue": 91884,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "HIV Prevention Activities Non-Governmental Organization Base",
+                    "value": 32498,
+                    "actualValue": 32498,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Hospital Preparedness Program (HPP) and Public Health Emerge",
+                    "value": 20474686,
+                    "actualValue": 20474686,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "IMMUNIZATION PROGRAM",
+                    "value": 88632743,
+                    "actualValue": 88632743,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "INDEPENDENT LIVING",
+                    "value": 7220786,
+                    "actualValue": 7220786,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "INJURY PREVENTION PROGRAM",
+                    "value": 189726,
+                    "actualValue": 189726,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "KEEPING FAMILIES TOGETHER IN NYC",
+                    "value": 1122863,
+                    "actualValue": 1122863,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "LEAD POISON CONTROL GRANT",
+                    "value": 353805,
+                    "actualValue": 353805,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "LOW-INCOME HOME ENERGY ASSISTANCE",
+                    "value": 69996735,
+                    "actualValue": 69996735,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "MAMMOGRAPHY QUALITY STANDARDS",
+                    "value": 605034,
+                    "actualValue": 605034,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Maternal, Infant, and Early Childhood Home Visiting Program",
+                    "value": 1003657,
+                    "actualValue": 1003657,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "MEDICAL ASSISTANCE PROGRAM",
+                    "value": 386365215,
+                    "actualValue": 386365215,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "MEDICARE ENROLLMENT",
+                    "value": 746227,
+                    "actualValue": 746227,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Mental Health Research Grants",
+                    "value": 350089,
+                    "actualValue": 350089,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "National Institute of Environmental Health Sciences",
+                    "value": 17900,
+                    "actualValue": 17900,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "NEW YORK NEW YORK PATH",
+                    "value": 237712,
+                    "actualValue": 237712,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Non-SEFA Federal Contracts-Health",
+                    "value": 16397053,
+                    "actualValue": 16397053,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Nursing Research",
+                    "value": 13319,
+                    "actualValue": 13319,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Nutrition Services Incentive Program",
+                    "value": 10272714,
+                    "actualValue": 10272714,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "OCCUPATIONAL SAFETY AND HEALTH PROGRAM",
+                    "value": 9425594,
+                    "actualValue": 9425594,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PREVENTATIVE HEALTH SERVICES BLOCK GRANT",
+                    "value": 340884,
+                    "actualValue": 340884,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Preventing Maternal Deaths: Supporting Maternal Mortality Re",
+                    "value": 139551,
+                    "actualValue": 139551,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Prevention & Management of Diabetes, Heart Disease, & Stroke",
+                    "value": 28524,
+                    "actualValue": 28524,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PROMOTING SAFE AND STABLE FAMILIES",
+                    "value": 22071703,
+                    "actualValue": 22071703,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Public Health Preparedness and Response Science, Research, a",
+                    "value": 325388,
+                    "actualValue": 325388,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "REFUGEE AND ENTRANT ASSISTANCE - DISCRET",
+                    "value": 441959,
+                    "actualValue": 441959,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Research for Heart, Lung, Blood Diseases, & Sleep Disorders",
+                    "value": 369856,
+                    "actualValue": 369856,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "RESEARCH ON HEALTHCARE COSTS AND QUALITY",
+                    "value": 5386,
+                    "actualValue": 5386,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "RYAN WHITE HIV EMERGCY RELIEF",
+                    "value": 93367684,
+                    "actualValue": 93367684,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SAFE MOTHERHOOD & INFANT HEALTH",
+                    "value": 149791,
+                    "actualValue": 149791,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SEFA Federal Contracts-Health",
+                    "value": 11754709,
+                    "actualValue": 11754709,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SOC SERV BLK GRANT TITLEXX CHILD WELFARE",
+                    "value": 134546060,
+                    "actualValue": 134546060,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SOC SERV BLOCK GRANT TITLE XX OTHER",
+                    "value": 23049928,
+                    "actualValue": 23049928,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SPECIAL PROJECTS",
+                    "value": 4387783,
+                    "actualValue": 4387783,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SPNS - Minority HIV/AID Fund",
+                    "value": 143038,
+                    "actualValue": 143038,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Strengthening Public Health Systems and Services",
+                    "value": 94639,
+                    "actualValue": 94639,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SUBSTANCE ABUSE PREVENTION & TREATMENT",
+                    "value": 16691458,
+                    "actualValue": 16691458,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SUSTANCE ABUSE & MENTAL HEALTH SVCS",
+                    "value": 876681,
+                    "actualValue": 876681,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TANF - ADMINISTRATIVE EXPENSES",
+                    "value": 22083562,
+                    "actualValue": 22083562,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TANF-EAF SET ASIDE FOR CHILD WELFARE",
+                    "value": 84256731,
+                    "actualValue": 84256731,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TANF--EMERGENCY ASSISTANCE",
+                    "value": 182223488,
+                    "actualValue": 182223488,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TANF EMPLOYMENT ADMINISTRATION",
+                    "value": 68330685,
+                    "actualValue": 68330685,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TANF - FRINGE BENEFITS",
+                    "value": 140286514,
+                    "actualValue": 140286514,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TANF-SAFETY NET",
+                    "value": 23236811,
+                    "actualValue": 23236811,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TEMP.ASST NEEDY FAMILY 100%FED",
+                    "value": 189010,
+                    "actualValue": 189010,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TEMPORARY ASSISTANCE FOR NEEDY FAMILIES",
+                    "value": 1545647578,
+                    "actualValue": 1545647578,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TITLE 3D HEALTH PROMOTION",
+                    "value": 667026,
+                    "actualValue": 667026,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TITLE E - CAREGIVER SUPPORT",
+                    "value": 3514168,
+                    "actualValue": 3514168,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TITLE III, PART B: SUPPORTIVE SERVICES A",
+                    "value": 10270814,
+                    "actualValue": 10270814,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TITLE III, PART C: NUTRITION SERVICES",
+                    "value": 24849277,
+                    "actualValue": 24849277,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TITLE IV-E -  FOSTER CARE ADMINISTRATION",
+                    "value": 59683655,
+                    "actualValue": 59683655,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TITLE IV-E  -  PROTECTIVE SERVICES",
+                    "value": 28967390,
+                    "actualValue": 28967390,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TITLE XX SOC.SERV.BLOCK GRANT",
+                    "value": 88742828,
+                    "actualValue": 88742828,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TUBERCULOSIS CONTROL PROGRAM",
+                    "value": 5369640,
+                    "actualValue": 5369640,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "VENEREAL DISEASE CONTROL",
+                    "value": 17405352,
+                    "actualValue": 17405352,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "COMM ON NATIONAL+COMMUNITY",
+                "children": [
+                  {
+                    "name": "AMERICORPS PROJECT",
+                    "value": 3012144,
+                    "actualValue": 3012144,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "AmeriCorps Senior Demonstration Program",
+                    "value": 3236160,
+                    "actualValue": 3236160,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "FOSTER GRANDPARENT GRANT",
+                    "value": 1964554,
+                    "actualValue": 1964554,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "JUSTICE",
+                "children": [
+                  {
+                    "name": "ARREST POLICIES&ENFORCEMENT PROTECTION",
+                    "value": 1013069,
+                    "actualValue": 1013069,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "BJA FY24 Postconviction Testing of DNA Evidence",
+                    "value": 2547376,
+                    "actualValue": 2547376,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Body Worn Camera Policy and Implementation",
+                    "value": 2929013,
+                    "actualValue": 2929013,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Children of Incarcerated Parents",
+                    "value": 463224,
+                    "actualValue": 463224,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Comprehensive Opioid Abuse Site-Based Program",
+                    "value": 713006,
+                    "actualValue": 713006,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Congressionally Recommended",
+                    "value": 8393899,
+                    "actualValue": 8393899,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "COPS UNIVERSAL HIRING",
+                    "value": 6829865,
+                    "actualValue": 6829865,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Crime Victim Assistance",
+                    "value": 638888,
+                    "actualValue": 638888,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "CRIME VICTIM ASSISTANCE/DISCRETIONARY GR",
+                    "value": 326045,
+                    "actualValue": 326045,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "CRIMINAL&JUVENILE JUSTICE &MENTAL HEALTH",
+                    "value": 656300,
+                    "actualValue": 656300,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Economic High-Tech & Cyber Crime Prevention",
+                    "value": 386543,
+                    "actualValue": 386543,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "ENFORCEMENT OVERTIME DRUG",
+                    "value": 6924037,
+                    "actualValue": 6924037,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Equitable Sharing Program",
+                    "value": 33107110,
+                    "actualValue": 33107110,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Forensic DNA Backlog Reduction Program",
+                    "value": 1635680,
+                    "actualValue": 1635680,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Forensics Training and Technical Assistance Program",
+                    "value": 123004,
+                    "actualValue": 123004,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "JUSTICE ASSISTANCE GRANT FUNDS",
+                    "value": 7498182,
+                    "actualValue": 7498182,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "LOCAL LAW ENFORCEMENT BLOCK GRANTS PROGR",
+                    "value": 19366,
+                    "actualValue": 19366,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Missing Alzheimer's Disease Patient Assistance Program",
+                    "value": 65041,
+                    "actualValue": 65041,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "MISSING CHILDREN'S ASSISTANCE PROGRAM",
+                    "value": 1274875,
+                    "actualValue": 1274875,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "NATIONAL INSTITUTE OF JUSTICE RESEARCH",
+                    "value": 801959,
+                    "actualValue": 801959,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "National Sexual Assault Kit Initiative",
+                    "value": 552061,
+                    "actualValue": 552061,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PAUL COVERDELL FORENSIC SCIENCES IMPROVE",
+                    "value": 313182,
+                    "actualValue": 313182,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PROJECT SAFE NEIGHBORHOODS",
+                    "value": 222402,
+                    "actualValue": 222402,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Prosecuting Cold Cases Using DNAe Patient Assistance Program",
+                    "value": 1393931,
+                    "actualValue": 1393931,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Protecting Inmates and Safeguarding Communities Dis Gnt Prog",
+                    "value": 75000,
+                    "actualValue": 75000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PUBLIC SAFETY PARTNERSHIP AND COMMUNITY",
+                    "value": 2337330,
+                    "actualValue": 2337330,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SERVICES FOR TRAFFICKING VICTIMS",
+                    "value": 356545,
+                    "actualValue": 356545,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SEXUAL ASSAULT IN THE MR/DD COMMUNITY",
+                    "value": 46616,
+                    "actualValue": 46616,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Shepard and Byrd Hate Crimes Program",
+                    "value": 75212,
+                    "actualValue": 75212,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Smart Prosecution Initiative",
+                    "value": 303048,
+                    "actualValue": 303048,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Swift, Certain, and Fair Supervision Program",
+                    "value": 200000,
+                    "actualValue": 200000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Title V Delinquency Prevention",
+                    "value": 120349,
+                    "actualValue": 120349,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "VIOLENCE AGAINST WOMEN FORMULA GRANTS",
+                    "value": 197253,
+                    "actualValue": 197253,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "TREASURY",
+                "children": [
+                  {
+                    "name": "Asset Forfeitures",
+                    "value": 6416513,
+                    "actualValue": 6416513,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "BUILD AMERICA BONDS REIMBURSEMENT",
+                    "value": 159944775,
+                    "actualValue": 159944775,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Coronavirus State and Local Fiscal Recovery Funds",
+                    "value": 548928605,
+                    "actualValue": 548928605,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "DEPARTMENT of  HOMELAND SECURITY",
+                "children": [
+                  {
+                    "name": "ASSISTANCE TO FIREFIGHTERS GRANT",
+                    "value": 2530569,
+                    "actualValue": 2530569,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Asylum Support",
+                    "value": 80481861,
+                    "actualValue": 80481861,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Cooperating Technical Partners",
+                    "value": 908402,
+                    "actualValue": 908402,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "DOMESTIC PREPAREDNESS EQUIPMENT SUPPORT",
+                    "value": 31990177,
+                    "actualValue": 31990177,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "EMERGENCY  MANAGEMENT PERFORMANCE GRANTS",
+                    "value": 644362,
+                    "actualValue": 644362,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "EMERGENCY MANAGEMENT PERFORMANCE GRANTS",
+                    "value": 4591855,
+                    "actualValue": 4591855,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Emergency Operations Center",
+                    "value": 926813,
+                    "actualValue": 926813,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "FEMA Direct Administrative Cost",
+                    "value": 7390814,
+                    "actualValue": 7390814,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "FEMA DISASTER GRANTS - PUBLIC ASSISTANCE",
+                    "value": 208617,
+                    "actualValue": 208617,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "FEMA PA COVID-19 Emergency Protective Measures",
+                    "value": 216804912,
+                    "actualValue": 216804912,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "FEMA REIMBURSEMENT",
+                    "value": 15095422,
+                    "actualValue": 15095422,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "FEMA Sandy E Buildings and Equipment",
+                    "value": 18803860,
+                    "actualValue": 18803860,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "FEMA Sandy F Utilities",
+                    "value": 26182967,
+                    "actualValue": 26182967,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "FEMA Sandy G Parks, Recreational Facilities, and Other Items",
+                    "value": 6120,
+                    "actualValue": 6120,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "HAZARD MITIGATION GRANT",
+                    "value": 12318981,
+                    "actualValue": 12318981,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "HOMELAND SECURITY BIOWATCH PGM",
+                    "value": 3025712,
+                    "actualValue": 3025712,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "LAW ENFORCEMENT TERRORISM PREVENTION PGM",
+                    "value": 19345551,
+                    "actualValue": 19345551,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PORT SECURITY",
+                    "value": 19409363,
+                    "actualValue": 19409363,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PRE-DISASTER MITIGATION",
+                    "value": 7886306,
+                    "actualValue": 7886306,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "RAIL AND TRANSIT  SECURITY",
+                    "value": 15958728,
+                    "actualValue": 15958728,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "REGIONAL CATASTROPHIC PREPAREDNESS",
+                    "value": 487455,
+                    "actualValue": 487455,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SECURING THE CITIES",
+                    "value": 8571208,
+                    "actualValue": 8571208,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "STATE HOMELAND SECURITY  GRANT PROGRAM",
+                    "value": 1248496,
+                    "actualValue": 1248496,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "URBAN AREAS SECURITY INITIATIVE",
+                    "value": 233019003,
+                    "actualValue": 233019003,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "URBAN SEARCH RESCUE AND RESPONSE SYSTEM",
+                    "value": 7543510,
+                    "actualValue": 7543510,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "ENVIRONMENTAL PROTECTION",
+                "children": [
+                  {
+                    "name": "BEACH MONITORING AND NOTIFICATION",
+                    "value": 62298,
+                    "actualValue": 62298,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "BROWNFIELD ASSESSMENT & CLEANUP COOP PGM",
+                    "value": 13622,
+                    "actualValue": 13622,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Climate Pollution Reduction Grants",
+                    "value": 385000,
+                    "actualValue": 385000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Environmental Justice Government-to-Government (EJG2G) Prog",
+                    "value": 307452,
+                    "actualValue": 307452,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Long Island Sound Program",
+                    "value": 538392,
+                    "actualValue": 538392,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "National Wetland Program Development Grant",
+                    "value": 47666,
+                    "actualValue": 47666,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "URBAN WETLAND EVALUATION PROGRAM",
+                    "value": 282524,
+                    "actualValue": 282524,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "HOUSING AND URBAN DEVELOPMENT",
+                "children": [
+                  {
+                    "name": "CDBG-Disaster Recovery",
+                    "value": 29506340,
+                    "actualValue": 29506340,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "COMMUNITY DEVELOPMENT BLOCK GRANT",
+                    "value": 576664,
+                    "actualValue": 576664,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "COMMUNITY DEVELOPMENT BLOCK GRANTS",
+                    "value": 398332629,
+                    "actualValue": 398332629,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Continuum of Care Program",
+                    "value": 6539810,
+                    "actualValue": 6539810,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Continuum of Care - Shelter Plus Care",
+                    "value": 51000692,
+                    "actualValue": 51000692,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Emergency Housing Vouchers",
+                    "value": 3949640,
+                    "actualValue": 3949640,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "EMERGENCY SHELTER GRANTS PROGRAM",
+                    "value": 13984412,
+                    "actualValue": 13984412,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Family Self-Sufficiency Program",
+                    "value": 2624891,
+                    "actualValue": 2624891,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "GRANTS TO ENCOURAGE ARREST POLICIES",
+                    "value": 500000,
+                    "actualValue": 500000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "HOME INVESTMENT PARTNERSHIP",
+                    "value": 198330478,
+                    "actualValue": 198330478,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "HOUSING OPPORTUNITIES FOR PEOPLE WITH AI",
+                    "value": 58781417,
+                    "actualValue": 58781417,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "LEAD HAZARD REDUCTION DEMONSTRATION GT",
+                    "value": 2506486,
+                    "actualValue": 2506486,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "LOWER INCOME HOUSING ASSISTANCE PROGRAM",
+                    "value": 6123659,
+                    "actualValue": 6123659,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Mainstream Vouchers",
+                    "value": 2671730,
+                    "actualValue": 2671730,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Older Adults Home Modification Grant Program",
+                    "value": 173119,
+                    "actualValue": 173119,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SECTION 8 ADMIN FEES - MODERATE SRO",
+                    "value": 9192452,
+                    "actualValue": 9192452,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SECTION 8 ADMIN FEES - VOUCHER",
+                    "value": 762209915,
+                    "actualValue": 762209915,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SUPPORTIVE HOUSING PROGRAM",
+                    "value": 948130,
+                    "actualValue": 948130,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Youth Homelessness Systems Improvement Grant",
+                    "value": 194324,
+                    "actualValue": 194324,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "AGRICULTURE",
+                "children": [
+                  {
+                    "name": "CHILD AND ADULT CARE FOOD PROGRAM",
+                    "value": 3773392,
+                    "actualValue": 3773392,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "COOPERATIVE FORESTRY ASSISTANCE",
+                    "value": 6959601,
+                    "actualValue": 6959601,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "FOOD STAMP ADMINISTRATION",
+                    "value": 108369919,
+                    "actualValue": 108369919,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "FOOD STAMP EMPLOY.& TRAINING",
+                    "value": 74203687,
+                    "actualValue": 74203687,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "FOOD STAMPS",
+                    "value": 25578722,
+                    "actualValue": 25578722,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "FREE & REDUCED PRICE LUNCH",
+                    "value": 423000000,
+                    "actualValue": 423000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Inflation Reduction Act Urban & Community Forestry Program",
+                    "value": 1517784,
+                    "actualValue": 1517784,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SCHOOL BREAKFAST PROGRAM",
+                    "value": 115000000,
+                    "actualValue": 115000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SCHOOL LUNCH",
+                    "value": 31795076,
+                    "actualValue": 31795076,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SCHOOL LUNCH-PRISONS",
+                    "value": 344168,
+                    "actualValue": 344168,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "State Admin Match Grants/ Supplemental Nutrition Assistance",
+                    "value": 3431406,
+                    "actualValue": 3431406,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Summer Food Service Program for Children",
+                    "value": 25586217,
+                    "actualValue": 25586217,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TRAINING",
+                    "value": 2342378,
+                    "actualValue": 2342378,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "EDUCATION",
+                "children": [
+                  {
+                    "name": "COMMUNITY LEARNING CENTERS",
+                    "value": 21011386,
+                    "actualValue": 21011386,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "EARLY INTERVENTION RESPITE",
+                    "value": 4552402,
+                    "actualValue": 4552402,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "ECIA TITLE I",
+                    "value": 820101123,
+                    "actualValue": 820101123,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "EDUCATION FOR HOMELESS CHILDREN & YOUTH",
+                    "value": 1685041,
+                    "actualValue": 1685041,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "E H A PART-B",
+                    "value": 344203848,
+                    "actualValue": 344203848,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "ESEA TITLE II IMPROVING TEACHER QUALITY",
+                    "value": 58500000,
+                    "actualValue": 58500000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "IMPACT AID",
+                    "value": 5250000,
+                    "actualValue": 5250000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "MAGNET SCHOOL MONEY-FEDERAL  F",
+                    "value": 12434551,
+                    "actualValue": 12434551,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SPECIAL GRANTS MISC",
+                    "value": 15000000,
+                    "actualValue": 15000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Student Support and Academic Enrichment Program",
+                    "value": 63000000,
+                    "actualValue": 63000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TITLE I GRANTS TO LOCAL EDUCATIONAL AGCS",
+                    "value": 30000000,
+                    "actualValue": 30000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TITLE III-LEP &  IMMIGRATION STUDENT",
+                    "value": 34006181,
+                    "actualValue": 34006181,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TRIO: STUDENT SUPPORT SERVICES",
+                    "value": 219671,
+                    "actualValue": 219671,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "VOCATIONAL EDUCATION",
+                    "value": 14294282,
+                    "actualValue": 14294282,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "SMALL BUSINESS",
+                "children": [
+                  {
+                    "name": "Congressional Grants",
+                    "value": 2000000,
+                    "actualValue": 2000000,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "COMMERCE",
+                "children": [
+                  {
+                    "name": "Congressionally Identified Awards and Projects",
+                    "value": 60870,
+                    "actualValue": 60870,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Economic Adjustment Assistance",
+                    "value": 6561988,
+                    "actualValue": 6561988,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Habitat Conservation",
+                    "value": 203356,
+                    "actualValue": 203356,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "ENERGY",
+                "children": [
+                  {
+                    "name": "Conservation Research and Development",
+                    "value": 1471264,
+                    "actualValue": 1471264,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "ENERGY EFFICIENCY CONSERVATION BLOCK",
+                    "value": 26988,
+                    "actualValue": 26988,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "EQUAL EMPLOYMENT OPPORTUNITY",
+                "children": [
+                  {
+                    "name": "EQUAL EMPLOY OPPORT COMM GRANT",
+                    "value": 683000,
+                    "actualValue": 683000,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "TRANSPORTATION",
+                "children": [
+                  {
+                    "name": "FEDERAL TRANSIT FORMULA GRANTS",
+                    "value": 58579736,
+                    "actualValue": 58579736,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Federal Transit Grants",
+                    "value": 7537811,
+                    "actualValue": 7537811,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "HIGHWAY PLANNING AND CONSTRUCTION",
+                    "value": 19640351,
+                    "actualValue": 19640351,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "INTERMODAL SURFACE TRANSPORT",
+                    "value": 50524241,
+                    "actualValue": 50524241,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Motor Carrier Safety Assistance High Priority Activity Grant",
+                    "value": 199253,
+                    "actualValue": 199253,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "National Infrastructure Investments",
+                    "value": 2649049,
+                    "actualValue": 2649049,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Pipeline Emergency Response Grant",
+                    "value": 27852,
+                    "actualValue": 27852,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "State and Community Highway Safety",
+                    "value": 31356,
+                    "actualValue": 31356,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "UMTA MASS TRANSIT STUDIES",
+                    "value": 5773142,
+                    "actualValue": 5773142,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "EXECUTIVE",
+                "children": [
+                  {
+                    "name": "High Intensity Drug Trafficking Areas Program",
+                    "value": 1000000,
+                    "actualValue": 1000000,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "ARCHIVES + RECORD ADMIN",
+                "children": [
+                  {
+                    "name": "National Historical Publications and Records Grants",
+                    "value": 113999,
+                    "actualValue": 113999,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "OTHER",
+                "children": [
+                  {
+                    "name": "Presidential Inauguration",
+                    "value": 506920,
+                    "actualValue": 506920,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "REIMBURSEMENT-OVERHEAD COSTS",
+                    "value": 7690641,
+                    "actualValue": 7690641,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "United States Capitol Police",
+                    "value": 1483026,
+                    "actualValue": 1483026,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "DEFENSE",
+                "children": [
+                  {
+                    "name": "PROCUREMENT TECHNICAL ASSISTANCE",
+                    "value": 296744,
+                    "actualValue": 296744,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "INTERIOR",
+                "children": [
+                  {
+                    "name": "Save Americas's Treasures",
+                    "value": 196490,
+                    "actualValue": 196490,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "U.S. SOCIAL SECURITY ADMINISTRATION",
+                "children": [
+                  {
+                    "name": "Supplemental Security Income",
+                    "value": 754000,
+                    "actualValue": 754000,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "LABOR",
+                "children": [
+                  {
+                    "name": "TITLE V NCOA EMPLOYMENT PROG.",
+                    "value": 1267302,
+                    "actualValue": 1267302,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TITLE V SEN COM SER EMP PROGM.",
+                    "value": 3136216,
+                    "actualValue": 3136216,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TRADE ADJUSTMENT ASSISTANCE PROGRAM",
+                    "value": 224954,
+                    "actualValue": 224954,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "W.I.A.  DISLOCATED WORKERS",
+                    "value": 31243233,
+                    "actualValue": 31243233,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "W.I.A. IN SCHOOL YOUTH",
+                    "value": 10775849,
+                    "actualValue": 10775849,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "W.I.A. National Emergency",
+                    "value": 179869,
+                    "actualValue": 179869,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "W.I.A. OUT OF SCHOOL YOUTH",
+                    "value": 17511855,
+                    "actualValue": 17511855,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "WORKFORCE INVESTMENT ACT - ADULT",
+                    "value": 59513283,
+                    "actualValue": 59513283,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "WORKFORCE INVESTMENT ACT CENTRAL ADMINIS",
+                    "value": 10302388,
+                    "actualValue": 10302388,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "STATE",
+                "children": [
+                  {
+                    "name": "UNITED NATIONS + CONSULATE",
+                    "value": 55680146,
+                    "actualValue": 55680146,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "Veterans Affairs",
+                "children": [
+                  {
+                    "name": "Veteran Affairs Homeless Providers and Per Diem Program",
+                    "value": 3447000,
+                    "actualValue": 3447000,
+                    "isNegative": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Non-Governmental Grants",
+            "children": [
+              {
+                "name": "NONGOVT GRANTS-GENERAL GOVT",
+                "children": [
+                  {
+                    "name": "COLLEGE WORK STUDY PRIVATE FND",
+                    "value": 72368,
+                    "actualValue": 72368,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "MANAGEMENT WELFARE FUND",
+                    "value": 823699,
+                    "actualValue": 823699,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "MUNICIPAL LABOR COMM.REIMBURSE",
+                    "value": 269675,
+                    "actualValue": 269675,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "OMLR DEFERRED COMPENSATION",
+                    "value": 1763826,
+                    "actualValue": 1763826,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "OMLR FLEXIBLE SPENDING PLAN",
+                    "value": 256647,
+                    "actualValue": 256647,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TRANSITIONAL FINANCE AUTHORITY",
+                    "value": 2250652,
+                    "actualValue": 2250652,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "WATER AUTHORITY GRANT",
+                    "value": 1010453,
+                    "actualValue": 1010453,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "NONGOVT GRANTS-OTHER",
+                "children": [
+                  {
+                    "name": "COMMUNITY ORIENTED POLICING SV",
+                    "value": 431347,
+                    "actualValue": 431347,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "CORP. PUBLIC BROADCASTING",
+                    "value": 591561,
+                    "actualValue": 591561,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "FORD WARRANTY PROGRAM",
+                    "value": 619294,
+                    "actualValue": 619294,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "GMC-CHEVROLET IMPALA",
+                    "value": 73953,
+                    "actualValue": 73953,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "GUIDE-A-RIDE PROGRAM",
+                    "value": 2188977,
+                    "actualValue": 2188977,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "HUDSON RIVER PARK-PEP",
+                    "value": 3438072,
+                    "actualValue": 3438072,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "INTEREST EXCHANGE AGREEMENT",
+                    "value": 638332,
+                    "actualValue": 638332,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "MUNICIPAL ARCHIVES REFERENCE",
+                    "value": 73903,
+                    "actualValue": 73903,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "NON-GOVERNMENTAL GRANTS",
+                    "value": 73417973,
+                    "actualValue": 73417973,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "NYC HOUSING AUTHORITY",
+                    "value": 40000,
+                    "actualValue": 40000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Parks Improvement",
+                    "value": 120000,
+                    "actualValue": 120000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PARKS RECREATION AND CONSERVATION",
+                    "value": 8016987,
+                    "actualValue": 8016987,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PRIMARY CARE DEVELOP DEBT SERV",
+                    "value": 618533,
+                    "actualValue": 618533,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PRIVATE GRANTS",
+                    "value": 549394732,
+                    "actualValue": 549394732,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "REENTRY ASSISTANCE SUPPORT PGM",
+                    "value": 7260,
+                    "actualValue": 7260,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SETTLEMENT RESTITUTION & FINES  GRANT",
+                    "value": 50029159,
+                    "actualValue": 50029159,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SPECIAL ASSISTANCE PROGRAM",
+                    "value": 5847,
+                    "actualValue": 5847,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TA-FARE EVASION OVERTIME",
+                    "value": 3608452,
+                    "actualValue": 3608452,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "NONGOVT GRANTS-EDUCATION",
+                "children": [
+                  {
+                    "name": "CONSTRUCTION AUTHORITY",
+                    "value": 68489930,
+                    "actualValue": 68489930,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "DEPT. OF EDUCATION RETIREMENT SYSTEM",
+                    "value": 21384366,
+                    "actualValue": 21384366,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "NON RESIDENT PUPIL TUITION",
+                    "value": 1000000,
+                    "actualValue": 1000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PRIVATE GRANTS",
+                    "value": 53998405,
+                    "actualValue": 53998405,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "UNIVERSAL SERVICE FUNDS",
+                    "value": 17121499,
+                    "actualValue": 17121499,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "NONGOVT GRANTS-HEALTH/HOSPITAL",
+                "children": [
+                  {
+                    "name": "HEALTH RESEARCH",
+                    "value": 687637,
+                    "actualValue": 687637,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "HHC - REIMBURSEMENT",
+                    "value": 40000000,
+                    "actualValue": 40000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "MEDICARE HEALTH CLINICS",
+                    "value": 42500,
+                    "actualValue": 42500,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "NONGOVT GRANTS - HOUSING",
+                "children": [
+                  {
+                    "name": "NYC HOUSING TRUST FUND - BPCA",
+                    "value": 8373679,
+                    "actualValue": 8373679,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "NYC HOUSING & URBAN DEVELOPMENT",
+                    "value": 948812,
+                    "actualValue": 948812,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "NONGOVT GRANTS-HIGHWAYS & STS",
+                "children": [
+                  {
+                    "name": "PRIVATE GRANT - PRIVATE TRANSPORTATION",
+                    "value": 13572654,
+                    "actualValue": 13572654,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TEA- CITY WIDE CONSTRUCTION PROJECT",
+                    "value": 20570840,
+                    "actualValue": 20570840,
+                    "isNegative": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Taxes",
+        "children": [
+          {
+            "name": "TAXES",
+            "children": [
+              {
+                "name": "GENERAL PROPERTY TAXES",
+                "children": [
+                  {
+                    "name": "ACCRUED REAL ESTATE TAX REVENUE",
+                    "value": 646000000,
+                    "actualValue": 646000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "DEFECTIVE LIEN REFUNDS",
+                    "value": 7000000,
+                    "actualValue": -7000000,
                     "isNegative": true
                   },
                   {
-                    "name": "Off-Track Betting Surtax",
-                    "value": 286008,
-                    "actualValue": 286008,
-                    "isNegative": false
-                  },
-                  {
-                    "name": "Other",
-                    "value": 334208,
-                    "actualValue": 334208,
-                    "isNegative": false
-                  }
-                ]
-              },
-              {
-                "name": "Penalties and Interest on Delinquent Taxes",
-                "children": [
-                  {
-                    "name": "Penalties and Interest on Real Estate Taxes",
-                    "value": 185755493,
-                    "actualValue": 185755493,
-                    "isNegative": false
-                  },
-                  {
-                    "name": "Refunds on Penalties and Interest on Other Taxes",
-                    "value": 11038074,
-                    "actualValue": -11038074,
+                    "name": "REAL ESTATE TAX REFUNDS",
+                    "value": 455000000,
+                    "actualValue": -455000000,
                     "isNegative": true
+                  },
+                  {
+                    "name": "Real Property Tax 1st Quarter",
+                    "value": 14790000000,
+                    "actualValue": 14790000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Real Property Tax 2nd Quarter",
+                    "value": 2506000000,
+                    "actualValue": 2506000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Real Property Tax 3rd Quarter",
+                    "value": 14502000000,
+                    "actualValue": 14502000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Real Property Tax 4th Quarter",
+                    "value": 2480000000,
+                    "actualValue": 2480000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "REAL PROPERTY TAX LIEN SALES",
+                    "value": 145000000,
+                    "actualValue": 145000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "STATE AID SCHOOL TAX RELIEF",
+                    "value": 107000000,
+                    "actualValue": 107000000,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "OTHER SALES AND USE TAX",
+                "children": [
+                  {
+                    "name": "AUTO USE TAX",
+                    "value": 30000000,
+                    "actualValue": 30000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Cannabis Tax",
+                    "value": 18000000,
+                    "actualValue": 18000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "CIGARETTE TAX",
+                    "value": 12500000,
+                    "actualValue": 12500000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "COMMERCIAL MOTOR VEHICLE TAX",
+                    "value": 67071000,
+                    "actualValue": 67071000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "MORTGAGE TAX",
+                    "value": 770000000,
+                    "actualValue": 770000000,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "OTHER TAXES",
+                "children": [
+                  {
+                    "name": "BEER + LIQUOR EXCISE TAX",
+                    "value": 25000000,
+                    "actualValue": 25000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "CONVEYANCE OF REAL PROPERTY TX",
+                    "value": 1257000000,
+                    "actualValue": 1257000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Medical Marijuana Excise Tax",
+                    "value": 600000,
+                    "actualValue": 600000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "OFF TRACK BETTING - SURTAX",
+                    "value": 760000,
+                    "actualValue": 760000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PAYMENT IN LIEU OF TAXES",
+                    "value": 855000000,
+                    "actualValue": 855000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "REFUNDS OF ALL OTHER TAXES",
+                    "value": 60000000,
+                    "actualValue": -60000000,
+                    "isNegative": true
+                  },
+                  {
+                    "name": "SURCHARGE ON LIQUOR LICENSES",
+                    "value": 6000000,
+                    "actualValue": 6000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TAXI MEDALION TRANSFER TAX",
+                    "value": 800000,
+                    "actualValue": 800000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TAX ON HORSE RACE ADMISSIONS",
+                    "value": 50000,
+                    "actualValue": 50000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TAX ON OCCUPANCY OF HOTEL ROOM",
+                    "value": 785000000,
+                    "actualValue": 785000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TX ON COMMERCIAL RENTS - OCCUP",
+                    "value": 945000000,
+                    "actualValue": 945000000,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "INCOME TAXES",
+                "children": [
+                  {
+                    "name": "GENERAL CORPORATION TAX",
+                    "value": 7451000000,
+                    "actualValue": 7451000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Pass Through Entity Tax",
+                    "value": 2615000000,
+                    "actualValue": 2615000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PERS INC TAX  CTY EMP NON-RES",
+                    "value": 240000000,
+                    "actualValue": 240000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PERSONAL INCOME TAX",
+                    "value": 18261000000,
+                    "actualValue": 18261000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "REFUNDS OF GENERAL CORP TAX",
+                    "value": 372000000,
+                    "actualValue": -372000000,
+                    "isNegative": true
+                  },
+                  {
+                    "name": "Refunds of Pass Through Entity Tax",
+                    "value": 209000000,
+                    "actualValue": -209000000,
+                    "isNegative": true
+                  },
+                  {
+                    "name": "REFUNDS OF PERSONAL INCOME TAX",
+                    "value": 2257000000,
+                    "actualValue": -2257000000,
+                    "isNegative": true
+                  },
+                  {
+                    "name": "REFUNDS OF UNICORP BUSN TAX",
+                    "value": 153000000,
+                    "actualValue": -153000000,
+                    "isNegative": true
+                  },
+                  {
+                    "name": "UNINCORPORATED BUSINESS INC TX",
+                    "value": 3545000000,
+                    "actualValue": 3545000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "UTILITY TAX",
+                    "value": 464000000,
+                    "actualValue": 464000000,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "GENERAL SALES TAX",
+                "children": [
+                  {
+                    "name": "GENERAL SALES TAX",
+                    "value": 10303000000,
+                    "actualValue": 10303000000,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "PENALTIES & INT ON DELINQ TAX",
+                "children": [
+                  {
+                    "name": "INTEREST ON TAX RECEIVABLE",
+                    "value": 132000000,
+                    "actualValue": 132000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PEN & INT-GEN PROP TAX",
+                    "value": 45000000,
+                    "actualValue": 45000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "REFUNDS ON PEN & INT-OTHER TAX",
+                    "value": 11000000,
+                    "actualValue": -11000000,
+                    "isNegative": true
+                  },
+                  {
+                    "name": "TAX AUDIT REVENUE",
+                    "value": 869666000,
+                    "actualValue": 869666000,
+                    "isNegative": false
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Other Revenue",
+        "children": [
+          {
+            "name": "CHARGES FOR SERVICES",
+            "children": [
+              {
+                "name": "INTRA-CITY CHARGES",
+                "children": [
+                  {
+                    "name": "ADMINISTRATIVE SERVICES/FEES",
+                    "value": 7801371,
+                    "actualValue": 7801371,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "AUTO FUEL SUPPLIES",
+                    "value": 10211082,
+                    "actualValue": 10211082,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "AUTO, SUPPLIES AND MATERIALS",
+                    "value": 46323615,
+                    "actualValue": 46323615,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "CULTURE-RECREATION SERVICE/FEE",
+                    "value": 512815,
+                    "actualValue": 512815,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "DATA PROCESSING",
+                    "value": 19167652,
+                    "actualValue": 19167652,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "EDUCATION SERVICES/FEES",
+                    "value": 344962727,
+                    "actualValue": 344962727,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "GAS AND ELECTRIC",
+                    "value": 825315045,
+                    "actualValue": 825315045,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "HEALTH SERVICES/FEES",
+                    "value": 163534613,
+                    "actualValue": 163534613,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "INTRA-CITY AUTO MAINTENANCE",
+                    "value": 6363995,
+                    "actualValue": 6363995,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "INTRA-CITY RENTALS",
+                    "value": 129292593,
+                    "actualValue": 129292593,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "MENTAL HEALTH SERVICES/FEES",
+                    "value": 5721164,
+                    "actualValue": 5721164,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "OTHER SERVICES/FEES",
+                    "value": 540139047,
+                    "actualValue": 540139047,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SANITATION SERVICES/FEES",
+                    "value": 182195,
+                    "actualValue": 182195,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SOCIAL SERVICES/FEES",
+                    "value": 5840869,
+                    "actualValue": 5840869,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "STOREHOUSE SALES",
+                    "value": 16550411,
+                    "actualValue": 16550411,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "TELEPHONE",
+                    "value": 124307610,
+                    "actualValue": 124307610,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "GENERAL GOVERNMENTAL CHARGES",
+                "children": [
+                  {
+                    "name": "ADMINISTRATIVE SERV TO PUBLIC",
+                    "value": 52368000,
+                    "actualValue": 52368000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "COMMISSARY FUNDS",
+                    "value": 9500000,
+                    "actualValue": 9500000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "CULTURE-RECREATION SERVICE/FEE",
+                    "value": 3000000,
+                    "actualValue": 3000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "EDUCATION SERVICES/FEES",
+                    "value": 1000000,
+                    "actualValue": 1000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "HEALTH SERVICES/FEES",
+                    "value": 10906000,
+                    "actualValue": 10906000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "Higher Ed Ser/Fees Comm Coll2",
+                    "value": 315110408,
+                    "actualValue": 315110408,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "HIGHWAYS & STREET SERVICE/FEES",
+                    "value": 3321000,
+                    "actualValue": 3321000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "OTHER SERVICES AND FEES",
+                    "value": 369910880,
+                    "actualValue": 369910880,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PARKING METER REVENUES",
+                    "value": 278202000,
+                    "actualValue": 278202000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "SANITATION SERVICES/FEES",
+                    "value": 10000,
+                    "actualValue": 10000,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "WATER AND SEWER CHARGES",
+                "children": [
+                  {
+                    "name": "PAYMENT FROM WATER BOARD",
+                    "value": 287000000,
+                    "actualValue": 287000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "REIMBURSEMENT FROM WATER BOARD",
+                    "value": 1927080000,
+                    "actualValue": 1927080000,
+                    "isNegative": false
+                  }
+                ]
+              },
+              {
+                "name": "RENTAL INCOME",
+                "children": [
+                  {
+                    "name": "RENTALS:  AIRPORT-PORT NY AUTH",
+                    "value": 204376000,
+                    "actualValue": 204376000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "RENTALS:  Citi Field",
+                    "value": 400000,
+                    "actualValue": 400000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "RENTALS:  DOCK SHIP WHARFAGE",
+                    "value": 1320000,
+                    "actualValue": 1320000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "RENTALS:  OTHER",
+                    "value": 70836000,
+                    "actualValue": 70836000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "RENTALS:  YANKEE STADIUM",
+                    "value": 800000,
+                    "actualValue": 800000,
+                    "isNegative": false
                   }
                 ]
               }
             ]
           },
           {
-            "name": "Categorical Aid",
+            "name": "MISCELLANEOUS",
             "children": [
               {
-                "name": "Federal Grants",
+                "name": "MISCELLANEOUS",
                 "children": [
                   {
-                    "name": "General Government",
-                    "value": 893614141,
-                    "actualValue": 893614141,
+                    "name": "AWARDS FROM LITIGATION",
+                    "value": 94944000,
+                    "actualValue": 94944000,
                     "isNegative": false
                   },
                   {
-                    "name": "Public Safety and Judicial",
-                    "value": 387983126,
-                    "actualValue": 387983126,
+                    "name": "DAYCARE & SENIOR CENTERS",
+                    "value": 3419000,
+                    "actualValue": 3419000,
                     "isNegative": false
                   },
                   {
-                    "name": "Education",
-                    "value": 2309159809,
-                    "actualValue": 2309159809,
+                    "name": "E-911 SURCHARGES",
+                    "value": 10500000,
+                    "actualValue": 10500000,
                     "isNegative": false
                   },
                   {
-                    "name": "Social Services",
-                    "value": 4006798851,
-                    "actualValue": 4006798851,
+                    "name": "MINOR SALES",
+                    "value": 20745000,
+                    "actualValue": 20745000,
                     "isNegative": false
                   },
                   {
-                    "name": "Environmental Protection",
-                    "value": 8581615,
-                    "actualValue": 8581615,
+                    "name": "SALES OF CITY REAL PROPERTY",
+                    "value": 1000000,
+                    "actualValue": 1000000,
                     "isNegative": false
                   },
                   {
-                    "name": "Transportation Services",
-                    "value": 130955473,
-                    "actualValue": 130955473,
+                    "name": "SALES OF IN REM PROPERTY",
+                    "value": 3100000,
+                    "actualValue": 3100000,
                     "isNegative": false
                   },
                   {
-                    "name": "Parks, Recreation and Cultural Activities",
-                    "value": 1842291,
-                    "actualValue": 1842291,
+                    "name": "SUNDRIES",
+                    "value": 1004070008,
+                    "actualValue": 1004070008,
                     "isNegative": false
                   },
                   {
-                    "name": "Housing",
-                    "value": 935206664,
-                    "actualValue": 935206664,
+                    "name": "WIRELESS /CELL PHONE SURCHARGES",
+                    "value": 32700000,
+                    "actualValue": 32700000,
                     "isNegative": false
                   },
                   {
-                    "name": "Health",
-                    "value": 408808332,
-                    "actualValue": 408808332,
-                    "isNegative": false
-                  }
-                ]
-              },
-              {
-                "name": "State Grants",
-                "children": [
-                  {
-                    "name": "General Government",
-                    "value": 1648758785,
-                    "actualValue": 1648758785,
-                    "isNegative": false
-                  },
-                  {
-                    "name": "Public Safety and Judicial",
-                    "value": 455357296,
-                    "actualValue": 455357296,
-                    "isNegative": false
-                  },
-                  {
-                    "name": "Education",
-                    "value": 13605966219,
-                    "actualValue": 13605966219,
-                    "isNegative": false
-                  },
-                  {
-                    "name": "Social Services",
-                    "value": 3073165516,
-                    "actualValue": 3073165516,
-                    "isNegative": false
-                  },
-                  {
-                    "name": "Environmental Protection",
-                    "value": 27136,
-                    "actualValue": 27136,
-                    "isNegative": false
-                  },
-                  {
-                    "name": "Transportation Services",
-                    "value": 357900169,
-                    "actualValue": 357900169,
-                    "isNegative": false
-                  },
-                  {
-                    "name": "Parks, Recreation and Cultural Activities",
-                    "value": 1473845,
-                    "actualValue": 1473845,
-                    "isNegative": false
-                  },
-                  {
-                    "name": "Housing",
-                    "value": 2580505,
-                    "actualValue": 2580505,
-                    "isNegative": false
-                  },
-                  {
-                    "name": "Health",
-                    "value": 605169339,
-                    "actualValue": 605169339,
-                    "isNegative": false
-                  },
-                  {
-                    "name": "City University",
-                    "value": 271620017,
-                    "actualValue": 271620017,
-                    "isNegative": false
-                  }
-                ]
-              },
-              {
-                "name": "Non-Governmental Grants",
-                "children": [
-                  {
-                    "name": "General Government",
-                    "value": 323988469,
-                    "actualValue": 323988469,
-                    "isNegative": false
-                  },
-                  {
-                    "name": "Public Safety and Judicial",
-                    "value": 296249047,
-                    "actualValue": 296249047,
-                    "isNegative": false
-                  },
-                  {
-                    "name": "Education",
-                    "value": 106703820,
-                    "actualValue": 106703820,
-                    "isNegative": false
-                  },
-                  {
-                    "name": "Social Services",
-                    "value": 3177449,
-                    "actualValue": 3177449,
-                    "isNegative": false
-                  },
-                  {
-                    "name": "Environmental Protection",
-                    "value": 11436033,
-                    "actualValue": 11436033,
-                    "isNegative": false
-                  },
-                  {
-                    "name": "Transportation Services",
-                    "value": 7516460,
-                    "actualValue": 7516460,
-                    "isNegative": false
-                  },
-                  {
-                    "name": "Parks, Recreation and Cultural Activities",
-                    "value": 16127560,
-                    "actualValue": 16127560,
-                    "isNegative": false
-                  },
-                  {
-                    "name": "Housing",
-                    "value": 8523982,
-                    "actualValue": 8523982,
-                    "isNegative": false
-                  },
-                  {
-                    "name": "Health",
-                    "value": 3119953,
-                    "actualValue": 3119953,
-                    "isNegative": false
-                  },
-                  {
-                    "name": "Libraries",
-                    "value": 241523,
-                    "actualValue": 241523,
-                    "isNegative": false
-                  },
-                  {
-                    "name": "City University",
-                    "value": 19266888,
-                    "actualValue": 19266888,
+                    "name": "WIRELESS /E911 SURCHARGES-VOIP",
+                    "value": 13500000,
+                    "actualValue": 13500000,
                     "isNegative": false
                   }
                 ]
@@ -395,125 +3487,268 @@
             ]
           },
           {
-            "name": "Unrestricted Aid",
+            "name": "TRANSFERS FROM OTHER FUNDS",
             "children": [
               {
-                "name": "Intergovernmental Aid",
-                "value": 52693301,
-                "actualValue": 52693301,
-                "isNegative": false
-              }
-            ]
-          },
-          {
-            "name": "Charges for Services",
-            "children": [
-              {
-                "name": "General Government Charges",
-                "value": 1049222965,
-                "actualValue": 1049222965,
-                "isNegative": false
-              },
-              {
-                "name": "Water and Sewer",
-                "value": 2161382739,
-                "actualValue": 2161382739,
-                "isNegative": false
-              },
-              {
-                "name": "Housing",
-                "value": 12324800,
-                "actualValue": 12324800,
-                "isNegative": false
-              },
-              {
-                "name": "Rental Income",
-                "value": 278157312,
-                "actualValue": 278157312,
-                "isNegative": false
-              }
-            ]
-          },
-          {
-            "name": "Investment Income",
-            "value": 640779648,
-            "actualValue": 640779648,
-            "isNegative": false
-          },
-          {
-            "name": "Other Revenues",
-            "children": [
-              {
-                "name": "Licenses, Permits, Privileges and Franchises",
+                "name": "CAP FUNDS - IFA",
                 "children": [
                   {
-                    "name": "Licenses",
-                    "value": 80081402,
-                    "actualValue": 80081402,
+                    "name": "BRIDGES-IFA",
+                    "value": 43487277,
+                    "actualValue": 43487277,
                     "isNegative": false
                   },
                   {
-                    "name": "Permits",
-                    "value": 318400605,
-                    "actualValue": 318400605,
+                    "name": "CAPITAL FUNDS-IFA",
+                    "value": 190155619,
+                    "actualValue": 190155619,
                     "isNegative": false
                   },
                   {
-                    "name": "Privileges and Franchises",
-                    "value": 338459741,
-                    "actualValue": 338459741,
+                    "name": "CAPITAL FUNDS-IFA MISC BDGT",
+                    "value": 36246340,
+                    "actualValue": 36246340,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "IFA - HIGHWAYS",
+                    "value": 37877773,
+                    "actualValue": 37877773,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "IFA MARINE & AVIATION",
+                    "value": 2061568,
+                    "actualValue": 2061568,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "IFA - MILLING MANAGEMENT",
+                    "value": 4966507,
+                    "actualValue": 4966507,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "IFA -Pedestrian Ramps",
+                    "value": 68662213,
+                    "actualValue": 68662213,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "IFA - RESURFACING",
+                    "value": 266455650,
+                    "actualValue": 266455650,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "IFA - TRAFFIC",
+                    "value": 19969165,
+                    "actualValue": 19969165,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "INTERFUND AGREEMENT - PLANTS",
+                    "value": 60566479,
+                    "actualValue": 60566479,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "INTERFUND AGREEMENT -WASTE WTR",
+                    "value": 9397196,
+                    "actualValue": 9397196,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "INTERFUND AGREEMENT - WSP",
+                    "value": 52344952,
+                    "actualValue": 52344952,
+                    "isNegative": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "LICENS. PERM. PRIV, FRANCHISES",
+            "children": [
+              {
+                "name": "PERMITS",
+                "children": [
+                  {
+                    "name": "CONSTRUCTION PERMITS",
+                    "value": 182623000,
+                    "actualValue": 182623000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PERMITS - GENERAL",
+                    "value": 128360000,
+                    "actualValue": 128360000,
                     "isNegative": false
                   }
                 ]
               },
               {
-                "name": "Fines and Forfeitures",
+                "name": "FRANCHISES AND PRIVILEGES",
                 "children": [
                   {
-                    "name": "Fines",
-                    "value": 1421699136,
-                    "actualValue": 1421699136,
+                    "name": "DUMPING PRIVILEGES",
+                    "value": 1250000,
+                    "actualValue": 1250000,
                     "isNegative": false
                   },
                   {
-                    "name": "Forfeitures",
-                    "value": 2928790,
-                    "actualValue": 2928790,
+                    "name": "FRANCHISES - OTHER",
+                    "value": 205380000,
+                    "actualValue": 205380000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PRIVILEGES - OTHER",
+                    "value": 139690000,
+                    "actualValue": 139690000,
                     "isNegative": false
                   }
                 ]
               },
               {
-                "name": "Miscellaneous",
-                "value": 641849928,
-                "actualValue": 641849928,
-                "isNegative": false
+                "name": "LICENSES",
+                "children": [
+                  {
+                    "name": "LICENSES - GENERAL",
+                    "value": 70283000,
+                    "actualValue": 70283000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "MARRIAGE LICENSES",
+                    "value": 2889000,
+                    "actualValue": 2889000,
+                    "isNegative": false
+                  }
+                ]
               }
             ]
           },
           {
-            "name": "Other Financing Sources",
+            "name": "Unrestricted Federal and State Aid",
             "children": [
               {
-                "name": "Pollution Remediation-Bond Sales",
-                "value": 205907354,
-                "actualValue": 205907354,
-                "isNegative": false
+                "name": "COLLECTED INTGOVT AID",
+                "children": [
+                  {
+                    "name": "FEMA REIMBURSEMENT",
+                    "value": 7442679,
+                    "actualValue": 7442679,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "OTHER STATE ACTIONS",
+                    "value": 6192331,
+                    "actualValue": 6192331,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PRIOR YEAR FEMA REIMBURSEMENT",
+                    "value": 30000000,
+                    "actualValue": 30000000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "PRIOR YEAR REIMBURSEMENT",
+                    "value": 8223776,
+                    "actualValue": 8223776,
+                    "isNegative": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "FINES AND FOREITURES",
+            "children": [
+              {
+                "name": "FINES",
+                "children": [
+                  {
+                    "name": "FINES - ECB",
+                    "value": 216337000,
+                    "actualValue": 216337000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "FINES-GENERAL",
+                    "value": 206802932,
+                    "actualValue": 206802932,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "FINES - PVB",
+                    "value": 982630000,
+                    "actualValue": 982630000,
+                    "isNegative": false
+                  }
+                ]
               },
               {
-                "name": "Transfer from General Debt Service Fund",
-                "value": 42038479,
-                "actualValue": 42038479,
-                "isNegative": false
-              },
+                "name": "FORFEITURES",
+                "children": [
+                  {
+                    "name": "FORFEITURES - GENERAL",
+                    "value": 2895000,
+                    "actualValue": 2895000,
+                    "isNegative": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "INTEREST INCOME",
+            "children": [
               {
-                "name": "Transfer from Nonmajor Debt Service Fund",
-                "value": 203542300,
-                "actualValue": 203542300,
-                "isNegative": false
+                "name": "INTEREST INCOME",
+                "children": [
+                  {
+                    "name": "INTEREST-DEBT SERVICE FUND",
+                    "value": 28788000,
+                    "actualValue": 28788000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "INTEREST INCOME - OTHER",
+                    "value": 578435000,
+                    "actualValue": 578435000,
+                    "isNegative": false
+                  },
+                  {
+                    "name": "INTEREST INCOME- SALES TAX",
+                    "value": 21240000,
+                    "actualValue": 21240000,
+                    "isNegative": false
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "DISALLOWANCE CAT. GRANTS",
+            "children": [
+              {
+                "name": "DISALLOW CATEGORICAL GRANTS",
+                "children": [
+                  {
+                    "name": "RESERVE FED & STATE DISALLOWANCES",
+                    "value": 3710889,
+                    "actualValue": 3710889,
+                    "isNegative": false
+                  }
+                ]
               }
             ]
           }
         ]
       }
+    ]
   }
+}
