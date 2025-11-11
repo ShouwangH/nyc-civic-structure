@@ -441,11 +441,11 @@ async function main() {
       order: 'reporting_construction_type DESC',
     });
 
-    // Step 2b: Fetch DOB new construction data (A1/A2/A3 job types)
+    // Step 2b: Fetch DOB new construction data (A1/A2/A3/NB job types)
     console.log('--- STEP 2: Fetch DOB New Construction Data ---\n');
     const dobRecords = await fetchNycOpenData(DOB_API, {
       limit: 50000,
-      where: "(job_type='A1' OR job_type='A2' OR job_type='A3' OR job_type='NB') AND (job_status_descrp='SIGNED OFF' OR job_status_descrp='PERMIT ISSUED - ENTIRE JOB/WORK' OR job_status_descrp='COMPLETED') AND latest_action_date>='2014-01-01'",
+      where: "job_type IN ('A1', 'A2', 'A3', 'NB') AND latest_action_date >= '2014-01-01T00:00:00'",
       order: 'latest_action_date DESC',
     });
 
@@ -453,7 +453,7 @@ async function main() {
     console.log('--- STEP 3: Fetch DOB Demolition Data ---\n');
     const demolitionRecords = await fetchNycOpenData(DOB_API, {
       limit: 50000,
-      where: "job_type='DM' AND (job_status_descrp='SIGNED OFF' OR job_status_descrp='PERMIT ISSUED - ENTIRE JOB/WORK' OR job_status_descrp='COMPLETED') AND latest_action_date>='2014-01-01'",
+      where: "job_type = 'DM' AND latest_action_date >= '2014-01-01T00:00:00'",
       order: 'latest_action_date DESC',
     });
 

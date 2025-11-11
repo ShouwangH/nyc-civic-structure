@@ -41,6 +41,7 @@ export function initDb() {
  * @param {number} options.totalLimit - Maximum total records to fetch
  * @param {string} options.where - SoQL WHERE clause
  * @param {string} options.order - SoQL ORDER clause
+ * @param {object} options.params - Additional query parameters (e.g., fiscal_year, publication_date)
  * @returns {Promise<Array>} All records
  */
 export async function fetchNycOpenData(url, options = {}) {
@@ -49,6 +50,7 @@ export async function fetchNycOpenData(url, options = {}) {
     totalLimit = Infinity,
     where = null,
     order = null,
+    params: customParams = {},
   } = options;
 
   let allRecords = [];
@@ -59,6 +61,7 @@ export async function fetchNycOpenData(url, options = {}) {
     const params = new URLSearchParams({
       $limit: limit.toString(),
       $offset: offset.toString(),
+      ...customParams, // Spread custom parameters
     });
 
     if (where) params.append('$where', where);

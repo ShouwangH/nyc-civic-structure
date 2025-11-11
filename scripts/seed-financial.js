@@ -76,7 +76,10 @@ async function generateBudgetSankey(db) {
 
   const records = await fetchNycOpenData(BUDGET_API, {
     limit: 50000,
-    where: `fiscal_year=${FISCAL_YEAR} AND publication_date='${PUBLICATION_DATE}'`,
+    params: {
+      fiscal_year: FISCAL_YEAR,
+      publication_date: PUBLICATION_DATE,
+    },
   });
 
   console.log('[Budget Sankey] Processing...');
@@ -230,7 +233,9 @@ async function generateRevenueSunburst(db) {
 
   const records = await fetchNycOpenData(REVENUE_API, {
     limit: 50000,
-    where: `fiscal_year=${FISCAL_YEAR}`,
+    params: {
+      fiscal_year: FISCAL_YEAR,
+    },
   });
 
   console.log('[Revenue Sunburst] Processing...');
@@ -293,7 +298,10 @@ async function generateExpenseSunburst(db) {
 
   const records = await fetchNycOpenData(EXPENSE_API, {
     limit: 50000,
-    where: `fiscal_year=${FISCAL_YEAR} AND publication_date='${PUBLICATION_DATE}'`,
+    params: {
+      fiscal_year: FISCAL_YEAR,
+      publication_date: PUBLICATION_DATE,
+    },
   });
 
   console.log('[Expense Sunburst] Processing...');
