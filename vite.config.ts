@@ -9,7 +9,7 @@ export default defineConfig({
       name: 'api-middleware',
       async configureServer(server) {
         // Only import server middleware in development
-        const { createApiMiddleware } = await import('./server/index.js')
+        const { createApiMiddleware } = await import('./server/index.ts')
         server.middlewares.use(createApiMiddleware());
       },
     },
