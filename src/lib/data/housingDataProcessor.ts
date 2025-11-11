@@ -209,12 +209,12 @@ function processDemolitionStats(demolitions: any[], newConstructionBBLs: Set<str
 }
 
 /**
- * Fetch housing data from NYC Open Data APIs - DOB primary, PLUTO fallback, Housing NY overlay
+ * Fetch housing data from server (already processed in database)
  */
-async function fetchFromAPI(): Promise<{ joinedData: HousingBuildingRecord[]; demolitionData: any[] }> {
+async function fetchFromAPI(): Promise<{ buildings: ProcessedBuilding[]; demolitionData: any[] }> {
   console.info('[HousingData] Fetching from server API (with 24-hour caching)...');
 
-  // Fetch from server API
+  // Fetch from server API (data already processed in database)
   const response = await fetch('/api/housing-data');
 
   if (!response.ok) {
@@ -227,173 +227,40 @@ async function fetchFromAPI(): Promise<{ joinedData: HousingBuildingRecord[]; de
     throw new Error(result.message || 'Failed to fetch housing data');
   }
 
-  // Extract data from server response
-  const housingNYData: any[] = result.data.housingNyData;
-  const dobData: any[] = result.data.dobData;
-  const plutoData: any[] = result.data.plutoData;
-  const demolitionData: any[] = result.data.demolitionData;
+  // Extract data from server response (already in ProcessedBuilding format)
+  const buildings: ProcessedBuilding[] = result.data.buildings;
+  const demolitionData: any[] = result.data.demolitions;
 
-  console.info(`[HousingData] Fetched ${housingNYData.length} Housing NY records`);
-  console.info(`[HousingData] Fetched ${dobData.length} DOB records (approved/completed only)`);
-  if (dobData.length > 0) {
-    console.info('[HousingData] Sample DOB record:', dobData[0]);
-    console.info('[HousingData] DOB fields:', Object.keys(dobData[0]));
-  }
-  console.info(`[HousingData] Fetched ${plutoData.length} PLUTO records (fallback)`)
-  console.info(`[HousingData] Fetched ${demolitionData.length} demolition records`)
+  console.info(`[HousingData] Fetched ${buildings.length} buildings (already processed by server)`);
+  console.info(`[HousingData] Fetched ${demolitionData.length} demolition records`);
 
-  // Build BBL index from Housing NY data for O(1) lookup
-  const housingByBBL = new Map<string, any>();
-  for (const record of housingNYData) {
-    const bbl = normalizeBBL(record.bbl);
-    if (bbl) {
-      housingByBBL.set(bbl, record);
-    }
-  }
-  console.info(`[HousingData] Indexed ${housingByBBL.size} Housing NY records by BBL`);
-
-  // Group DOB records by BBL to aggregate multiple jobs
-  const dobByBBL = new Map<string, any[]>();
-  for (const dobRecord of dobData) {
-    const bbl = constructBBL(dobRecord.borough, dobRecord.block, dobRecord.lot);
-    if (!bbl) continue;
-
-    if (!dobByBBL.has(bbl)) {
-      dobByBBL.set(bbl, []);
-    }
-    dobByBBL.get(bbl)!.push(dobRecord);
-  }
-
-  // Track which BBLs are covered by DOB
-  const dobBBLs = new Set<string>();
-  const joinedData: any[] = [];
-  let dobAffordableMatches = 0;
-  let dobProcessed = 0;
-  let dobSkipped = 0;
-
-  // Process each BBL (aggregating all jobs)
-  for (const [bbl, jobs] of dobByBBL.entries()) {
-    const housingRecord = housingByBBL.get(bbl);
-
-    // Aggregate units from all jobs
-    let newConstructionUnits = 0; // From NB jobs
-    let renovationUnits = 0; // From A1/A2/A3 jobs
-    let latestSignoffDate: string | null = null;
-    let latestJob: any = null;
-
-    for (const job of jobs) {
-      const jobType = (job.job_type || '').toUpperCase();
-      const existingUnits = parseInt(job.existing_dwelling_units || '0', 10);
-      const proposedUnits = parseInt(job.proposed_dwelling_units || '0', 10);
-      const netUnits = proposedUnits - existingUnits;
-
-      // Track latest job (for metadata)
-      const signoffDate = job.signoff_date || job.latest_action_date;
-      if (!latestSignoffDate || (signoffDate && signoffDate > latestSignoffDate)) {
-        latestSignoffDate = signoffDate;
-        latestJob = job;
-      }
-
-      // Aggregate units by job type
-      if (jobType === 'NB') {
-        // New building: add net new units
-        newConstructionUnits += Math.max(0, netUnits);
-      } else if (['A1', 'A2', 'A3'].includes(jobType)) {
-        // Renovation: add net change (can be 0 or positive)
-        renovationUnits += Math.max(0, netUnits);
-      }
-    }
-
-    // Determine total units and classification
-    let unitsForVisualization;
-    let isRenovation;
-
-    if (housingRecord) {
-      // Has affordable housing data - use that for units
-      unitsForVisualization = parseInt(
-        housingRecord.all_counted_units || housingRecord.total_units || '0',
-        10
-      );
-      // Classify as renovation if renovation units >= new construction units
-      isRenovation = renovationUnits >= newConstructionUnits;
-    } else {
-      // No affordable data - use aggregated DOB units
-      const totalUnits = newConstructionUnits + renovationUnits;
-      unitsForVisualization = totalUnits;
-      // Classify as renovation if renovation contributed more units
-      isRenovation = renovationUnits > newConstructionUnits;
-    }
-
-    // Include if we have units OR any renovation work was done
-    const hasRenovationWork = jobs.some(j => ['A1', 'A2', 'A3'].includes((j.job_type || '').toUpperCase()));
-    const shouldInclude = unitsForVisualization > 0 || hasRenovationWork;
-
-    if (!shouldInclude) {
-      dobSkipped++;
-      continue;
-    }
-
-    dobBBLs.add(bbl);
-    dobProcessed++;
-
-    if (housingRecord) {
-      dobAffordableMatches++;
-    }
-
-    // Use latest job for metadata
-    joinedData.push({
-      ...latestJob,
-      _netUnits: unitsForVisualization,
-      _affordableData: housingRecord || null,
-      _hasAffordable: Boolean(housingRecord),
-      _isRenovation: isRenovation,
-      _newConstructionUnits: newConstructionUnits,
-      _renovationUnits: renovationUnits,
-      _dataSource: 'dob',
-    });
-  }
-
-  console.info(`[HousingData] DOB: ${dobProcessed} valid (net+ units + renovations), ${dobSkipped} skipped (invalid)`);
-  console.info(`[HousingData] DOB affordable matches: ${dobAffordableMatches}`);
-
-  // Add PLUTO records as fallback (only for BBLs not in DOB)
-  let plutoFallback = 0;
-  for (const plutoRecord of plutoData) {
-    const bbl = normalizeBBL(plutoRecord.bbl);
-    if (!bbl || dobBBLs.has(bbl)) continue; // Skip if in DOB
-
-    plutoFallback++;
-    const housingRecord = housingByBBL.get(bbl);
-
-    joinedData.push({
-      ...plutoRecord,
-      _affordableData: housingRecord || null,
-      _hasAffordable: Boolean(housingRecord),
-      _dataSource: 'pluto',
-    });
-  }
-
-  console.info(`[HousingData] PLUTO fallback: ${plutoFallback} records (BBLs not in DOB)`);
-  console.info(`[HousingData] Total joined records: ${joinedData.length}`);
-
-  return { joinedData, demolitionData };
+  return { buildings, demolitionData };
 }
 
 /**
  * Get housing data (from cache or API), returns processed data by year and demolition stats
  */
 export async function getHousingData(): Promise<{ dataByYear: HousingDataByYear; demolitionStats: DemolitionStats }> {
-  // Fetch from API and process
-  const { joinedData, demolitionData } = await fetchFromAPI();
-  const processed = processHousingData(joinedData);
+  // Fetch from API (data already processed by server)
+  const { buildings, demolitionData } = await fetchFromAPI();
 
-  // Extract BBLs from processed buildings for demolition matching
-  const newConstructionBBLs = new Set<string>();
-  for (const buildings of processed.values()) {
-    for (const building of buildings) {
-      const bbl = building.id.split('-')[0]; // Extract BBL from building ID (format: BBL-jobNumber)
-      if (bbl) newConstructionBBLs.add(bbl);
+  // Organize buildings by year
+  const dataByYear: HousingDataByYear = new Map();
+  for (const building of buildings) {
+    const year = building.completionYear;
+    if (!dataByYear.has(year)) {
+      dataByYear.set(year, []);
     }
+    dataByYear.get(year)!.push(building);
+  }
+
+  console.info(`[HousingData] Organized ${buildings.length} buildings across ${dataByYear.size} years`);
+
+  // Extract BBLs from buildings for demolition matching
+  const newConstructionBBLs = new Set<string>();
+  for (const building of buildings) {
+    const bbl = building.id.split('-')[0]; // Extract BBL from building ID
+    if (bbl) newConstructionBBLs.add(bbl);
   }
 
   // Process demolition statistics from server data
@@ -407,9 +274,9 @@ export async function getHousingData(): Promise<{ dataByYear: HousingDataByYear;
   });
 
   // Save processed data to cache
-  saveProcessedToCache(processed);
+  saveProcessedToCache(dataByYear);
 
-  return { dataByYear: processed, demolitionStats };
+  return { dataByYear, demolitionStats };
 }
 
 /**

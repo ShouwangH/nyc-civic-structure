@@ -2,7 +2,7 @@
 // ABOUTME: GET list, GET by ID, POST create, PUT update overlays
 
 import { db } from '../lib/db';
-import { overlays } from '../../api/admin/_drizzle/schema';
+import { overlays } from '../lib/schema';
 import { verifyAuth } from '../lib/auth';
 import { eq, and } from 'drizzle-orm';
 import { registerRoute } from '../api-middleware';

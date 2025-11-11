@@ -1,18 +1,16 @@
-// ABOUTME: API endpoint for fetching and caching NYC capital budget data
-// ABOUTME: Fetches from CPDB Polygons dataset with server-side caching
+// ABOUTME: API endpoint for NYC capital budget data - serves from database with optional cache
+// ABOUTME: Replaces NYC Open Data API fetching with database queries for faster response
 
 import { registerRoute } from '../api-middleware';
+import { db } from '../lib/db';
+import { capitalProjects } from '../lib/schema';
 
-// Cache configuration
+// Cache configuration (in-memory)
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 let cachedData: {
   timestamp: number;
   projects: any[];
 } | null = null;
-
-// NYC Open Data API configuration
-const CPDB_API = 'https://data.cityofnewyork.us/resource/9jkp-n57r.geojson';
-const CPDB_LIMIT = 10000;
 
 /**
  * Check if cached data is still valid
@@ -24,65 +22,40 @@ function isCacheValid(): boolean {
 }
 
 /**
- * Fetch and process capital budget data
+ * Fetch capital budget data from database
  */
-async function fetchAndProcessCapitalBudget() {
-  console.log('[Capital Budget API] Fetching from NYC Open Data...');
+async function fetchCapitalBudget() {
+  console.log('[Capital Budget API] Fetching from database...');
 
   try {
-    // Fetch from CPDB Polygons dataset
-    // Filter to active/future projects with allocated budgets
-    const response = await fetch(
-      `${CPDB_API}?$where=maxdate>='2025-01-01' AND allocate_total>0&$limit=${CPDB_LIMIT}`
-    );
+    // Fetch all projects (already processed during seed)
+    const projects = await db
+      .select()
+      .from(capitalProjects)
+      .execute();
 
-    if (!response.ok) {
-      throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
-    }
+    console.log(`[Capital Budget API] Fetched ${projects.length} projects`);
 
-    const data = await response.json() as any;
-
-    // Transform features to add derived properties
-    const features = data.features.map((feature: any) => {
-      // Extract fiscal year from mindate
-      const fiscalYear = feature.properties.mindate
-        ? parseInt(feature.properties.mindate.substring(0, 4), 10)
-        : undefined;
-
-      // Extract completion year from maxdate
-      const completionYear = feature.properties.maxdate
-        ? parseInt(feature.properties.maxdate.substring(0, 4), 10)
-        : undefined;
-
-      // Data correction: Fix erroneous 100 billion value (should be 100 million)
-      // Note: Revised from NYC Open Data API data quality issue
-      let allocateTotal = parseFloat(feature.properties.allocate_total || '0');
-      if (allocateTotal >= 99e9 && allocateTotal <= 101e9) {
-        allocateTotal = 100e6; // Correct to 100 million
-      }
-
-      return {
-        type: 'Feature',
-        geometry: feature.geometry,
-        properties: {
-          maprojid: feature.properties.maprojid || 'Unknown',
-          description: feature.properties.description || 'Unnamed Project',
-          magencyname: feature.properties.magencyname || 'Unknown Agency',
-          magencyacro: feature.properties.magencyacro || 'N/A',
-          typecategory: feature.properties.typecategory || 'Unknown',
-          mindate: feature.properties.mindate || '',
-          maxdate: feature.properties.maxdate || '',
-          allocate_total: allocateTotal,
-          commit_total: parseFloat(feature.properties.commit_total || '0'),
-          spent_total: parseFloat(feature.properties.spent_total || '0'),
-          plannedcommit_total: parseFloat(feature.properties.plannedcommit_total || '0'),
-          fiscalYear,
-          completionYear,
-        },
-      };
-    });
-
-    console.log(`[Capital Budget API] Processed ${features.length} projects`);
+    // Transform to GeoJSON features format for frontend compatibility
+    const features = projects.map(project => ({
+      type: 'Feature',
+      geometry: project.geometry,
+      properties: {
+        maprojid: project.maprojid,
+        description: project.description,
+        magencyname: project.managingAgency,
+        magencyacro: project.managingAgencyAcronym,
+        typecategory: project.typeCategory,
+        mindate: project.minDate,
+        maxdate: project.maxDate,
+        allocate_total: project.allocateTotal,
+        commit_total: project.commitTotal,
+        spent_total: project.spentTotal,
+        plannedcommit_total: project.plannedCommitTotal,
+        fiscalYear: project.fiscalYear,
+        completionYear: project.completionYear,
+      },
+    }));
 
     // Store in cache
     cachedData = {
@@ -99,7 +72,7 @@ async function fetchAndProcessCapitalBudget() {
 
 /**
  * GET /api/capital-budget
- * Returns capital budget projects with server-side caching
+ * Returns capital budget projects from database with in-memory caching
  */
 async function getCapitalBudget(request: Request) {
   try {
@@ -117,8 +90,8 @@ async function getCapitalBudget(request: Request) {
       });
     }
 
-    // Fetch fresh data
-    const projects = await fetchAndProcessCapitalBudget();
+    // Fetch fresh data from database
+    const projects = await fetchCapitalBudget();
 
     return Response.json({
       success: true,

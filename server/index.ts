@@ -5,5 +5,6 @@ import './routes/overlays';
 import './routes/data';
 import './routes/housing-data';
 import './routes/capital-budget';
+import './routes/financial-data';
 
 export { createApiMiddleware } from './api-middleware';

@@ -2,7 +2,7 @@
 // ABOUTME: Serves nodes, edges, subviews by government scope (city, state, federal)
 
 import { db } from '../lib/db';
-import { nodes, edges, processes, scopes } from '../../api/admin/_drizzle/schema';
+import { nodes, edges, processes, scopes } from '../lib/schema';
 import { eq } from 'drizzle-orm';
 import { registerRoute } from '../api-middleware';
 

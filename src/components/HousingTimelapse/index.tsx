@@ -1,7 +1,7 @@
 // ABOUTME: Main housing timelapse overlay component
 // ABOUTME: Combines Map3D, TimeSlider, and Legend for complete visualization experience
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Map3D } from './Map3D';
 import { TimeSlider } from './TimeSlider';
 import { Legend } from './Legend';
@@ -19,12 +19,8 @@ export function HousingTimelapse({ onClose }: HousingTimelapseProps) {
   const [currentYear, setCurrentYear] = useState(MIN_YEAR);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackSpeed, setPlaybackSpeed] = useState(1);
-  const animationFrameRef = useRef<number | null>(null);
-  const lastFrameTimeRef = useRef<number>(0);
-  const currentYearFloatRef = useRef<number>(MIN_YEAR);
 
-  // Load housing data - use Math.floor to get integer year for filtering
-  const displayYear = Math.floor(currentYear);
+  // Load housing data
   const {
     buildings,
     isLoading,
@@ -33,47 +29,29 @@ export function HousingTimelapse({ onClose }: HousingTimelapseProps) {
     totalUnits,
     affordableUnits,
     netNewUnits,
-  } = useHousingData(displayYear);
+  } = useHousingData(currentYear);
 
-  // Handle smooth playback using requestAnimationFrame
+  // Handle playback using interval (deck.gl transitions handle smooth animation)
   useEffect(() => {
     if (isPlaying) {
-      lastFrameTimeRef.current = performance.now();
-      currentYearFloatRef.current = currentYear;
+      // Use interval to step through years
+      // deck.gl transitions will handle smooth elevation changes
+      const intervalMs = 1000 / playbackSpeed; // e.g., 2x speed = 500ms per year
 
-      const animate = (timestamp: number) => {
-        const deltaTime = timestamp - lastFrameTimeRef.current;
-        lastFrameTimeRef.current = timestamp;
+      const intervalId = setInterval(() => {
+        setCurrentYear((prevYear) => {
+          const nextYear = prevYear + 1;
+          if (nextYear >= MAX_YEAR) {
+            setIsPlaying(false);
+            return MAX_YEAR;
+          }
+          return nextYear;
+        });
+      }, intervalMs);
 
-        // Increment based on playbackSpeed (1x = 1 year per second)
-        // deltaTime is in milliseconds, so divide by 1000
-        const increment = (deltaTime / 1000) * playbackSpeed;
-        currentYearFloatRef.current += increment;
-
-        if (currentYearFloatRef.current >= MAX_YEAR) {
-          currentYearFloatRef.current = MAX_YEAR;
-          setCurrentYear(MAX_YEAR);
-          setIsPlaying(false);
-        } else {
-          setCurrentYear(currentYearFloatRef.current);
-          animationFrameRef.current = requestAnimationFrame(animate);
-        }
-      };
-
-      animationFrameRef.current = requestAnimationFrame(animate);
-    } else {
-      if (animationFrameRef.current !== null) {
-        cancelAnimationFrame(animationFrameRef.current);
-        animationFrameRef.current = null;
-      }
+      return () => clearInterval(intervalId);
     }
-
-    return () => {
-      if (animationFrameRef.current !== null) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-    };
-  }, [isPlaying, playbackSpeed, currentYear]);
+  }, [isPlaying, playbackSpeed]);
 
   const handlePlayPause = () => {
     setIsPlaying(!isPlaying);
@@ -81,7 +59,6 @@ export function HousingTimelapse({ onClose }: HousingTimelapseProps) {
 
   const handleYearChange = (year: number) => {
     setCurrentYear(year);
-    currentYearFloatRef.current = year;
     setIsPlaying(false);
   };
 
@@ -172,14 +149,14 @@ export function HousingTimelapse({ onClose }: HousingTimelapseProps) {
             <>
               <Map3D
                 buildings={buildings}
-                currentYear={displayYear}
+                currentYear={currentYear}
                 zoningColors={zoningColors}
                 width={overlayWidth}
                 height={overlayHeight - 200} // Account for header and slider
               />
               <Legend
                 zoningColors={zoningColors}
-                currentYear={displayYear}
+                currentYear={currentYear}
                 totalBuildings={totalBuildings}
                 totalUnits={totalUnits}
                 affordableUnits={affordableUnits}
