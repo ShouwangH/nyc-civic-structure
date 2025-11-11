@@ -146,7 +146,7 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
   {
     selector: 'node.hovered',
     style: {
-      'border-color': '#38bdf8',
+      'border-color': '#6b7280',
       'border-width': '3px',
       'background-opacity': 0.9,
     },
