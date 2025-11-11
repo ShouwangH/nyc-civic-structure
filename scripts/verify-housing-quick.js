@@ -76,6 +76,30 @@ async function main() {
 
     const byBoroughResult = getRows(byBorough);
 
+    // By job type
+    const byJobType = await db.execute(sql`
+      SELECT
+        job_type,
+        COUNT(*) as buildings,
+        SUM(total_units) as units,
+        SUM(affordable_units) as affordable
+      FROM housing_buildings
+      GROUP BY job_type
+      ORDER BY units DESC NULLS LAST
+    `);
+
+    const byJobTypeResult = getRows(byJobType);
+
+    console.log('\n=== BY JOB TYPE ===');
+    console.log('Job Type       | Buildings | Total Units | Affordable Units');
+    console.log('---------------|-----------|-------------|------------------');
+    for (const row of byJobTypeResult) {
+      console.log(
+        `${(row.job_type || 'Unknown').padEnd(14)} | ${String(row.buildings).padStart(9)} | ` +
+        `${formatNumber(row.units || 0).padStart(11)} | ${formatNumber(row.affordable || 0).padStart(16)}`
+      );
+    }
+
     console.log('\n=== BY BOROUGH ===');
     console.log('Borough        | Buildings | Total Units');
     console.log('---------------|-----------|------------');
@@ -100,6 +124,32 @@ async function main() {
     console.log('Missing Coordinates:', qualityResult[0]?.missing_coords || 0);
     console.log('Zero Units:', qualityResult[0]?.zero_units || 0);
     console.log('Missing BBL:', qualityResult[0]?.missing_bbl || 0);
+
+    // Check for outliers (buildings with unusually high unit counts)
+    const outliers = await db.execute(sql`
+      SELECT
+        job_number,
+        name,
+        job_type,
+        total_units,
+        completion_year
+      FROM housing_buildings
+      WHERE total_units > 500
+      ORDER BY total_units DESC
+      LIMIT 10
+    `);
+
+    const outliersResult = getRows(outliers);
+
+    if (outliersResult.length > 0) {
+      console.log('\n=== OUTLIERS (Units > 500) ===');
+      console.log('Top 10 largest projects:');
+      for (const row of outliersResult) {
+        console.log(
+          `  ${row.total_units} units - ${row.name} (${row.job_type}, ${row.completion_year})`
+        );
+      }
+    }
 
     console.log('\n===================================\n');
 
