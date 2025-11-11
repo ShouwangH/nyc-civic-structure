@@ -304,6 +304,32 @@ function processDOB(records) {
 }
 
 /**
+ * Deduplicate buildings by ID (handles duplicate records from NYC Open Data)
+ */
+function deduplicateById(buildings, source) {
+  const seen = new Set();
+  const unique = [];
+  const duplicates = [];
+
+  for (const building of buildings) {
+    if (seen.has(building.id)) {
+      duplicates.push(building.id);
+    } else {
+      seen.add(building.id);
+      unique.push(building);
+    }
+  }
+
+  if (duplicates.length > 0) {
+    console.log(`[Dedupe] Found ${formatNumber(duplicates.length)} duplicate IDs in ${source}`);
+    console.log(`[Dedupe] Sample duplicates:`, duplicates.slice(0, 5));
+    console.log('');
+  }
+
+  return unique;
+}
+
+/**
  * Merge Housing NY and DOB buildings, preferring Housing NY for duplicates (by BBL)
  */
 function mergeBuildings(housingNyBuildings, dobBuildings) {
@@ -433,11 +459,13 @@ async function main() {
 
     // Step 4: Process Housing NY buildings
     console.log('--- STEP 4: Process Housing NY Buildings ---\n');
-    const housingNyBuildings = processHousingNY(housingNyRecords);
+    const housingNyProcessed = processHousingNY(housingNyRecords);
+    const housingNyBuildings = deduplicateById(housingNyProcessed, 'Housing NY');
 
     // Step 5: Process DOB new construction
     console.log('--- STEP 5: Process DOB New Construction ---\n');
-    const dobBuildings = processDOB(dobRecords);
+    const dobProcessed = processDOB(dobRecords);
+    const dobBuildings = deduplicateById(dobProcessed, 'DOB');
 
     // Step 6: Merge and deduplicate buildings
     console.log('--- STEP 6: Merge Building Data ---\n');
@@ -445,7 +473,8 @@ async function main() {
 
     // Step 7: Process demolitions
     console.log('--- STEP 7: Process Demolitions ---\n');
-    const demolitions = processDemolitions(demolitionRecords);
+    const demolitionsProcessed = processDemolitions(demolitionRecords);
+    const demolitions = deduplicateById(demolitionsProcessed, 'Demolitions');
 
     // Step 8: Match demolitions with new construction
     console.log('--- STEP 8: Match Demolitions with New Construction ---\n');
