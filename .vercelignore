@@ -1,1 +1,10 @@
-api/
+# Exclude admin API endpoints but keep schema
+api/admin/nodes/
+api/admin/processes/
+api/admin/scopes/
+api/admin/_lib/auth.ts
+api/admin/_lib/validation.ts
+api/admin/_drizzle/export.ts
+api/admin/_drizzle/seed.ts
+api/admin/_drizzle/migrations/
+api/admin/drizzle.config.ts
