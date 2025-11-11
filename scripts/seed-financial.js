@@ -84,73 +84,116 @@ async function generateBudgetSankey(db) {
 
   console.log('[Budget Sankey] Processing...');
 
-  // Aggregate by funding source → category → agency
-  const aggregates = {};
+  // Aggregate by agency and funding source
+  const agencyFunding = new Map();
+  const fundingTotals = {
+    'City Funds': 0,
+    'Federal Funds': 0,
+    'State Funds': 0,
+  };
 
+  // Process each record
   for (const record of records) {
-    const fundingSource = record.funding_source_name || 'Other Funds';
-    const agencyName = record.agency_name || 'Unknown';
-    const category = categorizeAgency(agencyName);
-    const amount = parseFloat(record.amount || 0);
+    const agency = record.agency_name || 'Unknown';
+    const category = categorizeAgency(agency);
 
-    const key = `${fundingSource}|${category}|${agencyName}`;
+    // Get funding amounts (use correct field names from NYC Open Data)
+    const funding = {
+      cityFunds: parseFloat(record.city_funds_current_budget_amount || 0),
+      federalFunds: parseFloat(record.federal_funds_current_budget_amount || 0),
+      stateFunds: parseFloat(record.state_funds_current_budget_amount || 0),
+    };
 
-    if (!aggregates[key]) {
-      aggregates[key] = { fundingSource, category, agencyName, amount: 0 };
+    const total = funding.cityFunds + funding.federalFunds + funding.stateFunds;
+    if (total === 0) continue;
+
+    // Aggregate by agency
+    if (!agencyFunding.has(agency)) {
+      agencyFunding.set(agency, { ...funding, category });
+    } else {
+      const existing = agencyFunding.get(agency);
+      existing.cityFunds += funding.cityFunds;
+      existing.federalFunds += funding.federalFunds;
+      existing.stateFunds += funding.stateFunds;
     }
 
-    aggregates[key].amount += amount;
+    // Update totals
+    fundingTotals['City Funds'] += funding.cityFunds;
+    fundingTotals['Federal Funds'] += funding.federalFunds;
+    fundingTotals['State Funds'] += funding.stateFunds;
   }
 
-  // Build nodes and links
-  const nodes = new Map();
+  // Build Sankey structure
+  const nodes = [];
   const links = [];
 
-  function getOrCreateNode(id, label, level, type) {
-    if (!nodes.has(id)) {
-      nodes.set(id, { id, label, level, type });
+  // Funding source nodes (level 0)
+  const fundingSources = [
+    { id: 'City Funds', label: 'City Funds', key: 'cityFunds' },
+    { id: 'Federal Funds', label: 'Federal Funds', key: 'federalFunds' },
+    { id: 'State Funds', label: 'State Funds', key: 'stateFunds' },
+  ];
+
+  for (const source of fundingSources) {
+    if (fundingTotals[source.id] > 0) {
+      nodes.push({ id: `funding-${source.id}`, label: source.label, level: 0, type: 'funding-source' });
     }
-    return id;
   }
 
-  for (const agg of Object.values(aggregates)) {
-    if (agg.amount < 1000000) continue; // Filter small amounts (< $1M)
+  // Aggregate by category
+  const categoryFunding = new Map();
+  for (const [agency, data] of agencyFunding.entries()) {
+    const category = data.category;
+    if (!categoryFunding.has(category)) {
+      categoryFunding.set(category, {
+        cityFunds: 0,
+        federalFunds: 0,
+        stateFunds: 0,
+      });
+    }
+    const catData = categoryFunding.get(category);
+    catData.cityFunds += data.cityFunds;
+    catData.federalFunds += data.federalFunds;
+    catData.stateFunds += data.stateFunds;
+  }
 
-    const sourceId = getOrCreateNode(
-      `funding-${agg.fundingSource}`,
-      agg.fundingSource,
-      0,
-      'funding-source'
-    );
+  // Category nodes (level 1)
+  const activeCategories = new Set();
+  for (const [category, funding] of categoryFunding.entries()) {
+    const total = funding.cityFunds + funding.federalFunds + funding.stateFunds;
+    if (total > 10000000) { // Only include if > $10M
+      nodes.push({ id: `category-${category}`, label: category, level: 1, type: 'category' });
+      activeCategories.add(category);
 
-    const categoryId = getOrCreateNode(
-      `category-${agg.category}`,
-      agg.category,
-      1,
-      'category'
-    );
+      // Links from funding sources to categories
+      for (const source of fundingSources) {
+        const amount = funding[source.key];
+        if (amount > 1000000) { // Only if > $1M
+          links.push({
+            source: `funding-${source.id}`,
+            target: `category-${category}`,
+            value: amount,
+          });
+        }
+      }
+    }
+  }
 
-    const agencyId = getOrCreateNode(
-      `agency-${agg.agencyName}`,
-      agg.agencyName,
-      2,
-      'agency'
-    );
+  // Agency nodes (level 2) and links from categories to agencies
+  for (const [agency, data] of agencyFunding.entries()) {
+    const category = data.category;
+    if (!activeCategories.has(category)) continue;
 
-    // Add links
-    const sourceToCat = `${sourceId}->${categoryId}`;
-    const catToAgency = `${categoryId}->${agencyId}`;
+    const agencyTotal = data.cityFunds + data.federalFunds + data.stateFunds;
+    if (agencyTotal < 10000000) continue; // Only include if > $10M
 
+    nodes.push({ id: `agency-${agency}`, label: agency, level: 2, type: 'agency' });
+
+    // Link from category to agency
     links.push({
-      source: sourceId,
-      target: categoryId,
-      value: agg.amount,
-    });
-
-    links.push({
-      source: categoryId,
-      target: agencyId,
-      value: agg.amount,
+      source: `category-${category}`,
+      target: `agency-${agency}`,
+      value: agencyTotal,
     });
   }
 
@@ -161,18 +204,18 @@ async function generateBudgetSankey(db) {
     fiscalYear: FISCAL_YEAR,
     dataType: 'budget',
     units: 'USD',
-    nodes: Array.from(nodes.values()),
+    nodes,
     links,
     metadata: {
       publicationDate: PUBLICATION_DATE,
-      totalBudget: links.reduce((sum, l) => sum + l.value, 0),
+      totalBudget: fundingTotals['City Funds'] + fundingTotals['Federal Funds'] + fundingTotals['State Funds'],
     },
     generatedAt: new Date(),
   };
 
   await db.insert(sankeyDatasets).values(dataset);
 
-  console.log(`[Budget Sankey] Generated: ${nodes.size} nodes, ${links.length} links\n`);
+  console.log(`[Budget Sankey] Generated: ${nodes.length} nodes, ${links.length} links\n`);
 }
 
 /**
@@ -245,9 +288,9 @@ async function generateRevenueSunburst(db) {
   const categories = new Map();
 
   for (const record of records) {
-    const majorCat = record.revenue_category || 'Other';
+    const majorCat = record.revenue_category_name || 'Other';
     const minorCat = record.revenue_source_name || 'Unspecified';
-    const amount = parseFloat(record.amount || 0);
+    const amount = parseFloat(record.current_modified_budget_amount || record.adopted_budget_amount || 0);
 
     if (amount < 100000) continue; // Filter small amounts
 
@@ -268,7 +311,7 @@ async function generateRevenueSunburst(db) {
 
   hierarchy.children = Array.from(categories.values());
 
-  const totalRevenue = records.reduce((sum, r) => sum + parseFloat(r.amount || 0), 0);
+  const totalRevenue = records.reduce((sum, r) => sum + parseFloat(r.current_modified_budget_amount || r.adopted_budget_amount || 0), 0);
 
   const dataset = {
     id: `revenue-fy${FISCAL_YEAR}`,
@@ -313,7 +356,7 @@ async function generateExpenseSunburst(db) {
   for (const record of records) {
     const agencyName = record.agency_name || 'Unknown';
     const category = categorizeAgency(agencyName);
-    const amount = parseFloat(record.amount || 0);
+    const amount = parseFloat(record.current_modified_budget_amount || record.adopted_budget_amount || 0);
 
     if (amount < 100000) continue; // Filter small amounts
 
@@ -334,7 +377,7 @@ async function generateExpenseSunburst(db) {
 
   hierarchy.children = Array.from(categories.values());
 
-  const totalExpense = records.reduce((sum, r) => sum + parseFloat(r.amount || 0), 0);
+  const totalExpense = records.reduce((sum, r) => sum + parseFloat(r.current_modified_budget_amount || r.adopted_budget_amount || 0), 0);
 
   const dataset = {
     id: `expense-fy${FISCAL_YEAR}`,
