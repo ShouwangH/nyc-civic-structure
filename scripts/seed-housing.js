@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-// ABOUTME: Seed script for housing data - fetches from NYC Open Data and stores in database
-// ABOUTME: Replicates processing from housingDataProcessor.ts but at seed time
+// ABOUTME: Seed script for housing data using DCP Housing Database (ArcGIS) as primary source
+// ABOUTME: Overlays Housing NY data for affordable unit details
 
 import { housingBuildings, housingDemolitions } from '../server/lib/schema.ts';
 import {
@@ -13,33 +13,19 @@ import {
   timer,
   formatNumber,
 } from './lib/seed-utils.js';
+import { fetchArcGISFeatures } from './lib/arcgis-utils.js';
 
-// NYC Open Data API endpoints
+// Data sources
+const DCP_HOUSING_DATABASE_URL = 'https://services5.arcgis.com/GfwWNkhOj9bNBqoJ/ArcGIS/rest/services/Housing_Database/FeatureServer/0';
 const HOUSING_NY_API = 'https://data.cityofnewyork.us/resource/hg8x-zxpr.json';
-const DOB_API = 'https://data.cityofnewyork.us/resource/ic3t-wcy2.json';
-const PLUTO_API = 'https://data.cityofnewyork.us/resource/64uk-42ks.json';
 
-// Borough codes for BBL construction
-const BOROUGH_MAP = {
-  'MANHATTAN': '1', 'MN': '1',
-  'BRONX': '2', 'BX': '2',
-  'BROOKLYN': '3', 'BK': '3',
-  'QUEENS': '4', 'QN': '4',
-  'STATEN ISLAND': '5', 'SI': '5',
-};
-
-// Building classification lookup (DOB Job Type)
-const BUILDING_CLASS_MAP = {
-  'A1': 'one-two-family',      // 1-2 family dwelling
-  'A2': 'one-two-family',      // Multiple dwellings (2-family)
-  'A3': 'multifamily-walkup',  // Multiple dwellings (walkup)
-  'A4': 'multifamily-elevator', // Multiple dwellings (elevator)
-  'A5': 'multifamily-elevator', // Multiple dwellings (elevator)
-  'B1': 'mixed-use',           // Storage/warehouse
-  'B2': 'mixed-use',           // Office/commercial
-  'B3': 'mixed-use',           // Mixed use
-  'C1': 'mixed-use',           // Commercial
-  'NB': 'unknown',             // New building (type TBD from units)
+// Borough code mapping (DCP uses numeric codes)
+const BOROUGH_NAMES = {
+  '1': 'Manhattan',
+  '2': 'Bronx',
+  '3': 'Brooklyn',
+  '4': 'Queens',
+  '5': 'Staten Island',
 };
 
 /**
@@ -48,72 +34,187 @@ const BUILDING_CLASS_MAP = {
 function normalizeBBL(bbl) {
   if (!bbl) return null;
 
-  // Handle PLUTO format with decimals
-  const parts = String(bbl).split('.');
-  const integerPart = parts[0];
-
   // Remove all non-numeric characters
-  const numeric = integerPart.replace(/[^0-9]/g, '');
+  const numeric = String(bbl).replace(/[^0-9]/g, '');
 
   // BBL should be 10 digits: 1 (borough) + 5 (block) + 4 (lot)
   if (numeric.length === 10) return numeric;
-  if (numeric.length === 9) return '0' + numeric;
+  if (numeric.length === 9) return '0' + numeric; // Pad if missing leading zero
 
   return null;
 }
 
 /**
- * Construct BBL from borough, block, lot
+ * Classify building type from total units, affordable status, and job type
  */
-function constructBBL(borough, block, lot) {
-  if (!borough || !block || !lot) return null;
-
-  const boroughCode = BOROUGH_MAP[borough.toUpperCase()] || borough;
-
-  // Pad block to 5 digits, lot to 4 digits
-  const blockPadded = String(parseInt(block, 10) || 0).padStart(5, '0');
-  const lotPadded = String(parseInt(lot, 10) || 0).padStart(4, '0');
-
-  return boroughCode + blockPadded + lotPadded;
-}
-
-/**
- * Classify building type from total units and building class
- */
-function classifyBuildingType(totalUnits, affordableUnits, buildingClass, constructionType) {
-  // If affordable housing project, classify as affordable
-  if (affordableUnits > 0 && constructionType) {
+function classifyBuildingType(totalUnits, affordableUnits, jobType, hasAffordableOverlay) {
+  // If has affordable housing overlay, classify as affordable
+  if (hasAffordableOverlay && affordableUnits > 0) {
     return 'affordable';
   }
 
   // Renovation/alteration
-  if (constructionType && constructionType.toLowerCase().includes('preservation')) {
+  if (jobType === 'Alteration') {
     return 'renovation';
   }
 
-  // Physical building classification
+  // Physical building classification based on unit count
   if (totalUnits >= 50) return 'multifamily-elevator';
   if (totalUnits >= 10) return 'multifamily-walkup';
   if (totalUnits >= 3) return 'multifamily-walkup';
   if (totalUnits <= 2) return 'one-two-family';
 
-  return 'unknown';
+  return 'market-rate'; // Default for new buildings without affordable overlay
 }
 
 /**
- * Process Housing NY records
+ * Process DCP Housing Database records (new construction and alterations)
  */
-function processHousingNY(records) {
-  console.log('[Process] Processing Housing NY records...');
+function processDCPHousing(records) {
+  console.log('[Process] Processing DCP Housing Database records...');
 
   const buildings = [];
+  let skipped = 0;
 
   for (const record of records) {
-    const lat = parseFloat(record.latitude);
-    const lon = parseFloat(record.longitude);
+    // Parse coordinates
+    const lat = parseFloat(record.Latitude);
+    const lon = parseFloat(record.Longitude);
 
     // Skip if invalid coordinates
-    if (isNaN(lat) || isNaN(lon)) continue;
+    if (isNaN(lat) || isNaN(lon) || lat === 0 || lon === 0) {
+      skipped++;
+      continue;
+    }
+
+    // Parse completion year
+    const completionYear = parseInt(record.CompltYear, 10);
+    if (isNaN(completionYear) || completionYear < 2014 || completionYear > 2025) {
+      skipped++;
+      continue;
+    }
+
+    // Parse unit counts (use ClassANet as primary, fallback to Units_CO)
+    const classANet = parseFloat(record.ClassANet) || 0;
+    const unitsCO = parseFloat(record.Units_CO) || 0;
+    const totalUnits = Math.round(unitsCO || classANet);
+
+    // Skip if no units (or negative for demolitions)
+    if (totalUnits <= 0) {
+      skipped++;
+      continue;
+    }
+
+    const jobNumber = record.Job_Number || `DCP-${record.OBJECTID}`;
+    const bbl = normalizeBBL(record.BBL);
+    const borough = BOROUGH_NAMES[record.Boro] || 'Unknown';
+    const address = `${record.AddressNum || ''} ${record.AddressSt || ''}`.trim() || 'Address Not Available';
+
+    const building = {
+      id: jobNumber,
+      name: `${address}, ${borough}`,
+
+      // DCP core fields
+      jobNumber,
+      jobType: record.Job_Type || 'Unknown',
+      jobStatus: record.Job_Status || null,
+      jobDescription: record.Job_Desc || null,
+
+      // Location (from DCP - always present)
+      longitude: lon,
+      latitude: lat,
+      address,
+      borough,
+      bbl,
+      bin: record.BIN || null,
+
+      // Geography
+      communityDistrict: record.CommntyDst || null,
+      councilDistrict: record.CouncilDst || null,
+      censusTract2020: record.BCT2020 || null,
+      nta2020: record.NTA2020 || null,
+      ntaName2020: record.NTAName20 || null,
+
+      // Completion dates
+      completionYear,
+      completionDate: record.DateComplt ? new Date(record.DateComplt).toISOString() : null,
+      permitYear: parseInt(record.PermitYear, 10) || null,
+      permitDate: record.DatePermit ? new Date(record.DatePermit).toISOString() : null,
+
+      // Unit counts (from DCP)
+      classAInit: Math.round(parseFloat(record.ClassAInit) || 0),
+      classAProp: Math.round(parseFloat(record.ClassAProp) || 0),
+      classANet: Math.round(classANet),
+      unitsCO: Math.round(unitsCO),
+      totalUnits,
+
+      // Affordable housing (will be overlaid from Housing NY)
+      affordableUnits: 0,
+      affordablePercentage: 0,
+
+      // Affordable unit breakdown (will be overlaid)
+      extremeLowIncomeUnits: 0,
+      veryLowIncomeUnits: 0,
+      lowIncomeUnits: 0,
+      moderateIncomeUnits: 0,
+      middleIncomeUnits: 0,
+      otherIncomeUnits: 0,
+
+      // Bedroom breakdown (will be overlaid)
+      studioUnits: 0,
+      oneBrUnits: 0,
+      twoBrUnits: 0,
+      threeBrUnits: 0,
+      fourBrUnits: 0,
+      fiveBrUnits: 0,
+      sixBrUnits: 0,
+      unknownBrUnits: totalUnits, // All units have unknown bedroom count by default
+
+      // Classification (will be updated after overlay)
+      buildingType: classifyBuildingType(totalUnits, 0, record.Job_Type, false),
+      physicalBuildingType: null, // Will be computed
+      buildingClass: record.Bldg_Class || null,
+      zoningDistrict1: record.ZoningDst1 || null,
+      zoningDistrict2: record.ZoningDst2 || null,
+      zoningDistrict3: record.ZoningDst3 || null,
+
+      // Building details
+      floorsInit: parseFloat(record.FloorsInit) || null,
+      floorsProp: parseFloat(record.FloorsProp) || null,
+      ownership: record.Ownership || null,
+
+      // Source tracking
+      dataSource: 'dcp',
+      hasAffordableOverlay: false,
+
+      // Housing NY fields (null by default)
+      housingNyProjectId: null,
+      housingNyProjectName: null,
+      housingNyConstructionType: null,
+      housingNyExtendedAffordabilityOnly: false,
+
+      lastSyncedAt: new Date(),
+    };
+
+    buildings.push(building);
+  }
+
+  console.log(`[Process] Processed ${formatNumber(buildings.length)} DCP buildings`);
+  console.log(`[Process] Skipped ${formatNumber(skipped)} records (invalid coords, years, or units)\n`);
+  return buildings;
+}
+
+/**
+ * Process Housing NY records (for affordable overlay)
+ */
+function processHousingNY(records) {
+  console.log('[Process] Processing Housing NY records for affordable overlay...');
+
+  const affordableMap = new Map(); // BBL -> affordable data
+
+  for (const record of records) {
+    const bbl = normalizeBBL(record.bbl);
+    if (!bbl) continue;
 
     // Parse completion date
     const completionDate = record.building_completion_date;
@@ -137,26 +238,7 @@ function processHousingNY(records) {
       'middle_income_units',
     ].reduce((sum, field) => sum + parseInt(record[field] || 0, 10), 0);
 
-    const building = {
-      id: record.building_id,
-      name: record.project_name || 'Unnamed Building',
-      longitude: lon,
-      latitude: lat,
-      address: `${record.house_number || ''} ${record.street_name || ''}`.trim(),
-      borough: record.borough || 'Unknown',
-      bbl: normalizeBBL(record.bbl),
-      bin: record.bin,
-      postcode: record.postcode,
-      communityBoard: record.community_board,
-      councilDistrict: record.council_district,
-      censusTract: record.census_tract,
-      nta: record.nta_neighborhood_tabulation_area,
-
-      completionYear,
-      completionMonth: date.getMonth() + 1,
-      completionDate: completionDate,
-
-      totalUnits,
+    const affordableData = {
       affordableUnits,
       affordablePercentage: totalUnits > 0 ? (affordableUnits / totalUnits) * 100 : 0,
 
@@ -178,281 +260,135 @@ function processHousingNY(records) {
       sixBrUnits: parseInt(record['6_br_units'] || 0, 10),
       unknownBrUnits: parseInt(record.unknown_br_units || 0, 10),
 
-      buildingType: classifyBuildingType(
-        totalUnits,
-        affordableUnits,
-        null,
-        record.reporting_construction_type
-      ),
-      physicalBuildingType: null,
-      buildingClass: null,
-      zoningDistrict: null,
-
-      dataSource: 'housing-ny',
-      isRenovation: record.reporting_construction_type?.toLowerCase().includes('preservation'),
-
       // Housing NY specific
       projectId: record.project_id,
       projectName: record.project_name,
       constructionType: record.reporting_construction_type,
       extendedAffordabilityOnly: record.extended_affordability_only === 'Yes',
-      prevailingWageStatus: record.prevailing_wage_status,
-
-      lastSyncedAt: new Date(),
     };
 
-    buildings.push(building);
-  }
-
-  console.log(`[Process] Processed ${formatNumber(buildings.length)} Housing NY buildings\n`);
-  return buildings;
-}
-
-/**
- * Process DOB new construction records
- */
-function processDOB(records) {
-  console.log('[Process] Processing DOB new construction records...');
-
-  const buildings = [];
-
-  for (const record of records) {
-    const latestActionDate = record.latest_action_date;
-    if (!latestActionDate) continue;
-
-    const date = new Date(latestActionDate);
-    const completionYear = date.getFullYear();
-
-    // Filter to 2014-2025 range
-    if (completionYear < 2014 || completionYear > 2025) continue;
-
-    // Parse coordinates
-    const lat = parseFloat(record.latitude);
-    const lon = parseFloat(record.longitude);
-    if (isNaN(lat) || isNaN(lon)) continue;
-
-    // Construct BBL
-    const bbl = constructBBL(record.borough, record.block, record.lot);
-
-    // Estimate units from proposed dwelling units or existing
-    const totalUnits = parseInt(record.proposed_dwelling_units || record.existing_dwelling_units || 0, 10);
-    if (totalUnits === 0) continue;
-
-    const building = {
-      id: `DOB-${record.job_}`,
-      name: `DOB Job ${record.job_}`,
-      longitude: lon,
-      latitude: lat,
-      address: `${record.house || ''} ${record.street_name || ''}`.trim(),
-      borough: record.borough || 'Unknown',
-      bbl,
-      bin: null,
-      postcode: record.zip_code,
-      communityBoard: record.community___board,
-      councilDistrict: null,
-      censusTract: null,
-      nta: null,
-
-      completionYear,
-      completionMonth: date.getMonth() + 1,
-      completionDate: latestActionDate,
-
-      totalUnits,
-      affordableUnits: 0, // DOB doesn't track affordability
-      affordablePercentage: 0,
-
-      // No income breakdowns for DOB data
-      extremeLowIncomeUnits: 0,
-      veryLowIncomeUnits: 0,
-      lowIncomeUnits: 0,
-      moderateIncomeUnits: 0,
-      middleIncomeUnits: 0,
-      otherIncomeUnits: 0,
-
-      // No bedroom breakdowns for DOB data
-      studioUnits: 0,
-      oneBrUnits: 0,
-      twoBrUnits: 0,
-      threeBrUnits: 0,
-      fourBrUnits: 0,
-      fiveBrUnits: 0,
-      sixBrUnits: 0,
-      unknownBrUnits: totalUnits, // All units have unknown bedroom count
-
-      buildingType: classifyBuildingType(totalUnits, 0, record.job_type, null),
-      physicalBuildingType: BUILDING_CLASS_MAP[record.job_type] || 'unknown',
-      buildingClass: record.building_type,
-      zoningDistrict: null,
-
-      dataSource: 'dob',
-      isRenovation: record.job_type === 'A1' || record.job_type === 'A2' || record.job_type === 'A3',
-
-      projectId: null,
-      projectName: null,
-      constructionType: null,
-      extendedAffordabilityOnly: false,
-      prevailingWageStatus: null,
-
-      lastSyncedAt: new Date(),
-    };
-
-    buildings.push(building);
-  }
-
-  console.log(`[Process] Processed ${formatNumber(buildings.length)} DOB new construction buildings\n`);
-  return buildings;
-}
-
-/**
- * Deduplicate buildings by ID (handles duplicate records from NYC Open Data)
- */
-function deduplicateById(buildings, source) {
-  const seen = new Set();
-  const unique = [];
-  const duplicates = [];
-
-  for (const building of buildings) {
-    if (seen.has(building.id)) {
-      duplicates.push(building.id);
-    } else {
-      seen.add(building.id);
-      unique.push(building);
+    // If multiple Housing NY records for same BBL, keep the one with more affordable units
+    if (!affordableMap.has(bbl) || affordableData.affordableUnits > affordableMap.get(bbl).affordableUnits) {
+      affordableMap.set(bbl, affordableData);
     }
   }
 
-  if (duplicates.length > 0) {
-    console.log(`[Dedupe] Found ${formatNumber(duplicates.length)} duplicate IDs in ${source}`);
-    console.log(`[Dedupe] Sample duplicates:`, duplicates.slice(0, 5));
-    console.log('');
-  }
-
-  return unique;
+  console.log(`[Process] Processed ${formatNumber(affordableMap.size)} Housing NY buildings for overlay\n`);
+  return affordableMap;
 }
 
 /**
- * Merge Housing NY and DOB buildings - DOB is PRIMARY, Housing NY overlays affordable data
- * This matches the frontend processor logic where DOB represents all construction
- * and Housing NY provides affordable housing metadata
+ * Overlay Housing NY affordable data onto DCP buildings
  */
-function mergeBuildings(housingNyBuildings, dobBuildings) {
-  console.log('[Merge] Merging DOB (primary) with Housing NY (affordable overlay)...');
+function overlayAffordableData(dcpBuildings, housingNyMap) {
+  console.log('[Overlay] Overlaying Housing NY affordable data onto DCP buildings...');
 
-  // Create a map of Housing NY buildings by BBL (for overlay)
-  const housingNyByBBL = new Map();
-  for (const building of housingNyBuildings) {
-    if (building.bbl) {
-      housingNyByBBL.set(building.bbl, building);
-    }
-  }
+  let overlaidCount = 0;
 
-  const merged = [];
-  let dobWithAffordable = 0;
-  let dobMarketRate = 0;
+  for (const building of dcpBuildings) {
+    if (!building.bbl) continue;
 
-  // DOB is PRIMARY - iterate through all DOB buildings
-  for (const dobBuilding of dobBuildings) {
-    const housingNyData = dobBuilding.bbl ? housingNyByBBL.get(dobBuilding.bbl) : null;
-
-    if (housingNyData) {
-      // DOB building with affordable housing overlay
-      // Use DOB as base, overlay affordable data from Housing NY
-      merged.push({
-        ...dobBuilding,
-        // Overlay affordable units from Housing NY
-        affordableUnits: housingNyData.affordableUnits || 0,
-        affordablePercentage: housingNyData.affordablePercentage || 0,
-        extremeLowIncomeUnits: housingNyData.extremeLowIncomeUnits || 0,
-        veryLowIncomeUnits: housingNyData.veryLowIncomeUnits || 0,
-        lowIncomeUnits: housingNyData.lowIncomeUnits || 0,
-        moderateIncomeUnits: housingNyData.moderateIncomeUnits || 0,
-        middleIncomeUnits: housingNyData.middleIncomeUnits || 0,
-        otherIncomeUnits: housingNyData.otherIncomeUnits || 0,
-        // Overlay bedroom breakdown from Housing NY
-        studioUnits: housingNyData.studioUnits || 0,
-        oneBrUnits: housingNyData.oneBrUnits || 0,
-        twoBrUnits: housingNyData.twoBrUnits || 0,
-        threeBrUnits: housingNyData.threeBrUnits || 0,
-        fourBrUnits: housingNyData.fourBrUnits || 0,
-        fiveBrUnits: housingNyData.fiveBrUnits || 0,
-        sixBrUnits: housingNyData.sixBrUnits || 0,
-        // Housing NY specific fields
-        projectId: housingNyData.projectId || null,
-        projectName: housingNyData.projectName || null,
-        constructionType: housingNyData.constructionType || null,
-        extendedAffordabilityOnly: housingNyData.extendedAffordabilityOnly || false,
-        prevailingWageStatus: housingNyData.prevailingWageStatus || null,
+    const affordableData = housingNyMap.get(building.bbl);
+    if (affordableData) {
+      // Overlay all affordable data
+      Object.assign(building, {
+        affordableUnits: affordableData.affordableUnits,
+        affordablePercentage: affordableData.affordablePercentage,
+        extremeLowIncomeUnits: affordableData.extremeLowIncomeUnits,
+        veryLowIncomeUnits: affordableData.veryLowIncomeUnits,
+        lowIncomeUnits: affordableData.lowIncomeUnits,
+        moderateIncomeUnits: affordableData.moderateIncomeUnits,
+        middleIncomeUnits: affordableData.middleIncomeUnits,
+        otherIncomeUnits: affordableData.otherIncomeUnits,
+        studioUnits: affordableData.studioUnits,
+        oneBrUnits: affordableData.oneBrUnits,
+        twoBrUnits: affordableData.twoBrUnits,
+        threeBrUnits: affordableData.threeBrUnits,
+        fourBrUnits: affordableData.fourBrUnits,
+        fiveBrUnits: affordableData.fiveBrUnits,
+        sixBrUnits: affordableData.sixBrUnits,
+        unknownBrUnits: affordableData.unknownBrUnits,
+        housingNyProjectId: affordableData.projectId,
+        housingNyProjectName: affordableData.projectName,
+        housingNyConstructionType: affordableData.constructionType,
+        housingNyExtendedAffordabilityOnly: affordableData.extendedAffordabilityOnly,
+        dataSource: 'dcp-affordable',
+        hasAffordableOverlay: true,
       });
-      dobWithAffordable++;
-    } else {
-      // Pure DOB building (market-rate)
-      merged.push(dobBuilding);
-      dobMarketRate++;
+
+      // Update building type to reflect affordable status
+      building.buildingType = classifyBuildingType(
+        building.totalUnits,
+        building.affordableUnits,
+        building.jobType,
+        true
+      );
+
+      overlaidCount++;
     }
   }
 
-  // Add Housing NY buildings that have no DOB match (100% affordable, no construction permit)
-  let housingNyOnly = 0;
-  for (const housingNyBuilding of housingNyBuildings) {
-    // Check if this Housing NY building's BBL exists in DOB
-    const hasDobMatch = dobBuildings.some(dob => dob.bbl && dob.bbl === housingNyBuilding.bbl);
-    if (!hasDobMatch) {
-      merged.push(housingNyBuilding);
-      housingNyOnly++;
-    }
-  }
+  const totalAffordableUnits = dcpBuildings.reduce((sum, b) => sum + b.affordableUnits, 0);
+  const totalUnits = dcpBuildings.reduce((sum, b) => sum + b.totalUnits, 0);
+  const affordablePercentage = totalUnits > 0 ? (totalAffordableUnits / totalUnits) * 100 : 0;
 
-  console.log(`[Merge] DOB buildings: ${formatNumber(dobBuildings.length)}`);
-  console.log(`[Merge]   - With affordable (Housing NY overlay): ${formatNumber(dobWithAffordable)}`);
-  console.log(`[Merge]   - Market-rate only: ${formatNumber(dobMarketRate)}`);
-  console.log(`[Merge] Housing NY only (no DOB permit): ${formatNumber(housingNyOnly)}`);
-  console.log(`[Merge] Total: ${formatNumber(merged.length)}\n`);
+  console.log(`[Overlay] Overlaid affordable data on ${formatNumber(overlaidCount)} buildings`);
+  console.log(`[Overlay] Total units: ${formatNumber(totalUnits)}`);
+  console.log(`[Overlay] Affordable units: ${formatNumber(totalAffordableUnits)} (${affordablePercentage.toFixed(1)}%)\n`);
 
-  return merged;
+  return dcpBuildings;
 }
 
 /**
- * Process DOB demolition records
+ * Process DCP demolition records
  */
-function processDemolitions(records) {
-  console.log('[Process] Processing DOB demolition records...');
+function processDCPDemolitions(records) {
+  console.log('[Process] Processing DCP demolition records...');
 
   const demolitions = [];
+  let skipped = 0;
 
   for (const record of records) {
-    const latestActionDate = record.latest_action_date;
-    if (!latestActionDate) continue;
+    // Only process demolition job types
+    if (record.Job_Type !== 'Demolition') continue;
 
-    const date = new Date(latestActionDate);
-    const demolitionYear = date.getFullYear();
+    // Parse completion year
+    const completionYear = parseInt(record.CompltYear, 10);
+    if (isNaN(completionYear) || completionYear < 2014 || completionYear > 2025) {
+      skipped++;
+      continue;
+    }
 
-    // Filter to 2014-2025 range
-    if (demolitionYear < 2014 || demolitionYear > 2025) continue;
+    const jobNumber = record.Job_Number || `DCP-DM-${record.OBJECTID}`;
+    const bbl = normalizeBBL(record.BBL);
+    const borough = BOROUGH_NAMES[record.Boro] || 'Unknown';
+    const address = `${record.AddressNum || ''} ${record.AddressSt || ''}`.trim() || 'Address Not Available';
 
-    // Construct BBL from borough, block, lot
-    const bbl = constructBBL(record.borough, record.block, record.lot);
-
-    // Estimate units from building class (rough heuristic)
-    const buildingClass = record.existing_dwelling_units || '0';
-    const estimatedUnits = parseInt(buildingClass, 10) || 0;
+    // Estimate units from ClassAInit (units before demolition) or abs(ClassANet)
+    const classAInit = Math.round(Math.abs(parseFloat(record.ClassAInit) || 0));
+    const classANet = Math.round(parseFloat(record.ClassANet) || 0);
+    const estimatedUnits = classAInit || Math.abs(classANet);
 
     const demolition = {
-      id: `${record.job_}` || `DM-${bbl}-${demolitionYear}`,
+      id: jobNumber,
+      jobNumber,
+      jobType: 'Demolition',
+      jobStatus: record.Job_Status || null,
+      jobDescription: record.Job_Desc || null,
+
       bbl,
-      borough: record.borough || 'Unknown',
-      address: `${record.house || ''} ${record.street_name || ''}`.trim(),
-      latitude: parseFloat(record.latitude) || null,
-      longitude: parseFloat(record.longitude) || null,
+      borough,
+      address,
+      latitude: parseFloat(record.Latitude) || null,
+      longitude: parseFloat(record.Longitude) || null,
 
-      demolitionYear,
-      demolitionMonth: date.getMonth() + 1,
-      demolitionDate: latestActionDate,
+      demolitionYear: completionYear,
+      demolitionDate: record.DateComplt ? new Date(record.DateComplt).toISOString() : null,
 
+      classAInit,
+      classANet,
       estimatedUnits,
-      buildingClass: record.existing_dwelling_units,
-
-      jobNumber: record.job_,
-      jobType: record.job_type,
-      jobStatus: record.job_status_descrp,
+      buildingClass: record.Bldg_Class || null,
 
       hasNewConstruction: false, // Will be updated in matching step
 
@@ -462,7 +398,8 @@ function processDemolitions(records) {
     demolitions.push(demolition);
   }
 
-  console.log(`[Process] Processed ${formatNumber(demolitions.length)} demolition records\n`);
+  console.log(`[Process] Processed ${formatNumber(demolitions.length)} DCP demolitions`);
+  console.log(`[Process] Skipped ${formatNumber(skipped)} records (invalid years)\n`);
   return demolitions;
 }
 
@@ -474,6 +411,7 @@ async function main() {
 
   console.log('===================================');
   console.log('   NYC HOUSING DATA SEED SCRIPT   ');
+  console.log('   Using DCP Housing Database     ');
   console.log('===================================\n');
 
   // Initialize database
@@ -484,51 +422,58 @@ async function main() {
     await clearTable(db, 'housing_buildings', 'housing_buildings');
     await clearTable(db, 'housing_demolitions', 'housing_demolitions');
 
-    // Step 2: Fetch Housing NY data
-    console.log('--- STEP 1: Fetch Housing NY Data ---\n');
+    // Step 2: Fetch DCP Housing Database (new buildings and alterations)
+    console.log('--- STEP 1: Fetch DCP Housing Database ---\n');
+
+    // Fetch New Buildings with completed status
+    const newBuildingRecords = await fetchArcGISFeatures(DCP_HOUSING_DATABASE_URL, {
+      where: "Job_Type = 'New Building' AND CompltYear >= '2014' AND CompltYear <= '2025'",
+      orderByFields: 'CompltYear DESC',
+      batchSize: 2000,
+    });
+
+    // Fetch Alterations with positive net units
+    const alterationRecords = await fetchArcGISFeatures(DCP_HOUSING_DATABASE_URL, {
+      where: "Job_Type = 'Alteration' AND ClassANet > 0 AND CompltYear >= '2014' AND CompltYear <= '2025'",
+      orderByFields: 'CompltYear DESC',
+      batchSize: 2000,
+    });
+
+    const dcpRecords = [...newBuildingRecords, ...alterationRecords];
+    console.log(`[Fetch] Total DCP records: ${formatNumber(dcpRecords.length)}\n`);
+
+    // Step 3: Fetch Housing NY data for affordable overlay
+    console.log('--- STEP 2: Fetch Housing NY Data (Affordable Overlay) ---\n');
     const housingNyRecords = await fetchNycOpenData(HOUSING_NY_API, {
       limit: 20000,
-      order: 'reporting_construction_type DESC',
+      order: 'building_completion_date DESC',
     });
 
-    // Step 2b: Fetch DOB new construction data (A1/A2/A3/NB job types)
-    // Only fetch completed/permitted buildings (SIGNED OFF, PERMIT ISSUED, PLAN EXAM APPROVED, COMPLETED)
-    console.log('--- STEP 2: Fetch DOB New Construction Data ---\n');
-    const dobRecords = await fetchNycOpenData(DOB_API, {
-      limit: 50000,
-      where: "job_type IN ('A1', 'A2', 'A3', 'NB') AND (job_status_descrp='SIGNED OFF' OR job_status_descrp='PERMIT ISSUED - ENTIRE JOB/WORK' OR job_status_descrp='PLAN EXAM - APPROVED' OR job_status_descrp='COMPLETED')",
-      order: 'latest_action_date DESC',
+    // Step 4: Fetch DCP demolitions
+    console.log('--- STEP 3: Fetch DCP Demolitions ---\n');
+    const demolitionRecords = await fetchArcGISFeatures(DCP_HOUSING_DATABASE_URL, {
+      where: "Job_Type = 'Demolition' AND CompltYear >= '2014' AND CompltYear <= '2025'",
+      orderByFields: 'CompltYear DESC',
+      batchSize: 2000,
     });
 
-    // Step 3: Fetch DOB demolition data
-    // Only fetch completed/permitted demolitions
-    console.log('--- STEP 3: Fetch DOB Demolition Data ---\n');
-    const demolitionRecords = await fetchNycOpenData(DOB_API, {
-      limit: 50000,
-      where: "job_type = 'DM' AND (job_status_descrp='SIGNED OFF' OR job_status_descrp='PERMIT ISSUED - ENTIRE JOB/WORK' OR job_status_descrp='PLAN EXAM - APPROVED' OR job_status_descrp='COMPLETED')",
-      order: 'latest_action_date DESC',
-    });
+    // Step 5: Process DCP Housing records
+    console.log('--- STEP 4: Process DCP Housing Records ---\n');
+    const dcpBuildings = processDCPHousing(dcpRecords);
 
-    // Step 4: Process Housing NY buildings
-    console.log('--- STEP 4: Process Housing NY Buildings ---\n');
-    const housingNyProcessed = processHousingNY(housingNyRecords);
-    const housingNyBuildings = deduplicateById(housingNyProcessed, 'Housing NY');
+    // Step 6: Process Housing NY for affordable overlay
+    console.log('--- STEP 5: Process Housing NY for Affordable Overlay ---\n');
+    const housingNyMap = processHousingNY(housingNyRecords);
 
-    // Step 5: Process DOB new construction
-    console.log('--- STEP 5: Process DOB New Construction ---\n');
-    const dobProcessed = processDOB(dobRecords);
-    const dobBuildings = deduplicateById(dobProcessed, 'DOB');
+    // Step 7: Overlay affordable data
+    console.log('--- STEP 6: Overlay Affordable Data ---\n');
+    const buildings = overlayAffordableData(dcpBuildings, housingNyMap);
 
-    // Step 6: Merge and deduplicate buildings
-    console.log('--- STEP 6: Merge Building Data ---\n');
-    const buildings = mergeBuildings(housingNyBuildings, dobBuildings);
-
-    // Step 7: Process demolitions
+    // Step 8: Process demolitions
     console.log('--- STEP 7: Process Demolitions ---\n');
-    const demolitionsProcessed = processDemolitions(demolitionRecords);
-    const demolitions = deduplicateById(demolitionsProcessed, 'Demolitions');
+    const demolitions = processDCPDemolitions(demolitionRecords);
 
-    // Step 8: Match demolitions with new construction
+    // Step 9: Match demolitions with new construction
     console.log('--- STEP 8: Match Demolitions with New Construction ---\n');
     const buildingBBLs = new Set(buildings.map(b => b.bbl).filter(Boolean));
 
@@ -542,7 +487,7 @@ async function main() {
     console.log(`[Match] ${formatNumber(demolitions.length)} total demolitions`);
     console.log(`[Match] ${formatNumber(standaloneDemolitions.length)} standalone (no new construction)\n`);
 
-    // Step 9: Insert into database
+    // Step 10: Insert into database
     console.log('--- STEP 9: Insert into Database ---\n');
     await batchInsert(db, housingBuildings, buildings, {
       batchSize: 500,
@@ -555,10 +500,18 @@ async function main() {
     });
 
     // Summary
+    const totalUnits = buildings.reduce((sum, b) => sum + b.totalUnits, 0);
+    const totalAffordable = buildings.reduce((sum, b) => sum + b.affordableUnits, 0);
+    const affordablePercent = totalUnits > 0 ? (totalAffordable / totalUnits) * 100 : 0;
+
     console.log('===================================');
     console.log('           SEED SUMMARY            ');
     console.log('===================================');
     console.log(`Housing Buildings: ${formatNumber(buildings.length)}`);
+    console.log(`  - DCP only: ${formatNumber(buildings.filter(b => b.dataSource === 'dcp').length)}`);
+    console.log(`  - DCP + Affordable overlay: ${formatNumber(buildings.filter(b => b.dataSource === 'dcp-affordable').length)}`);
+    console.log(`Total Units: ${formatNumber(totalUnits)}`);
+    console.log(`Affordable Units: ${formatNumber(totalAffordable)} (${affordablePercent.toFixed(1)}%)`);
     console.log(`Demolitions: ${formatNumber(demolitions.length)}`);
     console.log(`Standalone Demolitions: ${formatNumber(standaloneDemolitions.length)}`);
     console.log(`Total Time: ${t.stop()}`);

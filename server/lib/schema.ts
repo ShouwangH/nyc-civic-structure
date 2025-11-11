@@ -107,36 +107,54 @@ export const auditLog = pgTable('audit_log', {
 
 /**
  * Processed housing buildings with all transformations applied at seed time
+ * PRIMARY SOURCE: DCP Housing Database (ArcGIS) - comprehensive housing construction tracking
+ * OVERLAY: Housing NY for affordable unit details
+ *
  * This replaces the client-side processing in housingDataProcessor.ts
  */
 export const housingBuildings = pgTable('housing_buildings', {
-  id: text('id').primaryKey(), // building_id or generated UUID
+  id: text('id').primaryKey(), // Job_Number from DCP Housing Database
   name: text('name').notNull(),
 
-  // Location
+  // DCP Housing Database core fields
+  jobNumber: text('job_number').notNull().unique(), // DCP Job_Number
+  jobType: text('job_type').notNull(), // 'New Building' | 'Alteration' | 'Demolition'
+  jobStatus: text('job_status'), // e.g., '5. Completed Construction'
+  jobDescription: text('job_description'), // DCP Job_Desc
+
+  // Location (from DCP - always present!)
   longitude: real('longitude').notNull(),
   latitude: real('latitude').notNull(),
   address: text('address').notNull(),
   borough: text('borough').notNull(),
-  bbl: text('bbl'), // Borough-Block-Lot identifier (normalized)
+  bbl: text('bbl'), // Borough-Block-Lot identifier
   bin: text('bin'), // Building Identification Number
-  postcode: text('postcode'),
-  communityBoard: text('community_board'),
-  councilDistrict: text('council_district'),
-  censusTract: text('census_tract'),
-  nta: text('nta'), // Neighborhood Tabulation Area
+
+  // Geography (DCP provides comprehensive coverage)
+  communityDistrict: text('community_district'), // DCP CommntyDst
+  councilDistrict: text('council_district'), // DCP CouncilDst
+  censusTract2020: text('census_tract_2020'), // DCP BCT2020
+  nta2020: text('nta_2020'), // DCP NTA2020
+  ntaName2020: text('nta_name_2020'), // DCP NTAName20
 
   // Completion dates
   completionYear: integer('completion_year').notNull(),
-  completionMonth: integer('completion_month'), // 1-12
-  completionDate: text('completion_date'), // Full ISO date string
+  completionDate: text('completion_date'), // DCP DateComplt (ISO date string)
+  permitYear: integer('permit_year'), // DCP PermitYear
+  permitDate: text('permit_date'), // DCP DatePermit (ISO date string)
 
-  // Unit counts
-  totalUnits: integer('total_units').notNull(),
+  // Unit counts (DCP Housing Database)
+  classAInit: integer('class_a_init'), // Initial residential units
+  classAProp: integer('class_a_prop'), // Proposed residential units
+  classANet: integer('class_a_net').notNull(), // Net change in residential units (KEY FIELD)
+  unitsCO: integer('units_co'), // Certificate of Occupancy units
+  totalUnits: integer('total_units').notNull(), // Computed from classANet or unitsCO
+
+  // Affordable housing data (from Housing NY overlay)
   affordableUnits: integer('affordable_units').notNull().default(0),
   affordablePercentage: real('affordable_percentage').notNull().default(0),
 
-  // Affordable unit breakdown
+  // Affordable unit breakdown by income (Housing NY only)
   extremeLowIncomeUnits: integer('extreme_low_income_units').default(0),
   veryLowIncomeUnits: integer('very_low_income_units').default(0),
   lowIncomeUnits: integer('low_income_units').default(0),
@@ -144,7 +162,7 @@ export const housingBuildings = pgTable('housing_buildings', {
   middleIncomeUnits: integer('middle_income_units').default(0),
   otherIncomeUnits: integer('other_income_units').default(0),
 
-  // Unit breakdown by bedrooms
+  // Unit breakdown by bedrooms (Housing NY only)
   studioUnits: integer('studio_units').default(0),
   oneBrUnits: integer('one_br_units').default(0),
   twoBrUnits: integer('two_br_units').default(0),
@@ -155,61 +173,72 @@ export const housingBuildings = pgTable('housing_buildings', {
   unknownBrUnits: integer('unknown_br_units').default(0),
 
   // Classification
-  buildingType: text('building_type').notNull(), // affordable | renovation | one-two-family | multifamily-walkup | multifamily-elevator | mixed-use | unknown
+  buildingType: text('building_type').notNull(), // Computed: affordable | market-rate | renovation | one-two-family | multifamily-walkup | multifamily-elevator | mixed-use | unknown
   physicalBuildingType: text('physical_building_type'), // Physical type if different from main type
-  buildingClass: text('building_class'), // PLUTO building class code
-  zoningDistrict: text('zoning_district'),
+  buildingClass: text('building_class'), // DCP Bldg_Class
+  zoningDistrict1: text('zoning_district_1'), // DCP ZoningDst1
+  zoningDistrict2: text('zoning_district_2'), // DCP ZoningDst2
+  zoningDistrict3: text('zoning_district_3'), // DCP ZoningDst3
+
+  // Building details (from DCP)
+  floorsInit: real('floors_init'), // DCP FloorsInit
+  floorsProp: real('floors_prop'), // DCP FloorsProp
+  ownership: text('ownership'), // DCP Ownership
 
   // Source tracking
-  dataSource: text('data_source').notNull(), // 'housing-ny' | 'pluto' | 'dob'
-  isRenovation: boolean('is_renovation').default(false),
+  dataSource: text('data_source').notNull(), // 'dcp' | 'dcp-affordable' (with Housing NY overlay)
+  hasAffordableOverlay: boolean('has_affordable_overlay').default(false),
 
-  // Housing NY specific
-  projectId: text('project_id'),
-  projectName: text('project_name'),
-  constructionType: text('construction_type'), // 'New Construction' | 'Preservation'
-  extendedAffordabilityOnly: boolean('extended_affordability_only').default(false),
-  prevailingWageStatus: text('prevailing_wage_status'),
+  // Housing NY specific (when hasAffordableOverlay = true)
+  housingNyProjectId: text('housing_ny_project_id'),
+  housingNyProjectName: text('housing_ny_project_name'),
+  housingNyConstructionType: text('housing_ny_construction_type'), // 'New Construction' | 'Preservation'
+  housingNyExtendedAffordabilityOnly: boolean('housing_ny_extended_affordability_only').default(false),
 
   // Metadata
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
-  lastSyncedAt: timestamp('last_synced_at').defaultNow().notNull(), // When data was last fetched from NYC Open Data
+  lastSyncedAt: timestamp('last_synced_at').defaultNow().notNull(), // When data was last fetched from DCP/Housing NY
 }, (table) => ({
   // Indexes for common queries
+  jobNumberIdx: index('housing_job_number_idx').on(table.jobNumber),
   completionYearIdx: index('housing_completion_year_idx').on(table.completionYear),
   boroughIdx: index('housing_borough_idx').on(table.borough),
   bblIdx: index('housing_bbl_idx').on(table.bbl),
   dataSourceIdx: index('housing_data_source_idx').on(table.dataSource),
   buildingTypeIdx: index('housing_building_type_idx').on(table.buildingType),
+  jobTypeIdx: index('housing_job_type_idx').on(table.jobType),
 }));
 
 /**
  * Demolition records for calculating net new housing
+ * SOURCE: DCP Housing Database (Job_Type = 'Demolition')
  */
 export const housingDemolitions = pgTable('housing_demolitions', {
-  id: text('id').primaryKey(), // job_number or generated UUID
+  id: text('id').primaryKey(), // Job_Number from DCP
+
+  // DCP Housing Database core fields
+  jobNumber: text('job_number').notNull().unique(), // DCP Job_Number
+  jobType: text('job_type').default('Demolition'), // DCP Job_Type
+  jobStatus: text('job_status'), // DCP Job_Status
+  jobDescription: text('job_description'), // DCP Job_Desc
 
   // Location
-  bbl: text('bbl'), // Normalized BBL for matching with new construction
-  borough: text('borough').notNull(),
-  address: text('address').notNull(),
-  latitude: real('latitude'),
-  longitude: real('longitude'),
+  bbl: text('bbl'), // DCP BBL
+  borough: text('borough').notNull(), // DCP Boro
+  address: text('address').notNull(), // Computed from AddressNum + AddressSt
+  latitude: real('latitude'), // DCP Latitude
+  longitude: real('longitude'), // DCP Longitude
 
   // Demolition details
-  demolitionYear: integer('demolition_year').notNull(),
-  demolitionMonth: integer('demolition_month'),
-  demolitionDate: text('demolition_date'),
+  demolitionYear: integer('demolition_year').notNull(), // DCP CompltYear
+  demolitionDate: text('demolition_date'), // DCP DateComplt
 
-  // Units demolished
-  estimatedUnits: integer('estimated_units').notNull().default(0), // Estimated from building class
-  buildingClass: text('building_class'),
-
-  // Job details
-  jobNumber: text('job_number'),
-  jobType: text('job_type').default('DM'), // Usually 'DM' for demolition
-  jobStatus: text('job_status'),
+  // Units demolished (from DCP)
+  classAInit: integer('class_a_init'), // DCP ClassAInit (units before demolition)
+  classANet: integer('class_a_net'), // DCP ClassANet (negative for demolitions)
+  estimatedUnits: integer('estimated_units').notNull().default(0), // Computed from classAInit or classANet
+  buildingClass: text('building_class'), // DCP Bldg_Class
 
   // Matching
   hasNewConstruction: boolean('has_new_construction').default(false), // Whether BBL has new construction after demolition
@@ -219,6 +248,7 @@ export const housingDemolitions = pgTable('housing_demolitions', {
   updatedAt: timestamp('updated_at').defaultNow().notNull(),
   lastSyncedAt: timestamp('last_synced_at').defaultNow().notNull(),
 }, (table) => ({
+  jobNumberIdx: index('demolition_job_number_idx').on(table.jobNumber),
   demolitionYearIdx: index('demolition_year_idx').on(table.demolitionYear),
   bblIdx: index('demolition_bbl_idx').on(table.bbl),
   boroughIdx: index('demolition_borough_idx').on(table.borough),
