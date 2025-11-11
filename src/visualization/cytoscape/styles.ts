@@ -148,7 +148,8 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
     style: {
       'border-color': '#6b7280',
       'border-width': '3px',
-      'background-opacity': 0.9,
+      'background-color': 'data(branchColor)',
+      'background-opacity': 0.85,
     },
   },
   {

@@ -86,7 +86,7 @@ const ControlsPanel = ({
               className={`flex-1 rounded-xl px-3 py-2 text-base font-medium transition-all ${
                 activeScope === scope.id
                   ? 'bg-blue-600 text-white shadow-md hover:bg-blue-700'
-                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-800'
+                  : 'text-slate-600 hover:bg-slate-300 hover:text-slate-900'
               }`}
             >
               {scope.label}

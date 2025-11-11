@@ -22,7 +22,7 @@ const DiagramViewToggle = ({ mode, inputHandler }: DiagramViewToggleProps) => {
           className={`rounded-xl px-4 py-2 text-base font-medium transition-all ${
             mode === 'diagram'
               ? 'bg-blue-600 text-white shadow-md hover:bg-blue-700'
-              : 'text-slate-600 hover:bg-slate-100 hover:text-slate-800'
+              : 'text-slate-600 hover:bg-slate-300 hover:text-slate-900'
           }`}
         >
           Diagram
@@ -36,7 +36,7 @@ const DiagramViewToggle = ({ mode, inputHandler }: DiagramViewToggleProps) => {
           className={`rounded-xl px-4 py-2 text-base font-medium transition-all ${
             mode === 'financials'
               ? 'bg-blue-600 text-white shadow-md hover:bg-blue-700'
-              : 'text-slate-600 hover:bg-slate-100 hover:text-slate-800'
+              : 'text-slate-600 hover:bg-slate-300 hover:text-slate-900'
           }`}
         >
           Financials
@@ -50,7 +50,7 @@ const DiagramViewToggle = ({ mode, inputHandler }: DiagramViewToggleProps) => {
           className={`rounded-xl px-4 py-2 text-base font-medium transition-all ${
             mode === 'maps'
               ? 'bg-blue-600 text-white shadow-md hover:bg-blue-700'
-              : 'text-slate-600 hover:bg-slate-100 hover:text-slate-800'
+              : 'text-slate-600 hover:bg-slate-300 hover:text-slate-900'
           }`}
         >
           Maps

@@ -140,7 +140,21 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
         .attr('fill', 'white')
         .attr('pointer-events', 'all')
         .style('cursor', 'pointer')
-        .on('click', clicked as any);
+        .on('click', clicked as any)
+        .on('mouseover', function() {
+          // Grow center label on hover
+          svg.select('.center-label')
+            .transition()
+            .duration(150)
+            .style('font-size', '1.4rem');
+        })
+        .on('mouseout', function() {
+          // Restore center label size
+          svg.select('.center-label')
+            .transition()
+            .duration(150)
+            .style('font-size', '1.2rem');
+        });
     };
 
     // Click handler - recalculates coordinates and transitions
@@ -263,12 +277,6 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
             .attr('data-original-opacity', currentOpacity)
             .attr('fill-opacity', Math.min(1, currentOpacity * 1.2));
 
-          // Grow center label on hover
-          svg.select('.center-label')
-            .transition()
-            .duration(150)
-            .style('font-size', '1.4rem');
-
           if (onNodeHover) {
             const mouseEvent = event as any as React.MouseEvent;
             onNodeHover(d, mouseEvent);
@@ -280,12 +288,6 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
         const originalOpacity = parseFloat(select(this).attr('data-original-opacity')) || getOpacity(d);
         select(this)
           .attr('fill-opacity', originalOpacity);
-
-        // Restore center label size
-        svg.select('.center-label')
-          .transition()
-          .duration(150)
-          .style('font-size', '1.2rem');
 
         if (onNodeHover) {
           onNodeHover(null);
@@ -344,7 +346,21 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
       .attr('fill', 'white')
       .attr('pointer-events', 'all')
       .style('cursor', 'pointer')
-      .on('click', clicked as any);
+      .on('click', clicked as any)
+      .on('mouseover', function() {
+        // Grow center label on hover
+        svg.select('.center-label')
+          .transition()
+          .duration(150)
+          .style('font-size', '1.4rem');
+      })
+      .on('mouseout', function() {
+        // Restore center label size
+        svg.select('.center-label')
+          .transition()
+          .duration(150)
+          .style('font-size', '1.2rem');
+      });
 
     // Initialize center label
     svg.select('.center-label').text(root.data.name);
