@@ -150,6 +150,7 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
       'border-width': '3px',
       'background-color': 'data(branchColor)',
       'background-opacity': 0.85,
+      color: 'white',
     },
   },
   {

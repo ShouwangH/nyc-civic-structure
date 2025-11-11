@@ -367,6 +367,8 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
 
   }, [data, width, height, radius]);
 
+  const centerClipRadius = radius * 0.8 / 3;
+
   return (
     <svg
       ref={svgRef}
@@ -375,6 +377,12 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
       viewBox={`${-width / 2} ${-height / 2} ${width} ${height}`}
       style={{ maxWidth: '100%', height: 'auto', background: '#fafafa' }}
     >
+      <defs>
+        <clipPath id="center-label-clip">
+          <circle cx="0" cy="0" r={centerClipRadius} />
+        </clipPath>
+      </defs>
+
       {/* Debug: outer boundary */}
       <circle cx="0" cy="0" r={radius * 0.95} fill="none" stroke="#ddd" strokeWidth="1" strokeDasharray="4" />
 
@@ -386,6 +394,7 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
         className="center-label"
         textAnchor="middle"
         dy="0.35em"
+        clipPath="url(#center-label-clip)"
         style={{
           fontSize: '1.2rem',
           fontWeight: 600,
