@@ -192,7 +192,7 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
       console.log('New focus:', currentFocus.data.name, 'depth:', currentFocus.depth);
 
       // Update focused label and center circle
-      svg.select('.center-label').text(currentFocus.data.name);
+      svg.select('.center-label').html(currentFocus.data.name);
       updateCenterCircle(currentFocus);
 
       // Calculate target coordinates for all nodes relative to clicked node
@@ -363,7 +363,7 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
       });
 
     // Initialize center label
-    svg.select('.center-label').text(root.data.name);
+    svg.select('.center-label').html(root.data.name);
 
   }, [data, width, height, radius]);
 
@@ -390,18 +390,32 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
         {/* Paths will be added by d3 */}
       </g>
 
-      <text
-        className="center-label"
-        textAnchor="middle"
-        dy="0.35em"
+      <foreignObject
+        x={-centerClipRadius}
+        y={-centerClipRadius}
+        width={centerClipRadius * 2}
+        height={centerClipRadius * 2}
         clipPath="url(#center-label-clip)"
-        style={{
-          fontSize: '1.2rem',
-          fontWeight: 600,
-          fill: '#111827',
-          pointerEvents: 'none'
-        }}
-      />
+        style={{ pointerEvents: 'none' }}
+      >
+        <div
+          className="center-label"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+            height: '100%',
+            fontSize: '1.2rem',
+            fontWeight: 600,
+            color: '#111827',
+            textAlign: 'center',
+            wordWrap: 'break-word',
+            overflow: 'hidden',
+            padding: '4px',
+          }}
+        />
+      </foreignObject>
     </svg>
   );
 }

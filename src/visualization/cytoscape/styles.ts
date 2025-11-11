@@ -19,7 +19,11 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
       'text-halign': 'center',
       padding: '8px',
       shape: 'round-rectangle',
-    },
+      'shadow-blur': '4',
+      'shadow-color': '#00000033',
+      'shadow-offset-x': '0',
+      'shadow-offset-y': '2',
+    } as any,
   },
   {
     selector: 'node[system = "borough"]',
