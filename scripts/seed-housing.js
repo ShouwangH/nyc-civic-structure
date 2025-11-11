@@ -45,9 +45,9 @@ function normalizeBBL(bbl) {
 }
 
 /**
- * Classify building type from total units, affordable status, and job type
+ * Classify building type from total units, affordable status, job type, and building class
  */
-function classifyBuildingType(totalUnits, affordableUnits, jobType, hasAffordableOverlay) {
+function classifyBuildingType(totalUnits, affordableUnits, jobType, hasAffordableOverlay, buildingClass) {
   // If has affordable housing overlay, classify as affordable
   if (hasAffordableOverlay && affordableUnits > 0) {
     return 'affordable';
@@ -56,6 +56,14 @@ function classifyBuildingType(totalUnits, affordableUnits, jobType, hasAffordabl
   // Renovation/alteration
   if (jobType === 'Alteration') {
     return 'renovation';
+  }
+
+  // Check building class for mixed-use (DCP Bldg_Class starting with D or O)
+  if (buildingClass) {
+    const classPrefix = buildingClass.charAt(0).toUpperCase();
+    if (classPrefix === 'D' || classPrefix === 'O') {
+      return 'mixed-use';
+    }
   }
 
   // Physical building classification based on unit count
@@ -171,7 +179,7 @@ function processDCPHousing(records) {
       unknownBrUnits: totalUnits, // All units have unknown bedroom count by default
 
       // Classification (will be updated after overlay)
-      buildingType: classifyBuildingType(totalUnits, 0, record.Job_Type, false),
+      buildingType: classifyBuildingType(totalUnits, 0, record.Job_Type, false, record.Bldg_Class),
       physicalBuildingType: null, // Will be computed
       buildingClass: record.Bldg_Class || null,
       zoningDistrict1: record.ZoningDst1 || null,
@@ -321,7 +329,8 @@ function overlayAffordableData(dcpBuildings, housingNyMap) {
         building.totalUnits,
         building.affordableUnits,
         building.jobType,
-        true
+        true,
+        building.buildingClass
       );
 
       overlaidCount++;

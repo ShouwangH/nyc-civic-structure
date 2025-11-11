@@ -49,6 +49,23 @@ function transformToProcessedBuilding(record: any): any {
 }
 
 /**
+ * Transform demolition record to frontend-compatible format
+ */
+function transformDemolition(record: any): any {
+  return {
+    ...record,
+    // Map DB fields to frontend-expected field names
+    existing_dwelling_units: record.estimatedUnits,
+    latest_action_date: record.demolitionDate,
+    // Keep existing fields for compatibility
+    bbl: record.bbl,
+    borough: record.borough,
+    block: record.bbl?.substring(1, 6),
+    lot: record.bbl?.substring(6, 10),
+  };
+}
+
+/**
  * Fetch housing data from database
  */
 async function fetchHousingData() {
@@ -76,17 +93,18 @@ async function fetchHousingData() {
 
     // Transform to frontend format
     const buildings = buildingRecords.map(transformToProcessedBuilding);
+    const demolitions = demolitionRecords.map(transformDemolition);
 
     // Store in cache
     cachedData = {
       timestamp: Date.now(),
       buildings,
-      demolitions: demolitionRecords,
+      demolitions,
     };
 
     return {
       buildings,
-      demolitions: demolitionRecords,
+      demolitions,
     };
   } catch (error) {
     console.error('[Housing Data API] Error fetching data:', error);
