@@ -140,7 +140,21 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
         .attr('fill', 'white')
         .attr('pointer-events', 'all')
         .style('cursor', 'pointer')
-        .on('click', clicked as any);
+        .on('click', clicked as any)
+        .on('mouseover', function() {
+          // Grow center label on hover
+          svg.select('.center-label')
+            .transition()
+            .duration(150)
+            .style('font-size', '1.4rem');
+        })
+        .on('mouseout', function() {
+          // Restore center label size
+          svg.select('.center-label')
+            .transition()
+            .duration(150)
+            .style('font-size', '1.2rem');
+        });
     };
 
     // Click handler - recalculates coordinates and transitions
@@ -178,7 +192,7 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
       console.log('New focus:', currentFocus.data.name, 'depth:', currentFocus.depth);
 
       // Update focused label and center circle
-      svg.select('.center-label').text(currentFocus.data.name);
+      svg.select('.center-label').html(currentFocus.data.name);
       updateCenterCircle(currentFocus);
 
       // Calculate target coordinates for all nodes relative to clicked node
@@ -222,6 +236,16 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
         .attr('fill-opacity', (d: NodeWithCurrent) => {
           const visible = arcVisible(d.target!) && labelVisible(d.target!);
           return visible ? 0.9 : 0;
+        })
+        .tween('text', function(d: NodeWithCurrent) {
+          return function() {
+            const name = d.data.name;
+            const angularSize = (d.current!.x1 - d.current!.x0) * 180 / Math.PI;
+            const radialMidpoint = (d.current!.y0 + d.current!.y1) / 2;
+            const radialFactor = Math.max(0.3, radialMidpoint / 3);
+            const maxChars = Math.floor(angularSize * radialFactor / 3);
+            select(this).text(name.length > maxChars ? name.substring(0, Math.max(1, maxChars - 1)) + '…' : name);
+          };
         });
     };
 
@@ -246,18 +270,31 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
       .style('cursor', 'pointer')
       .on('click', clicked as any)
       .on('mouseover', function(event: MouseEvent, d: NodeWithCurrent) {
-        if (onNodeHover && arcVisible(d.current!)) {
-          const mouseEvent = event as any as React.MouseEvent;
-          onNodeHover(d, mouseEvent);
+        if (arcVisible(d.current!)) {
+          // Highlight on hover by increasing opacity
+          const currentOpacity = parseFloat(select(this).attr('fill-opacity')) || 0;
+          select(this)
+            .attr('data-original-opacity', currentOpacity)
+            .attr('fill-opacity', Math.min(1, currentOpacity * 1.2));
+
+          if (onNodeHover) {
+            const mouseEvent = event as any as React.MouseEvent;
+            onNodeHover(d, mouseEvent);
+          }
         }
       })
-      .on('mouseout', function() {
+      .on('mouseout', function(d: NodeWithCurrent) {
+        // Restore original opacity
+        const originalOpacity = parseFloat(select(this).attr('data-original-opacity')) || getOpacity(d);
+        select(this)
+          .attr('fill-opacity', originalOpacity);
+
         if (onNodeHover) {
           onNodeHover(null);
         }
       });
 
-    // Add text labels
+    // Add text labels with truncation based on both angular and radial size
     g.selectAll<SVGTextElement, NodeWithCurrent>('text')
       .data(root.descendants().slice(1))
       .join('text')
@@ -272,7 +309,16 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
       .attr('pointer-events', 'none')
       .style('font-size', '10px')
       .style('font-weight', '500')
-      .text((d: NodeWithCurrent) => d.data.name);
+      .text((d: NodeWithCurrent) => {
+        const name = d.data.name;
+        // Calculate max chars based on arc angular size and radial position
+        const angularSize = (d.current!.x1 - d.current!.x0) * 180 / Math.PI;
+        const radialMidpoint = (d.current!.y0 + d.current!.y1) / 2;
+        // Inner rings get more aggressive truncation
+        const radialFactor = Math.max(0.3, radialMidpoint / 3);
+        const maxChars = Math.floor(angularSize * radialFactor / 3);
+        return name.length > maxChars ? name.substring(0, Math.max(1, maxChars - 1)) + '…' : name;
+      });
 
     console.log('=== Sunburst Debug ===');
     console.log('Radius:', radius);
@@ -300,12 +346,28 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
       .attr('fill', 'white')
       .attr('pointer-events', 'all')
       .style('cursor', 'pointer')
-      .on('click', clicked as any);
+      .on('click', clicked as any)
+      .on('mouseover', function() {
+        // Grow center label on hover
+        svg.select('.center-label')
+          .transition()
+          .duration(150)
+          .style('font-size', '1.4rem');
+      })
+      .on('mouseout', function() {
+        // Restore center label size
+        svg.select('.center-label')
+          .transition()
+          .duration(150)
+          .style('font-size', '1.2rem');
+      });
 
     // Initialize center label
-    svg.select('.center-label').text(root.data.name);
+    svg.select('.center-label').html(root.data.name);
 
   }, [data, width, height, radius]);
+
+  const centerClipRadius = radius * 0.8 / 3;
 
   return (
     <svg
@@ -315,6 +377,12 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
       viewBox={`${-width / 2} ${-height / 2} ${width} ${height}`}
       style={{ maxWidth: '100%', height: 'auto', background: '#fafafa' }}
     >
+      <defs>
+        <clipPath id="center-label-clip">
+          <circle cx="0" cy="0" r={centerClipRadius} />
+        </clipPath>
+      </defs>
+
       {/* Debug: outer boundary */}
       <circle cx="0" cy="0" r={radius * 0.95} fill="none" stroke="#ddd" strokeWidth="1" strokeDasharray="4" />
 
@@ -322,17 +390,32 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
         {/* Paths will be added by d3 */}
       </g>
 
-      <text
-        className="center-label"
-        textAnchor="middle"
-        dy="0.35em"
-        style={{
-          fontSize: '1.2rem',
-          fontWeight: 600,
-          fill: '#111827',
-          pointerEvents: 'none'
-        }}
-      />
+      <foreignObject
+        x={-centerClipRadius}
+        y={-centerClipRadius}
+        width={centerClipRadius * 2}
+        height={centerClipRadius * 2}
+        clipPath="url(#center-label-clip)"
+        style={{ pointerEvents: 'none' }}
+      >
+        <div
+          className="center-label"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+            height: '100%',
+            fontSize: '1.2rem',
+            fontWeight: 600,
+            color: '#111827',
+            textAlign: 'center',
+            wordWrap: 'break-word',
+            overflow: 'hidden',
+            padding: '4px',
+          }}
+        />
+      </foreignObject>
     </svg>
   );
 }

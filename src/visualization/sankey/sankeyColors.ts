@@ -69,7 +69,7 @@ const ASSET_CLASS_COLORS = {
   'NYC_Expense_FY2025': '#111827',        // Gray 900 (root - FY2025)
 
   // System root (budget) - by label (for backward compatibility)
-  'NYC Expense Budget FY2025 (External Funding Only)': '#111827', // Gray 900 (root)
+  'NYC Expense Budget FY2025': '#111827', // Gray 900 (root)
 
   // Revenue Classes: Distinct colors for each major revenue category
   'Taxes': '#dc2626',                     // Red 600 (largest revenue source)

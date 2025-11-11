@@ -1,9 +1,7 @@
 #!/usr/bin/env node
 
-/**
- * Generate NYC Budget Sankey diagram from NYC Open Data API
- * Fetches FY2025 Expense Budget Funding data and transforms into Sankey format
- */
+// ABOUTME: Generates NYC Expense Budget by Funding Source Sankey diagram from NYC Open Data API
+// ABOUTME: Shows how funding sources (City, Federal, State funds) flow to service categories and agencies
 
 import fs from 'fs';
 import path from 'path';
@@ -70,6 +68,23 @@ function categorizeAgency(agencyName) {
   }
 
   return 'Government, Admin & Oversight'; // Default
+}
+
+// Convert to title case for display
+function toTitleCase(str) {
+  return str
+    .toLowerCase()
+    .split(' ')
+    .map(word => {
+      // Keep certain words lowercase
+      if (['and', 'of', 'the', 'for', 'in', 'on', 'at', 'to'].includes(word)) {
+        return word;
+      }
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join(' ')
+    // Capitalize first word
+    .replace(/^./, match => match.toUpperCase());
 }
 
 async function fetchBudgetData() {
@@ -170,10 +185,11 @@ function transformToSankey(records) {
   const nodes = [];
   const links = [];
 
-  // Root node
+  // Root node (strip any parenthetical content like "(external funding)")
+  const rootLabel = `NYC Expense Budget FY${FISCAL_YEAR}`.replace(/\s*\([^)]*\)\s*/g, '');
   nodes.push({
     id: 'NYC_Expense_FY2025',
-    label: `NYC Expense Budget FY${FISCAL_YEAR} (External Funding Only)`,
+    label: rootLabel,
     level: 0,
     type: 'system'
   });
@@ -251,7 +267,7 @@ function transformToSankey(records) {
     const agencyId = `agency:${agency.name.toLowerCase().replace(/[^a-z0-9]+/g, '_')}`;
     nodes.push({
       id: agencyId,
-      label: agency.name,
+      label: toTitleCase(agency.name),
       level: 3,
       type: 'agency'
     });
@@ -295,10 +311,10 @@ function transformToSankey(records) {
   return {
     meta: {
       source: `NYC Open Data - Expense Budget Funding (FY${FISCAL_YEAR})`,
-      description: 'Citywide external funding flows: Funding Source → Broad Category → Major Agencies',
+      description: 'NYC Expense Budget by Funding Source: Funding Source → Service Category → Major Agencies',
       fiscal_year: parseInt(FISCAL_YEAR),
       currency: 'USD',
-      external_total: Object.values(fundingTotals).reduce((a, b) => a + b, 0),
+      total_budget: Object.values(fundingTotals).reduce((a, b) => a + b, 0),
       fund_totals: fundingTotals,
       category_totals: Object.fromEntries(
         Array.from(categoryFunding.entries()).map(([cat, data]) => [
@@ -306,7 +322,7 @@ function transformToSankey(records) {
           data.cityFunds + data.federalFunds + data.stateFunds + data.otherCategorical + data.communityDevelopment
         ])
       ),
-      note: `Top 15 agencies by external funding shown individually; others aggregated into 'Other ... Agencies'`
+      note: `Top 15 agencies by funding shown individually; others aggregated into 'Other ... Agencies'`
     },
     nodes,
     links
@@ -321,10 +337,10 @@ async function main() {
     const outputPath = path.join(__dirname, '../public/data/nyc_budget_sankey_fy2025_generated.json');
     fs.writeFileSync(outputPath, JSON.stringify(sankeyData, null, 2));
 
-    console.log(`\n✓ Sankey diagram saved to: ${outputPath}`);
+    console.log(`\n✓ Expense Budget by Funding Source Sankey saved to: ${outputPath}`);
     console.log(`  Total nodes: ${sankeyData.nodes.length}`);
     console.log(`  Total links: ${sankeyData.links.length}`);
-    console.log(`  External budget total: $${(sankeyData.meta.external_total / 1e9).toFixed(1)}B`);
+    console.log(`  Total budget: $${(sankeyData.meta.total_budget / 1e9).toFixed(1)}B`);
   } catch (error) {
     console.error('Error generating Sankey diagram:', error);
     process.exit(1);

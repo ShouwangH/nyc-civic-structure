@@ -18,6 +18,24 @@ const API_BASE = `https://data.cityofnewyork.us/resource/${DATASET_ID}.json`;
 // NYC Open Data credentials (not currently used - public API works without token)
 // const APP_TOKEN = process.env.OD_KEY_ID;
 
+// Convert to title case for display
+function toTitleCase(str) {
+  if (!str) return 'Unknown';
+  return str
+    .toLowerCase()
+    .split(' ')
+    .map(word => {
+      // Keep certain words lowercase
+      if (['and', 'of', 'the', 'for', 'in', 'on', 'at', 'to'].includes(word)) {
+        return word;
+      }
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join(' ')
+    // Capitalize first word
+    .replace(/^./, match => match.toUpperCase());
+}
+
 // Map native Comptroller revenue categories to high-level groups
 function getTopLevelCategory(comptrollerCategory) {
   const normalized = comptrollerCategory.toUpperCase();
@@ -105,27 +123,52 @@ function transformToSunburst(records) {
     // Get top-level grouping
     const topLevel = getTopLevelCategory(comptrollerCategory);
 
-    // Initialize hierarchy levels
-    if (!hierarchy.has(topLevel)) {
-      hierarchy.set(topLevel, new Map());
-    }
-    const topLevelMap = hierarchy.get(topLevel);
+    // Skip if category matches top-level (e.g., "TAXES" category under "Taxes" top-level)
+    // This prevents duplicate "Taxes" hierarchy
+    const normalizedCategory = comptrollerCategory.toUpperCase().trim();
+    if (topLevel === 'Taxes' && normalizedCategory === 'TAXES') {
+      // Use the class directly under the top-level to avoid duplicate "Taxes"
+      if (!hierarchy.has(topLevel)) {
+        hierarchy.set(topLevel, new Map());
+      }
+      const topLevelMap = hierarchy.get(topLevel);
 
-    if (!topLevelMap.has(comptrollerCategory)) {
-      topLevelMap.set(comptrollerCategory, new Map());
-    }
-    const categoryMap = topLevelMap.get(comptrollerCategory);
+      const normalizedClass = toTitleCase(comptrollerClass);
+      if (!topLevelMap.has(normalizedClass)) {
+        topLevelMap.set(normalizedClass, new Map());
+      }
+      const classMap = topLevelMap.get(normalizedClass);
 
-    if (!categoryMap.has(comptrollerClass)) {
-      categoryMap.set(comptrollerClass, new Map());
-    }
-    const classMap = categoryMap.get(comptrollerClass);
+      const normalizedSource = toTitleCase(sourceName);
+      if (!classMap.has(normalizedSource)) {
+        classMap.set(normalizedSource, 0);
+      }
+      classMap.set(normalizedSource, classMap.get(normalizedSource) + amount);
+    } else {
+      // Normal hierarchy with all levels
+      if (!hierarchy.has(topLevel)) {
+        hierarchy.set(topLevel, new Map());
+      }
+      const topLevelMap = hierarchy.get(topLevel);
 
-    // Aggregate by source
-    if (!classMap.has(sourceName)) {
-      classMap.set(sourceName, 0);
+      const normalizedCategory = toTitleCase(comptrollerCategory);
+      if (!topLevelMap.has(normalizedCategory)) {
+        topLevelMap.set(normalizedCategory, new Map());
+      }
+      const categoryMap = topLevelMap.get(normalizedCategory);
+
+      const normalizedClass = toTitleCase(comptrollerClass);
+      if (!categoryMap.has(normalizedClass)) {
+        categoryMap.set(normalizedClass, new Map());
+      }
+      const classMap = categoryMap.get(normalizedClass);
+
+      const normalizedSource = toTitleCase(sourceName);
+      if (!classMap.has(normalizedSource)) {
+        classMap.set(normalizedSource, 0);
+      }
+      classMap.set(normalizedSource, classMap.get(normalizedSource) + amount);
     }
-    classMap.set(sourceName, classMap.get(sourceName) + amount);
 
     totalRevenue += amount;
   }
@@ -133,19 +176,21 @@ function transformToSunburst(records) {
   console.log(`Total revenue: $${(totalRevenue / 1e9).toFixed(2)}B`);
   console.log(`Top-level categories: ${hierarchy.size}`);
 
-  // Build sunburst structure: 4 levels
+  // Build sunburst structure: 3 levels for Taxes (skip duplicate), 4 levels for others
   const children = [];
 
   for (const [topLevelName, categories] of hierarchy.entries()) {
     const topLevelChildren = [];
 
     for (const [categoryName, classes] of categories.entries()) {
-      const categoryChildren = [];
+      // Check if this is a Map (normal 4-level) or has sources directly (3-level for Taxes)
+      const firstValue = classes.values().next().value;
+      const isDirectSources = typeof firstValue === 'number';
 
-      for (const [className, sources] of classes.entries()) {
+      if (isDirectSources) {
+        // 3-level structure: Class → Source (for Taxes)
         const classChildren = [];
-
-        for (const [sourceName, amount] of sources.entries()) {
+        for (const [sourceName, amount] of classes.entries()) {
           classChildren.push({
             name: sourceName,
             value: Math.abs(amount),
@@ -155,18 +200,41 @@ function transformToSunburst(records) {
         }
 
         if (classChildren.length > 0) {
-          categoryChildren.push({
-            name: className,
+          topLevelChildren.push({
+            name: categoryName,
             children: classChildren
           });
         }
-      }
+      } else {
+        // 4-level structure: Category → Class → Source
+        const categoryChildren = [];
 
-      if (categoryChildren.length > 0) {
-        topLevelChildren.push({
-          name: categoryName,
-          children: categoryChildren
-        });
+        for (const [className, sources] of classes.entries()) {
+          const classChildren = [];
+
+          for (const [sourceName, amount] of sources.entries()) {
+            classChildren.push({
+              name: sourceName,
+              value: Math.abs(amount),
+              actualValue: amount,
+              isNegative: amount < 0
+            });
+          }
+
+          if (classChildren.length > 0) {
+            categoryChildren.push({
+              name: className,
+              children: classChildren
+            });
+          }
+        }
+
+        if (categoryChildren.length > 0) {
+          topLevelChildren.push({
+            name: categoryName,
+            children: categoryChildren
+          });
+        }
       }
     }
 

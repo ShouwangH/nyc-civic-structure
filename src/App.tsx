@@ -102,7 +102,7 @@ function App() {
 
   return (
     <div className="relative flex h-screen bg-[#eceae4] p-3 gap-3">
-      <div className="flex flex-col w-1/4 gap-3 h-full overflow-hidden">
+      <div className="flex flex-col w-1/3 gap-3 h-full overflow-hidden">
         <header className="rounded-xl border border-slate-200 bg-slate-50 px-6 py-3 shadow-sm">
           <h1 className="text-xl font-semibold text-slate-900">
             <span>Maximum New York |</span>

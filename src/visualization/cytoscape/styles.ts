@@ -19,7 +19,10 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
       'text-halign': 'center',
       padding: '8px',
       shape: 'round-rectangle',
-    },
+      'underlay-color': '#000000',
+      'underlay-opacity': 0.25,
+      'underlay-padding': '6px',
+    } as any,
   },
   {
     selector: 'node[system = "borough"]',
@@ -84,6 +87,7 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
     style: {
       opacity: 0.18,
       'text-opacity': 0.18,
+      'underlay-opacity': 0,
     },
   },
   {
@@ -126,6 +130,7 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
     style: {
       opacity: 0.12,
       'text-opacity': 0.12,
+      'underlay-opacity': 0,
     },
   },
   {
@@ -141,6 +146,15 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
       'border-width': '4px',
       'background-color': 'data(branchColor)',
       color:'white'
+    },
+  },
+  {
+    selector: 'node.hovered',
+    style: {
+      'border-color': '#6b7280',
+      'border-width': '3px',
+      'background-color': 'data(branchColor)',
+      color: 'white',
     },
   },
   {

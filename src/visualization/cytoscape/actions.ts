@@ -12,6 +12,8 @@ type Action<T extends string, P = undefined> = P extends undefined
 export type NodeClickAction = Action<'NODE_CLICK', { nodeId: string }>;
 export type EdgeClickAction = Action<'EDGE_CLICK', { edgeId: string }>;
 export type BackgroundClickAction = Action<'BACKGROUND_CLICK'>;
+export type NodeHoverAction = Action<'NODE_HOVER', { nodeId: string }>;
+export type NodeUnhoverAction = Action<'NODE_UNHOVER'>;
 
 // Subview actions
 export type ActivateSubviewAction = Action<'ACTIVATE_SUBVIEW', { subviewId: string }>;
@@ -35,6 +37,8 @@ export type GraphAction =
   | NodeClickAction
   | EdgeClickAction
   | BackgroundClickAction
+  | NodeHoverAction
+  | NodeUnhoverAction
   | ActivateSubviewAction
   | DeactivateSubviewAction
   | ChangeScopeAction
@@ -57,6 +61,15 @@ export const actions = {
 
   backgroundClick: (): BackgroundClickAction => ({
     type: 'BACKGROUND_CLICK',
+  }),
+
+  nodeHover: (nodeId: string): NodeHoverAction => ({
+    type: 'NODE_HOVER',
+    payload: { nodeId },
+  }),
+
+  nodeUnhover: (): NodeUnhoverAction => ({
+    type: 'NODE_UNHOVER',
   }),
 
   activateSubview: (subviewId: string): ActivateSubviewAction => ({
