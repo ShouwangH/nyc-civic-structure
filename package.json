@@ -13,6 +13,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
+    "db:migrate-housing": "node --env-file=.env scripts/apply-housing-migration.js",
     "seed:housing": "node --env-file=.env scripts/seed-housing.js",
     "seed:capital": "node --env-file=.env scripts/seed-capital-budget.js",
     "seed:financial": "node --env-file=.env scripts/seed-financial.js",
