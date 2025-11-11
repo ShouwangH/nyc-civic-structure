@@ -227,8 +227,10 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
           return function() {
             const name = d.data.name;
             const angularSize = (d.current!.x1 - d.current!.x0) * 180 / Math.PI;
-            const maxChars = Math.floor(angularSize / 3);
-            select(this).text(name.length > maxChars ? name.substring(0, maxChars - 1) + '…' : name);
+            const radialMidpoint = (d.current!.y0 + d.current!.y1) / 2;
+            const radialFactor = Math.max(0.3, radialMidpoint / 3);
+            const maxChars = Math.floor(angularSize * radialFactor / 3);
+            select(this).text(name.length > maxChars ? name.substring(0, Math.max(1, maxChars - 1)) + '…' : name);
           };
         });
     };
@@ -278,7 +280,7 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
         }
       });
 
-    // Add text labels with truncation
+    // Add text labels with truncation based on both angular and radial size
     g.selectAll<SVGTextElement, NodeWithCurrent>('text')
       .data(root.descendants().slice(1))
       .join('text')
@@ -295,10 +297,13 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
       .style('font-weight', '500')
       .text((d: NodeWithCurrent) => {
         const name = d.data.name;
-        // Calculate max chars based on arc size
+        // Calculate max chars based on arc angular size and radial position
         const angularSize = (d.current!.x1 - d.current!.x0) * 180 / Math.PI;
-        const maxChars = Math.floor(angularSize / 3);
-        return name.length > maxChars ? name.substring(0, maxChars - 1) + '…' : name;
+        const radialMidpoint = (d.current!.y0 + d.current!.y1) / 2;
+        // Inner rings get more aggressive truncation
+        const radialFactor = Math.max(0.3, radialMidpoint / 3);
+        const maxChars = Math.floor(angularSize * radialFactor / 3);
+        return name.length > maxChars ? name.substring(0, Math.max(1, maxChars - 1)) + '…' : name;
       });
 
     console.log('=== Sunburst Debug ===');

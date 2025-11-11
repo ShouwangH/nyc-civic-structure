@@ -87,28 +87,6 @@ function normalizeObjectClass(name) {
   return mappings[normalized] || toTitleCase(name);
 }
 
-// Normalize object code names to human-readable format
-function normalizeObjectCode(name) {
-  if (!name) return 'Unknown';
-
-  let normalized = name.trim();
-
-  // Expand common abbreviations
-  normalized = normalized
-    .replace(/^PROF SERV /gi, 'Professional Services: ')
-    .replace(/^MAINT & REP /gi, 'Maintenance & Repair: ')
-    .replace(/^MAINT & OPER /gi, 'Maintenance & Operation: ')
-    .replace(/ PRGM /gi, ' Program ')
-    .replace(/ VEH /gi, ' Vehicle ')
-    .replace(/ EQUIP$/gi, ' Equipment')
-    .replace(/ ACCT$/gi, ' Account')
-    .replace(/ASST/gi, 'Assistance')
-    .replace(/ACCTING/gi, 'Accounting')
-    .replace(/TELECOM/gi, 'Telecommunications');
-
-  return toTitleCase(normalized);
-}
-
 // Convert to title case
 function toTitleCase(str) {
   return str
@@ -170,7 +148,7 @@ async function fetchExpenseData() {
 function transformToSunburst(records) {
   console.log('Transforming data to sunburst format...');
 
-  // Build 5-level hierarchy: High-Level Category → Agency → Unit → Object Class → Object Code
+  // Build 3-level hierarchy: High-Level Category → Agency → Object Class
   const hierarchy = new Map();
   let totalExpense = 0;
 
@@ -180,18 +158,14 @@ function transformToSunburst(records) {
 
     // Extract fields
     const agencyName = record.agency_name || 'Unknown';
-    const unitName = record.unit_appropriation_name || 'Unknown';
     const objectClassName = record.object_class_name || 'Unknown';
-    const objectCodeName = record.object_code_name || 'Unknown';
 
     // Get high-level category
     const category = categorizeAgency(agencyName);
 
     // Normalize names for display
     const normalizedAgency = toTitleCase(agencyName);
-    const normalizedUnit = toTitleCase(unitName);
     const normalizedObjectClass = normalizeObjectClass(objectClassName);
-    const normalizedObjectCode = normalizeObjectCode(objectCodeName);
 
     // Initialize hierarchy levels
     if (!hierarchy.has(category)) {
@@ -204,21 +178,11 @@ function transformToSunburst(records) {
     }
     const agencyMap = categoryMap.get(normalizedAgency);
 
-    if (!agencyMap.has(normalizedUnit)) {
-      agencyMap.set(normalizedUnit, new Map());
+    // Aggregate by object class (no deeper levels)
+    if (!agencyMap.has(normalizedObjectClass)) {
+      agencyMap.set(normalizedObjectClass, 0);
     }
-    const unitMap = agencyMap.get(normalizedUnit);
-
-    if (!unitMap.has(normalizedObjectClass)) {
-      unitMap.set(normalizedObjectClass, new Map());
-    }
-    const objectClassMap = unitMap.get(normalizedObjectClass);
-
-    // Aggregate by object code
-    if (!objectClassMap.has(normalizedObjectCode)) {
-      objectClassMap.set(normalizedObjectCode, 0);
-    }
-    objectClassMap.set(normalizedObjectCode, objectClassMap.get(normalizedObjectCode) + amount);
+    agencyMap.set(normalizedObjectClass, agencyMap.get(normalizedObjectClass) + amount);
 
     totalExpense += amount;
   }
@@ -226,44 +190,22 @@ function transformToSunburst(records) {
   console.log(`Total expense: $${(totalExpense / 1e9).toFixed(2)}B`);
   console.log(`High-level categories: ${hierarchy.size}`);
 
-  // Build sunburst structure: 5 levels
+    // Build sunburst structure: 3 levels (Category → Agency → Object Class)
   const children = [];
 
   for (const [categoryName, agencies] of hierarchy.entries()) {
     const categoryChildren = [];
 
-    for (const [agencyName, units] of agencies.entries()) {
+    for (const [agencyName, objectClasses] of agencies.entries()) {
       const agencyChildren = [];
 
-      for (const [unitName, objectClasses] of units.entries()) {
-        const unitChildren = [];
-
-        for (const [objectClassName, objectCodes] of objectClasses.entries()) {
-          const objectClassChildren = [];
-
-          for (const [objectCodeName, amount] of objectCodes.entries()) {
-            objectClassChildren.push({
-              name: objectCodeName,
-              value: Math.abs(amount),
-              actualValue: amount,
-              isNegative: amount < 0
-            });
-          }
-
-          if (objectClassChildren.length > 0) {
-            unitChildren.push({
-              name: objectClassName,
-              children: objectClassChildren
-            });
-          }
-        }
-
-        if (unitChildren.length > 0) {
-          agencyChildren.push({
-            name: unitName,
-            children: unitChildren
-          });
-        }
+      for (const [objectClassName, amount] of objectClasses.entries()) {
+        agencyChildren.push({
+          name: objectClassName,
+          value: Math.abs(amount),
+          actualValue: amount,
+          isNegative: amount < 0
+        });
       }
 
       if (agencyChildren.length > 0) {
