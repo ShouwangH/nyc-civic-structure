@@ -95,5 +95,15 @@ export function setupInputHandler(config: InputHandlerConfig): InputHandler {
     }
   });
 
+  // Hover events for visual feedback
+  cy.on('mouseover', 'node', (event) => {
+    const nodeId = event.target.id();
+    void enqueue(actions.nodeHover(nodeId));
+  });
+
+  cy.on('mouseout', 'node', () => {
+    void enqueue(actions.nodeUnhover());
+  });
+
   return { enqueue };
 }

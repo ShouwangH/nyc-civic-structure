@@ -823,6 +823,20 @@ export function createController(config: ControllerConfig): Controller {
         break;
       }
 
+      case 'NODE_HOVER': {
+        const { nodeId } = action.payload;
+        const node = cy.getElementById(nodeId);
+        if (!node.empty()) {
+          node.addClass('hovered');
+        }
+        break;
+      }
+
+      case 'NODE_UNHOVER': {
+        cy.elements().removeClass('hovered');
+        break;
+      }
+
       case 'ACTIVATE_SUBVIEW': {
         const { subviewId } = action.payload;
         await activateSubview(subviewId);

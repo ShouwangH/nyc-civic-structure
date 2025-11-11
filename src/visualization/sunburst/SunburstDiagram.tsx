@@ -263,6 +263,12 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
             .attr('data-original-opacity', currentOpacity)
             .attr('fill-opacity', Math.min(1, currentOpacity * 1.2));
 
+          // Grow center label on hover
+          svg.select('.center-label')
+            .transition()
+            .duration(150)
+            .style('font-size', '1.4rem');
+
           if (onNodeHover) {
             const mouseEvent = event as any as React.MouseEvent;
             onNodeHover(d, mouseEvent);
@@ -274,6 +280,12 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
         const originalOpacity = parseFloat(select(this).attr('data-original-opacity')) || getOpacity(d);
         select(this)
           .attr('fill-opacity', originalOpacity);
+
+        // Restore center label size
+        svg.select('.center-label')
+          .transition()
+          .duration(150)
+          .style('font-size', '1.2rem');
 
         if (onNodeHover) {
           onNodeHover(null);
