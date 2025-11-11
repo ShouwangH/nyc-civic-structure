@@ -94,10 +94,10 @@ function processDCPHousing(records) {
       continue;
     }
 
-    // Parse unit counts (use ClassANet as primary, fallback to Units_CO)
+    // Parse unit counts (ClassANet = net change in units, the correct value for totalUnits)
     const classANet = parseFloat(record.ClassANet) || 0;
-    const unitsCO = parseFloat(record.Units_CO) || 0;
-    const totalUnits = Math.round(unitsCO || classANet);
+    const unitsCO = parseFloat(record.Units_CO) || 0; // Store for reference, but don't use for totalUnits
+    const totalUnits = Math.round(classANet);
 
     // Skip if no units (or negative for demolitions)
     if (totalUnits <= 0) {
