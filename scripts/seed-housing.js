@@ -209,6 +209,132 @@ function processHousingNY(records) {
 }
 
 /**
+ * Process DOB new construction records
+ */
+function processDOB(records) {
+  console.log('[Process] Processing DOB new construction records...');
+
+  const buildings = [];
+
+  for (const record of records) {
+    const latestActionDate = record.latest_action_date;
+    if (!latestActionDate) continue;
+
+    const date = new Date(latestActionDate);
+    const completionYear = date.getFullYear();
+
+    // Filter to 2014-2025 range
+    if (completionYear < 2014 || completionYear > 2025) continue;
+
+    // Parse coordinates
+    const lat = parseFloat(record.latitude);
+    const lon = parseFloat(record.longitude);
+    if (isNaN(lat) || isNaN(lon)) continue;
+
+    // Construct BBL
+    const bbl = constructBBL(record.borough, record.block, record.lot);
+
+    // Estimate units from proposed dwelling units or existing
+    const totalUnits = parseInt(record.proposed_dwelling_units || record.existing_dwelling_units || 0, 10);
+    if (totalUnits === 0) continue;
+
+    const building = {
+      id: `DOB-${record.job_}`,
+      name: `DOB Job ${record.job_}`,
+      longitude: lon,
+      latitude: lat,
+      address: `${record.house || ''} ${record.street_name || ''}`.trim(),
+      borough: record.borough || 'Unknown',
+      bbl,
+      bin: null,
+      postcode: record.zip_code,
+      communityBoard: record.community___board,
+      councilDistrict: null,
+      censusTract: null,
+      nta: null,
+
+      completionYear,
+      completionMonth: date.getMonth() + 1,
+      completionDate: latestActionDate,
+
+      totalUnits,
+      affordableUnits: 0, // DOB doesn't track affordability
+      affordablePercentage: 0,
+
+      // No income breakdowns for DOB data
+      extremeLowIncomeUnits: 0,
+      veryLowIncomeUnits: 0,
+      lowIncomeUnits: 0,
+      moderateIncomeUnits: 0,
+      middleIncomeUnits: 0,
+      otherIncomeUnits: 0,
+
+      // No bedroom breakdowns for DOB data
+      studioUnits: 0,
+      oneBrUnits: 0,
+      twoBrUnits: 0,
+      threeBrUnits: 0,
+      fourBrUnits: 0,
+      fiveBrUnits: 0,
+      sixBrUnits: 0,
+      unknownBrUnits: totalUnits, // All units have unknown bedroom count
+
+      buildingType: classifyBuildingType(totalUnits, 0, record.job_type, null),
+      physicalBuildingType: BUILDING_CLASS_MAP[record.job_type] || 'unknown',
+      buildingClass: record.building_type,
+      zoningDistrict: null,
+
+      dataSource: 'dob',
+      isRenovation: record.job_type === 'A1' || record.job_type === 'A2' || record.job_type === 'A3',
+
+      projectId: null,
+      projectName: null,
+      constructionType: null,
+      extendedAffordabilityOnly: false,
+      prevailingWageStatus: null,
+
+      lastSyncedAt: new Date(),
+    };
+
+    buildings.push(building);
+  }
+
+  console.log(`[Process] Processed ${formatNumber(buildings.length)} DOB new construction buildings\n`);
+  return buildings;
+}
+
+/**
+ * Merge Housing NY and DOB buildings, preferring Housing NY for duplicates (by BBL)
+ */
+function mergeBuildings(housingNyBuildings, dobBuildings) {
+  console.log('[Merge] Merging Housing NY and DOB buildings...');
+
+  // Create a map of Housing NY buildings by BBL
+  const housingNyByBBL = new Map();
+  for (const building of housingNyBuildings) {
+    if (building.bbl) {
+      housingNyByBBL.set(building.bbl, building);
+    }
+  }
+
+  // Add DOB buildings that don't have a Housing NY match
+  const uniqueDobBuildings = [];
+  for (const building of dobBuildings) {
+    if (!building.bbl || !housingNyByBBL.has(building.bbl)) {
+      uniqueDobBuildings.push(building);
+    }
+  }
+
+  const merged = [...housingNyBuildings, ...uniqueDobBuildings];
+
+  console.log(`[Merge] Housing NY: ${formatNumber(housingNyBuildings.length)}`);
+  console.log(`[Merge] DOB (unique): ${formatNumber(uniqueDobBuildings.length)}`);
+  console.log(`[Merge] Total: ${formatNumber(merged.length)}\n`);
+
+  return merged;
+}
+
+/**
  * Process DOB demolition records
  */
 function processDemolitions(records) {
@@ -289,24 +415,40 @@ async function main() {
       order: 'reporting_construction_type DESC',
     });
 
+    // Step 2b: Fetch DOB new construction data (A1/A2/A3 job types)
+    console.log('--- STEP 2: Fetch DOB New Construction Data ---\n');
+    const dobRecords = await fetchNycOpenData(DOB_API, {
+      limit: 50000,
+      where: "(job_type='A1' OR job_type='A2' OR job_type='A3' OR job_type='NB') AND (job_status_descrp='SIGNED OFF' OR job_status_descrp='PERMIT ISSUED - ENTIRE JOB/WORK' OR job_status_descrp='COMPLETED') AND latest_action_date>='2014-01-01'",
+      order: 'latest_action_date DESC',
+    });
+
     // Step 3: Fetch DOB demolition data
-    console.log('--- STEP 2: Fetch DOB Demolition Data ---\n');
+    console.log('--- STEP 3: Fetch DOB Demolition Data ---\n');
     const demolitionRecords = await fetchNycOpenData(DOB_API, {
       limit: 50000,
-      where: "job_type='DM' AND (job_status_descrp='SIGNED OFF' OR job_status_descrp='PERMIT ISSUED - ENTIRE JOB/WORK' OR job_status_descrp='COMPLETED')",
+      where: "job_type='DM' AND (job_status_descrp='SIGNED OFF' OR job_status_descrp='PERMIT ISSUED - ENTIRE JOB/WORK' OR job_status_descrp='COMPLETED') AND latest_action_date>='2014-01-01'",
       order: 'latest_action_date DESC',
     });
 
     // Step 4: Process Housing NY buildings
-    console.log('--- STEP 3: Process Housing NY Buildings ---\n');
-    const buildings = processHousingNY(housingNyRecords);
+    console.log('--- STEP 4: Process Housing NY Buildings ---\n');
+    const housingNyBuildings = processHousingNY(housingNyRecords);
 
-    // Step 5: Process demolitions
-    console.log('--- STEP 4: Process Demolitions ---\n');
+    // Step 5: Process DOB new construction
+    console.log('--- STEP 5: Process DOB New Construction ---\n');
+    const dobBuildings = processDOB(dobRecords);
+
+    // Step 6: Merge and deduplicate buildings
+    console.log('--- STEP 6: Merge Building Data ---\n');
+    const buildings = mergeBuildings(housingNyBuildings, dobBuildings);
+
+    // Step 7: Process demolitions
+    console.log('--- STEP 7: Process Demolitions ---\n');
     const demolitions = processDemolitions(demolitionRecords);
 
-    // Step 6: Match demolitions with new construction
-    console.log('--- STEP 5: Match Demolitions with New Construction ---\n');
+    // Step 8: Match demolitions with new construction
+    console.log('--- STEP 8: Match Demolitions with New Construction ---\n');
     const buildingBBLs = new Set(buildings.map(b => b.bbl).filter(Boolean));
 
     for (const demolition of demolitions) {
@@ -319,8 +461,8 @@ async function main() {
     console.log(`[Match] ${formatNumber(demolitions.length)} total demolitions`);
     console.log(`[Match] ${formatNumber(standaloneDemolitions.length)} standalone (no new construction)\n`);
 
-    // Step 7: Insert into database
-    console.log('--- STEP 6: Insert into Database ---\n');
+    // Step 9: Insert into database
+    console.log('--- STEP 9: Insert into Database ---\n');
     await batchInsert(db, housingBuildings, buildings, {
       batchSize: 500,
       label: 'housing buildings',
