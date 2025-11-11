@@ -18,7 +18,8 @@
     "seed:financial": "node --env-file=.env scripts/seed-financial.js",
     "seed:all": "bun run seed:housing && bun run seed:capital && bun run seed:financial",
     "verify:housing": "node --env-file=.env scripts/verify-housing-quick.js",
-    "diagnose:dob": "node --env-file=.env scripts/diagnose-dob-filtering.js"
+    "diagnose:dob": "node --env-file=.env scripts/diagnose-dob-filtering.js",
+    "diagnose:dob-api": "node scripts/diagnose-dob-api.js"
   },
   "dependencies": {
     "@deck.gl/core": "^9.2.2",
