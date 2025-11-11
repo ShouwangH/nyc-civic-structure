@@ -1,7 +1,7 @@
 // ABOUTME: Main housing timelapse overlay component
 // ABOUTME: Combines Map3D, TimeSlider, and Legend for complete visualization experience
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Map3D } from './Map3D';
 import { TimeSlider } from './TimeSlider';
 import { Legend } from './Legend';

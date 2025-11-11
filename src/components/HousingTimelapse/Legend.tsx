@@ -61,9 +61,6 @@ export function Legend({
   }
   console.groupEnd();
 
-  // Check if any PLUTO data is being used (from filtered buildings)
-  const usesPluto = buildingsUpToYear.some(b => b.dataSource === 'pluto');
-
   // Calculate gross units (sum of all totalUnits)
   const grossUnits = buildingsUpToYear.reduce((sum, b) => sum + b.totalUnits, 0);
 

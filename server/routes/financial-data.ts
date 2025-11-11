@@ -4,7 +4,6 @@
 import { registerRoute } from '../api-middleware';
 import { db } from '../lib/db';
 import { sankeyDatasets, sunburstDatasets } from '../lib/schema';
-import { eq } from 'drizzle-orm';
 
 // Cache configuration (in-memory)
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
