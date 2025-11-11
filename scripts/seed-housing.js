@@ -330,12 +330,14 @@ function deduplicateById(buildings, source) {
 }
 
 /**
- * Merge Housing NY and DOB buildings, preferring Housing NY for duplicates (by BBL)
+ * Merge Housing NY and DOB buildings - DOB is PRIMARY, Housing NY overlays affordable data
+ * This matches the frontend processor logic where DOB represents all construction
+ * and Housing NY provides affordable housing metadata
  */
 function mergeBuildings(housingNyBuildings, dobBuildings) {
-  console.log('[Merge] Merging Housing NY and DOB buildings...');
+  console.log('[Merge] Merging DOB (primary) with Housing NY (affordable overlay)...');
 
-  // Create a map of Housing NY buildings by BBL
+  // Create a map of Housing NY buildings by BBL (for overlay)
   const housingNyByBBL = new Map();
   for (const building of housingNyBuildings) {
     if (building.bbl) {
@@ -343,18 +345,66 @@ function mergeBuildings(housingNyBuildings, dobBuildings) {
     }
   }
 
-  // Add DOB buildings that don't have a Housing NY match
-  const uniqueDobBuildings = [];
-  for (const building of dobBuildings) {
-    if (!building.bbl || !housingNyByBBL.has(building.bbl)) {
-      uniqueDobBuildings.push(building);
+  const merged = [];
+  let dobWithAffordable = 0;
+  let dobMarketRate = 0;
+
+  // DOB is PRIMARY - iterate through all DOB buildings
+  for (const dobBuilding of dobBuildings) {
+    const housingNyData = dobBuilding.bbl ? housingNyByBBL.get(dobBuilding.bbl) : null;
+
+    if (housingNyData) {
+      // DOB building with affordable housing overlay
+      // Use DOB as base, overlay affordable data from Housing NY
+      merged.push({
+        ...dobBuilding,
+        // Overlay affordable units from Housing NY
+        affordableUnits: housingNyData.affordableUnits || 0,
+        affordablePercentage: housingNyData.affordablePercentage || 0,
+        extremeLowIncomeUnits: housingNyData.extremeLowIncomeUnits || 0,
+        veryLowIncomeUnits: housingNyData.veryLowIncomeUnits || 0,
+        lowIncomeUnits: housingNyData.lowIncomeUnits || 0,
+        moderateIncomeUnits: housingNyData.moderateIncomeUnits || 0,
+        middleIncomeUnits: housingNyData.middleIncomeUnits || 0,
+        otherIncomeUnits: housingNyData.otherIncomeUnits || 0,
+        // Overlay bedroom breakdown from Housing NY
+        studioUnits: housingNyData.studioUnits || 0,
+        oneBrUnits: housingNyData.oneBrUnits || 0,
+        twoBrUnits: housingNyData.twoBrUnits || 0,
+        threeBrUnits: housingNyData.threeBrUnits || 0,
+        fourBrUnits: housingNyData.fourBrUnits || 0,
+        fiveBrUnits: housingNyData.fiveBrUnits || 0,
+        sixBrUnits: housingNyData.sixBrUnits || 0,
+        // Housing NY specific fields
+        projectId: housingNyData.projectId || null,
+        projectName: housingNyData.projectName || null,
+        constructionType: housingNyData.constructionType || null,
+        extendedAffordabilityOnly: housingNyData.extendedAffordabilityOnly || false,
+        prevailingWageStatus: housingNyData.prevailingWageStatus || null,
+      });
+      dobWithAffordable++;
+    } else {
+      // Pure DOB building (market-rate)
+      merged.push(dobBuilding);
+      dobMarketRate++;
     }
   }
 
-  const merged = [...housingNyBuildings, ...uniqueDobBuildings];
+  // Add Housing NY buildings that have no DOB match (100% affordable, no construction permit)
+  let housingNyOnly = 0;
+  for (const housingNyBuilding of housingNyBuildings) {
+    // Check if this Housing NY building's BBL exists in DOB
+    const hasDobMatch = dobBuildings.some(dob => dob.bbl && dob.bbl === housingNyBuilding.bbl);
+    if (!hasDobMatch) {
+      merged.push(housingNyBuilding);
+      housingNyOnly++;
+    }
+  }
 
-  console.log(`[Merge] Housing NY: ${formatNumber(housingNyBuildings.length)}`);
-  console.log(`[Merge] DOB (unique): ${formatNumber(uniqueDobBuildings.length)}`);
+  console.log(`[Merge] DOB buildings: ${formatNumber(dobBuildings.length)}`);
+  console.log(`[Merge]   - With affordable (Housing NY overlay): ${formatNumber(dobWithAffordable)}`);
+  console.log(`[Merge]   - Market-rate only: ${formatNumber(dobMarketRate)}`);
+  console.log(`[Merge] Housing NY only (no DOB permit): ${formatNumber(housingNyOnly)}`);
   console.log(`[Merge] Total: ${formatNumber(merged.length)}\n`);
 
   return merged;
