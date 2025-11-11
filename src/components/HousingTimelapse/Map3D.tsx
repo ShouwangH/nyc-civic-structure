@@ -42,21 +42,26 @@ export function Map3D({ buildings, currentYear, width, height }: Map3DProps) {
       radius: 20,
       extruded: true,
       pickable: true,
+      autoHighlight: true,
+      highlightColor: [255, 255, 255, 100],
       elevationScale: 4,
       getElevation: (d) => d.completionYear <= displayYear ? d.totalUnits : 0,
       getFillColor: (d) => {
+        // Make transparent if not yet built
+        const opacity = d.completionYear <= displayYear ? 200 : 0;
+
         // Color by physical building type
         switch (d.physicalBuildingType) {
           case 'multifamily-elevator':
-            return [59, 130, 246, 200]; // Blue
+            return [59, 130, 246, opacity]; // Blue
           case 'multifamily-walkup':
-            return [147, 51, 234, 200]; // Purple
+            return [147, 51, 234, opacity]; // Purple
           case 'mixed-use':
-            return [251, 191, 36, 200]; // Yellow
+            return [251, 191, 36, opacity]; // Yellow
           case 'one-two-family':
-            return [239, 68, 68, 200]; // Red
+            return [239, 68, 68, opacity]; // Red
           default:
-            return [156, 163, 175, 200]; // Gray - Unknown
+            return [156, 163, 175, opacity]; // Gray - Unknown
         }
       },
       getLineColor: [255, 255, 255, 80],
@@ -64,6 +69,7 @@ export function Map3D({ buildings, currentYear, width, height }: Map3DProps) {
       lineWidthMinPixels: 1,
       updateTriggers: {
         getElevation: [displayYear],
+        getFillColor: [displayYear],
       },
       transitions: {
         getElevation: {
@@ -92,14 +98,21 @@ export function Map3D({ buildings, currentYear, width, height }: Map3DProps) {
       radius: 20,
       extruded: true,
       pickable: true,
+      autoHighlight: true,
+      highlightColor: [255, 255, 255, 100],
       elevationScale: 4,
       getElevation: (d) => d.completionYear <= displayYear ? d.affordableUnits : 0,
-      getFillColor: [34, 197, 94, 200], // Green for affordable
+      getFillColor: (d) => {
+        // Make transparent if not yet built
+        const opacity = d.completionYear <= displayYear ? 200 : 0;
+        return [34, 197, 94, opacity]; // Green for affordable
+      },
       getLineColor: [255, 255, 255, 80],
       getLineWidth: 1,
       lineWidthMinPixels: 1,
       updateTriggers: {
         getElevation: [displayYear],
+        getFillColor: [displayYear],
       },
       transitions: {
         getElevation: {
@@ -136,15 +149,7 @@ export function Map3D({ buildings, currentYear, width, height }: Map3DProps) {
     const marketUnits = building.totalUnits - building.affordableUnits;
 
     return (
-      <div
-        className="absolute z-10 pointer-events-none"
-        style={{
-          left: '50%',
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
-        }}
-      >
-        <div className="bg-white rounded-lg shadow-lg p-3 border border-slate-200 max-w-xs">
+      <div className="absolute top-4 left-4 bg-white rounded-lg shadow-lg p-3 border border-slate-200 max-w-xs z-10">
           <div className="font-semibold text-slate-900 text-sm mb-1">{building.name}</div>
           <div className="text-xs text-slate-600 space-y-0.5">
             <div>{building.address}</div>
@@ -173,7 +178,6 @@ export function Map3D({ buildings, currentYear, width, height }: Map3DProps) {
               <div>Completed: {building.completionYear}</div>
             </div>
           </div>
-        </div>
       </div>
     );
   };

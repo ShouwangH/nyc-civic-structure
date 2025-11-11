@@ -185,10 +185,11 @@ function transformToSankey(records) {
   const nodes = [];
   const links = [];
 
-  // Root node
+  // Root node (strip any parenthetical content like "(external funding)")
+  const rootLabel = `NYC Expense Budget FY${FISCAL_YEAR}`.replace(/\s*\([^)]*\)\s*/g, '');
   nodes.push({
     id: 'NYC_Expense_FY2025',
-    label: `NYC Expense Budget FY${FISCAL_YEAR}`,
+    label: rootLabel,
     level: 0,
     type: 'system'
   });

@@ -19,10 +19,9 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
       'text-halign': 'center',
       padding: '8px',
       shape: 'round-rectangle',
-      'shadow-blur': '4',
-      'shadow-color': '#00000033',
-      'shadow-offset-x': '0',
-      'shadow-offset-y': '2',
+      'underlay-color': '#000000',
+      'underlay-opacity': 0.25,
+      'underlay-padding': '6px',
     } as any,
   },
   {
@@ -88,6 +87,7 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
     style: {
       opacity: 0.18,
       'text-opacity': 0.18,
+      'underlay-opacity': 0,
     },
   },
   {
@@ -130,6 +130,7 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
     style: {
       opacity: 0.12,
       'text-opacity': 0.12,
+      'underlay-opacity': 0,
     },
   },
   {
@@ -153,7 +154,6 @@ export const graphStyles: Array<cytoscape.StylesheetStyle | cytoscape.Stylesheet
       'border-color': '#6b7280',
       'border-width': '3px',
       'background-color': 'data(branchColor)',
-      'background-opacity': 0.85,
       color: 'white',
     },
   },

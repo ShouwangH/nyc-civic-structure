@@ -54,6 +54,13 @@ async function fetchAndProcessCapitalBudget() {
         ? parseInt(feature.properties.maxdate.substring(0, 4), 10)
         : undefined;
 
+      // Data correction: Fix erroneous 100 billion value (should be 100 million)
+      // Note: Revised from NYC Open Data API data quality issue
+      let allocateTotal = parseFloat(feature.properties.allocate_total || '0');
+      if (allocateTotal >= 99e9 && allocateTotal <= 101e9) {
+        allocateTotal = 100e6; // Correct to 100 million
+      }
+
       return {
         type: 'Feature',
         geometry: feature.geometry,
@@ -65,7 +72,7 @@ async function fetchAndProcessCapitalBudget() {
           typecategory: feature.properties.typecategory || 'Unknown',
           mindate: feature.properties.mindate || '',
           maxdate: feature.properties.maxdate || '',
-          allocate_total: parseFloat(feature.properties.allocate_total || '0'),
+          allocate_total: allocateTotal,
           commit_total: parseFloat(feature.properties.commit_total || '0'),
           spent_total: parseFloat(feature.properties.spent_total || '0'),
           plannedcommit_total: parseFloat(feature.properties.plannedcommit_total || '0'),

@@ -74,6 +74,7 @@ export function CapitalBudgetMap() {
   const { projects, isLoading, error } = useCapitalBudgetData();
   const [hoveredProject, setHoveredProject] = useState<CapitalProjectFeature | null>(null);
   const [selectedProjectIds, setSelectedProjectIds] = useState<Set<string>>(new Set());
+  const [viewMode, setViewMode] = useState<'budget' | 'footprint'>('budget');
 
   // Transform projects to include centroids for column layer
   const projectsWithCentroids = useMemo(() => {
@@ -96,8 +97,9 @@ export function CapitalBudgetMap() {
   );
 
   // Layer 1: Columns at project locations (height = budget)
-  // Filter out selected projects from columns when showing footprints
-  const columnsLayer = new ColumnLayer({
+  // In budget mode: show columns except selected ones (which show as footprints)
+  // In footprint mode: don't show columns at all
+  const columnsLayer = viewMode === 'budget' ? new ColumnLayer({
     id: 'capital-columns',
     data: projectsWithCentroids.filter(p => !selectedProjectIds.has(p.properties.maprojid)),
     getPosition: (d: any) => d.centroid,
@@ -105,6 +107,8 @@ export function CapitalBudgetMap() {
     radius: 30,
     extruded: true,
     pickable: true,
+    autoHighlight: true,
+    highlightColor: [255, 255, 255, 100],
     elevationScale: 0.5,
     getElevation: (d: any) => d.properties.allocate_total / 10000, // Scale budget to reasonable height
     getFillColor: (d: any) => {
@@ -136,16 +140,23 @@ export function CapitalBudgetMap() {
         });
       }
     },
-  } as any);
+    updateTriggers: {
+      getData: [selectedProjectIds],
+    },
+  } as any) : null;
 
-  // Layer 2: Footprint polygons (shown for all selected projects)
-  const footprintLayer = selectedProjects.length > 0 ? new GeoJsonLayer({
+  // Layer 2: Footprint polygons
+  // In budget mode: show footprints for selected projects only
+  // In footprint mode: show all projects as footprints
+  const footprintLayer = (viewMode === 'budget' && selectedProjects.length > 0) || viewMode === 'footprint' ? new GeoJsonLayer({
     id: 'capital-footprint',
-    data: selectedProjects,
+    data: viewMode === 'budget' ? selectedProjects : projectsWithCentroids,
     filled: true,
     extruded: true,
     wireframe: true,
     pickable: true,
+    autoHighlight: true,
+    highlightColor: [255, 255, 255, 100],
     elevationScale: 1,
     getElevation: FOOTPRINT_HEIGHT, // Small fixed height for visibility
     getFillColor: (d: any) => {
@@ -154,8 +165,14 @@ export function CapitalBudgetMap() {
     },
     getLineColor: [60, 60, 60],
     lineWidthMinPixels: 2,
-    // Click on footprint to toggle it back to column view
-    onClick: (info: PickingInfo) => {
+    onHover: (info: PickingInfo) => {
+      if (info.object) {
+        setHoveredProject(info.object as CapitalProjectFeature);
+      } else {
+        setHoveredProject(null);
+      }
+    },
+    onClick: viewMode === 'budget' ? (info: PickingInfo) => {
       if (info.object) {
         const project = info.object as any;
         const id = project.properties.maprojid;
@@ -165,7 +182,7 @@ export function CapitalBudgetMap() {
           return next;
         });
       }
-    },
+    } : undefined,
     // Animation
     transitions: {
       getElevation: {
@@ -237,7 +254,33 @@ export function CapitalBudgetMap() {
 
       {/* Legend */}
       <div className="absolute bottom-4 right-4 bg-white rounded-lg shadow-lg p-4 max-w-xs z-10">
-        <div className="font-semibold text-gray-900 mb-2">Capital Projects</div>
+        <div className="flex items-center justify-between mb-2">
+          <div className="font-semibold text-gray-900">Capital Projects</div>
+          <div className="inline-flex rounded-lg bg-slate-200 border border-slate-300 p-0.5">
+            <button
+              type="button"
+              onClick={() => setViewMode('budget')}
+              className={`rounded-md px-2 py-1 text-xs font-medium transition-all ${
+                viewMode === 'budget'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-slate-600 hover:bg-slate-300'
+              }`}
+            >
+              Budget
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('footprint')}
+              className={`rounded-md px-2 py-1 text-xs font-medium transition-all ${
+                viewMode === 'footprint'
+                  ? 'bg-blue-600 text-white'
+                  : 'text-slate-600 hover:bg-slate-300'
+              }`}
+            >
+              Footprint
+            </button>
+          </div>
+        </div>
         <div className="text-xs text-gray-600 mb-3">
           Click column to show footprint. Click footprint to return to column view.
         </div>
@@ -253,12 +296,9 @@ export function CapitalBudgetMap() {
             </div>
           ))}
         </div>
-        <div className="mt-2 pt-2 border-t border-gray-200 space-y-1">
+        <div className="mt-2 pt-2 border-t border-gray-200">
           <div className="text-xs text-gray-600">
-            <strong>Column Height:</strong> Allocated budget
-          </div>
-          <div className="text-xs text-gray-600">
-            <strong>Filter:</strong> Active/future projects
+            <strong>Column Height:</strong> Allocated Budget
           </div>
         </div>
       </div>
