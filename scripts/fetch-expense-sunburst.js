@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-// ABOUTME: Fetches NYC expense budget data from Open Data API and generates sunburst visualization
-// ABOUTME: Transforms expense budget data into hierarchical sunburst format organized by service category, agency, and object class
+// ABOUTME: Fetches NYC expense data from Open Data API and generates sunburst visualization
+// ABOUTME: Transforms expense budget data into hierarchical sunburst format with object code detail
 
 import fs from 'fs';
 import path from 'path';
@@ -11,101 +11,123 @@ import { config } from 'dotenv';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 config({ path: path.join(__dirname, '../.env') });
 
-const FISCAL_YEAR = '2026';
-const DATASET_ID = 'mwzb-yiwb'; // Expense Budget
+const FISCAL_YEAR = '2025';
+const DATASET_ID = 'fyxr-9vkh'; // NYC Budget (comprehensive with object codes)
+const PUBLICATION_DATE = '20240630'; // Latest FY2025 publication
 const API_BASE = `https://data.cityofnewyork.us/resource/${DATASET_ID}.json`;
 
-// NYC Open Data credentials (not currently used - public API works without token)
-// const APP_TOKEN = process.env.OD_KEY_ID;
-
-// Agency to service category mapping
-const AGENCY_TO_CATEGORY = {
-  'Department Of Education': 'Education',
-  'City University Of New York': 'Education',
-  'New York Public Library': 'Culture & Recreation',
-  'Brooklyn Public Library': 'Culture & Recreation',
-  'Queens Public Library': 'Culture & Recreation',
-  'Department Of Parks And Recreation': 'Culture & Recreation',
-  'Department Of Cultural Affairs': 'Culture & Recreation',
-
-  'Police Department': 'Public Safety',
-  'Fire Department': 'Public Safety',
-  'Department Of Correction': 'Public Safety',
-  'District Attorney': 'Public Safety',
-  'Law Department': 'Public Safety',
-
-  'Department Of Social Services': 'Social Services',
-  'Department Of Homeless Services': 'Social Services',
-  'Admin For Children\'s Services': 'Social Services',
-  'Human Resources Administration': 'Social Services',
-  'Administration For Children\'s Services': 'Social Services',
-
-  'Department Of Health And Mental Hygiene': 'Health',
-  'Health And Hospitals Corporation': 'Health',
-
-  'Department Of Sanitation': 'Sanitation & Environment',
-  'Department Of Environmental Protection': 'Sanitation & Environment',
-
-  'Department Of Transportation': 'Transportation',
-  'Taxi And Limousine Commission': 'Transportation',
-
-  'Department Of Housing Preservation And Development': 'Housing',
-  'Housing Preservation And Development': 'Housing',
-
-  'Dept Of Finance': 'Finance & Administration',
-  'Department Of Finance': 'Finance & Administration',
-  'Office Of Management And Budget': 'Finance & Administration',
-  'Mayoralty': 'Finance & Administration',
-  'Board Of Election': 'Finance & Administration',
-  'Department Of Citywide Administrative Services': 'Finance & Administration',
-
-  'Debt Service': 'Debt Service',
-  'Miscellaneous': 'Other'
+// Expense category mappings (same as Sankey)
+const AGENCY_CATEGORIES = {
+  'DEPARTMENT OF EDUCATION': 'Education & Libraries',
+  'CITY UNIVERSITY OF NEW YORK': 'Education & Libraries',
+  'NEW YORK PUBLIC LIBRARY': 'Education & Libraries',
+  'BROOKLYN PUBLIC LIBRARY': 'Education & Libraries',
+  'QUEENS PUBLIC LIBRARY': 'Education & Libraries',
+  'POLICE DEPARTMENT': 'Public Safety & Justice',
+  'FIRE DEPARTMENT': 'Public Safety & Justice',
+  'DEPARTMENT OF CORRECTION': 'Public Safety & Justice',
+  'CIVILIAN COMPLAINT REVIEW BOARD': 'Public Safety & Justice',
+  'DISTRICT ATTORNEY': 'Public Safety & Justice',
+  'DEPARTMENT OF SOCIAL SERVICES': 'Social Services & Homelessness',
+  'DEPARTMENT OF HOMELESS SERVICES': 'Social Services & Homelessness',
+  "ADMIN FOR CHILDREN'S SERVICES": 'Social Services & Homelessness',
+  'HUMAN RESOURCES ADMINISTRATION': 'Social Services & Homelessness',
+  'DEPARTMENT OF HEALTH AND MENTAL HYGIENE': 'Health & Mental Hygiene',
+  'HEALTH AND HOSPITALS CORPORATION': 'Health & Mental Hygiene',
+  'DEPARTMENT OF SANITATION': 'Sanitation, Parks & Environment',
+  'DEPARTMENT OF PARKS AND RECREATION': 'Sanitation, Parks & Environment',
+  'DEPARTMENT OF ENVIRONMENTAL PROTECT': 'Sanitation, Parks & Environment',
+  'HOUSING PRESERVATION AND DEVELOPMENT': 'Housing & Economic Development',
+  'NYC ECONOMIC DEVELOPMENT CORP': 'Housing & Economic Development',
+  'DEPT OF SMALL BUSINESS SERVICES': 'Housing & Economic Development',
+  'DEPARTMENT OF TRANSPORTATION': 'Transportation',
+  'TAXI AND LIMOUSINE COMMISSION': 'Transportation',
+  'MISCELLANEOUS': 'Government, Admin & Oversight',
+  'DEBT SERVICE': 'Government, Admin & Oversight',
+  'PENSION CONTRIBUTIONS': 'Government, Admin & Oversight',
+  'CITYWIDE PENSION CONTRIBUTIONS': 'Government, Admin & Oversight',
 };
 
 function categorizeAgency(agencyName) {
-  // Normalize agency name for comparison
-  const normalized = agencyName.trim();
+  const normalized = agencyName.toUpperCase().trim();
 
-  // Direct match
-  if (AGENCY_TO_CATEGORY[normalized]) {
-    return AGENCY_TO_CATEGORY[normalized];
+  if (AGENCY_CATEGORIES[normalized]) {
+    return AGENCY_CATEGORIES[normalized];
   }
 
-  // Partial match
-  const upper = normalized.toUpperCase();
-  for (const [key, category] of Object.entries(AGENCY_TO_CATEGORY)) {
-    if (upper.includes(key.toUpperCase()) || key.toUpperCase().includes(upper)) {
+  for (const [key, category] of Object.entries(AGENCY_CATEGORIES)) {
+    if (normalized.includes(key) || key.includes(normalized)) {
       return category;
     }
   }
 
-  // Special cases
-  if (upper.includes('PENSION')) return 'Debt Service';
-  if (upper.includes('LIBRARY')) return 'Culture & Recreation';
-  if (upper.includes('EDUCATION') || upper.includes('SCHOOL')) return 'Education';
-  if (upper.includes('POLICE') || upper.includes('FIRE')) return 'Public Safety';
-  if (upper.includes('HEALTH')) return 'Health';
-  if (upper.includes('HOUSING')) return 'Housing';
-  if (upper.includes('TRANSPORT')) return 'Transportation';
-  if (upper.includes('SANITATION') || upper.includes('ENVIRONMENTAL')) return 'Sanitation & Environment';
+  return 'Government, Admin & Oversight';
+}
 
-  return 'Other';
+// Normalize object class names to human-readable format
+function normalizeObjectClass(name) {
+  if (!name) return 'Unknown';
+
+  const normalized = name.toUpperCase().trim();
+
+  const mappings = {
+    'FULL TIME SALARIED': 'Full-Time Salaries',
+    'OTHER SALARIED': 'Other Salaries',
+    'UNSALARIED': 'Unsalaried',
+    'ADDITIONAL GROSS PAY': 'Additional Gross Pay',
+    'FRINGE BENEFITS': 'Fringe Benefits',
+    'CONTRACTUAL SERVICES': 'Contractual Services',
+    'OTHER SERVICES AND CHARGES': 'Other Services & Charges',
+    'SUPPLIES AND MATERIALS': 'Supplies & Materials',
+    'PROPERTY AND EQUIPMENT': 'Property & Equipment',
+    'FIXED & MISCELLANEOUS CHARGES': 'Fixed & Misc. Charges',
+    'AMOUNTS TO BE SCHEDULED': 'Amounts To Be Scheduled',
+  };
+
+  return mappings[normalized] || toTitleCase(name);
+}
+
+// Normalize object code names to human-readable format
+function normalizeObjectCode(name) {
+  if (!name) return 'Unknown';
+
+  let normalized = name.trim();
+
+  // Expand common abbreviations
+  normalized = normalized
+    .replace(/^PROF SERV /gi, 'Professional Services: ')
+    .replace(/^MAINT & REP /gi, 'Maintenance & Repair: ')
+    .replace(/^MAINT & OPER /gi, 'Maintenance & Operation: ')
+    .replace(/ PRGM /gi, ' Program ')
+    .replace(/ VEH /gi, ' Vehicle ')
+    .replace(/ EQUIP$/gi, ' Equipment')
+    .replace(/ ACCT$/gi, ' Account')
+    .replace(/ASST/gi, 'Assistance')
+    .replace(/ACCTING/gi, 'Accounting')
+    .replace(/TELECOM/gi, 'Telecommunications');
+
+  return toTitleCase(normalized);
+}
+
+// Convert to title case
+function toTitleCase(str) {
+  return str
+    .toLowerCase()
+    .split(' ')
+    .map(word => {
+      // Keep certain words lowercase
+      if (['and', 'of', 'the', 'for', 'in', 'on', 'at', 'to'].includes(word)) {
+        return word;
+      }
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join(' ')
+    // Capitalize first word
+    .replace(/^./, match => match.toUpperCase());
 }
 
 async function fetchExpenseData() {
-  console.log(`Fetching FY${FISCAL_YEAR} expense budget data from NYC Open Data...`);
-
-  // First, get the most recent publication date
-  const dateResponse = await fetch(`${API_BASE}?fiscal_year=${FISCAL_YEAR}&$select=publication_date&$group=publication_date&$order=publication_date DESC&$limit=1`);
-  const dateData = await dateResponse.json();
-  const latestPublicationDate = dateData[0]?.publication_date;
-
-  if (!latestPublicationDate) {
-    throw new Error('Could not find publication date');
-  }
-
-  console.log(`Using most recent publication date: ${latestPublicationDate}`);
+  console.log(`Fetching FY${FISCAL_YEAR} expense data from NYC Open Data...`);
 
   const limit = 50000;
   let offset = 0;
@@ -115,17 +137,19 @@ async function fetchExpenseData() {
   while (hasMore) {
     const params = new URLSearchParams({
       fiscal_year: FISCAL_YEAR,
-      publication_date: latestPublicationDate,
+      publication_date: PUBLICATION_DATE,
       $limit: limit,
       $offset: offset,
-      $order: 'agency_name'
+      $order: 'agency_name',
     });
 
     const url = `${API_BASE}?${params}`;
     console.log(`Fetching batch: offset=${offset}`);
-
     const response = await fetch(url);
+
     if (!response.ok) {
+      console.error(`Failed URL: ${url}`);
+      console.error(`Response status: ${response.status} ${response.statusText}`);
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
@@ -146,19 +170,26 @@ async function fetchExpenseData() {
 function transformToSunburst(records) {
   console.log('Transforming data to sunburst format...');
 
-  // Build hierarchy: Service Category → Agency → Object Class
+  // Build 5-level hierarchy: High-Level Category → Agency → Unit → Object Class → Object Code
   const hierarchy = new Map();
   let totalExpense = 0;
 
   for (const record of records) {
-    // Use current_modified_budget_amount as the primary value
     const amount = parseFloat(record.current_modified_budget_amount || record.adopted_budget_amount || 0);
+    if (amount === 0) continue;
 
-    if (amount === 0) continue; // Skip zero amounts
+    // Extract fields
+    const agencyName = record.agency_name || 'Unknown';
+    const unitName = record.unit_appropriation_name || 'Unknown';
+    const objectClassName = record.object_class_name || 'Unknown';
+    const objectCodeName = record.object_code_name || 'Unknown';
 
-    const agencyName = record.agency_name || 'Unknown Agency';
-    const objectClassName = record.object_class_name || record.object_code_name || 'Other';
+    // Get high-level category
     const category = categorizeAgency(agencyName);
+
+    // Normalize names for display
+    const normalizedObjectClass = normalizeObjectClass(objectClassName);
+    const normalizedObjectCode = normalizeObjectCode(objectCodeName);
 
     // Initialize hierarchy levels
     if (!hierarchy.has(category)) {
@@ -171,62 +202,66 @@ function transformToSunburst(records) {
     }
     const agencyMap = categoryMap.get(agencyName);
 
-    // Aggregate by object class
-    if (!agencyMap.has(objectClassName)) {
-      agencyMap.set(objectClassName, 0);
+    if (!agencyMap.has(unitName)) {
+      agencyMap.set(unitName, new Map());
     }
-    agencyMap.set(objectClassName, agencyMap.get(objectClassName) + amount);
+    const unitMap = agencyMap.get(unitName);
+
+    if (!unitMap.has(normalizedObjectClass)) {
+      unitMap.set(normalizedObjectClass, new Map());
+    }
+    const objectClassMap = unitMap.get(normalizedObjectClass);
+
+    // Aggregate by object code
+    if (!objectClassMap.has(normalizedObjectCode)) {
+      objectClassMap.set(normalizedObjectCode, 0);
+    }
+    objectClassMap.set(normalizedObjectCode, objectClassMap.get(normalizedObjectCode) + amount);
 
     totalExpense += amount;
   }
 
   console.log(`Total expense: $${(totalExpense / 1e9).toFixed(2)}B`);
-  console.log(`Service categories: ${hierarchy.size}`);
+  console.log(`High-level categories: ${hierarchy.size}`);
 
-  // Build sunburst structure
+  // Build sunburst structure: 5 levels
   const children = [];
 
-  // Sort categories by total amount
-  const sortedCategories = Array.from(hierarchy.entries())
-    .map(([catName, agencies]) => {
-      let catTotal = 0;
-      for (const [, objectClasses] of agencies.entries()) {
-        for (const amount of objectClasses.values()) {
-          catTotal += amount;
-        }
-      }
-      return [catName, agencies, catTotal];
-    })
-    .sort((a, b) => b[2] - a[2]);
-
-  for (const [categoryName, agencies, catTotal] of sortedCategories) {
+  for (const [categoryName, agencies] of hierarchy.entries()) {
     const categoryChildren = [];
 
-    // Sort agencies by total amount within category
-    const sortedAgencies = Array.from(agencies.entries())
-      .map(([agencyName, objectClasses]) => {
-        let agencyTotal = 0;
-        for (const amount of objectClasses.values()) {
-          agencyTotal += amount;
-        }
-        return [agencyName, objectClasses, agencyTotal];
-      })
-      .sort((a, b) => b[2] - a[2]);
-
-    for (const [agencyName, objectClasses, agencyTotal] of sortedAgencies) {
+    for (const [agencyName, units] of agencies.entries()) {
       const agencyChildren = [];
 
-      // Sort object classes by amount
-      const sortedObjectClasses = Array.from(objectClasses.entries())
-        .sort((a, b) => b[1] - a[1]);
+      for (const [unitName, objectClasses] of units.entries()) {
+        const unitChildren = [];
 
-      for (const [objectClassName, amount] of sortedObjectClasses) {
-        agencyChildren.push({
-          name: objectClassName,
-          value: Math.abs(amount),
-          actualValue: amount,
-          isNegative: amount < 0
-        });
+        for (const [objectClassName, objectCodes] of objectClasses.entries()) {
+          const objectClassChildren = [];
+
+          for (const [objectCodeName, amount] of objectCodes.entries()) {
+            objectClassChildren.push({
+              name: objectCodeName,
+              value: Math.abs(amount),
+              actualValue: amount,
+              isNegative: amount < 0
+            });
+          }
+
+          if (objectClassChildren.length > 0) {
+            unitChildren.push({
+              name: objectClassName,
+              children: objectClassChildren
+            });
+          }
+        }
+
+        if (unitChildren.length > 0) {
+          agencyChildren.push({
+            name: unitName,
+            children: unitChildren
+          });
+        }
       }
 
       if (agencyChildren.length > 0) {
@@ -247,14 +282,14 @@ function transformToSunburst(records) {
 
   return {
     meta: {
-      source: `NYC Open Data - Expense Budget (Dataset: ${DATASET_ID})`,
+      source: `NYC Open Data - NYC Budget (Dataset: ${DATASET_ID})`,
       fiscal_year: parseInt(FISCAL_YEAR),
-      fund_group: 'City Funds',
+      publication_date: PUBLICATION_DATE,
       total_expense_billion: parseFloat((totalExpense / 1e9).toFixed(2)),
       generated_at: new Date().toISOString()
     },
     data: {
-      name: `NYC Expense FY${FISCAL_YEAR}`,
+      name: `NYC Expense Budget FY${FISCAL_YEAR}`,
       children
     }
   };
@@ -265,7 +300,7 @@ async function main() {
     const records = await fetchExpenseData();
     const sunburstData = transformToSunburst(records);
 
-    const outputPath = path.join(__dirname, '../public/data/nyc_expense_budget_sunburst_generated.json');
+    const outputPath = path.join(__dirname, '../public/data/nyc_expense_sunburst_fy2025_generated.json');
     fs.writeFileSync(outputPath, JSON.stringify(sunburstData, null, 2));
 
     console.log(`\n✓ Expense sunburst saved to: ${outputPath}`);
