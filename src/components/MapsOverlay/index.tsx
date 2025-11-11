@@ -3,7 +3,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { HousingTimelapseContent } from './HousingTimelapseContent';
-import { CapitalBudgetMap } from './CapitalBudgetMap';
+import { CapitalBudget } from '../CapitalBudget';
 
 type MapType = 'housing' | 'capital-budget';
 
@@ -155,7 +155,7 @@ export function MapsOverlay({ onClose }: MapsOverlayProps) {
             />
           )}
           {selectedMap === 'capital-budget' && (
-            <CapitalBudgetMap />
+            <CapitalBudget />
           )}
         </div>
       </div>

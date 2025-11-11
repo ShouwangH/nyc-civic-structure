@@ -1,5 +1,5 @@
-// ABOUTME: Hook for fetching and caching capital budget project data from NYC Open Data
-// ABOUTME: Fetches from CPDB Polygons dataset with project footprints
+// ABOUTME: Hook for fetching capital budget project data from database
+// ABOUTME: Retrieves capital projects with GeoJSON geometry from database-backed API
 
 import { useState, useEffect } from 'react';
 import type { Feature, Polygon, Point } from 'geojson';
@@ -31,7 +31,7 @@ type UseCapitalBudgetDataReturn = {
 };
 
 /**
- * Fetch capital budget projects from NYC Open Data CPDB Polygons dataset
+ * Fetch capital budget projects from database via API endpoint
  */
 export function useCapitalBudgetData(): UseCapitalBudgetDataReturn {
   const [projects, setProjects] = useState<CapitalProjectFeature[]>([]);
