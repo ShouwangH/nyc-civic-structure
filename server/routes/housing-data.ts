@@ -24,6 +24,31 @@ function isCacheValid(): boolean {
 }
 
 /**
+ * Transform database record to ProcessedBuilding format for frontend
+ */
+function transformToProcessedBuilding(record: any): any {
+  return {
+    id: record.id,
+    name: record.name,
+    coordinates: [record.longitude, record.latitude] as [number, number],
+    borough: record.borough,
+    completionYear: record.completionYear,
+    completionMonth: record.completionDate ? new Date(record.completionDate).getMonth() + 1 : undefined,
+    completionDate: record.completionDate || undefined,
+    totalUnits: record.totalUnits,
+    affordableUnits: record.affordableUnits,
+    affordablePercentage: record.affordablePercentage,
+    buildingType: record.buildingType,
+    physicalBuildingType: record.physicalBuildingType || record.buildingType,
+    buildingClass: record.buildingClass || undefined,
+    zoningDistrict: record.zoningDistrict1 || undefined,
+    address: record.address,
+    dataSource: record.hasAffordableOverlay ? 'housing-ny' : 'pluto',
+    isRenovation: record.jobType === 'Alteration',
+  };
+}
+
+/**
  * Fetch housing data from database
  */
 async function fetchHousingData() {
@@ -31,34 +56,37 @@ async function fetchHousingData() {
 
   try {
     // Fetch all buildings (already processed during seed)
-    const buildings = await db
+    const buildingRecords = await db
       .select()
       .from(housingBuildings)
       .where(gte(housingBuildings.completionYear, 2014))
       .execute();
 
     // Fetch all demolitions
-    const demolitions = await db
+    const demolitionRecords = await db
       .select()
       .from(housingDemolitions)
       .where(gte(housingDemolitions.demolitionYear, 2014))
       .execute();
 
     console.log('[Housing Data API] Fetched:', {
-      buildings: buildings.length,
-      demolitions: demolitions.length,
+      buildings: buildingRecords.length,
+      demolitions: demolitionRecords.length,
     });
+
+    // Transform to frontend format
+    const buildings = buildingRecords.map(transformToProcessedBuilding);
 
     // Store in cache
     cachedData = {
       timestamp: Date.now(),
       buildings,
-      demolitions,
+      demolitions: demolitionRecords,
     };
 
     return {
       buildings,
-      demolitions,
+      demolitions: demolitionRecords,
     };
   } catch (error) {
     console.error('[Housing Data API] Error fetching data:', error);
