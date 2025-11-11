@@ -78,20 +78,29 @@ export function Legend({
               {grossUnits.toLocaleString()}
             </span>
           </div>
-          <div className="flex items-center justify-between gap-2">
+          <div className="flex items-center justify-between gap-2 pl-3">
+            <div className="flex items-center gap-1.5">
+              <div className="w-3 h-3 rounded" style={{ backgroundColor: 'rgb(34, 197, 94)' }}></div>
+              <span className="text-xs text-slate-600">Affordable</span>
+            </div>
+            <span className="text-xs font-semibold text-green-600">
+              {totalAffordableUnits.toLocaleString()}
+            </span>
+          </div>
+          <div className="flex items-center justify-between gap-2 pl-3">
+            <span className="text-xs text-slate-600">Market-rate</span>
+            <span className="text-xs font-semibold text-slate-700">
+              {(grossUnits - totalAffordableUnits).toLocaleString()}
+            </span>
+          </div>
+          <div className="flex items-center justify-between gap-2 pt-1 mt-1 border-t border-slate-100">
             <span className="text-xs text-slate-600">Net New Units</span>
             <span className="text-xs font-semibold text-slate-900">
               {(netNewUnits ?? grossUnits).toLocaleString()}
             </span>
           </div>
-          <div className="flex items-center justify-between gap-2">
-            <div className="flex items-center gap-1.5">
-              <div className="w-3 h-3 rounded" style={{ backgroundColor: 'rgb(34, 197, 94)' }}></div>
-              <span className="text-xs text-slate-600">Affordable Units</span>
-            </div>
-            <span className="text-xs font-semibold text-green-600">
-              {totalAffordableUnits.toLocaleString()}
-            </span>
+          <div className="text-xs text-slate-500 italic pl-3">
+            (gross - demolitions)
           </div>
         </div>
       </div>
@@ -156,9 +165,8 @@ export function Legend({
         <div className="text-xs text-slate-500">
           <strong>New construction + renovations (2014-2024)</strong><br />
           Data: NYC Open Data<br />
-          • DOB Job Applications (primary)<br />
-          • Housing New York Units by Building
-          {usesPluto && <><br />• PLUTO (fallback)</>}
+          • DCP Housing Database (primary)<br />
+          • Housing New York Units by Building (affordable overlay)
         </div>
       </div>
     </div>

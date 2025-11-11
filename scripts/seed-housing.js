@@ -45,20 +45,11 @@ function normalizeBBL(bbl) {
 }
 
 /**
- * Classify building type from total units, affordable status, job type, and building class
+ * Determine physical building type from unit count and building class
+ * This is the structural type, independent of affordability/renovation status
  */
-function classifyBuildingType(totalUnits, affordableUnits, jobType, hasAffordableOverlay, buildingClass) {
-  // If has affordable housing overlay, classify as affordable
-  if (hasAffordableOverlay && affordableUnits > 0) {
-    return 'affordable';
-  }
-
-  // Renovation/alteration
-  if (jobType === 'Alteration') {
-    return 'renovation';
-  }
-
-  // Check building class for mixed-use (DCP Bldg_Class starting with D or O)
+function getPhysicalBuildingType(totalUnits, buildingClass) {
+  // Check building class first for mixed-use
   if (buildingClass) {
     const classPrefix = buildingClass.charAt(0).toUpperCase();
     if (classPrefix === 'D' || classPrefix === 'O') {
@@ -72,7 +63,25 @@ function classifyBuildingType(totalUnits, affordableUnits, jobType, hasAffordabl
   if (totalUnits >= 3) return 'multifamily-walkup';
   if (totalUnits <= 2) return 'one-two-family';
 
-  return 'market-rate'; // Default for new buildings without affordable overlay
+  return 'unknown';
+}
+
+/**
+ * Classify building type from total units, affordable status, job type, and building class
+ */
+function classifyBuildingType(totalUnits, affordableUnits, jobType, hasAffordableOverlay, buildingClass) {
+  // If has affordable housing overlay, classify as affordable
+  if (hasAffordableOverlay && affordableUnits > 0) {
+    return 'affordable';
+  }
+
+  // Renovation/alteration
+  if (jobType === 'Alteration') {
+    return 'renovation';
+  }
+
+  // Otherwise use physical building type
+  return getPhysicalBuildingType(totalUnits, buildingClass);
 }
 
 /**
@@ -180,7 +189,7 @@ function processDCPHousing(records) {
 
       // Classification (will be updated after overlay)
       buildingType: classifyBuildingType(totalUnits, 0, record.Job_Type, false, record.Bldg_Class),
-      physicalBuildingType: null, // Will be computed
+      physicalBuildingType: getPhysicalBuildingType(totalUnits, record.Bldg_Class),
       buildingClass: record.Bldg_Class || null,
       zoningDistrict1: record.ZoningDst1 || null,
       zoningDistrict2: record.ZoningDst2 || null,
