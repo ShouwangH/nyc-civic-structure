@@ -152,10 +152,19 @@ async function getSankeyById(request: Request) {
       );
     }
 
+    // Transform database record to frontend format
+    const frontendData = {
+      units: dataset.units || undefined,
+      description: dataset.description || undefined,
+      meta: dataset.metadata || {},
+      nodes: dataset.nodes,
+      links: dataset.links,
+    };
+
     return Response.json({
       success: true,
       cached: !forceRefresh && isCacheValid(),
-      data: dataset,
+      data: frontendData,
     });
   } catch (error) {
     console.error('[Financial Data API] Error:', error);
@@ -198,10 +207,22 @@ async function getSunburstById(request: Request) {
       );
     }
 
+    // Transform database record to frontend format
+    const frontendData = {
+      meta: {
+        source: dataset.label,
+        fiscal_year: dataset.fiscalYear?.toString() || '',
+        ...(dataset.units && { units: dataset.units }),
+        ...(dataset.totalValue && { total_value: dataset.totalValue }),
+        ...(dataset.metadata || {}),
+      },
+      data: dataset.hierarchyData, // This is the root SunburstNode
+    };
+
     return Response.json({
       success: true,
       cached: !forceRefresh && isCacheValid(),
-      data: dataset,
+      data: frontendData,
     });
   } catch (error) {
     console.error('[Financial Data API] Error:', error);
