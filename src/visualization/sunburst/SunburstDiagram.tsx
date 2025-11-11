@@ -222,6 +222,14 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
         .attr('fill-opacity', (d: NodeWithCurrent) => {
           const visible = arcVisible(d.target!) && labelVisible(d.target!);
           return visible ? 0.9 : 0;
+        })
+        .tween('text', function(d: NodeWithCurrent) {
+          return function() {
+            const name = d.data.name;
+            const angularSize = (d.current!.x1 - d.current!.x0) * 180 / Math.PI;
+            const maxChars = Math.floor(angularSize / 3);
+            select(this).text(name.length > maxChars ? name.substring(0, maxChars - 1) + '…' : name);
+          };
         });
     };
 
@@ -246,18 +254,31 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
       .style('cursor', 'pointer')
       .on('click', clicked as any)
       .on('mouseover', function(event: MouseEvent, d: NodeWithCurrent) {
-        if (onNodeHover && arcVisible(d.current!)) {
-          const mouseEvent = event as any as React.MouseEvent;
-          onNodeHover(d, mouseEvent);
+        if (arcVisible(d.current!)) {
+          // Highlight on hover by increasing opacity
+          const currentOpacity = parseFloat(select(this).attr('fill-opacity')) || 0;
+          select(this)
+            .attr('data-original-opacity', currentOpacity)
+            .attr('fill-opacity', Math.min(1, currentOpacity * 1.2));
+
+          if (onNodeHover) {
+            const mouseEvent = event as any as React.MouseEvent;
+            onNodeHover(d, mouseEvent);
+          }
         }
       })
-      .on('mouseout', function() {
+      .on('mouseout', function(d: NodeWithCurrent) {
+        // Restore original opacity
+        const originalOpacity = parseFloat(select(this).attr('data-original-opacity')) || getOpacity(d);
+        select(this)
+          .attr('fill-opacity', originalOpacity);
+
         if (onNodeHover) {
           onNodeHover(null);
         }
       });
 
-    // Add text labels
+    // Add text labels with truncation
     g.selectAll<SVGTextElement, NodeWithCurrent>('text')
       .data(root.descendants().slice(1))
       .join('text')
@@ -272,7 +293,13 @@ export function SunburstDiagram({ data, width, height, onNodeHover }: SunburstDi
       .attr('pointer-events', 'none')
       .style('font-size', '10px')
       .style('font-weight', '500')
-      .text((d: NodeWithCurrent) => d.data.name);
+      .text((d: NodeWithCurrent) => {
+        const name = d.data.name;
+        // Calculate max chars based on arc size
+        const angularSize = (d.current!.x1 - d.current!.x0) * 180 / Math.PI;
+        const maxChars = Math.floor(angularSize / 3);
+        return name.length > maxChars ? name.substring(0, maxChars - 1) + '…' : name;
+      });
 
     console.log('=== Sunburst Debug ===');
     console.log('Radius:', radius);

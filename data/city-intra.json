@@ -1681,27 +1681,6 @@
       }
     },
     {
-      "id": "city:revenue-expense-flow",
-      "label": "NYC FY2025 Revenue → Expense Flow",
-      "description": "Complete flow of NYC FY2025 budget from revenue sources through the General Fund to expense categories",
-      "type": "sankey",
-      "jurisdiction": "city",
-      "renderTarget": "overlay",
-      "nodes": [],
-      "edges": [],
-      "sankeyData": {
-        "type": "file",
-        "path": "/data/nyc_revenue_expense_sankey_fy2025.json"
-      },
-      "layout": {
-        "type": "elk-layered"
-      },
-      "metadata": {
-        "tags": ["financial", "budget", "revenue", "expense", "flow"],
-        "importance": "high"
-      }
-    },
-    {
       "id": "city:expense-budget-breakdown",
       "label": "NYC Expense Budget FY2026",
       "description": "Interactive hierarchical breakdown of $115.8B NYC City Funds expense budget by agency, program, and expenditure category",

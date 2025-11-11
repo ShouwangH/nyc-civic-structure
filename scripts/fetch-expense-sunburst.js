@@ -188,6 +188,8 @@ function transformToSunburst(records) {
     const category = categorizeAgency(agencyName);
 
     // Normalize names for display
+    const normalizedAgency = toTitleCase(agencyName);
+    const normalizedUnit = toTitleCase(unitName);
     const normalizedObjectClass = normalizeObjectClass(objectClassName);
     const normalizedObjectCode = normalizeObjectCode(objectCodeName);
 
@@ -197,15 +199,15 @@ function transformToSunburst(records) {
     }
     const categoryMap = hierarchy.get(category);
 
-    if (!categoryMap.has(agencyName)) {
-      categoryMap.set(agencyName, new Map());
+    if (!categoryMap.has(normalizedAgency)) {
+      categoryMap.set(normalizedAgency, new Map());
     }
-    const agencyMap = categoryMap.get(agencyName);
+    const agencyMap = categoryMap.get(normalizedAgency);
 
-    if (!agencyMap.has(unitName)) {
-      agencyMap.set(unitName, new Map());
+    if (!agencyMap.has(normalizedUnit)) {
+      agencyMap.set(normalizedUnit, new Map());
     }
-    const unitMap = agencyMap.get(unitName);
+    const unitMap = agencyMap.get(normalizedUnit);
 
     if (!unitMap.has(normalizedObjectClass)) {
       unitMap.set(normalizedObjectClass, new Map());
