@@ -261,94 +261,247 @@ async function generateBudgetSankey(db) {
   console.log(`[Budget Sankey] Generated: ${nodes.length} nodes, ${links.length} links\n`);
 }
 
-/**
- * Generate Pension Sankey (System → Funds → Asset Classes)
- */
-async function generatePensionSankey(db) {
-  console.log('[Pension Sankey] Generating pension allocation structure...\n');
+// ============================================================================
+// PENSION SANKEY - REAL DATA FROM NYC OPEN DATA APIs
+// ============================================================================
 
-  const nodes = [
-    { id: 'NYC_Pensions', label: 'New York City Pension System', level: 0, type: 'system' },
-  ];
-  const links = [];
+// Asset class mapping to standardize bucket names
+const ASSET_CLASS_BUCKETS = {
+  'EQUITY': 'Public Equity',
+  'PUBLIC EQUITY': 'Public Equity',
+  'FIXED INCOME': 'Fixed Income',
+  'CORE FIXED INCOME': 'Fixed Income',
+  'OPPORTUNISTIC FIXED INCOME': 'Fixed Income',
+  'HIGH YIELD': 'Fixed Income',
+  'ALTERNATIVES': 'Alternatives',
+  'PRIVATE EQUITY': 'Alternatives',
+  'REAL ESTATE': 'Alternatives',
+  'HEDGE FUNDS': 'Alternatives',
+  'INFRASTRUCTURE': 'Alternatives',
+  'CASH': 'Cash',
+  'CASH EQUIVALENTS': 'Cash'
+};
 
-  // Typical NYC pension fund sizes (in billions, approximate)
-  const fundSizes = {
-    'NYCERS': 96.5,
-    'TRS': 82.3,
-    'POLICE': 48.7,
-    'FIRE': 21.4,
-    'BERS': 8.2,
-  };
+// Investment type to sub-asset mapping
+const INVESTMENT_TYPE_MAPPING = {
+  'DOMESTIC EQUITY': 'Domestic Equity',
+  'US EQUITY': 'Domestic Equity',
+  'INTERNATIONAL EQUITY': 'World ex-USA Equity',
+  'DEVELOPED MARKETS EQUITY': 'World ex-USA Equity',
+  'EMERGING MARKETS EQUITY': 'Emerging Markets Equity',
+  'GLOBAL EQUITY': 'Global Equity',
+  'CORPORATE BONDS': 'Corporate Bonds',
+  'GOVERNMENT BONDS': 'Government Bonds',
+  'TREASURY': 'Government Bonds',
+  'TIPS': 'TIPS',
+  'HIGH YIELD': 'High Yield',
+  'BANK LOANS': 'Bank Loans',
+  'PRIVATE EQUITY': 'Private Equity',
+  'REAL ESTATE': 'Real Estate',
+  'HEDGE FUNDS': 'Hedge Funds',
+  'INFRASTRUCTURE': 'Infrastructure',
+  'CASH': 'Cash'
+};
 
-  // Standard asset class allocation (typical for public pension funds)
-  const assetClasses = [
-    { id: 'public-equity', label: 'Public Equity', allocation: 0.35 },
-    { id: 'fixed-income', label: 'Fixed Income', allocation: 0.22 },
-    { id: 'private-equity', label: 'Private Equity', allocation: 0.15 },
-    { id: 'real-estate', label: 'Real Estate', allocation: 0.12 },
-    { id: 'hedge-funds', label: 'Hedge Funds & Alternatives', allocation: 0.10 },
-    { id: 'infrastructure', label: 'Infrastructure', allocation: 0.06 },
-  ];
+function categorizeAsset(assetClass, investmentType) {
+  const normalizedClass = (assetClass || '').toUpperCase().trim();
+  const normalizedType = (investmentType || '').toUpperCase().trim();
 
-  // Level 1: Individual pension funds
-  for (const fund of PENSION_FUNDS) {
-    const fundSize = fundSizes[fund.id] || 10; // Default if not specified
+  // Determine bucket
+  let bucket = ASSET_CLASS_BUCKETS[normalizedClass] || 'Other';
 
-    nodes.push({
-      id: fund.id,
-      label: fund.label,
-      level: 1,
-      type: 'fund',
-    });
-
-    // Link from system to fund
-    links.push({
-      source: 'NYC_Pensions',
-      target: fund.id,
-      value: fundSize * 1000, // Convert to millions
-    });
+  // More specific bucket determination based on investment type
+  if (normalizedType.includes('HIGH YIELD') || normalizedType.includes('BANK LOAN')) {
+    bucket = 'Fixed Income';
+  } else if (normalizedType.includes('PRIVATE EQUITY') || normalizedType.includes('REAL ESTATE') ||
+             normalizedType.includes('HEDGE') || normalizedType.includes('INFRASTRUCTURE')) {
+    bucket = 'Alternatives';
+  } else if (normalizedType.includes('EQUITY')) {
+    bucket = 'Public Equity';
+  } else if (normalizedType.includes('BOND') || normalizedType.includes('TREASURY') || normalizedType.includes('TIPS')) {
+    bucket = 'Fixed Income';
+  } else if (normalizedType.includes('CASH')) {
+    bucket = 'Cash';
   }
 
-  // Level 2: Asset classes (aggregated across all funds)
-  for (const assetClass of assetClasses) {
-    nodes.push({
-      id: assetClass.id,
-      label: assetClass.label,
-      level: 2,
-      type: 'asset-class',
-    });
-  }
+  // Determine sub-asset
+  let subAsset = INVESTMENT_TYPE_MAPPING[normalizedType];
 
-  // Links from funds to asset classes
-  for (const fund of PENSION_FUNDS) {
-    const fundSize = fundSizes[fund.id] || 10;
-
-    for (const assetClass of assetClasses) {
-      const allocation = fundSize * assetClass.allocation;
-
-      links.push({
-        source: fund.id,
-        target: assetClass.id,
-        value: allocation * 1000, // Convert to millions
-      });
+  if (!subAsset) {
+    // Fuzzy matching
+    if (normalizedType.includes('DOMESTIC') || normalizedType.includes('US ')) {
+      subAsset = 'Domestic Equity';
+    } else if (normalizedType.includes('INTERNATIONAL') || normalizedType.includes('DEVELOPED')) {
+      subAsset = 'World ex-USA Equity';
+    } else if (normalizedType.includes('EMERGING')) {
+      subAsset = 'Emerging Markets Equity';
+    } else if (normalizedType.includes('GLOBAL')) {
+      subAsset = 'Global Equity';
+    } else if (normalizedType.includes('CORPORATE BOND') || normalizedType.includes('GOVERNMENT')) {
+      subAsset = 'Corporate Bonds';
+    } else if (normalizedType.includes('HIGH YIELD')) {
+      subAsset = 'High Yield';
+    } else if (normalizedType.includes('PRIVATE EQUITY')) {
+      subAsset = 'Private Equity';
+    } else if (normalizedType.includes('REAL ESTATE')) {
+      subAsset = 'Real Estate';
+    } else if (normalizedType.includes('HEDGE')) {
+      subAsset = 'Hedge Funds';
+    } else {
+      subAsset = investmentType || 'Other';
     }
   }
 
-  const totalAum = Object.values(fundSizes).reduce((sum, val) => sum + val, 0);
+  return { bucket, subAsset };
+}
+
+async function fetchFundHoldings(datasetId, fundId) {
+  console.log(`  Fetching holdings for ${fundId}...`);
+
+  const API_BASE = `https://data.cityofnewyork.us/resource/${datasetId}.json`;
+
+  // First, get the most recent period_end_date
+  const dateResponse = await fetchNycOpenData(`${API_BASE}?$select=period_end_date&$group=period_end_date&$order=period_end_date DESC&$limit=1`);
+  const dateData = dateResponse;
+  const latestPeriodDate = dateData[0]?.period_end_date;
+
+  if (!latestPeriodDate) {
+    console.error(`    Could not find period_end_date for ${fundId}`);
+    return [];
+  }
+
+  console.log(`    Using period: ${latestPeriodDate}`);
+
+  const records = await fetchNycOpenData(API_BASE, {
+    limit: 50000,
+    params: {
+      period_end_date: latestPeriodDate,
+    },
+  });
+
+  console.log(`    Fetched ${records.length} holdings`);
+  return records;
+}
+
+/**
+ * Generate Pension Sankey (System → Funds → Asset Buckets)
+ * Fetches real holdings data from NYC Open Data APIs
+ */
+async function generatePensionSankey(db) {
+  console.log('[Pension Sankey] Fetching real holdings from NYC Open Data...\n');
+
+  // Fetch holdings from all 5 pension funds
+  const fundData = new Map();
+  for (const fund of PENSION_FUNDS) {
+    const holdings = await fetchFundHoldings(fund.datasetId, fund.id);
+    fundData.set(fund.id, {
+      label: fund.label,
+      holdings
+    });
+  }
+
+  // Transform to Sankey structure
+  const nodes = [];
+  const links = [];
+  const nodeIds = new Set();
+
+  // Root node
+  const rootId = 'NYC_Pensions';
+  nodes.push({
+    id: rootId,
+    label: 'New York City Pension System',
+    level: 0,
+    type: 'system'
+  });
+  nodeIds.add(rootId);
+
+  let systemTotal = 0;
+
+  // Process each fund
+  for (const [fundId, fundInfo] of fundData.entries()) {
+    // Add fund node
+    if (!nodeIds.has(fundId)) {
+      nodes.push({
+        id: fundId,
+        label: fundInfo.label,
+        level: 1,
+        type: 'fund'
+      });
+      nodeIds.add(fundId);
+    }
+
+    // Aggregate by asset bucket
+    const bucketMap = new Map();
+    let fundTotal = 0;
+
+    for (const holding of fundInfo.holdings) {
+      const marketValue = parseFloat(holding.base_market_value || 0);
+      if (marketValue <= 0) continue;
+
+      const assetClass = holding.asset_class || 'Unknown';
+      const investmentType = holding.investment_type_name || 'Other';
+
+      const { bucket } = categorizeAsset(assetClass, investmentType);
+
+      if (!bucketMap.has(bucket)) {
+        bucketMap.set(bucket, 0);
+      }
+      bucketMap.set(bucket, bucketMap.get(bucket) + marketValue);
+
+      fundTotal += marketValue;
+    }
+
+    // Add link from system to fund
+    if (fundTotal > 0) {
+      links.push({
+        source: rootId,
+        target: fundId,
+        value: fundTotal / 1000000, // Convert to millions
+      });
+      systemTotal += fundTotal;
+    }
+
+    // Add bucket nodes and links
+    for (const [bucketName, value] of bucketMap.entries()) {
+      const bucketId = bucketName;
+
+      // Add bucket node if not exists
+      if (!nodeIds.has(bucketId)) {
+        nodes.push({
+          id: bucketId,
+          label: bucketName,
+          level: 2,
+          type: 'bucket'
+        });
+        nodeIds.add(bucketId);
+      }
+
+      // Link fund to bucket
+      if (value > 0) {
+        links.push({
+          source: fundId,
+          target: bucketId,
+          value: value / 1000000, // Convert to millions
+        });
+      }
+    }
+  }
+
+  const totalAumBillion = systemTotal / 1e9;
 
   const dataset = {
     id: 'pension-2025',
     label: 'NYC Pension System Asset Allocation',
-    description: 'Shows how NYC pension funds allocate assets across investment classes',
+    description: 'Real holdings data showing how pension funds allocate across asset classes',
     fiscalYear: FISCAL_YEAR,
     dataType: 'pension',
     units: 'USD (millions)',
     nodes,
     links,
     metadata: {
-      total_aum_billion: totalAum,
-      note: 'Asset allocations based on typical public pension fund targets',
+      source: 'NYC Open Data - Comptroller Pension Holdings',
+      total_aum_billion: totalAumBillion,
+      funds_included: Array.from(fundData.keys()),
     },
     generatedAt: new Date(),
   };
@@ -356,7 +509,7 @@ async function generatePensionSankey(db) {
   await db.insert(sankeyDatasets).values(dataset);
 
   console.log(`[Pension Sankey] Generated: ${nodes.length} nodes, ${links.length} links`);
-  console.log(`[Pension Sankey] Total AUM: $${totalAum.toFixed(1)}B\n`);
+  console.log(`[Pension Sankey] Total AUM: $${totalAumBillion.toFixed(1)}B\n`);
 }
 
 /**
