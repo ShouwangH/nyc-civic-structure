@@ -384,8 +384,9 @@ async function fetchFundHoldings(datasetId, fundId) {
 }
 
 /**
- * Generate Pension Sankey (System → Funds → Asset Buckets)
+ * Generate Pension Sankey (System → Funds → Asset Buckets → Sub-Assets)
  * Fetches real holdings data from NYC Open Data APIs
+ * 4 levels: System → Fund → Bucket → Sub-Asset
  */
 async function generatePensionSankey(db) {
   console.log('[Pension Sankey] Fetching real holdings from NYC Open Data...\n');
@@ -492,7 +493,7 @@ async function generatePensionSankey(db) {
   const dataset = {
     id: 'pension-2025',
     label: 'NYC Pension System Asset Allocation',
-    description: 'Real holdings data showing how pension funds allocate across asset classes',
+    description: 'Real holdings showing System → Funds → Asset Buckets → Investment Types',
     fiscalYear: FISCAL_YEAR,
     dataType: 'pension',
     units: 'USD (millions)',
@@ -502,6 +503,7 @@ async function generatePensionSankey(db) {
       source: 'NYC Open Data - Comptroller Pension Holdings',
       total_aum_billion: totalAumBillion,
       funds_included: Array.from(fundData.keys()),
+      levels: 4,
     },
     generatedAt: new Date(),
   };
