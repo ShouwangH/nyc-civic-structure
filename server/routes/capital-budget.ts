@@ -4,22 +4,10 @@
 import { registerRoute } from '../api-middleware';
 import { db } from '../lib/db';
 import { capitalProjects } from '../lib/schema';
+import { InMemoryCache, shouldForceRefresh } from '../lib/cache';
 
-// Cache configuration (in-memory)
-const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
-let cachedData: {
-  timestamp: number;
-  projects: any[];
-} | null = null;
-
-/**
- * Check if cached data is still valid
- */
-function isCacheValid(): boolean {
-  if (!cachedData) return false;
-  const now = Date.now();
-  return now - cachedData.timestamp < CACHE_TTL_MS;
-}
+// Cached capital budget data (24-hour TTL)
+const cache = new InMemoryCache<any[]>();
 
 /**
  * Fetch capital budget data from database
@@ -58,10 +46,7 @@ async function fetchCapitalBudget() {
     }));
 
     // Store in cache
-    cachedData = {
-      timestamp: Date.now(),
-      projects: features,
-    };
+    cache.set(features);
 
     return features;
   } catch (error) {
@@ -76,17 +61,17 @@ async function fetchCapitalBudget() {
  */
 async function getCapitalBudget(request: Request) {
   try {
-    const url = new URL(request.url);
-    const forceRefresh = url.searchParams.get('refresh') === 'true';
+    const forceRefresh = shouldForceRefresh(request);
 
     // Check cache
-    if (!forceRefresh && isCacheValid()) {
+    const cachedProjects = cache.get();
+    if (!forceRefresh && cachedProjects) {
       console.log('[Capital Budget API] Returning cached data');
       return Response.json({
         success: true,
         cached: true,
-        count: cachedData!.projects.length,
-        data: cachedData!.projects,
+        count: cachedProjects.length,
+        data: cachedProjects,
       });
     }
 

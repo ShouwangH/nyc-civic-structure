@@ -5,23 +5,14 @@ import { registerRoute } from '../api-middleware';
 import { db } from '../lib/db';
 import { housingBuildings, housingDemolitions } from '../lib/schema';
 import { gte } from 'drizzle-orm';
+import { InMemoryCache, shouldForceRefresh } from '../lib/cache';
 
-// Cache configuration (in-memory)
-const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
-let cachedData: {
-  timestamp: number;
+// Cached housing data (24-hour TTL)
+type HousingDataCache = {
   buildings: any[];
   demolitions: any[];
-} | null = null;
-
-/**
- * Check if cached data is still valid
- */
-function isCacheValid(): boolean {
-  if (!cachedData) return false;
-  const now = Date.now();
-  return now - cachedData.timestamp < CACHE_TTL_MS;
-}
+};
+const cache = new InMemoryCache<HousingDataCache>();
 
 /**
  * Transform database record to ProcessedBuilding format for frontend
@@ -96,16 +87,10 @@ async function fetchHousingData() {
     const demolitions = demolitionRecords.map(transformDemolition);
 
     // Store in cache
-    cachedData = {
-      timestamp: Date.now(),
-      buildings,
-      demolitions,
-    };
+    const data = { buildings, demolitions };
+    cache.set(data);
 
-    return {
-      buildings,
-      demolitions,
-    };
+    return data;
   } catch (error) {
     console.error('[Housing Data API] Error fetching data:', error);
     throw error;
@@ -118,19 +103,16 @@ async function fetchHousingData() {
  */
 async function getHousingData(request: Request) {
   try {
-    const url = new URL(request.url);
-    const forceRefresh = url.searchParams.get('refresh') === 'true';
+    const forceRefresh = shouldForceRefresh(request);
 
     // Check cache
-    if (!forceRefresh && isCacheValid()) {
+    const cachedData = cache.get();
+    if (!forceRefresh && cachedData) {
       console.log('[Housing Data API] Returning cached data');
       return Response.json({
         success: true,
         cached: true,
-        data: {
-          buildings: cachedData!.buildings,
-          demolitions: cachedData!.demolitions,
-        },
+        data: cachedData,
       });
     }
 
@@ -140,10 +122,7 @@ async function getHousingData(request: Request) {
     return Response.json({
       success: true,
       cached: false,
-      data: {
-        buildings: data.buildings,
-        demolitions: data.demolitions,
-      },
+      data,
     });
   } catch (error) {
     console.error('[Housing Data API] Error:', error);
