@@ -35,8 +35,7 @@ data/subgraphs
 
 
 /.claude
-.vercel
 .env*.local
 
-
+.vercel
 /docs
