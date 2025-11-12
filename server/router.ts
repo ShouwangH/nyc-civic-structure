@@ -1,5 +1,5 @@
-// ABOUTME: Vite middleware for serving API routes
-// ABOUTME: Handles routing requests to appropriate API handlers
+// ABOUTME: Lightweight routing system for API routes
+// ABOUTME: Handles routing requests to appropriate API handlers (works in dev and production)
 
 import type { Connect } from 'vite';
 import type { IncomingMessage, ServerResponse } from 'http';
@@ -19,7 +19,8 @@ export function registerRoute(method: string, path: string, handler: Handler) {
 }
 
 /**
- * Create the Vite middleware for handling API routes
+ * Create the router middleware for handling API routes
+ * Compatible with both Vite dev server and production Node.js server
  */
 export function createApiMiddleware(): Connect.NextHandleFunction {
   return async (req: IncomingMessage, res: ServerResponse, next: Connect.NextFunction) => {

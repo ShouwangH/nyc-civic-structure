@@ -1,10 +1,10 @@
 // ABOUTME: API endpoint for NYC capital budget data - serves from database with optional cache
 // ABOUTME: Replaces NYC Open Data API fetching with database queries for faster response
 
-import { registerRoute } from '../api-middleware';
-import { db } from '../lib/db';
-import { capitalProjects, type CapitalProject } from '../lib/schema';
-import { InMemoryCache, shouldForceRefresh } from '../lib/cache';
+import { registerRoute } from '../router.ts';
+import { db } from '../lib/db.ts';
+import { capitalProjects, type CapitalProject } from '../lib/schema.ts';
+import { InMemoryCache, shouldForceRefresh } from '../lib/cache.ts';
 
 // GeoJSON Feature type for capital projects (frontend format)
 type CapitalProjectFeature = {

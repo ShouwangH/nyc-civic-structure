@@ -6,9 +6,9 @@ export default defineConfig({
   plugins: [
     react(),
     {
-      name: 'api-middleware',
+      name: 'api-router',
       async configureServer(server) {
-        // Only import server middleware in development
+        // Only import server router in development
         const { createApiMiddleware } = await import('./server/index.ts')
         server.middlewares.use(createApiMiddleware());
       },

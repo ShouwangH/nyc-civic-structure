@@ -1,10 +1,10 @@
 // ABOUTME: API endpoints for loading civic structure data from database
 // ABOUTME: Serves nodes, edges, subviews by government scope (city, state, federal)
 
-import { db } from '../lib/db';
-import { nodes, edges, processes, scopes } from '../lib/schema';
+import { db } from '../lib/db.ts';
+import { nodes, edges, processes, scopes } from '../lib/schema.ts';
 import { eq } from 'drizzle-orm';
-import { registerRoute } from '../api-middleware';
+import { registerRoute } from '../router.ts';
 
 /**
  * GET /api/scopes/:scopeId/dataset
