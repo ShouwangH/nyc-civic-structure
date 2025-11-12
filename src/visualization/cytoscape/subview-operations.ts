@@ -16,8 +16,8 @@ import {
   applyStructuralSubviewClasses,
 } from './styles-application';
 import { createStructuralLayoutOptions } from './layouts';
-import type { VisualizationState, SetState } from './state-manager';
-import { transitionVisualizationState, applyScopeStyling } from './state-manager';
+import type { VisualizationState, SetState } from '../../controller/state-manager';
+import { transitionVisualizationState, applyScopeStyling } from '../../controller/state-manager';
 
 export type ActiveSubviewState = {
   id: string;

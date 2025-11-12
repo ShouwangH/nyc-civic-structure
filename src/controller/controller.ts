@@ -2,9 +2,9 @@
 // ABOUTME: Only place that directly mutates cytoscape instance and calls setState
 
 import type { Core } from 'cytoscape';
-import type { SubviewDefinition } from '../../data/types';
-import type { GraphNodeInfo, GraphEdgeInfo } from './types';
-import type { GovernmentScope } from '../../data/datasets';
+import type { SubviewDefinition } from '../data/types';
+import type { GraphNodeInfo, GraphEdgeInfo } from '../visualization/cytoscape/types';
+import type { GovernmentScope } from '../data/datasets';
 import type { GraphAction } from './actions';
 
 // Import state management
@@ -12,15 +12,15 @@ import type { VisualizationState, SetState } from './state-manager';
 import { transitionVisualizationState, applyScopeStyling } from './state-manager';
 
 // Import subview operations
-import type { SubviewOperationsContext } from './subview-operations';
-import { activateSubview, deactivateSubview } from './subview-operations';
+import type { SubviewOperationsContext } from '../visualization/cytoscape/subview-operations';
+import { activateSubview, deactivateSubview } from '../visualization/cytoscape/subview-operations';
 
 // Import focus operations
 import {
   focusNodes as focusNodesOp,
   clearNodeFocus as clearNodeFocusOp,
   captureInitialPositions as captureInitialPositionsOp,
-} from './focus-operations';
+} from '../visualization/cytoscape/focus-operations';
 
 // Re-export types for consumers
 export type { VisualizationState, SetState } from './state-manager';

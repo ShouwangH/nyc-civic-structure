@@ -5,8 +5,8 @@ import { useState, useRef, useEffect } from 'react';
 import { SankeyOverlay } from './SankeyOverlay';
 import { SunburstOverlay } from './SunburstOverlay';
 import type { SubviewDefinition } from '../data/types';
-import type { InputHandler } from '../visualization/cytoscape/inputHandler';
-import { actions } from '../visualization/cytoscape/actions';
+import type { InputHandler } from '../controller/inputHandler';
+import { actions } from '../controller/actions';
 import type { SankeyData } from '../visualization/sankey/types';
 import type { SunburstData } from '../visualization/sunburst/types';
 

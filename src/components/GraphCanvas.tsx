@@ -4,10 +4,10 @@ import type { Core } from 'cytoscape';
 import type { GraphConfig, GraphNodeInfo, GraphEdgeInfo } from '../visualization/cytoscape/types';
 import type { SubviewDefinition } from '../data/types';
 import type { GovernmentScope } from '../data/datasets';
-import type { SetState, Controller, VisualizationState } from '../visualization/cytoscape/controller';
-import { createController } from '../visualization/cytoscape/controller';
-import type { InputHandler } from '../visualization/cytoscape/inputHandler';
-import { setupInputHandler } from '../visualization/cytoscape/inputHandler';
+import type { SetState, Controller, VisualizationState } from '../controller/controller';
+import { createController } from '../controller/controller';
+import type { InputHandler } from '../controller/inputHandler';
+import { setupInputHandler } from '../controller/inputHandler';
 import { graphStyles } from '../visualization/cytoscape/styles';
 
 export type GraphRuntime = {

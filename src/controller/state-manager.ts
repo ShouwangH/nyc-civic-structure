@@ -2,10 +2,10 @@
 // ABOUTME: Handles state transitions and business rules for VisualizationState
 
 import type { Core } from 'cytoscape';
-import type { SubviewDefinition } from '../../data/types';
-import type { SankeyData } from '../sankey/types';
-import type { SunburstData } from '../sunburst/types';
-import type { GovernmentScope } from '../../data/datasets';
+import type { SubviewDefinition } from '../data/types';
+import type { SankeyData } from '../visualization/sankey/types';
+import type { SunburstData } from '../visualization/sunburst/types';
+import type { GovernmentScope } from '../data/datasets';
 
 export type VisualizationState = {
   selectedNodeId: string | null;
