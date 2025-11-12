@@ -2,45 +2,28 @@
 // ABOUTME: Only place that directly mutates cytoscape instance and calls setState
 
 import type { Core } from 'cytoscape';
-import type { SubviewDefinition, SubviewType } from '../../data/types';
+import type { SubviewDefinition } from '../../data/types';
 import type { GraphNodeInfo, GraphEdgeInfo } from './types';
-import type { SankeyData } from '../sankey/types';
-import type { SunburstData } from '../sunburst/types';
-import {
-  copyPosition,
-  getViewportMetrics,
-} from './layout';
-import { ANIMATION_DURATION, ANIMATION_EASING } from './animation';
-import {
-  applyProcessHighlightClasses,
-  resetHighlightClasses,
-  resetProcessClasses,
-  applyStructuralSubviewClasses,
-} from './styles-application';
-import { createStructuralLayoutOptions } from './layouts';
 import type { GovernmentScope } from '../../data/datasets';
 import type { GraphAction } from './actions';
 
-export type VisualizationState = {
-  selectedNodeId: string | null;
-  selectedEdgeId: string | null;
-  activeSubviewId: string | null;
-  activeScope: GovernmentScope | null;
-  controlsOpen: boolean;
-  sidebarHover: boolean;
-  viewMode: 'diagram' | 'financials' | 'maps';
-  activeTab: 'details' | 'processes';
-  sankeyOverlay?: {
-    subview: SubviewDefinition;
-    data: SankeyData;
-  } | null;
-  sunburstOverlay?: {
-    subview: SubviewDefinition;
-    data: SunburstData;
-  } | null;
-};
+// Import state management
+import type { VisualizationState, SetState } from './state-manager';
+import { transitionVisualizationState, applyScopeStyling } from './state-manager';
 
-export type SetState = (updater: (prev: VisualizationState) => VisualizationState) => void;
+// Import subview operations
+import type { SubviewOperationsContext } from './subview-operations';
+import { activateSubview, deactivateSubview } from './subview-operations';
+
+// Import focus operations
+import {
+  focusNodes as focusNodesOp,
+  clearNodeFocus as clearNodeFocusOp,
+  captureInitialPositions as captureInitialPositionsOp,
+} from './focus-operations';
+
+// Re-export types for consumers
+export type { VisualizationState, SetState } from './state-manager';
 
 export type Controller = {
   // Central dispatch - all user interactions go through this
@@ -64,15 +47,6 @@ export type ControllerConfig = {
   edgeInfosById: Map<string, GraphEdgeInfo>;
 };
 
-type ActiveSubviewState = {
-  id: string;
-  type: SubviewType;
-  addedNodeIds: Set<string>;
-  addedEdgeIds: Set<string>;
-  affectedNodeIds: Set<string>;
-  affectedEdgeIds: Set<string>;
-};
-
 export function createController(config: ControllerConfig): Controller {
   const {
     cy,
@@ -84,502 +58,20 @@ export function createController(config: ControllerConfig): Controller {
     nodeInfosById,
   } = config;
 
-  let activeSubview: ActiveSubviewState | null = null;
-  let transitionInProgress = false;
-
-  /**
-   * Applies scope styling to the graph - dims nodes/edges outside the scope.
-   */
-  const applyScopeStyling = (scope: GovernmentScope): void => {
-    const nodeIds = scopeNodeIds[scope];
-    if (!nodeIds || nodeIds.length === 0) {
-      return;
-    }
-
-    const scopeNodeSet = new Set(nodeIds);
-    cy.batch(() => {
-      cy.elements().removeClass('dimmed faded highlighted');
-
-      cy.nodes().forEach((node) => {
-        if (!scopeNodeSet.has(node.id())) {
-          node.addClass('dimmed');
-        }
-      });
-
-      cy.edges().forEach((edge) => {
-        const source = edge.source().id();
-        const target = edge.target().id();
-        if (!scopeNodeSet.has(source) || !scopeNodeSet.has(target)) {
-          edge.addClass('faded');
-        }
-      });
-    });
+  // Subview operation context (shared mutable state)
+  const subviewContext: SubviewOperationsContext = {
+    activeSubview: null,
+    transitionInProgress: false,
   };
 
-  /**
-   * Central state transition function with business rules enforcement.
-   * Single source of truth for how VisualizationState changes are applied.
-   */
-  const transitionVisualizationState = (changes: Partial<VisualizationState>) => {
-    setState((prev) => {
-      const next = { ...prev, ...changes };
-
-      // Rule: Node and edge selections are mutually exclusive
-      if ('selectedNodeId' in changes && changes.selectedNodeId !== undefined) {
-        if (changes.selectedNodeId !== null) {
-          next.selectedEdgeId = null;
-        }
-      }
-      if ('selectedEdgeId' in changes && changes.selectedEdgeId !== undefined) {
-        if (changes.selectedEdgeId !== null) {
-          next.selectedNodeId = null;
-        }
-      }
-
-      // Rule: Sidebar visibility based on selection state
-      // Show sidebar when anything is selected, hide when explicitly cleared
-      if (next.selectedNodeId || next.selectedEdgeId || next.activeSubviewId) {
-        next.sidebarHover = true;
-      } else if ('activeSubviewId' in changes && changes.activeSubviewId === null) {
-        // Explicitly hide sidebar when clearing subview
-        next.sidebarHover = false;
-      }
-
-      return next;
-    });
-  };
-
-  // ============================================================================
-  // SUBVIEW OPERATIONS (Internal - called by dispatch)
-  // ============================================================================
-
-  const activateSubview = async (subviewId: string): Promise<void> => {
-    console.log('[Controller] activateSubview START:', subviewId, {
-      transitionInProgress,
-      activeSubviewId: activeSubview?.id,
-    });
-
-    const subview = subviewById.get(subviewId);
-    if (!subview) {
-      console.log('[Controller] activateSubview ABORT: subview not found');
-      return;
-    }
-
-    // Guard: check transition lock
-    if (transitionInProgress) {
-      console.log('[Controller] activateSubview ABORT: transition in progress');
-      return;
-    }
-
-    // Guard: check duplicate activation
-    if (activeSubview?.id === subview.id) {
-      console.log('[Controller] activateSubview ABORT: already active');
-      return;
-    }
-
-    console.log('[Controller] activateSubview PROCEED:', {
-      subviewType: subview.type,
-      renderTarget: subview.renderTarget,
-    });
-
-    // Special handling for overlay renderTarget (e.g., Sankey, Sunburst)
-    // Overlays are additive - they don't replace node selection or manipulate Cytoscape
-    if (subview.renderTarget === 'overlay') {
-      if (subview.type === 'sankey' && subview.sankeyData) {
-        // Determine scope - use subview jurisdiction if it's a valid scope (not 'multi')
-        const subviewScope = subview.jurisdiction !== 'multi' ? subview.jurisdiction : null;
-
-        // Apply scope styling for overlays since they don't manipulate the graph
-        if (subviewScope) {
-          applyScopeStyling(subviewScope);
-        }
-
-        // Set activeSubviewId and scope IMMEDIATELY so ControlPanel syncs before async operation
-        transitionVisualizationState({
-          activeSubviewId: subview.id,
-          ...(subviewScope ? { activeScope: subviewScope } : {}),
-        });
-
-        // Load Sankey data from API or file
-        try {
-          let dataUrl: string;
-          if (subview.sankeyData.type === 'api') {
-            dataUrl = `/api/financial-data/sankey/${subview.sankeyData.id}`;
-          } else {
-            dataUrl = subview.sankeyData.path.endsWith('.json')
-              ? subview.sankeyData.path
-              : `${subview.sankeyData.path}.json`;
-          }
-
-          const response = await fetch(dataUrl);
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          const json = await response.json();
-          const sankeyData: SankeyData = json.success ? json.data : json;
-
-          // Update state to add Sankey overlay (preserves selectedNodeId and activeSubviewId)
-          transitionVisualizationState({
-            sankeyOverlay: {
-              subview,
-              data: sankeyData,
-            },
-          });
-        } catch (error) {
-          console.error('Failed to load Sankey data:', error);
-          // Clear activeSubviewId on error
-          transitionVisualizationState({
-            activeSubviewId: null,
-          });
-        }
-      } else if (subview.type === 'sunburst' && subview.sunburstData) {
-        // Determine scope - use subview jurisdiction if it's a valid scope (not 'multi')
-        const subviewScope = subview.jurisdiction !== 'multi' ? subview.jurisdiction : null;
-
-        // Apply scope styling for overlays since they don't manipulate the graph
-        if (subviewScope) {
-          applyScopeStyling(subviewScope);
-        }
-
-        // Set activeSubviewId and scope IMMEDIATELY so ControlPanel syncs before async operation
-        transitionVisualizationState({
-          activeSubviewId: subview.id,
-          ...(subviewScope ? { activeScope: subviewScope } : {}),
-        });
-
-        // Load Sunburst data file from public directory
-        try {
-          const dataPath = subview.sunburstData.path.endsWith('.json')
-            ? subview.sunburstData.path
-            : `${subview.sunburstData.path}.json`;
-          const response = await fetch(dataPath);
-          if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-          }
-          const sunburstData: SunburstData = await response.json();
-
-          // Update state to add Sunburst overlay (preserves selectedNodeId and activeSubviewId)
-          transitionVisualizationState({
-            sunburstOverlay: {
-              subview,
-              data: sunburstData,
-            },
-          });
-        } catch (error) {
-          console.error('Failed to load Sunburst data:', error);
-          // Clear activeSubviewId on error
-          transitionVisualizationState({
-            activeSubviewId: null,
-          });
-        }
-      }
-      return; // Don't proceed with Cytoscape manipulation
-    }
-
-    // Deactivate current if any
-    if (activeSubview) {
-      await deactivateSubview();
-    }
-
-    transitionInProgress = true;
-
-    const addedNodeIds = new Set<string>();
-    const addedEdgeIds = new Set<string>();
-
-    // Build node infos from subview node IDs
-    const nodeInfos: GraphNodeInfo[] = subview.nodes
-      .map(nodeId => nodeInfosById.get(nodeId) ?? createPlaceholderNode(nodeId))
-      .filter(Boolean);
-
-    // Build edge infos from subview edges
-    const edgeInfos: GraphEdgeInfo[] = subview.edges.map((edge, index) => ({
-      id: edge.label || `${subview.id}_edge_${index}`,
-      source: edge.source,
-      target: edge.target,
-      label: edge.label || '',
-      relation: edge.relation,
-      detail: edge.detail,
-      type: subview.type === 'workflow' ? 'process' : 'structural',
-      process: subview.type === 'workflow' ? [subview.id] : [],
-    }));
-
-    const nodeIdSet = new Set(nodeInfos.map(node => node.id));
-    const edgeIdSet = new Set(edgeInfos.map(edge => edge.id));
-
-    // Get viewport center for workflow positioning (anchor nodes may not exist yet)
-    const { centerX, centerY } = subview.type === 'workflow'
-      ? getViewportMetrics(cy)
-      : { centerX: 0, centerY: 0 };
-
-    // Add nodes and edges to cytoscape
-    cy.batch(() => {
-      nodeInfos.forEach(nodeInfo => {
-        const existing = cy.getElementById(nodeInfo.id);
-        if (existing.length > 0) {
-          return;
-        }
-
-        const added = cy.add({
-          group: 'nodes',
-          data: nodeInfo,
-        });
-        addedNodeIds.add(nodeInfo.id);
-        added.removeData('orgPos');
-        added.removeScratch('_positions');
-        added.unlock();
-      });
-
-      edgeInfos.forEach(edgeInfo => {
-        const existing = cy.getElementById(edgeInfo.id);
-        if (existing.length > 0) {
-          return;
-        }
-
-        cy.add({
-          group: 'edges',
-          data: edgeInfo,
-        });
-        addedEdgeIds.add(edgeInfo.id);
-      });
-    });
-
-    // Collect cytoscape elements
-    const subviewNodes = cy.nodes().filter(node => nodeIdSet.has(node.id()));
-    const subviewEdges = cy.collection();
-    edgeInfos.forEach(edge => {
-      const cyEdge = cy.getElementById(edge.id);
-      if (cyEdge && cyEdge.length > 0) {
-        subviewEdges.merge(cyEdge);
-      }
-    });
-
-    // Apply CSS classes based on subview type
-    if (subview.type === 'workflow') {
-      applyProcessHighlightClasses(cy, nodeIdSet, edgeIdSet);
-    } else {
-      applyStructuralSubviewClasses(cy, subviewNodes, subviewEdges);
-    }
-
-    // Run layout (workflows: viewport center, structural: entry node)
-    const viewportCenter = subview.type === 'workflow' ? { x: centerX, y: centerY } : undefined;
-    const layoutOptions = createStructuralLayoutOptions(subview, cy, viewportCenter);
-
-    const layoutElements = subviewNodes.union(subviewEdges);
-    const layout = layoutElements.layout(layoutOptions);
-    const layoutPromise = layout.promiseOn('layoutstop');
-    layout.run();
-    await layoutPromise;
-
-    console.log('[Controller] activateSubview: layout complete, checking if cancelled');
-
-    // Check if we should abort (deactivateSubview was called during layout)
-    // If nodes were removed, they won't exist in the graph anymore
-    const firstAddedNode = addedNodeIds.values().next().value;
-    const firstNodeExists = firstAddedNode ? cy.getElementById(firstAddedNode).length > 0 : false;
-    console.log('[Controller] activateSubview: cancellation check after layout', {
-      firstAddedNode,
-      firstNodeExists,
-      addedNodeIdsSize: addedNodeIds.size,
-    });
-
-    if (firstAddedNode && cy.getElementById(firstAddedNode).length === 0) {
-      // Nodes were removed - activation was cancelled, abort
-      console.log('[Controller] activateSubview ABORT: nodes removed during layout');
-      transitionInProgress = false;
-      return;
-    }
-
-    // Fit viewport to new elements
-    const fitPadding = subview.type === 'workflow' ? 140 : 200;
-    if (subviewNodes.length > 0) {
-      await cy
-        .animation({
-          fit: {
-            eles: subviewNodes,
-            padding: fitPadding,
-          },
-          duration: ANIMATION_DURATION,
-          easing: ANIMATION_EASING,
-        })
-        .play()
-        .promise()
-        .catch(() => {});
-    }
-
-    console.log('[Controller] activateSubview: animation complete, final cancellation check');
-
-    // Final check: if nodes were removed during animation, abort
-    const finalNodeExists = firstAddedNode ? cy.getElementById(firstAddedNode).length > 0 : false;
-    console.log('[Controller] activateSubview: final check', {
-      firstAddedNode,
-      finalNodeExists,
-    });
-
-    if (firstAddedNode && cy.getElementById(firstAddedNode).length === 0) {
-      console.log('[Controller] activateSubview ABORT: nodes removed during animation');
-      transitionInProgress = false;
-      return;
-    }
-
-    console.log('[Controller] activateSubview: storing active state');
-
-    // Store active state
-    activeSubview = {
-      id: subview.id,
-      type: subview.type,
-      addedNodeIds,
-      addedEdgeIds,
-      affectedNodeIds: nodeIdSet,
-      affectedEdgeIds: edgeIdSet,
-    };
-
-    transitionInProgress = false;
-    console.log('[Controller] activateSubview COMPLETE:', subview.id);
-
-    // Determine scope - use subview jurisdiction if it's a valid scope (not 'multi')
-    const subviewScope = subview.jurisdiction !== 'multi' ? subview.jurisdiction : null;
-
-    // NOTE: Don't call applyScopeStyling here - subview styling already handles all dimming.
-    // The applyProcessHighlightClasses/applyStructuralSubviewClasses functions dim everything
-    // outside the subview, which is more specific than scope-level dimming.
-
-    // Update React state
-    transitionVisualizationState({
-      activeSubviewId: subview.id,
-      selectedNodeId: null,
-      selectedEdgeId: null,
-      ...(subviewScope ? { activeScope: subviewScope } : {}),
-    });
-  };
-
-  const deactivateSubview = async (): Promise<void> => {
-    console.log('[Controller] deactivateSubview START:', {
-      transitionInProgress,
-      activeSubviewId: activeSubview?.id,
-    });
-
-    const currentState = getState();
-
-    // Handle overlay subviews (Sankey, Sunburst, etc.) - they don't have activeSubview state
-    if (currentState.sankeyOverlay) {
-      console.log('[Controller] deactivateSubview: clearing sankeyOverlay');
-      transitionVisualizationState({
-        sankeyOverlay: null,
-        activeSubviewId: null,
-        viewMode: 'diagram',
-        // Preserve selectedNodeId - return to the node that was selected
-      });
-      return;
-    }
-
-    if (currentState.sunburstOverlay) {
-      console.log('[Controller] deactivateSubview: clearing sunburstOverlay');
-      transitionVisualizationState({
-        sunburstOverlay: null,
-        activeSubviewId: null,
-        viewMode: 'diagram',
-        // Preserve selectedNodeId - return to the node that was selected
-      });
-      return;
-    }
-
-    const currentSubview = activeSubview;
-    if (!currentSubview) {
-      console.log('[Controller] deactivateSubview: no active subview, clearing state');
-      transitionVisualizationState({
-        // Keep activeScope - only clear subview state
-        activeSubviewId: null,
-        selectedNodeId: null,
-        selectedEdgeId: null,
-      });
-      return;
-    }
-
-    console.log('[Controller] deactivateSubview: removing subview elements', {
-      subviewId: currentSubview.id,
-      addedNodeCount: currentSubview.addedNodeIds.size,
-      addedEdgeCount: currentSubview.addedEdgeIds.size,
-    });
-
-    // If already transitioning, we still need to clean up
-    // Setting this flag will cancel ongoing animations and prevent new actions
-    transitionInProgress = true;
-
-    // Remove CSS classes
-    if (currentSubview.type === 'workflow') {
-      resetProcessClasses(cy);
-    } else {
-      resetHighlightClasses(cy);
-    }
-
-    // Remove added elements
-    cy.batch(() => {
-      const edgesToRemove = cy.collection();
-      currentSubview.addedEdgeIds.forEach(id => {
-        const edge = cy.getElementById(id);
-        if (edge.length > 0) {
-          edgesToRemove.merge(edge);
-        }
-      });
-      edgesToRemove.remove();
-
-      const nodesToRemove = cy.collection();
-      currentSubview.addedNodeIds.forEach(id => {
-        const node = cy.getElementById(id);
-        if (node.length > 0) {
-          nodesToRemove.merge(node);
-        }
-      });
-      nodesToRemove.remove();
-    });
-
-    // Restore original positions
-    cy.nodes().forEach(node => {
-      const orgPos = node.data('orgPos');
-      if (orgPos) {
-        node.position(copyPosition(orgPos));
-      }
-    });
-
-    // Check if we should preserve scope
-    const currentScope = getState().activeScope;
-
-    if (currentScope) {
-      // Re-apply scope styling after removing subview
-      applyScopeStyling(currentScope);
-
-      // Fit to scope nodes
-      const nodeIds = scopeNodeIds[currentScope];
-      await focusNodes(nodeIds);
-    } else {
-      // No scope - clear all styling and refit to entire graph
-      // Don't run layout since we just restored positions - just fit viewport
-      clearNodeFocus();
-      const fitPadding = currentSubview.type === 'workflow' ? 220 : 200;
-      await cy
-        .animation({
-          fit: { eles: cy.elements(), padding: fitPadding },
-          duration: ANIMATION_DURATION,
-          easing: ANIMATION_EASING,
-        })
-        .play()
-        .promise()
-        .catch(() => {}); // Ignore cancelled animations
-    }
-
-    // Clear state
-    activeSubview = null;
-    transitionInProgress = false;
-
-    console.log('[Controller] deactivateSubview COMPLETE: cleaned up subview');
-
-    // Update React state
-    transitionVisualizationState({
-      // Keep activeScope - only clear subview state
-      activeSubviewId: null,
-      selectedNodeId: null,
-      selectedEdgeId: null,
-    });
+  // Config for subview operations
+  const subviewConfig = {
+    cy,
+    setState,
+    getState,
+    subviewById,
+    scopeNodeIds,
+    nodeInfosById,
   };
 
   // ============================================================================
@@ -602,12 +94,12 @@ export function createController(config: ControllerConfig): Controller {
     const shouldUpdateScope = nodeScope && currentState.activeScope !== nodeScope;
 
     if (shouldUpdateScope) {
-      applyScopeStyling(nodeScope);
+      applyScopeStyling(cy, nodeScope, scopeNodeIds);
     }
 
     // Update React state (transition function handles mutual exclusivity and sidebar)
     // Set activeTab to 'details' when a node is selected
-    transitionVisualizationState({
+    transitionVisualizationState(setState, {
       selectedNodeId: nodeId,
       activeTab: 'details',
       ...(shouldUpdateScope ? { activeScope: nodeScope } : {}),
@@ -623,7 +115,7 @@ export function createController(config: ControllerConfig): Controller {
     }
 
     // Update React state (transition function handles mutual exclusivity and sidebar)
-    transitionVisualizationState({
+    transitionVisualizationState(setState, {
       selectedEdgeId: edgeId,
     });
   };
@@ -633,7 +125,7 @@ export function createController(config: ControllerConfig): Controller {
     cy.elements().removeClass('highlighted');
 
     // Update React state
-    transitionVisualizationState({
+    transitionVisualizationState(setState, {
       selectedNodeId: null,
       selectedEdgeId: null,
     });
@@ -645,12 +137,12 @@ export function createController(config: ControllerConfig): Controller {
 
   const handleBackgroundClick = async (): Promise<void> => {
     console.log('[Controller] handleBackgroundClick:', {
-      transitionInProgress,
-      activeSubviewId: activeSubview?.id,
+      transitionInProgress: subviewContext.transitionInProgress,
+      activeSubviewId: subviewContext.activeSubview?.id,
     });
 
     // Guard: Don't allow background clicks during transitions
-    if (transitionInProgress) {
+    if (subviewContext.transitionInProgress) {
       console.log('[Controller] handleBackgroundClick ABORT: transition in progress');
       return;
     }
@@ -663,13 +155,13 @@ export function createController(config: ControllerConfig): Controller {
       selectedEdgeId: currentState.selectedEdgeId,
       activeSubviewId: currentState.activeSubviewId,
       activeScope: currentState.activeScope,
-      internalActiveSubview: activeSubview?.id,
+      internalActiveSubview: subviewContext.activeSubview?.id,
     });
 
     // If there's an overlay open, close it (preserve node selection)
     if (currentState.sankeyOverlay || currentState.sunburstOverlay) {
       console.log('[Controller] handleBackgroundClick: closing overlay');
-      await deactivateSubview();
+      await deactivateSubview(subviewConfig, subviewContext, focusNodes);
       return;
     }
 
@@ -682,9 +174,9 @@ export function createController(config: ControllerConfig): Controller {
 
     // If there's an active subview, deactivate it (keep activeScope)
     // Check INTERNAL controller state, not React state (which may be stale due to async updates)
-    if (activeSubview) {
+    if (subviewContext.activeSubview) {
       console.log('[Controller] handleBackgroundClick: deactivating subview (using internal state)');
-      await deactivateSubview();
+      await deactivateSubview(subviewConfig, subviewContext, focusNodes);
       return;
     }
 
@@ -692,7 +184,7 @@ export function createController(config: ControllerConfig): Controller {
     if (currentState.activeScope) {
       console.log('[Controller] handleBackgroundClick: clearing scope');
       clearNodeFocus();
-      transitionVisualizationState({
+      transitionVisualizationState(setState, {
         activeScope: null,
       });
     }
@@ -704,8 +196,8 @@ export function createController(config: ControllerConfig): Controller {
 
   const handleScopeChange = async (scope: GovernmentScope): Promise<void> => {
     // Deactivate any active subview first
-    if (activeSubview) {
-      await deactivateSubview();
+    if (subviewContext.activeSubview) {
+      await deactivateSubview(subviewConfig, subviewContext, focusNodes);
     }
 
     const nodeIds = scopeNodeIds[scope];
@@ -714,11 +206,11 @@ export function createController(config: ControllerConfig): Controller {
     }
 
     // Apply scope styling and focus
-    applyScopeStyling(scope);
+    applyScopeStyling(cy, scope, scopeNodeIds);
     await focusNodes(nodeIds);
 
     // Update React state
-    transitionVisualizationState({
+    transitionVisualizationState(setState, {
       activeScope: scope,
       activeSubviewId: null,
       selectedNodeId: null,
@@ -731,28 +223,15 @@ export function createController(config: ControllerConfig): Controller {
   // ============================================================================
 
   const focusNodes = async (nodeIds: string[]): Promise<void> => {
-    const nodes = cy.nodes().filter((node) => nodeIds.includes(node.id()));
-    if (nodes.empty()) {
-      return;
-    }
-
-    await cy
-      .animation({
-        fit: { eles: nodes, padding: 100 },
-        duration: 500,
-      })
-      .play()
-      .promise();
+    await focusNodesOp(nodeIds, cy);
   };
 
   const clearNodeFocus = (): void => {
-    resetHighlightClasses(cy);
+    clearNodeFocusOp(cy);
   };
 
   const captureInitialPositions = (): void => {
-    cy.nodes().forEach((node) => {
-      node.data('orgPos', copyPosition(node.position()));
-    });
+    captureInitialPositionsOp(cy);
   };
 
   // ============================================================================
@@ -764,8 +243,8 @@ export function createController(config: ControllerConfig): Controller {
    */
   const dispatch = async (action: GraphAction): Promise<void> => {
     console.log('[Controller] Dispatch:', action.type, {
-      transitionInProgress,
-      activeSubviewId: activeSubview?.id,
+      transitionInProgress: subviewContext.transitionInProgress,
+      activeSubviewId: subviewContext.activeSubview?.id,
       payload: 'payload' in action ? action.payload : undefined,
     });
 
@@ -774,18 +253,18 @@ export function createController(config: ControllerConfig): Controller {
         const { nodeId } = action.payload;
 
         // Guard: Don't allow node clicks during transitions
-        if (transitionInProgress) {
+        if (subviewContext.transitionInProgress) {
           return;
         }
 
         const currentState = getState();
 
         // If there's an active subview and we're clicking outside it, deactivate first
-        if (currentState.activeSubviewId && activeSubview) {
-          const isNodeInSubview = activeSubview.affectedNodeIds.has(nodeId);
+        if (currentState.activeSubviewId && subviewContext.activeSubview) {
+          const isNodeInSubview = subviewContext.activeSubview.affectedNodeIds.has(nodeId);
           if (!isNodeInSubview) {
             // Clicking outside active subview - deactivate it first
-            await deactivateSubview();
+            await deactivateSubview(subviewConfig, subviewContext, focusNodes);
             // Fall through to handle the click normally
           }
         }
@@ -795,7 +274,7 @@ export function createController(config: ControllerConfig): Controller {
 
         if (subview) {
           // Node is a subview anchor
-          const isActive = activeSubview?.id === subview.id;
+          const isActive = subviewContext.activeSubview?.id === subview.id;
           if (isActive) {
             // Re-clicking active subview - use hierarchical clearing
             await handleBackgroundClick();
@@ -805,7 +284,7 @@ export function createController(config: ControllerConfig): Controller {
             selectNode(nodeId);
           } else {
             // Cytoscape subviews auto-activate on node click
-            await activateSubview(subview.id);
+            await activateSubview(subview.id, subviewConfig, subviewContext, focusNodes);
           }
         } else {
           // Regular node - select it
@@ -816,7 +295,7 @@ export function createController(config: ControllerConfig): Controller {
 
       case 'EDGE_CLICK': {
         // Guard: Don't allow edge clicks during transitions
-        if (transitionInProgress) {
+        if (subviewContext.transitionInProgress) {
           return;
         }
 
@@ -846,12 +325,12 @@ export function createController(config: ControllerConfig): Controller {
 
       case 'ACTIVATE_SUBVIEW': {
         const { subviewId } = action.payload;
-        await activateSubview(subviewId);
+        await activateSubview(subviewId, subviewConfig, subviewContext, focusNodes);
         break;
       }
 
       case 'DEACTIVATE_SUBVIEW': {
-        await deactivateSubview();
+        await deactivateSubview(subviewConfig, subviewContext, focusNodes);
         break;
       }
 
@@ -863,7 +342,7 @@ export function createController(config: ControllerConfig): Controller {
 
       case 'CLEAR_SCOPE': {
         clearNodeFocus();
-        transitionVisualizationState({
+        transitionVisualizationState(setState, {
           activeScope: null,
         });
         break;
@@ -876,7 +355,7 @@ export function createController(config: ControllerConfig): Controller {
 
       case 'CHANGE_VIEW_MODE': {
         const { mode } = action.payload;
-        transitionVisualizationState({
+        transitionVisualizationState(setState, {
           viewMode: mode,
         });
         break;
@@ -884,7 +363,7 @@ export function createController(config: ControllerConfig): Controller {
 
       case 'CHANGE_CONTROL_PANEL_TAB': {
         const { tab } = action.payload;
-        transitionVisualizationState({
+        transitionVisualizationState(setState, {
           activeTab: tab,
         });
         break;
@@ -903,20 +382,5 @@ export function createController(config: ControllerConfig): Controller {
     focusNodes,
     clearNodeFocus,
     captureInitialPositions,
-  };
-}
-
-function createPlaceholderNode(id: string): GraphNodeInfo {
-  return {
-    id,
-    label: id.split(':')[1] || id,
-    branch: 'unknown',
-    type: 'placeholder',
-    process: [],
-    factoid: '',
-    branchColor: '#cccccc',
-    system: '',
-    width: 120,
-    height: 60,
   };
 }
