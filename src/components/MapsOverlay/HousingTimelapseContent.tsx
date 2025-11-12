@@ -95,10 +95,10 @@ export function HousingTimelapseContent({ width, height }: HousingTimelapseConte
           <div className="text-slate-600 max-w-md mx-auto">
             {loadingStatus.stage === 'fetching' && (
               <div className="space-y-1">
-                <div>• DOB Job Applications (construction permits)</div>
-                <div>• Housing NY (affordable housing)</div>
-                <div>• PLUTO (property data)</div>
+                <div>• DCP Housing Database (construction permits)</div>
+                <div>• Housing NY (affordable housing overlay)</div>
                 <div>• Demolition records</div>
+                <div className="text-sm text-slate-500 mt-2">Loading from Supabase database</div>
               </div>
             )}
             {loadingStatus.stage === 'processing' && (

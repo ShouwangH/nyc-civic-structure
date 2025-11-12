@@ -1590,7 +1590,7 @@
         "city:comptroller",
         "city:nyc-comptroller-audit",
         "city:nyc-comptroller-accountancy",
-        "city:nyc-agencies",
+        "city:departments",
         "city:nyc_budget"
       ],
       "edges": [
@@ -1608,7 +1608,7 @@
         },
         {
           "source": "city:nyc-comptroller-audit",
-          "target": "city:nyc-agencies",
+          "target": "city:departments",
           "relation": "audits",
           "detail": "Audit Bureau conducts financial and performance audits of city agencies"
         },
@@ -1620,7 +1620,7 @@
         },
         {
           "source": "city:nyc-comptroller-accountancy",
-          "target": "city:nyc-agencies",
+          "target": "city:departments",
           "relation": "registers_contracts",
           "detail": "Accountancy Bureau must register contracts before agencies can spend"
         }

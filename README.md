@@ -2,7 +2,9 @@
 
 Interactive visualization of New York City government structure with integrated data overlays for housing development, capital budget projects, and financial flows.
 
-> **Architecture:** Database-backed Express + React application with comprehensive type safety
+> **Live Demo:** https://nyc-civic-structure.onrender.com/
+> **Architecture:** Database-backed Node.js + React application with comprehensive type safety
+> **Deployment:** Render (Production) with Supabase PostgreSQL
 
 ## Features
 
@@ -46,10 +48,10 @@ Interactive visualization of New York City government structure with integrated 
 - **D3.js** - Sankey and Sunburst diagrams
 
 ### Backend
-- **Node.js** - Runtime
-- **Express** (via Connect middleware) - API server
+- **Node.js** with **tsx** - Runtime with TypeScript support
+- **Custom Router** - Lightweight routing system (dev & production)
 - **Drizzle ORM 0.44** - Type-safe database queries
-- **PostgreSQL** (Supabase) - Database with PostGIS
+- **PostgreSQL** (Supabase Transaction Pooling) - Database with PostGIS
 
 ### Development
 - **Bun 1.3.0** - Package manager (faster than npm)
@@ -122,10 +124,15 @@ The dev server includes:
 bun run build
 ```
 
-Preview the production build:
+Start the production server:
 ```bash
-bun run preview
+bun run start
 ```
+
+This starts a Node.js server that:
+- Serves the static frontend from `dist/`
+- Handles all `/api/*` routes through the custom router
+- Uses in-memory caching for optimal performance
 
 ### Database Management
 
@@ -142,6 +149,29 @@ To refresh data from NYC Open Data sources:
 ```bash
 bun run seed:all
 ```
+
+## Deployment (Render)
+
+The application is deployed on Render with the following configuration:
+
+**Build Command:**
+```bash
+bun install && bun run build
+```
+
+**Start Command:**
+```bash
+bun run start
+```
+
+**Environment Variables:**
+- `DATABASE_URL` - Supabase Transaction Pooling connection string (port 6543)
+- `PORT` - Auto-set by Render (defaults to 3000 locally)
+
+**Database Configuration:**
+- Uses Supabase Transaction Pooling for IPv4 compatibility
+- Connection pooling optimized for cloud deployment
+- SSL enabled with prepared statements disabled
 
 ## Project Structure
 
@@ -160,7 +190,9 @@ nyc-civic-structure/
 │
 ├── server/                    # Backend API
 │   ├── lib/                   # DB connection, cache, schema
-│   └── routes/                # API endpoints
+│   ├── routes/                # API endpoint handlers
+│   ├── router.ts              # Lightweight routing system
+│   └── index.ts               # Server entry point
 │
 ├── scripts/                   # Data seeding scripts
 │   ├── seed-housing.js        # DCP Housing Database → PostgreSQL
@@ -173,6 +205,7 @@ nyc-civic-structure/
 ├── docs/                      # Documentation
 │   └── DATA_FLOW.md           # Unidirectional flow architecture
 │
+├── server.js                  # Production server (serves dist/ + API routes)
 └── ARCHITECTURE.md            # Complete architecture reference
 ```
 

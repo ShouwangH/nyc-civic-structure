@@ -25,15 +25,15 @@ This document guides you through taking ownership of the NYC Civic Structure vis
 ### Current Infrastructure (Developer)
 - **Main Repository:** GitHub (to be transferred)
 - **Workflow Repository:** Separate GitHub repo for automated updates
-- **Database:** Supabase PostgreSQL with seeded NYC Open Data
-- **Deployment:** Vercel static hosting at https://nyc-civic-structure.vercel.app/
+- **Database:** Supabase PostgreSQL (Transaction Pooling) with seeded NYC Open Data
+- **Deployment:** Render (Node.js Web Service) - https://nyc-civic-structure.onrender.com/
 - **Automation:** GitHub Actions for weekly database updates
 
 ### Your New Infrastructure
 - **Main Repository:** Your GitHub account
 - **Workflow Repository:** Your GitHub account (clone from developer)
 - **Database:** Your own PostgreSQL database (Supabase recommended)
-- **Deployment:** Your own Vercel account (or alternative static host)
+- **Deployment:** Render (or Vercel/Railway/other Node.js hosting)
 - **Automation:** GitHub Actions with your database credentials
 
 ### Migration Strategy
@@ -48,7 +48,7 @@ Before starting, ensure you have:
 - [x] **GitHub account** for repositories
 - [x] **Bun** installed (v1.3.0+): https://bun.sh/
 - [x] **PostgreSQL database** (see [Database Setup](#step-1-database-setup))
-- [x] **Vercel account** (or alternative: Netlify, Cloudflare Pages)
+- [x] **Render account** (or alternative: Railway, Vercel, Heroku)
 - [x] **Basic terminal knowledge**
 - [x] **Access to workflow repository** (contact developer)
 
@@ -73,14 +73,15 @@ You'll need a PostgreSQL database with PostGIS support. Supabase is recommended 
 
 3. **Get connection string:**
    - Go to Project Settings → Database
-   - Under "Connection string", select **"URI"** mode
-   - Copy the **"Direct connection"** string (not pooled)
+   - Under "Connection string", select **"Transaction"** mode (port 6543)
    - Replace `[YOUR-PASSWORD]` with your actual database password
 
    Example format:
    ```
-   postgresql://postgres.abc123xyz:your-password@aws-0-us-west-1.pooler.supabase.com:5432/postgres?sslmode=require
+   postgresql://postgres.abc123xyz:your-password@aws-0-us-west-1.pooler.supabase.com:6543/postgres?sslmode=require
    ```
+
+   **Note:** Use Transaction pooling (port 6543) instead of Direct connection (port 5432) for better cloud deployment compatibility.
 
 4. **Enable PostGIS** (already enabled by default on Supabase)
 
@@ -213,78 +214,64 @@ Open http://localhost:5173 - you should see the NYC civic structure graph.
 
 ## Step 4: Deployment Setup
 
-The app is a **static frontend** with API middleware. Vercel is recommended but not required.
+The app is a **full-stack application** with a Node.js backend. It requires a platform that supports long-running Node.js servers (not just static hosting).
 
-### Option A: Vercel (Current Setup)
+### Option A: Render (Recommended - Current Setup)
 
-1. **Install Vercel CLI:**
-   ```bash
-   bun install -g vercel
-   ```
+1. **Create Render account:** https://render.com/
 
-2. **Login to Vercel:**
-   ```bash
-   vercel login
-   ```
+2. **Create new Web Service:**
+   - Click "New +" → "Web Service"
+   - Connect your GitHub repository
+   - Name: `nyc-civic-structure`
+   - Environment: `Node`
+   - Build Command: `bun install && bun run build`
+   - Start Command: `bun run start`
 
-3. **Link project:**
-   ```bash
-   vercel link
-   ```
+3. **Set environment variables:**
+   - In the Render dashboard, go to "Environment"
+   - Add variable:
+     - Key: `DATABASE_URL`
+     - Value: Your Supabase connection string (Transaction pooling, port 6543)
 
-   - Create new project: Yes
-   - Project name: `nyc-civic-structure`
-   - Directory: `.` (current directory)
+4. **Deploy:**
+   - Click "Create Web Service"
+   - Render will automatically build and deploy
+   - Your site will be live at `https://[your-service-name].onrender.com`
 
-4. **Set environment variable:**
-   ```bash
-   vercel env add DATABASE_URL
-   ```
+**Current deployment:** https://nyc-civic-structure.onrender.com/
 
-   When prompted, paste your `DATABASE_URL` and select "Production, Preview, Development".
+**Note:** The free tier on Render spins down after inactivity. First request may be slow (cold start). Paid tier ($7/month) keeps server running 24/7.
 
-5. **Deploy:**
-   ```bash
-   vercel --prod
-   ```
+### Option B: Railway
 
-   Your site will be live at `https://nyc-civic-structure-[your-username].vercel.app`
+1. **Create Railway account:** https://railway.app/
 
-**Note:** The current deployment at https://nyc-civic-structure.vercel.app/ will continue to work until the developer removes it. You can use your own custom domain in Vercel settings.
+2. **Deploy from GitHub:**
+   - Click "New Project" → "Deploy from GitHub repo"
+   - Select your repository
+   - Railway auto-detects Node.js
 
-### Option B: Netlify
-
-1. Install Netlify CLI:
-   ```bash
-   npm install -g netlify-cli
-   ```
-
-2. Build the project:
-   ```bash
-   bun run build
-   ```
-
-3. Deploy:
-   ```bash
-   netlify deploy --prod --dir=dist
-   ```
-
-4. Set environment variables in Netlify dashboard:
-   - Go to Site Settings → Environment Variables
-   - Add `DATABASE_URL`
-
-### Option C: Cloudflare Pages
-
-1. Build the project:
-   ```bash
-   bun run build
-   ```
-
-2. Deploy via Cloudflare Pages dashboard:
-   - Connect your GitHub repo
-   - Build command: `bun run build`
-   - Output directory: `dist`
+3. **Configure:**
+   - Build Command: `bun install && bun run build`
+   - Start Command: `bun run start`
    - Add `DATABASE_URL` environment variable
+
+4. **Deploy:**
+   - Railway automatically deploys on push
+
+**Note:** Railway has generous free tier with $5 monthly credit.
+
+### Option C: Vercel (Serverless Functions)
+
+Vercel can work but requires converting API routes to serverless functions. Not recommended unless you're familiar with serverless architecture.
+
+If you want to use Vercel, you'll need to:
+- Remove `server.js` production server
+- Create `api/` directory with serverless function wrappers
+- Modify database connection for serverless (no persistent connections)
+
+See Vercel documentation for details.
 
 ---
 
@@ -419,19 +406,28 @@ bun outdated
 
 ### Deployment Issues
 
-**Error:** `Module not found` on Vercel
+**Error:** `Module not found` on Render
 
 **Solution:**
 1. Ensure `DATABASE_URL` environment variable is set
-2. Redeploy: `vercel --prod`
-3. Check build logs in Vercel dashboard
+2. Check build logs in Render dashboard
+3. Verify Start Command is `bun run start`
+4. Manual deploy from Render dashboard
 
 **Error:** API endpoints return 404
 
 **Solution:**
-1. Verify `DATABASE_URL` is set in deployment environment
+1. Verify `DATABASE_URL` is set in Render environment variables
 2. Check database has seeded data: `bun run db:studio`
-3. Restart deployment
+3. Check server logs in Render dashboard
+4. Ensure `server.js` file exists in repository
+
+**Error:** Database connection fails on Render (IPv6 error)
+
+**Solution:**
+1. Use Supabase **Transaction pooling** (port 6543), not Direct connection (port 5432)
+2. Connection string should end with `?sslmode=require`
+3. Verify connection string is correct in environment variables
 
 ### GitHub Actions Failures
 
@@ -462,8 +458,8 @@ bun outdated
 
 **Q: How much does this cost to run?**
 - Supabase: Free tier sufficient (500 MB database, 2 GB bandwidth)
-- Vercel: Free tier sufficient (100 GB bandwidth)
-- Total: $0/month for low-moderate traffic
+- Render: Free tier available (spins down after inactivity) or $7/month for always-on
+- Total: $0-7/month depending on uptime requirements
 
 **Q: How long does initial setup take?**
 - Database setup: 10 minutes

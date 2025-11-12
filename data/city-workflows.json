@@ -321,7 +321,7 @@
       "nodes": [
         "city:departments",
         "city:mayor_office_operations",
-        "city:public",
+        "city:public_nyc",
         "city:city_council",
         "city:rules_of_city"
       ],
@@ -332,10 +332,10 @@
         },
         {
           "source": "city:mayor_office_operations",
-          "target": "city:public"
+          "target": "city:public_nyc"
         },
         {
-          "source": "city:public",
+          "source": "city:public_nyc",
           "target": "city:departments"
         },
         {

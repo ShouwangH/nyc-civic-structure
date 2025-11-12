@@ -174,7 +174,7 @@
         "state:state_legislature",
         "state:governor_ny",
         "state:attorney_general",
-        "state:voters"
+        "state:voters_ny"
       ],
       "edges": [
         {
@@ -187,7 +187,7 @@
         },
         {
           "source": "state:attorney_general",
-          "target": "state:voters"
+          "target": "state:voters_ny"
         }
       ],
       "layout": {
@@ -401,7 +401,7 @@
       "nodes": [
         "state:state_agencies",
         "state:governor_ny",
-        "state:public",
+        "state:public_ny",
         "state:state_legislature"
       ],
       "edges": [
@@ -411,10 +411,10 @@
         },
         {
           "source": "state:governor_ny",
-          "target": "state:public"
+          "target": "state:public_ny"
         },
         {
-          "source": "state:public",
+          "source": "state:public_ny",
           "target": "state:state_agencies"
         },
         {
