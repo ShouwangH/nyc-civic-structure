@@ -1,83 +1,14 @@
 // ABOUTME: Data fetching and transformation utilities for NYC housing data
-// ABOUTME: Handles NYC Open Data API calls, caching, and data processing
+// ABOUTME: Handles NYC Open Data API calls and data organization
 
 import type {
-  HousingBuildingRecord,
   ProcessedBuilding,
-  BuildingSegment,
-  BuildingType,
-  CachedProcessedData,
   HousingDataByYear,
   ZoningColorMap,
   DemolitionStats,
 } from '../../components/HousingTimelapse/types';
-
-// Cache configuration
-const CACHE_KEY = 'nyc_housing_processed_v6';
-const CACHE_VERSION = '6.0.0';
-
-const ENABLE_CACHE = false; // Disabled: localStorage quota exceeded
-
-/**
- * Save processed data to localStorage cache
- */
-function saveProcessedToCache(dataByYear: HousingDataByYear): void {
-  if (!ENABLE_CACHE) {
-    return; // Caching disabled
-  }
-
-  try {
-    // Convert Map to plain object for JSON serialization
-    const buildingsByYear: Record<number, ProcessedBuilding[]> = {};
-    let totalCount = 0;
-
-    for (const [year, buildings] of dataByYear.entries()) {
-      buildingsByYear[year] = buildings;
-      totalCount += buildings.length;
-    }
-
-    const data: CachedProcessedData = {
-      meta: {
-        timestamp: Date.now(),
-        version: CACHE_VERSION,
-        recordCount: totalCount,
-      },
-      buildingsByYear,
-    };
-
-    localStorage.setItem(CACHE_KEY, JSON.stringify(data));
-    console.info(`[HousingData] Cached ${totalCount} processed buildings`);
-  } catch (error) {
-    console.error('[HousingData] Failed to save to cache:', error);
-  }
-}
-
-/**
- * Normalize BBL to standard format (removes hyphens, decimals, ensures 10 digits)
- */
-function normalizeBBL(bbl: string | undefined): string | null {
-  if (!bbl) return null;
-
-  // Handle PLUTO format with decimals (e.g., "4118580011.00000000")
-  // Split on decimal and take only the integer part
-  const parts = String(bbl).split('.');
-  const integerPart = parts[0];
-
-  // Remove all non-numeric characters from integer part
-  const numeric = integerPart.replace(/[^0-9]/g, '');
-
-  // BBL should be 10 digits: 1 (borough) + 5 (block) + 4 (lot)
-  if (numeric.length === 10) {
-    return numeric;
-  }
-
-  // Pad if slightly short (some datasets drop leading zeros)
-  if (numeric.length === 9) {
-    return '0' + numeric;
-  }
-
-  return null;
-}
+import type { HousingDataResponse } from '../api-types';
+import { isSuccessResponse } from '../api-types';
 
 /**
  * Construct BBL from borough, block, lot (DOB format)
@@ -98,16 +29,30 @@ function constructBBL(borough: string, block: string, lot: string): string | nul
 
   // Pad block to 5 digits, lot to 4 digits
   // Parse as integers first to handle already-padded values from DOB
-  const paddedBlock = parseInt(block, 10).toString().padStart(5, '0');
-  const paddedLot = parseInt(lot, 10).toString().padStart(4, '0');
+  const blockInt = parseInt(block, 10);
+  const lotInt = parseInt(lot, 10);
+
+  if (isNaN(blockInt) || isNaN(lotInt)) return null;
+
+  const paddedBlock = String(blockInt).padStart(5, '0');
+  const paddedLot = String(lotInt).padStart(4, '0');
 
   return boroughCode + paddedBlock + paddedLot;
 }
 
+type DemolitionRecord = {
+  existing_dwelling_units: number;
+  latest_action_date: string;
+  bbl: string | null;
+  borough: string;
+  block: string | undefined;
+  lot: string | undefined;
+};
+
 /**
  * Process demolition records and calculate statistics
  */
-function processDemolitionStats(demolitions: any[], newConstructionBBLs: Set<string>): DemolitionStats {
+function processDemolitionStats(demolitions: DemolitionRecord[], newConstructionBBLs: Set<string>): DemolitionStats {
   console.info(`[HousingData] Processing ${demolitions.length} demolition records`);
 
   // Debug: Check structure of first few demolition records
@@ -125,9 +70,8 @@ function processDemolitionStats(demolitions: any[], newConstructionBBLs: Set<str
   let standaloneCount = 0;
 
   for (const record of demolitions) {
-    // Parse existing dwelling units
-    const existingUnitsStr = record.existing_dwelling_units || record.existingdwellingunits || '0';
-    const existingUnits = parseInt(String(existingUnitsStr).replace(/[^0-9]/g, ''), 10) || 0;
+    // Backend has already transformed estimatedUnits -> existing_dwelling_units
+    const existingUnits = record.existing_dwelling_units;
 
     if (existingUnits > 0) recordsWithUnits++;
 
@@ -136,7 +80,8 @@ function processDemolitionStats(demolitions: any[], newConstructionBBLs: Set<str
     totalDemolishedUnits += existingUnits;
 
     // Check if this BBL had new construction
-    const bbl = normalizeBBL(record.bbl) || constructBBL(record.borough, record.block, record.lot);
+    // Backend already provides block and lot, and normalized bbl
+    const bbl = record.bbl ?? (record.block && record.lot ? constructBBL(record.borough, record.block, record.lot) : null);
     if (bbl) recordsWithBBL++;
 
     const isStandalone = bbl ? !newConstructionBBLs.has(bbl) : true;
@@ -146,8 +91,8 @@ function processDemolitionStats(demolitions: any[], newConstructionBBLs: Set<str
       standaloneCount++;
     }
 
-    // Try to extract year from latest_action_date
-    const dateStr = record.latest_action_date || record.issuance_date || '';
+    // Backend has already transformed demolitionDate -> latest_action_date
+    const dateStr = record.latest_action_date;
     if (dateStr) {
       recordsWithDate++;
 
@@ -211,7 +156,17 @@ function processDemolitionStats(demolitions: any[], newConstructionBBLs: Set<str
 /**
  * Fetch housing data from server (already processed in database)
  */
-async function fetchFromAPI(): Promise<{ buildings: ProcessedBuilding[]; demolitionData: any[] }> {
+async function fetchFromAPI(): Promise<{
+  buildings: ProcessedBuilding[];
+  demolitionData: Array<{
+    existing_dwelling_units: number;
+    latest_action_date: string;
+    bbl: string | null;
+    borough: string;
+    block: string | undefined;
+    lot: string | undefined;
+  }>;
+}> {
   console.info('[HousingData] Fetching from server API (with 24-hour caching)...');
 
   // Fetch from server API (data already processed in database)
@@ -221,20 +176,19 @@ async function fetchFromAPI(): Promise<{ buildings: ProcessedBuilding[]; demolit
     throw new Error(`Server API error: ${response.status}`);
   }
 
-  const result = await response.json();
+  const result: HousingDataResponse = await response.json();
 
-  if (!result.success) {
+  if (!isSuccessResponse(result)) {
     throw new Error(result.message || 'Failed to fetch housing data');
   }
 
-  // Extract data from server response (already in ProcessedBuilding format)
-  const buildings: ProcessedBuilding[] = result.data.buildings;
-  const demolitionData: any[] = result.data.demolitions;
+  // Type-safe data extraction (TypeScript now knows the shape)
+  const { buildings, demolitions } = result.data;
 
   console.info(`[HousingData] Fetched ${buildings.length} buildings (already processed by server)`);
-  console.info(`[HousingData] Fetched ${demolitionData.length} demolition records`);
+  console.info(`[HousingData] Fetched ${demolitions.length} demolition records`);
 
-  return { buildings, demolitionData };
+  return { buildings, demolitionData: demolitions };
 }
 
 /**
@@ -273,332 +227,20 @@ export async function getHousingData(): Promise<{ dataByYear: HousingDataByYear;
     yearBreakdown: Array.from(demolitionStats.byYear.entries()).sort((a, b) => a[0] - b[0])
   });
 
-  // Save processed data to cache
-  saveProcessedToCache(dataByYear);
-
   return { dataByYear, demolitionStats };
 }
 
 /**
- * Parse date information from completion date string
- */
-function parseCompletionDate(dateString: string): { year: number; month?: number; dateStr?: string } {
-  if (!dateString) {
-    return { year: 0 };
-  }
-
-  // Try parsing ISO date format (YYYY-MM-DD) or timestamp
-  const isoMatch = dateString.match(/^(\d{4})-(\d{2})-(\d{2})/);
-  if (isoMatch) {
-    return {
-      year: parseInt(isoMatch[1], 10),
-      month: parseInt(isoMatch[2], 10),
-      dateStr: dateString,
-    };
-  }
-
-  // Try just year
-  const yearMatch = dateString.match(/^(\d{4})/);
-  if (yearMatch) {
-    return { year: parseInt(yearMatch[1], 10) };
-  }
-
-  return { year: 0 };
-}
-
-/**
- * Calculate number of affordable units
- */
-function calculateAffordableUnits(record: HousingBuildingRecord): number {
-  const extremely = parseInt(record.extremely_low_income_units || '0', 10);
-  const veryLow = parseInt(record.very_low_income_units || '0', 10);
-  const low = parseInt(record.low_income_units || '0', 10);
-  const moderate = parseInt(record.moderate_income_units || '0', 10);
-  const middle = parseInt(record.middle_income_units || '0', 10);
-
-  return extremely + veryLow + low + moderate + middle;
-}
-
-/**
- * Get physical building type from building class alone (no affordability/renovation overlay)
- * NYC PLUTO building class codes: https://www1.nyc.gov/assets/planning/download/pdf/data-maps/open-data/bldg_class_code_101.pdf
- */
-function getPhysicalBuildingType(buildingClass: string | undefined): BuildingType {
-  if (buildingClass) {
-    const classPrefix = buildingClass.charAt(0).toUpperCase();
-    switch (classPrefix) {
-      case 'A': return 'one-two-family';  // One and two family
-      case 'B': return 'multifamily-walkup';  // Multifamily walk-up
-      case 'C': return 'multifamily-elevator';  // Multifamily elevator
-      case 'D': return 'mixed-use';  // Mixed residential/commercial
-      case 'R': return 'multifamily-elevator';  // Condos/co-ops (typically elevator buildings)
-      case 'S': return 'mixed-use';  // Mixed residential
-      case 'L': return 'multifamily-elevator';  // Lofts (converted industrial, typically elevator)
-      // Non-residential but may have housing units:
-      case 'H': return 'mixed-use';  // Hotels (some have residential)
-      case 'O': return 'mixed-use';  // Office (some have residential conversion)
-      case 'K': return 'mixed-use';  // Retail (some have residential above)
-      case 'E': case 'F': case 'G':  // Warehouses, factories, garages
-      case 'I': case 'J': case 'M':  // Hospitals, theaters, churches
-      case 'N': case 'P': case 'Q':  // Institutions, assembly, recreation
-      case 'T': case 'U': case 'V':  // Transport, misc, vacant
-      case 'W': case 'Y': case 'Z':  // Education, government, misc
-        return 'mixed-use';  // Catch-all for unusual residential conversions
-    }
-  }
-  // Default to mixed-use for buildings without building class data
-  return 'mixed-use';
-}
-
-/**
- * Determine building type from PLUTO building class or DOB job type
- */
-function getBuildingType(
-  buildingClass: string | undefined,
-  _jobType: string | undefined,
-  affordablePercentage: number,
-  isRenovation: boolean
-): any {
-  // Priority 1: Predominantly affordable housing (>50% affordable)
-  if (affordablePercentage > 50) {
-    return 'affordable';
-  }
-
-  // Priority 2: Renovation (DOB A1/A2/A3 types)
-  if (isRenovation) {
-    return 'renovation';
-  }
-
-  // Priority 3: PLUTO/DOB building class
-  return getPhysicalBuildingType(buildingClass);
-}
-
-/**
- * Process raw building record into visualization format
- */
-function processBuilding(record: any): ProcessedBuilding | null {
-  const affordableData = record._affordableData;
-  const dataSource = record._dataSource; // 'dob' or 'pluto'
-  const isDOB = dataSource === 'dob';
-  const isPLUTO = dataSource === 'pluto';
-
-  // Extract coordinates
-  const lat = parseFloat(
-    record.gis_latitude ||
-    record.latitude ||
-    affordableData?.latitude ||
-    affordableData?.latitude_internal ||
-    (record.location?.coordinates?.[1]) ||
-    (affordableData?.location?.coordinates?.[1]) ||
-    '0'
-  );
-  const lon = parseFloat(
-    record.gis_longitude ||
-    record.longitude ||
-    affordableData?.longitude ||
-    affordableData?.longitude_internal ||
-    (record.location?.coordinates?.[0]) ||
-    (affordableData?.location?.coordinates?.[0]) ||
-    '0'
-  );
-
-  // Parse date
-  let dateInfo;
-  if (isDOB) {
-    // DOB: use latest_action_date or pre_filing_date
-    const dateStr = record.latest_action_date || record.pre_filing_date;
-    if (dateStr) {
-      const year = parseInt(dateStr.substring(0, 4), 10);
-      dateInfo = { year };
-    } else {
-      dateInfo = { year: 0 };
-    }
-  } else if (affordableData && (affordableData.building_completion_date || affordableData.completion_date)) {
-    dateInfo = parseCompletionDate(
-      affordableData.building_completion_date ||
-      affordableData.completion_date ||
-      ''
-    );
-  } else if (isPLUTO) {
-    const yearBuilt = parseInt(record.yearbuilt || '0', 10);
-    dateInfo = { year: yearBuilt };
-  } else {
-    dateInfo = { year: 0 };
-  }
-
-  // Extract units
-  let totalUnits;
-  if (isDOB) {
-    // DOB: use net units (already calculated)
-    totalUnits = record._netUnits || 0;
-  } else if (isPLUTO) {
-    totalUnits = parseInt(record.unitsres || record.unitstotal || '0', 10);
-  } else if (affordableData) {
-    totalUnits = parseInt(
-      affordableData.all_counted_units ||
-      affordableData.total_units ||
-      '0',
-      10
-    );
-  } else {
-    totalUnits = 0;
-  }
-
-  // Determine if renovation (needed for validation)
-  const jobType = record.job_type || '';
-  const isRenovation = isDOB && ['A1', 'A2', 'A3'].includes(jobType.toUpperCase());
-
-  // Validate required fields
-  // Renovations are allowed to have 0 units since they represent significant housing work
-  if (!lat || !lon || !dateInfo.year || dateInfo.year < 2014 || dateInfo.year > 2025 || (totalUnits === 0 && !isRenovation)) {
-    return null;
-  }
-
-  // Calculate affordable units
-  const affordableUnits = affordableData ? calculateAffordableUnits(affordableData) : 0;
-
-  // Calculate affordable percentage for classification
-  const affordablePercentage = totalUnits > 0 ? (affordableUnits / totalUnits) * 100 : 0;
-
-  // Classify building type
-  // DOB uses 'building_class', PLUTO uses 'bldgclass'
-  const buildingClass = record.building_class || record.bldgclass;
-  const buildingType = getBuildingType(buildingClass, jobType, affordablePercentage, isRenovation);
-  const physicalBuildingType = getPhysicalBuildingType(buildingClass);
-
-  return {
-    id: record.bbl || record.job || affordableData?.building_id || String(Math.random()),
-    name: affordableData?.project_name || record.address || record.street_name || 'Building',
-    coordinates: [lon, lat],
-    borough: record.borough || affordableData?.borough || 'Unknown',
-    completionYear: dateInfo.year,
-    completionMonth: dateInfo.month,
-    completionDate: dateInfo.dateStr,
-    totalUnits,
-    affordableUnits,
-    affordablePercentage,
-    buildingType,
-    physicalBuildingType,
-    buildingClass,
-    zoningDistrict: record.zonedist1,
-    address: record.address || affordableData?.address || `${record.house_number || ''} ${record.street_name || ''}`.trim(),
-    dataSource: (isDOB ? 'dob' : isPLUTO ? 'pluto' : 'housing-ny') as any,
-    isRenovation,
-  };
-}
-
-/**
- * Get RGBA color for a building type
- */
-function getBuildingTypeColor(buildingType: BuildingType): [number, number, number, number] {
-  switch (buildingType) {
-    case 'affordable':
-      return [34, 197, 94, 200]; // Green
-    case 'renovation':
-      return [249, 115, 22, 200]; // Orange
-    case 'multifamily-elevator':
-      return [59, 130, 246, 200]; // Blue
-    case 'multifamily-walkup':
-      return [147, 51, 234, 200]; // Purple
-    case 'mixed-use':
-      return [251, 191, 36, 200]; // Yellow
-    case 'one-two-family':
-      return [239, 68, 68, 200]; // Red
-    default:
-      return [156, 163, 175, 200]; // Gray
-  }
-}
-
-/**
- * Transform buildings into segments for stacked visualization
- * Buildings with both affordable and market-rate units are split into two segments
- */
-export function createBuildingSegments(buildings: ProcessedBuilding[]): BuildingSegment[] {
-  const segments: BuildingSegment[] = [];
-
-  for (const building of buildings) {
-    const hasAffordable = building.affordableUnits > 0;
-    const hasMarket = building.totalUnits > building.affordableUnits;
-
-    if (hasAffordable && hasMarket) {
-      // Mixed building - create two segments
-      // Bottom segment: affordable units (green)
-      segments.push({
-        buildingId: building.id,
-        segmentType: 'affordable',
-        baseElevation: 0,
-        segmentHeight: building.affordableUnits,
-        color: [34, 197, 94, 200], // Green
-        parentBuilding: building,
-      });
-
-      // Top segment: market-rate units (colored by physical building type)
-      segments.push({
-        buildingId: building.id,
-        segmentType: 'market-rate',
-        baseElevation: building.affordableUnits,
-        segmentHeight: building.totalUnits - building.affordableUnits,
-        color: getBuildingTypeColor(building.physicalBuildingType),
-        parentBuilding: building,
-      });
-    } else {
-      // Single-type building - create one segment
-      segments.push({
-        buildingId: building.id,
-        segmentType: hasAffordable ? 'affordable' : 'market-rate',
-        baseElevation: 0,
-        segmentHeight: building.totalUnits,
-        color: hasAffordable ? [34, 197, 94, 200] : getBuildingTypeColor(building.physicalBuildingType),
-        parentBuilding: building,
-      });
-    }
-  }
-
-  return segments;
-}
-
-/**
- * Process raw housing data into year-indexed map
- */
-export function processHousingData(rawData: HousingBuildingRecord[]): HousingDataByYear {
-  const byYear = new Map<number, ProcessedBuilding[]>();
-  let validCount = 0;
-  let invalidCount = 0;
-
-  for (const record of rawData) {
-    const building = processBuilding(record);
-    if (!building) {
-      invalidCount++;
-      continue;
-    }
-
-    validCount++;
-    const year = building.completionYear;
-    if (!byYear.has(year)) {
-      byYear.set(year, []);
-    }
-
-    byYear.get(year)!.push(building);
-  }
-
-  console.info(`[HousingData] Processed ${validCount} valid buildings, ${invalidCount} invalid/filtered`);
-  console.info(`[HousingData] Year distribution:`,
-    Array.from(byYear.entries()).map(([year, buildings]) => `${year}: ${buildings.length}`).join(', ')
-  );
-
-  return byYear;
-}
-
-/**
- * Get all buildings up to and including a specific year
+ * Get all buildings from start year up to and including end year
  */
 export function getBuildingsUpToYear(
   dataByYear: HousingDataByYear,
-  targetYear: number
+  endYear: number,
+  startYear = 2014
 ): ProcessedBuilding[] {
   const buildings: ProcessedBuilding[] = [];
 
-  for (let year = 2014; year <= targetYear; year++) {
+  for (let year = startYear; year <= endYear; year++) {
     const yearBuildings = dataByYear.get(year);
     if (yearBuildings) {
       buildings.push(...yearBuildings);
@@ -609,64 +251,33 @@ export function getBuildingsUpToYear(
 }
 
 /**
- * Default zoning color scheme
- * Based on NYC zoning districts: R (Residential), C (Commercial), M (Manufacturing)
+ * Get default zoning color mapping for NYC zoning districts
  */
 export function getDefaultZoningColors(): ZoningColorMap {
   return {
-    // Residential zones
-    R1: '#4ade80', // Light green
-    R2: '#22c55e',
-    R3: '#16a34a',
-    R4: '#15803d',
-    R5: '#166534',
-    R6: '#14532d',
-    R7: '#052e16',
-    R8: '#052e16',
-    R9: '#052e16',
-    R10: '#052e16',
-
-    // Commercial zones
-    C1: '#60a5fa', // Light blue
-    C2: '#3b82f6',
-    C3: '#2563eb',
-    C4: '#1d4ed8',
-    C5: '#1e40af',
-    C6: '#1e3a8a',
-    C7: '#172554',
-    C8: '#172554',
-
-    // Manufacturing zones
-    M1: '#f97316', // Orange
-    M2: '#ea580c',
-    M3: '#c2410c',
-
-    // Special districts and overlays
-    SP: '#a855f7', // Purple
-    MX: '#ec4899', // Pink (mixed-use)
-
-    // Default/unknown
-    unknown: '#6b7280', // Gray
+    'R': '#ffeb3b',    // Yellow - Residential
+    'C': '#ff5722',     // Orange - Commercial
+    'M': '#9c27b0',    // Purple - Manufacturing
+    'BPC': '#2196f3',  // Blue - Battery Park City
+    'PARK': '#4caf50',  // Green - Parks
+    'default': '#9e9e9e', // Gray - Others
   };
 }
 
 /**
- * Determine zoning district prefix from full zoning code
+ * Extract zoning prefix from full zoning code (e.g., "R7A" -> "R")
  */
 export function getZoningPrefix(zoningCode: string | undefined): string {
-  if (!zoningCode) {
-    return 'unknown';
-  }
+  if (!zoningCode) return 'default';
 
-  // Extract prefix (R1, C2, M1, etc.)
-  const match = zoningCode.match(/^([RCM]\d+|SP|MX)/i);
-  return match ? match[1].toUpperCase() : 'unknown';
-}
+  const upperZoning = zoningCode.toUpperCase();
 
-/**
- * Clear cached data (useful for development/debugging)
- */
-export function clearCache(): void {
-  localStorage.removeItem(CACHE_KEY);
-  console.info('[HousingData] Cache cleared');
+  // Check known prefixes
+  if (upperZoning.startsWith('R')) return 'R';
+  if (upperZoning.startsWith('C')) return 'C';
+  if (upperZoning.startsWith('M')) return 'M';
+  if (upperZoning.startsWith('BPC')) return 'BPC';
+  if (upperZoning.startsWith('PARK')) return 'PARK';
+
+  return 'default';
 }

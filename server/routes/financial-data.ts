@@ -3,29 +3,20 @@
 
 import { registerRoute } from '../api-middleware';
 import { db } from '../lib/db';
-import { sankeyDatasets, sunburstDatasets } from '../lib/schema';
+import { sankeyDatasets, sunburstDatasets, type SankeyDataset, type SunburstDataset } from '../lib/schema';
+import { InMemoryCache, shouldForceRefresh } from '../lib/cache';
 
-// Cache configuration (in-memory)
-const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
-let cachedData: {
-  timestamp: number;
-  sankey: Map<string, any>;
-  sunburst: Map<string, any>;
-} | null = null;
-
-/**
- * Check if cached data is still valid
- */
-function isCacheValid(): boolean {
-  if (!cachedData) return false;
-  const now = Date.now();
-  return now - cachedData.timestamp < CACHE_TTL_MS;
-}
+// Cached financial data (24-hour TTL)
+type FinancialDataCache = {
+  sankey: Map<string, SankeyDataset>;
+  sunburst: Map<string, SunburstDataset>;
+};
+const cache = new InMemoryCache<FinancialDataCache>();
 
 /**
  * Fetch all financial data from database
  */
-async function fetchFinancialData() {
+async function fetchFinancialData(): Promise<FinancialDataCache> {
   console.log('[Financial Data API] Fetching from database...');
 
   try {
@@ -47,20 +38,17 @@ async function fetchFinancialData() {
     });
 
     // Store in maps by ID
-    const sankeyMap = new Map(sankeyRecords.map(r => [r.id, r]));
-    const sunburstMap = new Map(sunburstRecords.map(r => [r.id, r]));
+    const sankeyMap = new Map<string, SankeyDataset>(sankeyRecords.map(r => [r.id, r]));
+    const sunburstMap = new Map<string, SunburstDataset>(sunburstRecords.map(r => [r.id, r]));
 
     // Store in cache
-    cachedData = {
-      timestamp: Date.now(),
+    const data = {
       sankey: sankeyMap,
       sunburst: sunburstMap,
     };
+    cache.set(data);
 
-    return {
-      sankey: sankeyMap,
-      sunburst: sunburstMap,
-    };
+    return data;
   } catch (error) {
     console.error('[Financial Data API] Error fetching data:', error);
     throw error;
@@ -73,16 +61,16 @@ async function fetchFinancialData() {
  */
 async function listFinancialData(request: Request) {
   try {
-    const url = new URL(request.url);
-    const forceRefresh = url.searchParams.get('refresh') === 'true';
+    const forceRefresh = shouldForceRefresh(request);
 
     // Check cache
-    if (forceRefresh || !isCacheValid()) {
-      await fetchFinancialData();
+    let cachedData = cache.get();
+    if (forceRefresh || !cachedData) {
+      cachedData = await fetchFinancialData();
     }
 
     // Return list of available datasets
-    const sankeyList = Array.from(cachedData!.sankey.values()).map(d => ({
+    const sankeyList = Array.from(cachedData.sankey.values()).map(d => ({
       id: d.id,
       label: d.label,
       description: d.description,
@@ -92,7 +80,7 @@ async function listFinancialData(request: Request) {
       generatedAt: d.generatedAt,
     }));
 
-    const sunburstList = Array.from(cachedData!.sunburst.values()).map(d => ({
+    const sunburstList = Array.from(cachedData.sunburst.values()).map(d => ({
       id: d.id,
       label: d.label,
       description: d.description,
@@ -105,7 +93,7 @@ async function listFinancialData(request: Request) {
 
     return Response.json({
       success: true,
-      cached: !forceRefresh && isCacheValid(),
+      cached: !forceRefresh && cache.isValid(),
       data: {
         sankey: sankeyList,
         sunburst: sunburstList,
@@ -129,7 +117,7 @@ async function getSankeyById(request: Request) {
     const url = new URL(request.url);
     const pathParts = url.pathname.split('/');
     const id = pathParts[pathParts.length - 1];
-    const forceRefresh = url.searchParams.get('refresh') === 'true';
+    const forceRefresh = shouldForceRefresh(request);
 
     if (!id) {
       return Response.json(
@@ -139,11 +127,12 @@ async function getSankeyById(request: Request) {
     }
 
     // Check cache
-    if (forceRefresh || !isCacheValid()) {
-      await fetchFinancialData();
+    let cachedData = cache.get();
+    if (forceRefresh || !cachedData) {
+      cachedData = await fetchFinancialData();
     }
 
-    const dataset = cachedData!.sankey.get(id);
+    const dataset = cachedData.sankey.get(id);
 
     if (!dataset) {
       return Response.json(
@@ -152,10 +141,19 @@ async function getSankeyById(request: Request) {
       );
     }
 
+    // Transform database record to frontend format
+    const frontendData = {
+      units: dataset.units || undefined,
+      description: dataset.description || undefined,
+      meta: dataset.metadata || {},
+      nodes: dataset.nodes,
+      links: dataset.links,
+    };
+
     return Response.json({
       success: true,
-      cached: !forceRefresh && isCacheValid(),
-      data: dataset,
+      cached: !forceRefresh && cache.isValid(),
+      data: frontendData,
     });
   } catch (error) {
     console.error('[Financial Data API] Error:', error);
@@ -175,7 +173,7 @@ async function getSunburstById(request: Request) {
     const url = new URL(request.url);
     const pathParts = url.pathname.split('/');
     const id = pathParts[pathParts.length - 1];
-    const forceRefresh = url.searchParams.get('refresh') === 'true';
+    const forceRefresh = shouldForceRefresh(request);
 
     if (!id) {
       return Response.json(
@@ -185,11 +183,12 @@ async function getSunburstById(request: Request) {
     }
 
     // Check cache
-    if (forceRefresh || !isCacheValid()) {
-      await fetchFinancialData();
+    let cachedData = cache.get();
+    if (forceRefresh || !cachedData) {
+      cachedData = await fetchFinancialData();
     }
 
-    const dataset = cachedData!.sunburst.get(id);
+    const dataset = cachedData.sunburst.get(id);
 
     if (!dataset) {
       return Response.json(
@@ -198,10 +197,22 @@ async function getSunburstById(request: Request) {
       );
     }
 
+    // Transform database record to frontend format
+    const frontendData = {
+      meta: {
+        source: dataset.label,
+        fiscal_year: dataset.fiscalYear?.toString() || '',
+        ...(dataset.units && { units: dataset.units }),
+        ...(dataset.totalValue && { total_value: dataset.totalValue }),
+        ...(dataset.metadata || {}),
+      },
+      data: dataset.hierarchyData, // This is the root SunburstNode
+    };
+
     return Response.json({
       success: true,
-      cached: !forceRefresh && isCacheValid(),
-      data: dataset,
+      cached: !forceRefresh && cache.isValid(),
+      data: frontendData,
     });
   } catch (error) {
     console.error('[Financial Data API] Error:', error);

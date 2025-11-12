@@ -20,7 +20,4 @@ export type SunburstData = {
   data: SunburstNode;
 };
 
-export type SunburstReference = {
-  type: 'file';
-  path: string;
-};
+// NOTE: SunburstReference is defined in src/data/types.ts (supports both 'file' and 'api' types)

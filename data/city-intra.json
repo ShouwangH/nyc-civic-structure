@@ -1648,8 +1648,8 @@
       "nodes": [],
       "edges": [],
       "sankeyData": {
-        "type": "file",
-        "path": "/data/nyc_pension_sankey.json"
+        "type": "api",
+        "id": "pension-2025"
       },
       "layout": {
         "type": "elk-layered"
@@ -1669,8 +1669,8 @@
       "nodes": [],
       "edges": [],
       "sankeyData": {
-        "type": "file",
-        "path": "/data/nyc_budget_sankey_fy2025.json"
+        "type": "api",
+        "id": "budget-fy2025"
       },
       "layout": {
         "type": "elk-layered"
@@ -1690,8 +1690,8 @@
       "nodes": [],
       "edges": [],
       "sunburstData": {
-        "type": "file",
-        "path": "/data/nyc_expense_budget_sunburst.json"
+        "type": "api",
+        "id": "expense-fy2025"
       },
       "layout": {
         "type": "elk-layered"
@@ -1714,8 +1714,8 @@
       "nodes": [],
       "edges": [],
       "sunburstData": {
-        "type": "file",
-        "path": "/data/nyc_revenue_sunburst_fy2025.json"
+        "type": "api",
+        "id": "revenue-fy2025"
       },
       "layout": {
         "type": "elk-layered"

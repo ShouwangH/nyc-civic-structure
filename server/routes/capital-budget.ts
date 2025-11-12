@@ -3,28 +3,37 @@
 
 import { registerRoute } from '../api-middleware';
 import { db } from '../lib/db';
-import { capitalProjects } from '../lib/schema';
+import { capitalProjects, type CapitalProject } from '../lib/schema';
+import { InMemoryCache, shouldForceRefresh } from '../lib/cache';
 
-// Cache configuration (in-memory)
-const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
-let cachedData: {
-  timestamp: number;
-  projects: any[];
-} | null = null;
+// GeoJSON Feature type for capital projects (frontend format)
+type CapitalProjectFeature = {
+  type: 'Feature';
+  geometry: CapitalProject['geometry'];
+  properties: {
+    maprojid: string;
+    description: string;
+    magencyname: string;
+    magencyacro: string | null;
+    typecategory: string | null;
+    mindate: string | null;
+    maxdate: string | null;
+    allocate_total: number;
+    commit_total: number;
+    spent_total: number;
+    plannedcommit_total: number;
+    fiscalYear: number | null;
+    completionYear: number | null;
+  };
+};
 
-/**
- * Check if cached data is still valid
- */
-function isCacheValid(): boolean {
-  if (!cachedData) return false;
-  const now = Date.now();
-  return now - cachedData.timestamp < CACHE_TTL_MS;
-}
+// Cached capital budget data (24-hour TTL)
+const cache = new InMemoryCache<CapitalProjectFeature[]>();
 
 /**
  * Fetch capital budget data from database
  */
-async function fetchCapitalBudget() {
+async function fetchCapitalBudget(): Promise<CapitalProjectFeature[]> {
   console.log('[Capital Budget API] Fetching from database...');
 
   try {
@@ -37,8 +46,8 @@ async function fetchCapitalBudget() {
     console.log(`[Capital Budget API] Fetched ${projects.length} projects`);
 
     // Transform to GeoJSON features format for frontend compatibility
-    const features = projects.map(project => ({
-      type: 'Feature',
+    const features: CapitalProjectFeature[] = projects.map(project => ({
+      type: 'Feature' as const,
       geometry: project.geometry,
       properties: {
         maprojid: project.maprojid,
@@ -58,10 +67,7 @@ async function fetchCapitalBudget() {
     }));
 
     // Store in cache
-    cachedData = {
-      timestamp: Date.now(),
-      projects: features,
-    };
+    cache.set(features);
 
     return features;
   } catch (error) {
@@ -76,17 +82,17 @@ async function fetchCapitalBudget() {
  */
 async function getCapitalBudget(request: Request) {
   try {
-    const url = new URL(request.url);
-    const forceRefresh = url.searchParams.get('refresh') === 'true';
+    const forceRefresh = shouldForceRefresh(request);
 
     // Check cache
-    if (!forceRefresh && isCacheValid()) {
+    const cachedProjects = cache.get();
+    if (!forceRefresh && cachedProjects) {
       console.log('[Capital Budget API] Returning cached data');
       return Response.json({
         success: true,
         cached: true,
-        count: cachedData!.projects.length,
-        data: cachedData!.projects,
+        count: cachedProjects.length,
+        data: cachedProjects,
       });
     }
 

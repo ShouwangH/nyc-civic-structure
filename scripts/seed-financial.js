@@ -3,6 +3,7 @@
 // ABOUTME: Seed script for financial visualizations - generates sankey and sunburst datasets
 // ABOUTME: Combines budget sankey, pension sankey, revenue sunburst, and expense sunburst
 
+import { config } from 'dotenv';
 import { sankeyDatasets, sunburstDatasets } from '../server/lib/schema.ts';
 import {
   initDb,
@@ -12,6 +13,9 @@ import {
   timer,
   formatNumber,
 } from './lib/seed-utils.js';
+
+// Load environment variables
+config();
 
 const FISCAL_YEAR = 2025;
 const PUBLICATION_DATE = '20240630';
@@ -237,28 +241,63 @@ async function generateBudgetSankey(db) {
     }
   }
 
-  // Agency nodes (level 2) and links from categories to agencies
+  // Agency nodes (level 2) - filtered to top agencies per category
+  const agenciesByCategory = new Map();
   for (const [agency, data] of agencyFunding.entries()) {
     const category = data.category;
     if (!activeCategories.has(category)) continue;
 
-    const agencyTotal = data.cityFunds + data.federalFunds + data.stateFunds;
-    if (agencyTotal < 10000000) continue; // Only include if > $10M
+    const total = data.cityFunds + data.federalFunds + data.stateFunds;
+    if (total < 5000000) continue; // Skip agencies < $5M
 
-    nodes.push({ id: `agency-${agency}`, label: agency, level: 2, type: 'agency' });
-
-    // Link from category to agency
-    links.push({
-      source: `category-${category}`,
-      target: `agency-${agency}`,
-      value: agencyTotal,
+    if (!agenciesByCategory.has(category)) {
+      agenciesByCategory.set(category, []);
+    }
+    agenciesByCategory.get(category).push({
+      agency,
+      total,
+      funding: data,
     });
   }
+
+  // Add top 12 agencies per category to keep visualization manageable
+  for (const [category, agencies] of agenciesByCategory.entries()) {
+    // Sort by total and take top 12
+    const topAgencies = agencies
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 12);
+
+    for (const { agency, funding } of topAgencies) {
+      const agencyId = `agency-${agency}`;
+      const normalizedAgencyName = toTitleCase(agency);
+
+      nodes.push({
+        id: agencyId,
+        label: normalizedAgencyName,
+        level: 2,
+        type: 'agency',
+      });
+
+      // Links from category to agency
+      for (const source of fundingSources) {
+        const amount = funding[source.key];
+        if (amount > 500000) { // Only if > $500K
+          links.push({
+            source: `category-${category}`,
+            target: agencyId,
+            value: amount,
+          });
+        }
+      }
+    }
+  }
+
+  // Now has 3 levels: Funding Sources → Service Categories → Major Agencies
 
   const dataset = {
     id: `budget-fy${FISCAL_YEAR}`,
     label: `NYC Expense Budget by Funding Source FY${FISCAL_YEAR}`,
-    description: 'Shows how funding sources (City, Federal, State) flow to service categories and agencies',
+    description: 'Shows how funding sources (City, Federal, State) flow to service categories and major agencies (3 levels)',
     fiscalYear: FISCAL_YEAR,
     dataType: 'budget',
     units: 'USD',
@@ -267,6 +306,7 @@ async function generateBudgetSankey(db) {
     metadata: {
       publicationDate: PUBLICATION_DATE,
       totalBudget: fundingTotals['City Funds'] + fundingTotals['Federal Funds'] + fundingTotals['State Funds'],
+      levels: 3,
     },
     generatedAt: new Date(),
   };
@@ -276,54 +316,299 @@ async function generateBudgetSankey(db) {
   console.log(`[Budget Sankey] Generated: ${nodes.length} nodes, ${links.length} links\n`);
 }
 
+// ============================================================================
+// PENSION SANKEY - REAL DATA FROM NYC OPEN DATA APIs
+// ============================================================================
+
+// Asset class mapping to standardize bucket names
+const ASSET_CLASS_BUCKETS = {
+  'EQUITY': 'Public Equity',
+  'PUBLIC EQUITY': 'Public Equity',
+  'FIXED INCOME': 'Fixed Income',
+  'CORE FIXED INCOME': 'Fixed Income',
+  'OPPORTUNISTIC FIXED INCOME': 'Fixed Income',
+  'HIGH YIELD': 'Fixed Income',
+  'ALTERNATIVES': 'Alternatives',
+  'PRIVATE EQUITY': 'Alternatives',
+  'REAL ESTATE': 'Alternatives',
+  'HEDGE FUNDS': 'Alternatives',
+  'INFRASTRUCTURE': 'Alternatives',
+  'CASH': 'Cash',
+  'CASH EQUIVALENTS': 'Cash'
+};
+
+// Investment type to sub-asset mapping
+const INVESTMENT_TYPE_MAPPING = {
+  'DOMESTIC EQUITY': 'Domestic Equity',
+  'US EQUITY': 'Domestic Equity',
+  'INTERNATIONAL EQUITY': 'World ex-USA Equity',
+  'DEVELOPED MARKETS EQUITY': 'World ex-USA Equity',
+  'EMERGING MARKETS EQUITY': 'Emerging Markets Equity',
+  'GLOBAL EQUITY': 'Global Equity',
+  'CORPORATE BONDS': 'Corporate Bonds',
+  'GOVERNMENT BONDS': 'Government Bonds',
+  'TREASURY': 'Government Bonds',
+  'TIPS': 'TIPS',
+  'HIGH YIELD': 'High Yield',
+  'BANK LOANS': 'Bank Loans',
+  'PRIVATE EQUITY': 'Private Equity',
+  'REAL ESTATE': 'Real Estate',
+  'HEDGE FUNDS': 'Hedge Funds',
+  'INFRASTRUCTURE': 'Infrastructure',
+  'CASH': 'Cash'
+};
+
+function categorizeAsset(assetClass, investmentType) {
+  const normalizedClass = (assetClass || '').toUpperCase().trim();
+  const normalizedType = (investmentType || '').toUpperCase().trim();
+
+  // Determine bucket
+  let bucket = ASSET_CLASS_BUCKETS[normalizedClass] || 'Other';
+
+  // More specific bucket determination based on investment type
+  if (normalizedType.includes('HIGH YIELD') || normalizedType.includes('BANK LOAN')) {
+    bucket = 'Fixed Income';
+  } else if (normalizedType.includes('PRIVATE EQUITY') || normalizedType.includes('REAL ESTATE') ||
+             normalizedType.includes('HEDGE') || normalizedType.includes('INFRASTRUCTURE')) {
+    bucket = 'Alternatives';
+  } else if (normalizedType.includes('EQUITY')) {
+    bucket = 'Public Equity';
+  } else if (normalizedType.includes('BOND') || normalizedType.includes('TREASURY') || normalizedType.includes('TIPS')) {
+    bucket = 'Fixed Income';
+  } else if (normalizedType.includes('CASH')) {
+    bucket = 'Cash';
+  }
+
+  // Determine sub-asset
+  let subAsset = INVESTMENT_TYPE_MAPPING[normalizedType];
+
+  if (!subAsset) {
+    // Fuzzy matching
+    if (normalizedType.includes('DOMESTIC') || normalizedType.includes('US ')) {
+      subAsset = 'Domestic Equity';
+    } else if (normalizedType.includes('INTERNATIONAL') || normalizedType.includes('DEVELOPED')) {
+      subAsset = 'World ex-USA Equity';
+    } else if (normalizedType.includes('EMERGING')) {
+      subAsset = 'Emerging Markets Equity';
+    } else if (normalizedType.includes('GLOBAL')) {
+      subAsset = 'Global Equity';
+    } else if (normalizedType.includes('CORPORATE BOND') || normalizedType.includes('GOVERNMENT')) {
+      subAsset = 'Corporate Bonds';
+    } else if (normalizedType.includes('HIGH YIELD')) {
+      subAsset = 'High Yield';
+    } else if (normalizedType.includes('PRIVATE EQUITY')) {
+      subAsset = 'Private Equity';
+    } else if (normalizedType.includes('REAL ESTATE')) {
+      subAsset = 'Real Estate';
+    } else if (normalizedType.includes('HEDGE')) {
+      subAsset = 'Hedge Funds';
+    } else {
+      subAsset = toTitleCase(investmentType) || 'Other';
+    }
+  }
+
+  return { bucket, subAsset: toTitleCase(subAsset) };
+}
+
+async function fetchFundHoldings(datasetId, fundId) {
+  console.log(`  Fetching holdings for ${fundId}...`);
+
+  const API_BASE = `https://data.cityofnewyork.us/resource/${datasetId}.json`;
+
+  // First, get the most recent period_end_date
+  // Use raw fetch for this simple query
+  const dateUrl = `${API_BASE}?$select=period_end_date&$group=period_end_date&$order=period_end_date DESC&$limit=1`;
+  const dateResponse = await fetch(dateUrl);
+  if (!dateResponse.ok) {
+    console.error(`    Failed to fetch date for ${fundId}`);
+    return [];
+  }
+  const dateData = await dateResponse.json();
+  const latestPeriodDate = dateData[0]?.period_end_date;
+
+  if (!latestPeriodDate) {
+    console.error(`    Could not find period_end_date for ${fundId}`);
+    return [];
+  }
+
+  console.log(`    Using period: ${latestPeriodDate}`);
+
+  const records = await fetchNycOpenData(API_BASE, {
+    limit: 50000,
+    params: {
+      period_end_date: latestPeriodDate,
+    },
+  });
+
+  console.log(`    Fetched ${records.length} holdings`);
+  return records;
+}
+
 /**
- * Generate Pension Sankey (System → Funds → Asset Classes)
+ * Generate Pension Sankey (System → Funds → Asset Buckets → Sub-Assets)
+ * Fetches real holdings data from NYC Open Data APIs
+ * 4 levels: System → Fund → Bucket → Sub-Asset
  */
 async function generatePensionSankey(db) {
-  console.log('[Pension Sankey] Fetching pension data...\n');
+  console.log('[Pension Sankey] Fetching real holdings from NYC Open Data...\n');
 
-  const nodes = [
-    { id: 'NYC_Pensions', label: 'New York City Pension System', level: 0, type: 'system' },
-  ];
-  const links = [];
-
-  // Note: This is simplified - full implementation would fetch from all 5 pension datasets
-  // For now, we'll create a placeholder structure
-
+  // Fetch holdings from all 5 pension funds
+  const fundData = new Map();
   for (const fund of PENSION_FUNDS) {
-    nodes.push({
-      id: fund.id,
+    const holdings = await fetchFundHoldings(fund.datasetId, fund.id);
+    fundData.set(fund.id, {
       label: fund.label,
-      level: 1,
-      type: 'fund',
-    });
-
-    // Placeholder link (would fetch actual data in production)
-    links.push({
-      source: 'NYC_Pensions',
-      target: fund.id,
-      value: 1000000000, // Placeholder
+      holdings
     });
   }
 
+  // Transform to Sankey structure
+  const nodes = [];
+  const links = [];
+  const nodeIds = new Set();
+
+  // Root node
+  const rootId = 'NYC_Pensions';
+  nodes.push({
+    id: rootId,
+    label: 'New York City Pension System',
+    level: 0,
+    type: 'system'
+  });
+  nodeIds.add(rootId);
+
+  let systemTotal = 0;
+
+  // Process each fund
+  for (const [fundId, fundInfo] of fundData.entries()) {
+    // Add fund node
+    if (!nodeIds.has(fundId)) {
+      nodes.push({
+        id: fundId,
+        label: fundInfo.label,
+        level: 1,
+        type: 'fund'
+      });
+      nodeIds.add(fundId);
+    }
+
+    // Aggregate by asset bucket and sub-asset (nested map)
+    const bucketMap = new Map(); // bucket -> Map(subAsset -> value)
+    let fundTotal = 0;
+
+    for (const holding of fundInfo.holdings) {
+      const marketValue = parseFloat(holding.base_market_value || 0);
+      if (marketValue <= 0) continue;
+
+      const assetClass = holding.asset_class || 'Unknown';
+      const investmentType = holding.investment_type_name || 'Other';
+
+      const { bucket, subAsset } = categorizeAsset(assetClass, investmentType);
+
+      if (!bucketMap.has(bucket)) {
+        bucketMap.set(bucket, new Map());
+      }
+      const subAssetMap = bucketMap.get(bucket);
+
+      if (!subAssetMap.has(subAsset)) {
+        subAssetMap.set(subAsset, 0);
+      }
+      subAssetMap.set(subAsset, subAssetMap.get(subAsset) + marketValue);
+
+      fundTotal += marketValue;
+    }
+
+    // Add link from system to fund
+    if (fundTotal > 0) {
+      links.push({
+        source: rootId,
+        target: fundId,
+        value: fundTotal / 1000000, // Convert to millions
+      });
+      systemTotal += fundTotal;
+    }
+
+    // Add bucket nodes and links (level 2)
+    for (const [bucketName, subAssetMap] of bucketMap.entries()) {
+      const bucketId = bucketName;
+
+      // Add bucket node if not exists
+      if (!nodeIds.has(bucketId)) {
+        nodes.push({
+          id: bucketId,
+          label: bucketName,
+          level: 2,
+          type: 'bucket'
+        });
+        nodeIds.add(bucketId);
+      }
+
+      // Calculate bucket total from sub-assets
+      let bucketTotal = 0;
+      for (const value of subAssetMap.values()) {
+        bucketTotal += value;
+      }
+
+      // Link fund to bucket
+      if (bucketTotal > 0) {
+        links.push({
+          source: fundId,
+          target: bucketId,
+          value: bucketTotal / 1000000, // Convert to millions
+        });
+      }
+
+      // Add sub-asset nodes and links (level 3)
+      for (const [subAssetName, value] of subAssetMap.entries()) {
+        const subAssetId = subAssetName;
+
+        // Add sub-asset node if not exists
+        if (!nodeIds.has(subAssetId)) {
+          nodes.push({
+            id: subAssetId,
+            label: subAssetName,
+            level: 3,
+            type: 'sub-asset'
+          });
+          nodeIds.add(subAssetId);
+        }
+
+        // Link bucket to sub-asset
+        if (value > 0) {
+          links.push({
+            source: bucketId,
+            target: subAssetId,
+            value: value / 1000000, // Convert to millions
+          });
+        }
+      }
+    }
+  }
+
+  const totalAumBillion = systemTotal / 1e9;
+
   const dataset = {
     id: 'pension-2025',
-    label: 'NYC Pension System Holdings',
-    description: 'Pension fund allocations across asset classes',
+    label: 'NYC Pension System Asset Allocation',
+    description: 'Real holdings showing System → Funds → Asset Buckets → Investment Types',
     fiscalYear: FISCAL_YEAR,
     dataType: 'pension',
     units: 'USD (millions)',
     nodes,
     links,
     metadata: {
-      note: 'Simplified dataset - full implementation requires fetching from all 5 pension fund APIs',
+      source: 'NYC Open Data - Comptroller Pension Holdings',
+      total_aum_billion: totalAumBillion,
+      funds_included: Array.from(fundData.keys()),
+      levels: 4,
     },
     generatedAt: new Date(),
   };
 
   await db.insert(sankeyDatasets).values(dataset);
 
-  console.log(`[Pension Sankey] Generated: ${nodes.length} nodes, ${links.length} links\n`);
+  console.log(`[Pension Sankey] Generated: ${nodes.length} nodes, ${links.length} links`);
+  console.log(`[Pension Sankey] Total AUM: $${totalAumBillion.toFixed(1)}B\n`);
 }
 
 /**

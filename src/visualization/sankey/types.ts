@@ -42,14 +42,7 @@ export type SankeyData = {
   links: SankeyLinkData[];
 };
 
-/**
- * Reference to external Sankey data file
- * Used in SubviewDefinition to point to JSON file
- */
-export type SankeyReference = {
-  type: 'file';
-  path: string;  // e.g., 'data/nyc_pension_sankey.json'
-};
+// NOTE: SankeyReference is defined in src/data/types.ts (supports both 'file' and 'api' types)
 
 /**
  * Extended Sankey node after d3-sankey layout computation

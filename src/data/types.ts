@@ -153,15 +153,25 @@ export type SubviewLayoutConfig = {
 // - Otherwise, fallback heuristic: anchor node = 3, offices = 2, others = 1
 // - Higher numbers = closer to center
 
-export type SankeyReference = {
-  type: 'file';
-  path: string;  // e.g., 'data/nyc_pension_sankey.json'
-};
+export type SankeyReference =
+  | {
+      type: 'file';
+      path: string; // e.g., 'data/nyc_pension_sankey.json'
+    }
+  | {
+      type: 'api';
+      id: string; // e.g., 'pension-2025'
+    };
 
-export type SunburstReference = {
-  type: 'file';
-  path: string;  // e.g., 'data/nyc_revenue_sunburst_fy2025.json'
-};
+export type SunburstReference =
+  | {
+      type: 'file';
+      path: string; // e.g., 'data/nyc_revenue_sunburst_fy2025.json'
+    }
+  | {
+      type: 'api';
+      id: string; // e.g., 'revenue-fy2025'
+    };
 
 export type SubviewDefinition = {
   // Identity

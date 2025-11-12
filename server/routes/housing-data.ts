@@ -3,30 +3,51 @@
 
 import { registerRoute } from '../api-middleware';
 import { db } from '../lib/db';
-import { housingBuildings, housingDemolitions } from '../lib/schema';
+import { housingBuildings, housingDemolitions, type HousingBuilding, type HousingDemolition } from '../lib/schema';
 import { gte } from 'drizzle-orm';
+import { InMemoryCache, shouldForceRefresh } from '../lib/cache';
 
-// Cache configuration (in-memory)
-const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
-let cachedData: {
-  timestamp: number;
-  buildings: any[];
-  demolitions: any[];
-} | null = null;
+// Frontend-facing types (what the frontend expects)
+type ProcessedBuilding = {
+  id: string;
+  name: string;
+  coordinates: [number, number];
+  borough: string;
+  completionYear: number;
+  completionMonth?: number;
+  completionDate?: string;
+  totalUnits: number;
+  affordableUnits: number;
+  affordablePercentage: number;
+  buildingType: string;
+  physicalBuildingType: string;
+  buildingClass?: string;
+  zoningDistrict?: string;
+  address: string;
+  dataSource: string;
+  isRenovation: boolean;
+};
 
-/**
- * Check if cached data is still valid
- */
-function isCacheValid(): boolean {
-  if (!cachedData) return false;
-  const now = Date.now();
-  return now - cachedData.timestamp < CACHE_TTL_MS;
-}
+type ProcessedDemolition = {
+  existing_dwelling_units: number;
+  latest_action_date: string;
+  bbl: string | null;
+  borough: string;
+  block: string | undefined;
+  lot: string | undefined;
+};
+
+// Cached housing data (24-hour TTL)
+type HousingDataCache = {
+  buildings: ProcessedBuilding[];
+  demolitions: ProcessedDemolition[];
+};
+const cache = new InMemoryCache<HousingDataCache>();
 
 /**
  * Transform database record to ProcessedBuilding format for frontend
  */
-function transformToProcessedBuilding(record: any): any {
+function transformToProcessedBuilding(record: HousingBuilding): ProcessedBuilding {
   return {
     id: record.id,
     name: record.name,
@@ -51,12 +72,11 @@ function transformToProcessedBuilding(record: any): any {
 /**
  * Transform demolition record to frontend-compatible format
  */
-function transformDemolition(record: any): any {
+function transformDemolition(record: HousingDemolition): ProcessedDemolition {
   return {
-    ...record,
     // Map DB fields to frontend-expected field names
     existing_dwelling_units: record.estimatedUnits,
-    latest_action_date: record.demolitionDate,
+    latest_action_date: record.demolitionDate || '',
     // Keep existing fields for compatibility
     bbl: record.bbl,
     borough: record.borough,
@@ -96,16 +116,10 @@ async function fetchHousingData() {
     const demolitions = demolitionRecords.map(transformDemolition);
 
     // Store in cache
-    cachedData = {
-      timestamp: Date.now(),
-      buildings,
-      demolitions,
-    };
+    const data = { buildings, demolitions };
+    cache.set(data);
 
-    return {
-      buildings,
-      demolitions,
-    };
+    return data;
   } catch (error) {
     console.error('[Housing Data API] Error fetching data:', error);
     throw error;
@@ -118,19 +132,16 @@ async function fetchHousingData() {
  */
 async function getHousingData(request: Request) {
   try {
-    const url = new URL(request.url);
-    const forceRefresh = url.searchParams.get('refresh') === 'true';
+    const forceRefresh = shouldForceRefresh(request);
 
     // Check cache
-    if (!forceRefresh && isCacheValid()) {
+    const cachedData = cache.get();
+    if (!forceRefresh && cachedData) {
       console.log('[Housing Data API] Returning cached data');
       return Response.json({
         success: true,
         cached: true,
-        data: {
-          buildings: cachedData!.buildings,
-          demolitions: cachedData!.demolitions,
-        },
+        data: cachedData,
       });
     }
 
@@ -140,10 +151,7 @@ async function getHousingData(request: Request) {
     return Response.json({
       success: true,
       cached: false,
-      data: {
-        buildings: data.buildings,
-        demolitions: data.demolitions,
-      },
+      data,
     });
   } catch (error) {
     console.error('[Housing Data API] Error:', error);

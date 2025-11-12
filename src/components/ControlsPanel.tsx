@@ -1,8 +1,8 @@
 import type { GovernmentScope } from '../data/datasets';
 import type { SubviewDefinition } from '../data/types';
 import type { GraphNodeInfo, GraphEdgeInfo } from '../visualization/cytoscape/types';
-import type { InputHandler } from '../visualization/cytoscape/inputHandler';
-import { actions } from '../visualization/cytoscape/actions';
+import type { InputHandler } from '../controller/inputHandler';
+import { actions } from '../controller/actions';
 import { Details } from './Details';
 
 type ScopeOption = {

@@ -8,9 +8,9 @@ import { GraphCanvas, type GraphRuntime } from './components/GraphCanvas';
 import { OverlayWrapper } from './components/OverlayWrapper';
 import { MapsOverlay } from './components/MapsOverlay';
 import { governmentScopes } from './data/datasets';
-import type { VisualizationState } from './visualization/cytoscape/controller';
+import type { VisualizationState } from './controller/controller';
 import { initializeGraphData, type GraphData } from './data/loader';
-import { actions } from './visualization/cytoscape/actions';
+import { actions } from './controller/actions';
 
 cytoscape.use(cytoscapeElk);
 

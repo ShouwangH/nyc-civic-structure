@@ -1,7 +1,7 @@
 // ABOUTME: Action types for all user interactions in the graph visualization
 // ABOUTME: Single source of truth for what actions can be dispatched to the controller
 
-import type { GovernmentScope } from '../../data/datasets';
+import type { GovernmentScope } from '../data/datasets';
 
 // Base action structure
 type Action<T extends string, P = undefined> = P extends undefined

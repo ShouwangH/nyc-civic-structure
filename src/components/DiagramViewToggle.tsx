@@ -1,8 +1,8 @@
 // ABOUTME: Toggle component for switching between Diagram, Financials, and Maps modes
 // ABOUTME: Displays as a centered toggle similar to scope selector
 
-import type { InputHandler } from '../visualization/cytoscape/inputHandler';
-import { actions } from '../visualization/cytoscape/actions';
+import type { InputHandler } from '../controller/inputHandler';
+import { actions } from '../controller/actions';
 
 type DiagramViewToggleProps = {
   mode: 'diagram' | 'financials' | 'maps';
