@@ -437,8 +437,8 @@ async function generatePensionSankey(db) {
       nodeIds.add(fundId);
     }
 
-    // Aggregate by asset bucket
-    const bucketMap = new Map();
+    // Aggregate by asset bucket and sub-asset (nested map)
+    const bucketMap = new Map(); // bucket -> Map(subAsset -> value)
     let fundTotal = 0;
 
     for (const holding of fundInfo.holdings) {
@@ -448,12 +448,17 @@ async function generatePensionSankey(db) {
       const assetClass = holding.asset_class || 'Unknown';
       const investmentType = holding.investment_type_name || 'Other';
 
-      const { bucket } = categorizeAsset(assetClass, investmentType);
+      const { bucket, subAsset } = categorizeAsset(assetClass, investmentType);
 
       if (!bucketMap.has(bucket)) {
-        bucketMap.set(bucket, 0);
+        bucketMap.set(bucket, new Map());
       }
-      bucketMap.set(bucket, bucketMap.get(bucket) + marketValue);
+      const subAssetMap = bucketMap.get(bucket);
+
+      if (!subAssetMap.has(subAsset)) {
+        subAssetMap.set(subAsset, 0);
+      }
+      subAssetMap.set(subAsset, subAssetMap.get(subAsset) + marketValue);
 
       fundTotal += marketValue;
     }
@@ -468,8 +473,8 @@ async function generatePensionSankey(db) {
       systemTotal += fundTotal;
     }
 
-    // Add bucket nodes and links
-    for (const [bucketName, value] of bucketMap.entries()) {
+    // Add bucket nodes and links (level 2)
+    for (const [bucketName, subAssetMap] of bucketMap.entries()) {
       const bucketId = bucketName;
 
       // Add bucket node if not exists
@@ -483,13 +488,44 @@ async function generatePensionSankey(db) {
         nodeIds.add(bucketId);
       }
 
+      // Calculate bucket total from sub-assets
+      let bucketTotal = 0;
+      for (const value of subAssetMap.values()) {
+        bucketTotal += value;
+      }
+
       // Link fund to bucket
-      if (value > 0) {
+      if (bucketTotal > 0) {
         links.push({
           source: fundId,
           target: bucketId,
-          value: value / 1000000, // Convert to millions
+          value: bucketTotal / 1000000, // Convert to millions
         });
+      }
+
+      // Add sub-asset nodes and links (level 3)
+      for (const [subAssetName, value] of subAssetMap.entries()) {
+        const subAssetId = subAssetName;
+
+        // Add sub-asset node if not exists
+        if (!nodeIds.has(subAssetId)) {
+          nodes.push({
+            id: subAssetId,
+            label: subAssetName,
+            level: 3,
+            type: 'sub-asset'
+          });
+          nodeIds.add(subAssetId);
+        }
+
+        // Link bucket to sub-asset
+        if (value > 0) {
+          links.push({
+            source: bucketId,
+            target: subAssetId,
+            value: value / 1000000, // Convert to millions
+          });
+        }
       }
     }
   }
