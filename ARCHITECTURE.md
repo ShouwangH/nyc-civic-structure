@@ -157,8 +157,6 @@ nyc-civic-structure/
 ├── drizzle.config.ts            # Drizzle ORM configuration
 ├── vite.config.ts               # Vite configuration
 ├── tsconfig.json                # TypeScript configuration
-├── REFACTOR_PLAN.md             # Master refactor plan
-├── REFACTOR_STATUS.md           # Detailed migration status
 └── ARCHITECTURE.md              # This file
 ```
 
@@ -413,9 +411,9 @@ const buildings = await db
 - **Location:** `server/migrations/`
 - **Tool:** Drizzle Kit
 - **Commands:**
-  - `npm run db:generate` - Generate migration from schema changes
-  - `npm run db:push` - Push schema to database
-  - `npm run db:studio` - Open Drizzle Studio (GUI)
+  - `bun run db:generate` - Generate migration from schema changes
+  - `bun run db:push` - Push schema to database
+  - `bun run db:studio` - Open Drizzle Studio (GUI)
 
 ---
 
@@ -617,38 +615,38 @@ cp .env.example .env
 # Edit .env with DATABASE_URL
 
 # Push schema to database
-npm run db:push
+bun run db:push
 
 # Seed data
-npm run seed:all
+bun run seed:all
 ```
 
 ### Development Commands
 
 ```bash
 # Start dev server (frontend + API middleware)
-npm run dev
+bun run dev
 
 # Run specific seed scripts
-npm run seed:housing
-npm run seed:capital
-npm run seed:financial
+bun run seed:housing
+bun run seed:capital
+bun run seed:financial
 
 # Database management
-npm run db:studio        # Open Drizzle Studio
-npm run db:push          # Push schema changes
-npm run db:generate      # Generate migration
+bun run db:studio        # Open Drizzle Studio
+bun run db:push          # Push schema changes
+bun run db:generate      # Generate migration
 
 # Diagnostics
-npm run check:duplicates # Find duplicate locations
-npm run verify:housing   # Verify housing data
+bun run check:duplicates # Find duplicate locations
+bun run verify:housing   # Verify housing data
 ```
 
 ### Production Build
 
 ```bash
 # Build frontend
-npm run build
+bun run build
 
 # Output: dist/ folder with static assets
 ```
@@ -688,46 +686,6 @@ npm run build
 - ✅ Data integrity verified (deduplication, unit counting)
 - ✅ API endpoints tested manually
 - ✅ TypeScript compilation validates types
-- ⏳ Unit tests (not yet implemented)
-- ⏳ Integration tests (not yet implemented)
-
-### Recommended Testing Approach
-
-1. **Unit Tests:** Controller actions, state transitions
-2. **Integration Tests:** API endpoints with test database
-3. **E2E Tests:** User flows (click node → see details)
-4. **Visual Regression:** Screenshot comparisons for visualizations
-
----
-
-## Known Issues & Limitations
-
-1. **No automated tests** - Testing is manual
-2. **No production deployment guide** - Only local dev documented
-3. **Cache invalidation** - No automatic cache refresh (manual `?refresh=true`)
-4. **Data freshness** - No automated data updates (manual seed runs)
-5. **Error handling** - Basic error handling, no retry logic
-
----
-
-## Future Enhancements
-
-### Short-Term
-- Automated tests (Jest + React Testing Library)
-- Production deployment (Docker + fly.io/Railway)
-- Automated data refresh (weekly cron jobs)
-
-### Medium-Term
-- User authentication and saved views
-- Custom data filters and queries
-- Export visualizations (PNG, PDF)
-- Real-time data updates (WebSocket)
-
-### Long-Term
-- Multi-city support
-- Predictive analytics (ML models)
-- Public API for third-party developers
-- Collaborative annotations
 
 ---
 
@@ -744,8 +702,8 @@ npm run build
 
 1. Create feature branch: `git checkout -b feature/my-feature`
 2. Make changes with clear commit messages
-3. Ensure TypeScript compiles: `npm run build`
-4. Test changes locally: `npm run dev`
+3. Ensure TypeScript compiles: `bun run build`
+4. Test changes locally: `bun run dev`
 5. Push and create PR
 
 ### Architecture Changes
@@ -753,18 +711,11 @@ npm run build
 For significant architectural changes:
 1. Discuss in GitHub issue first
 2. Update this ARCHITECTURE.md
-3. Update REFACTOR_PLAN.md if applicable
-4. Document in commit message
+3. Document in commit message
 
 ---
 
 ## Additional Resources
 
 - **[DATA_FLOW.md](docs/DATA_FLOW.md)** - Detailed data flow patterns
-- **[REFACTOR_PLAN.md](REFACTOR_PLAN.md)** - Master refactor plan
-- **[REFACTOR_STATUS.md](REFACTOR_STATUS.md)** - Migration status details
 - **[README.md](README.md)** - User-facing documentation
-
----
-
-**Questions or issues?** See GitHub issues or contact the maintainers.

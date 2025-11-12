@@ -82,12 +82,12 @@ Interactive visualization of New York City government structure with integrated 
 
 4. **Push database schema:**
    ```bash
-   npm run db:push
+   bun run db:push
    ```
 
 5. **Seed the database:**
    ```bash
-   npm run seed:all
+   bun run seed:all
    ```
 
    This seeds all datasets:
@@ -97,17 +97,15 @@ Interactive visualization of New York City government structure with integrated 
 
    Individual seed scripts:
    ```bash
-   npm run seed:housing      # Housing data only
-   npm run seed:capital      # Capital projects only
-   npm run seed:financial    # Financial datasets only
+   bun run seed:housing      # Housing data only
+   bun run seed:capital      # Capital projects only
+   bun run seed:financial    # Financial datasets only
    ```
 
 ### Development
 
 Start the development server:
 ```bash
-npm run dev
-# or
 bun run dev
 ```
 
@@ -121,20 +119,20 @@ The dev server includes:
 ### Building for Production
 
 ```bash
-npm run build
+bun run build
 ```
 
 Preview the production build:
 ```bash
-npm run preview
+bun run preview
 ```
 
 ### Database Management
 
 ```bash
-npm run db:studio        # Open Drizzle Studio (database GUI)
-npm run db:push          # Push schema changes to database
-npm run db:generate      # Generate migration from schema changes
+bun run db:studio        # Open Drizzle Studio (database GUI)
+bun run db:push          # Push schema changes to database
+bun run db:generate      # Generate migration from schema changes
 ```
 
 ### Data Refresh
@@ -142,10 +140,8 @@ npm run db:generate      # Generate migration from schema changes
 To refresh data from NYC Open Data sources:
 
 ```bash
-npm run seed:all
+bun run seed:all
 ```
-
-**Recommended:** Set up a weekly cron job to keep data fresh.
 
 ## Project Structure
 
@@ -177,9 +173,7 @@ nyc-civic-structure/
 ├── docs/                      # Documentation
 │   └── DATA_FLOW.md           # Unidirectional flow architecture
 │
-├── ARCHITECTURE.md            # Complete architecture reference
-├── REFACTOR_PLAN.md           # Master refactor plan & progress
-└── REFACTOR_STATUS.md         # Housing data migration details
+└── ARCHITECTURE.md            # Complete architecture reference
 ```
 
 ## API Endpoints
@@ -263,30 +257,30 @@ See **[ARCHITECTURE.md](ARCHITECTURE.md#key-design-patterns)** for full details.
 
 ```bash
 # Run production build to verify
-npm run build
+bun run build
 
 # Test production bundle locally
-npm run preview
+bun run preview
 ```
 
 ### Data Diagnostics
 
 ```bash
 # Find duplicate locations in housing data
-npm run check:duplicates
+bun run check:duplicates
 
 # Verify housing data counts
-npm run verify:housing
+bun run verify:housing
 ```
 
 ### Code Quality
 
 ```bash
 # Lint check
-npm run lint
+bun run lint
 
 # TypeScript type check
-npm run build
+bun run build
 ```
 
 ## Performance
@@ -307,8 +301,6 @@ npm run build
 
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** - Complete system architecture
 - **[docs/DATA_FLOW.md](docs/DATA_FLOW.md)** - Unidirectional flow patterns
-- **[REFACTOR_PLAN.md](REFACTOR_PLAN.md)** - Refactor progress tracking
-- **[REFACTOR_STATUS.md](REFACTOR_STATUS.md)** - Housing migration details
 
 ## Contributing
 
@@ -323,33 +315,9 @@ npm run build
 
 1. Create feature branch: `git checkout -b feature/my-feature`
 2. Make changes with clear commit messages
-3. Ensure TypeScript compiles: `npm run build`
-4. Test changes locally: `npm run dev`
+3. Ensure TypeScript compiles: `bun run build`
+4. Test changes locally: `bun run dev`
 5. Push and create PR
-
-## Known Limitations
-
-- No automated tests (manual testing only)
-- No production deployment guide
-- Cache invalidation is manual (`?refresh=true`)
-- Data refresh requires manual seed runs
-
-## Future Enhancements
-
-### Short-Term
-- Automated tests (Jest + React Testing Library)
-- Production deployment (Docker + Railway/fly.io)
-- Automated data refresh (weekly cron jobs)
-
-### Medium-Term
-- User authentication and saved views
-- Custom data filters and queries
-- Export visualizations (PNG, PDF)
-
-### Long-Term
-- Multi-city support
-- Predictive analytics (ML models)
-- Public API for third-party developers
 
 ## License
 
