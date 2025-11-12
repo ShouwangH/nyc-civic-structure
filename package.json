@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "node --env-file=.env node_modules/.bin/vite",
     "build": "tsc -b && vite build",
-    "start": "node server.js",
+    "start": "tsx server.js",
     "lint": "eslint .",
     "preview": "vite preview",
     "check:duplicates": "node --env-file=.env scripts/check-duplicate-locations.js",
@@ -49,6 +49,7 @@
     "react": "^19.1.1",
     "react-dom": "^19.1.1",
     "react-map-gl": "^8.1.0",
+    "tsx": "^4.20.6",
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
