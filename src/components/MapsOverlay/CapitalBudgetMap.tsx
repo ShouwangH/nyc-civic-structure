@@ -206,8 +206,12 @@ export function CapitalBudgetMap() {
       {isLoading && (
         <div className="absolute inset-0 flex items-center justify-center bg-white/80 z-20">
           <div className="text-center">
-            <div className="text-slate-900 text-xl mb-2">Loading capital projects...</div>
-            <div className="text-slate-600">Fetching from NYC Open Data</div>
+            {/* Spinner */}
+            <div className="inline-block mb-4">
+              <div className="w-16 h-16 border-4 border-slate-200 border-t-blue-600 rounded-full animate-spin"></div>
+            </div>
+            <div className="text-slate-900 text-xl font-semibold mb-2">Loading capital projects...</div>
+            <div className="text-slate-600">Loading from Supabase database</div>
           </div>
         </div>
       )}

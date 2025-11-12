@@ -334,11 +334,14 @@ const ASSET_CLASS_BUCKETS = {
   'HEDGE FUNDS': 'Alternatives',
   'INFRASTRUCTURE': 'Alternatives',
   'CASH': 'Cash',
-  'CASH EQUIVALENTS': 'Cash'
+  'CASH EQUIVALENT': 'Cash',  // Singular form
+  'CASH EQUIVALENTS': 'Cash'  // Plural form
 };
 
 // Investment type to sub-asset mapping
 const INVESTMENT_TYPE_MAPPING = {
+  'LMTD PARTNRSHIP UNTS': 'Private Equity & Co-Investments',
+  'LIMITED PARTNERSHIP UNITS': 'Private Equity & Co-Investments',
   'DOMESTIC EQUITY': 'Domestic Equity',
   'US EQUITY': 'Domestic Equity',
   'INTERNATIONAL EQUITY': 'World ex-USA Equity',
@@ -365,8 +368,13 @@ function categorizeAsset(assetClass, investmentType) {
   // Determine bucket
   let bucket = ASSET_CLASS_BUCKETS[normalizedClass] || 'Other';
 
+  // OVERRIDE: Limited Partnership Units are private equity/RE/infra funds
+  // Even though Comptroller classifies them as "EQUITY", they're illiquid alternatives
+  if (normalizedType.includes('LMTD PARTNRSHIP') || normalizedType.includes('LIMITED PARTNERSHIP')) {
+    bucket = 'Alternatives';
+  }
   // More specific bucket determination based on investment type
-  if (normalizedType.includes('HIGH YIELD') || normalizedType.includes('BANK LOAN')) {
+  else if (normalizedType.includes('HIGH YIELD') || normalizedType.includes('BANK LOAN')) {
     bucket = 'Fixed Income';
   } else if (normalizedType.includes('PRIVATE EQUITY') || normalizedType.includes('REAL ESTATE') ||
              normalizedType.includes('HEDGE') || normalizedType.includes('INFRASTRUCTURE')) {
