@@ -186,10 +186,11 @@ export function SankeyDiagram({
           const estimatedLabelWidth = node.label.length * estimatedCharWidth;
           const midpoint = width / 2;
 
-          // Check if label would cross midpoint
+          // Check if label would cross significantly past midpoint (give more room before wrapping)
+          const wrapThreshold = 200; // Only wrap if extending 200px past midpoint
           const wouldCrossMidpoint = isLeftSide
-            ? (labelX + estimatedLabelWidth > midpoint)
-            : (labelX - estimatedLabelWidth < midpoint);
+            ? (labelX + estimatedLabelWidth > midpoint + wrapThreshold)
+            : (labelX - estimatedLabelWidth < midpoint - wrapThreshold);
 
           // Split label into words for wrapping
           const words = node.label.split(' ');
@@ -198,8 +199,8 @@ export function SankeyDiagram({
           if (wouldCrossMidpoint && words.length > 1) {
             // Split into multiple lines
             const maxLineWidth = isLeftSide
-              ? (midpoint - labelX - 10) // Leave 10px margin from midpoint
-              : (labelX - midpoint - 10);
+              ? (midpoint - labelX + 200) // Allow labels to extend well past midpoint for readability
+              : (labelX - midpoint + 200);
 
             let currentLine = '';
             for (const word of words) {
