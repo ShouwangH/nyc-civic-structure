@@ -3,20 +3,20 @@
 
 import { registerRoute } from '../api-middleware';
 import { db } from '../lib/db';
-import { sankeyDatasets, sunburstDatasets } from '../lib/schema';
+import { sankeyDatasets, sunburstDatasets, type SankeyDataset, type SunburstDataset } from '../lib/schema';
 import { InMemoryCache, shouldForceRefresh } from '../lib/cache';
 
 // Cached financial data (24-hour TTL)
 type FinancialDataCache = {
-  sankey: Map<string, any>;
-  sunburst: Map<string, any>;
+  sankey: Map<string, SankeyDataset>;
+  sunburst: Map<string, SunburstDataset>;
 };
 const cache = new InMemoryCache<FinancialDataCache>();
 
 /**
  * Fetch all financial data from database
  */
-async function fetchFinancialData() {
+async function fetchFinancialData(): Promise<FinancialDataCache> {
   console.log('[Financial Data API] Fetching from database...');
 
   try {
@@ -38,8 +38,8 @@ async function fetchFinancialData() {
     });
 
     // Store in maps by ID
-    const sankeyMap = new Map(sankeyRecords.map(r => [r.id, r]));
-    const sunburstMap = new Map(sunburstRecords.map(r => [r.id, r]));
+    const sankeyMap = new Map<string, SankeyDataset>(sankeyRecords.map(r => [r.id, r]));
+    const sunburstMap = new Map<string, SunburstDataset>(sunburstRecords.map(r => [r.id, r]));
 
     // Store in cache
     const data = {
