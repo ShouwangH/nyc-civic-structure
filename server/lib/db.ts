@@ -11,9 +11,16 @@ let _db: PostgresJsDatabase<typeof schema> | null = null;
 function getDb() {
   if (_db) return _db;
 
-  const connectionString = process.env.DATABASE_URL;
+  let connectionString = process.env.DATABASE_URL;
   if (!connectionString) {
     throw new Error('DATABASE_URL environment variable is not set');
+  }
+
+  // Force IPv4 by adding ssl and connection parameters if not present
+  if (!connectionString.includes('?')) {
+    connectionString += '?sslmode=require';
+  } else if (!connectionString.includes('sslmode')) {
+    connectionString += '&sslmode=require';
   }
 
   // Create postgres client with Direct Connection configuration
@@ -22,6 +29,12 @@ function getDb() {
     max: 10, // Connection pool size (Direct connection supports up to 60)
     idle_timeout: 20, // Close idle connections after 20 seconds
     connect_timeout: 10, // Connection timeout in seconds
+    fetch_types: false, // Skip fetching types for performance
+    prepare: false, // Disable prepared statements for compatibility
+    ssl: 'require', // Force SSL for Supabase
+    connection: {
+      application_name: 'nyc-civic-app',
+    },
   });
 
   _db = drizzle(client, { schema });
