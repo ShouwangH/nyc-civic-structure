@@ -7,33 +7,8 @@ import type {
   ZoningColorMap,
   DemolitionStats,
 } from '../../components/HousingTimelapse/types';
-
-/**
- * Normalize BBL to standard format (removes hyphens, decimals, ensures 10 digits)
- */
-function normalizeBBL(bbl: string | undefined): string | null {
-  if (!bbl) return null;
-
-  // Handle PLUTO format with decimals (e.g., "4118580011.00000000")
-  // Split on decimal and take only the integer part
-  const parts = String(bbl).split('.');
-  const integerPart = parts[0];
-
-  // Remove all non-numeric characters from integer part
-  const numeric = integerPart.replace(/[^0-9]/g, '');
-
-  // BBL should be 10 digits: 1 (borough) + 5 (block) + 4 (lot)
-  if (numeric.length === 10) {
-    return numeric;
-  }
-
-  // Pad if slightly short (some datasets drop leading zeros)
-  if (numeric.length === 9) {
-    return '0' + numeric;
-  }
-
-  return null;
-}
+import type { HousingDataResponse } from '../api-types';
+import { isSuccessResponse } from '../api-types';
 
 /**
  * Construct BBL from borough, block, lot (DOB format)
@@ -65,10 +40,19 @@ function constructBBL(borough: string, block: string, lot: string): string | nul
   return boroughCode + paddedBlock + paddedLot;
 }
 
+type DemolitionRecord = {
+  existing_dwelling_units: number;
+  latest_action_date: string;
+  bbl: string | null;
+  borough: string;
+  block: string | undefined;
+  lot: string | undefined;
+};
+
 /**
  * Process demolition records and calculate statistics
  */
-function processDemolitionStats(demolitions: any[], newConstructionBBLs: Set<string>): DemolitionStats {
+function processDemolitionStats(demolitions: DemolitionRecord[], newConstructionBBLs: Set<string>): DemolitionStats {
   console.info(`[HousingData] Processing ${demolitions.length} demolition records`);
 
   // Debug: Check structure of first few demolition records
@@ -86,9 +70,8 @@ function processDemolitionStats(demolitions: any[], newConstructionBBLs: Set<str
   let standaloneCount = 0;
 
   for (const record of demolitions) {
-    // Parse existing dwelling units
-    const existingUnitsStr = record.existing_dwelling_units || record.existingdwellingunits || '0';
-    const existingUnits = parseInt(String(existingUnitsStr).replace(/[^0-9]/g, ''), 10) || 0;
+    // Backend has already transformed estimatedUnits -> existing_dwelling_units
+    const existingUnits = record.existing_dwelling_units;
 
     if (existingUnits > 0) recordsWithUnits++;
 
@@ -97,7 +80,8 @@ function processDemolitionStats(demolitions: any[], newConstructionBBLs: Set<str
     totalDemolishedUnits += existingUnits;
 
     // Check if this BBL had new construction
-    const bbl = normalizeBBL(record.bbl) || constructBBL(record.borough, record.block, record.lot);
+    // Backend already provides block and lot, and normalized bbl
+    const bbl = record.bbl ?? (record.block && record.lot ? constructBBL(record.borough, record.block, record.lot) : null);
     if (bbl) recordsWithBBL++;
 
     const isStandalone = bbl ? !newConstructionBBLs.has(bbl) : true;
@@ -107,8 +91,8 @@ function processDemolitionStats(demolitions: any[], newConstructionBBLs: Set<str
       standaloneCount++;
     }
 
-    // Try to extract year from latest_action_date
-    const dateStr = record.latest_action_date || record.issuance_date || '';
+    // Backend has already transformed demolitionDate -> latest_action_date
+    const dateStr = record.latest_action_date;
     if (dateStr) {
       recordsWithDate++;
 
@@ -172,7 +156,17 @@ function processDemolitionStats(demolitions: any[], newConstructionBBLs: Set<str
 /**
  * Fetch housing data from server (already processed in database)
  */
-async function fetchFromAPI(): Promise<{ buildings: ProcessedBuilding[]; demolitionData: any[] }> {
+async function fetchFromAPI(): Promise<{
+  buildings: ProcessedBuilding[];
+  demolitionData: Array<{
+    existing_dwelling_units: number;
+    latest_action_date: string;
+    bbl: string | null;
+    borough: string;
+    block: string | undefined;
+    lot: string | undefined;
+  }>;
+}> {
   console.info('[HousingData] Fetching from server API (with 24-hour caching)...');
 
   // Fetch from server API (data already processed in database)
@@ -182,20 +176,19 @@ async function fetchFromAPI(): Promise<{ buildings: ProcessedBuilding[]; demolit
     throw new Error(`Server API error: ${response.status}`);
   }
 
-  const result = await response.json();
+  const result: HousingDataResponse = await response.json();
 
-  if (!result.success) {
+  if (!isSuccessResponse(result)) {
     throw new Error(result.message || 'Failed to fetch housing data');
   }
 
-  // Extract data from server response (already in ProcessedBuilding format)
-  const buildings: ProcessedBuilding[] = result.data.buildings;
-  const demolitionData: any[] = result.data.demolitions;
+  // Type-safe data extraction (TypeScript now knows the shape)
+  const { buildings, demolitions } = result.data;
 
   console.info(`[HousingData] Fetched ${buildings.length} buildings (already processed by server)`);
-  console.info(`[HousingData] Fetched ${demolitionData.length} demolition records`);
+  console.info(`[HousingData] Fetched ${demolitions.length} demolition records`);
 
-  return { buildings, demolitionData };
+  return { buildings, demolitionData: demolitions };
 }
 
 /**
