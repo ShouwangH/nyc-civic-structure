@@ -1,11 +1,11 @@
 // ABOUTME: API endpoint for NYC housing data - serves from database with optional cache
 // ABOUTME: Replaces NYC Open Data API fetching with database queries for faster response
 
-import { registerRoute } from '../api-middleware';
-import { db } from '../lib/db';
-import { housingBuildings, housingDemolitions, type HousingBuilding, type HousingDemolition } from '../lib/schema';
+import { registerRoute } from '../router.ts';
+import { db } from '../lib/db.ts';
+import { housingBuildings, housingDemolitions, type HousingBuilding, type HousingDemolition } from '../lib/schema.ts';
 import { gte } from 'drizzle-orm';
-import { InMemoryCache, shouldForceRefresh } from '../lib/cache';
+import { InMemoryCache, shouldForceRefresh } from '../lib/cache.ts';
 
 // Frontend-facing types (what the frontend expects)
 type ProcessedBuilding = {

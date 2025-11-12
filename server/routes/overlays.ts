@@ -1,11 +1,11 @@
 // ABOUTME: API endpoints for overlay management (sankey, sunburst)
 // ABOUTME: GET list, GET by ID, POST create, PUT update overlays
 
-import { db } from '../lib/db';
-import { overlays } from '../lib/schema';
-import { verifyAuth } from '../lib/auth';
+import { db } from '../lib/db.ts';
+import { overlays } from '../lib/schema.ts';
+import { verifyAuth } from '../lib/auth.ts';
 import { eq, and } from 'drizzle-orm';
-import { registerRoute } from '../api-middleware';
+import { registerRoute } from '../router.ts';
 
 interface CreateOverlayBody {
   id: string;

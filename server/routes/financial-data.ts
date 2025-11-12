@@ -1,10 +1,10 @@
 // ABOUTME: API endpoint for financial visualization data (sankey and sunburst)
 // ABOUTME: Serves sankey and sunburst datasets from database with optional cache
 
-import { registerRoute } from '../api-middleware';
-import { db } from '../lib/db';
-import { sankeyDatasets, sunburstDatasets, type SankeyDataset, type SunburstDataset } from '../lib/schema';
-import { InMemoryCache, shouldForceRefresh } from '../lib/cache';
+import { registerRoute } from '../router.ts';
+import { db } from '../lib/db.ts';
+import { sankeyDatasets, sunburstDatasets, type SankeyDataset, type SunburstDataset } from '../lib/schema.ts';
+import { InMemoryCache, shouldForceRefresh } from '../lib/cache.ts';
 
 // Cached financial data (24-hour TTL)
 type FinancialDataCache = {

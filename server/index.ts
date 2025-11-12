@@ -1,10 +1,10 @@
 // ABOUTME: Server entry point - imports all API routes
 // ABOUTME: Ensures all route handlers are registered
 
-import './routes/overlays';
-import './routes/data';
-import './routes/housing-data';
-import './routes/capital-budget';
-import './routes/financial-data';
+import './routes/overlays.ts';
+import './routes/data.ts';
+import './routes/housing-data.ts';
+import './routes/capital-budget.ts';
+import './routes/financial-data.ts';
 
-export { createApiMiddleware } from './api-middleware';
+export { createApiMiddleware } from './router.ts';
