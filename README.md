@@ -2,134 +2,359 @@
 
 Interactive visualization of New York City government structure with integrated data overlays for housing development, capital budget projects, and financial flows.
 
+> **Architecture:** Database-backed Express + React application with comprehensive type safety
+
 ## Features
 
 ### Core Visualization
 - **Interactive Cytoscape Graph**: Explore NYC government structure across city, state, and federal scopes
 - **Hierarchical Subviews**: Drill down into agencies, departments, and their internal structures
 - **Dynamic Layouts**: ELK-powered automatic graph layouts with smooth animations
+- **Unidirectional Data Flow**: Predictable state management with action queue serialization
 
 ### Data Overlays
 - **Housing Timelapse**: 3D visualization of NYC housing development (2014-2025) using deck.gl
   - Tracks new construction, demolitions, and affordable housing
   - Calculates net new units after demolitions
-  - Data from Housing NY, DOB Job Applications, and PLUTO datasets
+  - **Data Source**: DCP Housing Database + Housing NY overlay
+  - **299,886 total units** (69,032 affordable, 23.0%)
+  - **282,607 net new units** after demolitions
+
 - **Capital Budget Projects**: Map view of NYC capital projects with budget allocations
   - CPDB dataset with project footprints and fiscal information
   - Filter by agency, project type, and fiscal year
+  - PostGIS GeoJSON geometry support
+
 - **Financial Flows**: Sankey and Sunburst visualizations
   - NYC expense budget flows
   - Pension fund allocations
-  - Revenue streams
+  - Revenue streams by category and agency
 
-### Database & API
-- **PostgreSQL + Drizzle ORM**: Overlay metadata and configuration storage
-- **Server-side Caching**: 24-hour cache for NYC Open Data API calls
-- **Vite Dev Server API**: Local development endpoints with hot reload
+### Database-First Architecture
+- **PostgreSQL + Drizzle ORM**: Type-safe database queries with schema inference
+- **Data Processing at Seed Time**: Complex transformations done once, stored in database
+- **In-Memory Caching**: 24-hour cache for all API responses
+- **Type-Safe API Contracts**: Shared types between frontend and backend
 
 ## Tech Stack
 
-- **Frontend**: React 19 + TypeScript + Vite
-- **Styling**: Tailwind CSS
-- **Graph Visualization**: Cytoscape.js with ELK layout engine
-- **3D Map Visualization**: deck.gl + MapLibre GL
-- **Data Visualization**: D3.js (Sankey, Sunburst)
-- **Database**: PostgreSQL with Drizzle ORM
-- **Package Manager**: Bun 1.3.0
-- **Deployment**: Vercel with serverless functions
+### Frontend
+- **React 19** + **TypeScript 5.9** + **Vite 7.1**
+- **Tailwind CSS 3.4** - Styling
+- **Cytoscape.js 3.33** - Graph visualization with ELK layout engine
+- **deck.gl 9.2** + **MapLibre GL 5.11** - 3D map visualizations
+- **D3.js** - Sankey and Sunburst diagrams
+
+### Backend
+- **Node.js** - Runtime
+- **Express** (via Connect middleware) - API server
+- **Drizzle ORM 0.44** - Type-safe database queries
+- **PostgreSQL** (Supabase) - Database with PostGIS
+
+### Development
+- **Bun 1.3.0** - Package manager (faster than npm)
+- **Drizzle Kit** - Schema migrations
+- **ESLint + TypeScript ESLint** - Code quality
 
 ## Getting Started
 
 ### Prerequisites
 
 - [Bun](https://bun.sh/) 1.3.0 or later
-- PostgreSQL database (for overlay storage)
+- PostgreSQL database (Supabase recommended)
 
 ### Installation
 
-1. Clone the repository
+1. **Clone the repository**
 
-2. Install dependencies:
+2. **Install dependencies:**
    ```bash
    bun install
    ```
 
-3. Set up environment variables:
+3. **Set up environment variables:**
    ```bash
    cp .env.example .env
    ```
 
    Required variables:
-   - `DATABASE_URL`: PostgreSQL connection string
-   - `EDIT_PASSWORD`: Authentication password for editing overlays
+   - `DATABASE_URL`: PostgreSQL connection string (direct, not pooled)
 
-4. Run database migrations:
+4. **Push database schema:**
    ```bash
-   bun run drizzle-kit push
+   npm run db:push
+   ```
+
+5. **Seed the database:**
+   ```bash
+   npm run seed:all
+   ```
+
+   This seeds all datasets:
+   - Housing data from DCP Housing Database
+   - Capital projects from CPDB
+   - Financial datasets (sankey/sunburst)
+
+   Individual seed scripts:
+   ```bash
+   npm run seed:housing      # Housing data only
+   npm run seed:capital      # Capital projects only
+   npm run seed:financial    # Financial datasets only
    ```
 
 ### Development
 
 Start the development server:
 ```bash
+npm run dev
+# or
 bun run dev
 ```
 
 The app will be available at `http://localhost:5173` (or next available port).
 
 The dev server includes:
-- Hot module reload
-- API middleware for NYC Open Data proxying
-- Server-side caching for external API calls
+- Hot module reload for frontend
+- API middleware with database-backed endpoints
+- In-memory caching for fast responses
 
 ### Building for Production
 
 ```bash
-bun run build
+npm run build
 ```
 
 Preview the production build:
 ```bash
-bun run preview
+npm run preview
 ```
+
+### Database Management
+
+```bash
+npm run db:studio        # Open Drizzle Studio (database GUI)
+npm run db:push          # Push schema changes to database
+npm run db:generate      # Generate migration from schema changes
+```
+
+### Data Refresh
+
+To refresh data from NYC Open Data sources:
+
+```bash
+npm run seed:all
+```
+
+**Recommended:** Set up a weekly cron job to keep data fresh.
 
 ## Project Structure
 
+See **[ARCHITECTURE.md](ARCHITECTURE.md)** for comprehensive documentation.
+
 ```
-├── api/                    # Vercel serverless functions (production)
-├── server/                 # Vite dev server API routes (development)
-│   ├── routes/            # API endpoint handlers
-│   └── lib/               # Shared utilities (auth, db)
-├── src/
-│   ├── components/        # React components
-│   ├── hooks/             # Custom React hooks
-│   ├── lib/               # Data processing and utilities
-│   └── visualization/     # Cytoscape controller and rendering
-├── data/                   # JSON data files for civic structure
-├── public/                # Static assets
-└── scripts/               # Build and data processing scripts
+nyc-civic-structure/
+├── src/                       # Frontend React application
+│   ├── components/            # React components
+│   ├── controller/            # Action handling & state management
+│   ├── data/                  # Static data definitions
+│   ├── hooks/                 # React hooks
+│   ├── lib/                   # Shared utilities & API types
+│   ├── services/              # Data fetching services
+│   └── visualization/         # Cytoscape, D3, deck.gl visualizations
+│
+├── server/                    # Backend API
+│   ├── lib/                   # DB connection, cache, schema
+│   └── routes/                # API endpoints
+│
+├── scripts/                   # Data seeding scripts
+│   ├── seed-housing.js        # DCP Housing Database → PostgreSQL
+│   ├── seed-capital-budget.js # CPDB → PostgreSQL
+│   └── seed-financial.js      # Financial datasets → PostgreSQL
+│
+├── data/                      # Static data files
+│   └── city-intra.json        # Civic structure graph definition
+│
+├── docs/                      # Documentation
+│   └── DATA_FLOW.md           # Unidirectional flow architecture
+│
+├── ARCHITECTURE.md            # Complete architecture reference
+├── REFACTOR_PLAN.md           # Master refactor plan & progress
+└── REFACTOR_STATUS.md         # Housing data migration details
 ```
 
 ## API Endpoints
 
-### Development (Vite Server)
-- `GET /api/housing-data` - Housing development data (cached)
-- `GET /api/capital-budget` - Capital budget projects (cached)
-- `GET /api/overlays` - List all overlays
-- `GET /api/overlays/:id` - Get specific overlay
-- `POST /api/overlays` - Create overlay (requires auth)
-- `PUT /api/overlays/:id` - Update overlay (requires auth)
+All endpoints return a consistent `ApiResponse<T>` format:
 
-### Production (Vercel)
-Equivalent endpoints available via Vercel serverless functions in `/api/admin/`.
+```typescript
+type ApiResponse<T> =
+  | { success: true; cached: boolean; data: T }
+  | { success: false; error: string; message: string };
+```
+
+### Available Endpoints
+
+| Endpoint | Description | Cache TTL |
+|----------|-------------|-----------|
+| `GET /api/housing-data` | Housing buildings + demolitions | 24 hours |
+| `GET /api/capital-budget` | Capital projects with GeoJSON | 24 hours |
+| `GET /api/financial-data` | List available datasets | 24 hours |
+| `GET /api/financial-data/sankey/:id` | Sankey dataset by ID | 24 hours |
+| `GET /api/financial-data/sunburst/:id` | Sunburst dataset by ID | 24 hours |
+
+**Cache bypass:** Add `?refresh=true` query parameter to force fresh data.
 
 ## Data Sources
 
-- **Housing NY Units by Building**: [hg8x-zxpr](https://data.cityofnewyork.us/Housing-Development/Housing-New-York-Units-by-Building/hg8x-zxpr)
-- **DOB Job Applications**: [ic3t-wcy2](https://data.cityofnewyork.us/Housing-Development/DOB-Job-Application-Filings/ic3t-wcy2)
-- **PLUTO**: [64uk-42ks](https://data.cityofnewyork.us/City-Government/Primary-Land-Use-Tax-Lot-Output-PLUTO-/64uk-42ks)
-- **Capital Projects Database**: [9jkp-n57r](https://data.cityofnewyork.us/City-Government/Capital-Projects-Database-CPDB-Polygons/9jkp-n57r)
+### Housing Data
+- **Primary:** [DCP Housing Database](https://data.cityofnewyork.us/Housing-Development/DCP-Housing-Database/2kzu-zgw7) (ArcGIS REST API)
+- **Overlay:** [Housing NY Units by Building](https://data.cityofnewyork.us/Housing-Development/Housing-New-York-Units-by-Building/hg8x-zxpr)
+- **Processing:**
+  - Deduplication by BBL + completion year
+  - Net unit changes (`classANet` field)
+  - Affordable overlay applied to matching BBLs
+  - **Result:** 299,886 units (69,032 affordable, 23.0%)
+
+### Capital Budget
+- **Source:** [Capital Projects Database (CPDB)](https://data.cityofnewyork.us/City-Government/Capital-Projects-Database-CPDB-Polygons/9jkp-n57r)
+- **Format:** GeoJSON with PostGIS geometry
+- **Fields:** Budget allocations, fiscal year, agency, project type
+
+### Financial Data
+- **Budget Sankey:** NYC expense budget flows by agency
+- **Pension Sankey:** Pension fund allocations
+- **Revenue Sunburst:** Revenue streams by category
+- **Expense Sunburst:** Expense hierarchies by department
+
+## Type Safety
+
+This project uses comprehensive type safety:
+
+- **Database Types:** Drizzle ORM schema inference (`$inferSelect`)
+- **API Contracts:** Shared types in `src/lib/api-types.ts`
+- **Component Props:** Explicit TypeScript interfaces
+- **No `any` Types:** Eliminated ~50 `any` types during refactor
+
+See **[ARCHITECTURE.md](ARCHITECTURE.md#type-safety)** for details.
+
+## Key Design Patterns
+
+1. **Unidirectional Data Flow**
+   - User → InputHandler (queue) → Controller → setState → Components
+   - See [docs/DATA_FLOW.md](docs/DATA_FLOW.md)
+
+2. **Database-First Processing**
+   - Complex transformations at seed time
+   - Frontend just aggregates and displays
+
+3. **Type-Safe API Contracts**
+   - Shared types prevent frontend/backend drift
+   - Compile-time safety for API calls
+
+4. **Generic In-Memory Cache**
+   - Consistent caching across all routes
+   - Type-safe cache values
+
+See **[ARCHITECTURE.md](ARCHITECTURE.md#key-design-patterns)** for full details.
+
+## Development Workflow
+
+### Testing Changes
+
+```bash
+# Run production build to verify
+npm run build
+
+# Test production bundle locally
+npm run preview
+```
+
+### Data Diagnostics
+
+```bash
+# Find duplicate locations in housing data
+npm run check:duplicates
+
+# Verify housing data counts
+npm run verify:housing
+```
+
+### Code Quality
+
+```bash
+# Lint check
+npm run lint
+
+# TypeScript type check
+npm run build
+```
+
+## Performance
+
+| Dataset | Records | Response Size | Load Time (Cached) |
+|---------|---------|---------------|-------------------|
+| Housing | 37,000 | ~5 MB | ~50ms |
+| Capital | 15,000 | ~8 MB | ~60ms |
+| Financial | 20 | ~200 KB | ~10ms |
+
+**Optimizations:**
+- In-memory caching (24-hour TTL)
+- Database indexing on queried fields
+- Pre-processed data (no runtime computation)
+- Canvas rendering for large graphs (1000+ nodes)
+
+## Documentation
+
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** - Complete system architecture
+- **[docs/DATA_FLOW.md](docs/DATA_FLOW.md)** - Unidirectional flow patterns
+- **[REFACTOR_PLAN.md](REFACTOR_PLAN.md)** - Refactor progress tracking
+- **[REFACTOR_STATUS.md](REFACTOR_STATUS.md)** - Housing migration details
+
+## Contributing
+
+### Code Style
+
+- **TypeScript:** Strict mode enabled
+- **React:** Functional components with hooks
+- **Naming:** camelCase for variables, PascalCase for components
+- **Imports:** Absolute imports from `src/`
+
+### Pull Request Process
+
+1. Create feature branch: `git checkout -b feature/my-feature`
+2. Make changes with clear commit messages
+3. Ensure TypeScript compiles: `npm run build`
+4. Test changes locally: `npm run dev`
+5. Push and create PR
+
+## Known Limitations
+
+- No automated tests (manual testing only)
+- No production deployment guide
+- Cache invalidation is manual (`?refresh=true`)
+- Data refresh requires manual seed runs
+
+## Future Enhancements
+
+### Short-Term
+- Automated tests (Jest + React Testing Library)
+- Production deployment (Docker + Railway/fly.io)
+- Automated data refresh (weekly cron jobs)
+
+### Medium-Term
+- User authentication and saved views
+- Custom data filters and queries
+- Export visualizations (PNG, PDF)
+
+### Long-Term
+- Multi-city support
+- Predictive analytics (ML models)
+- Public API for third-party developers
 
 ## License
 
 MIT
+
+---
+
+**Questions?** See [ARCHITECTURE.md](ARCHITECTURE.md) for comprehensive documentation.
