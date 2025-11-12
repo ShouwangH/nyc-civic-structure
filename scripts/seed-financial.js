@@ -223,7 +223,7 @@ async function generateBudgetSankey(db) {
   const activeCategories = new Set();
   for (const [category, funding] of categoryFunding.entries()) {
     const total = funding.cityFunds + funding.federalFunds + funding.stateFunds;
-    if (total > 10000000) { // Only include if > $10M
+    if (total > 50000000) { // Only include if > $50M
       nodes.push({ id: `category-${category}`, label: category, level: 1, type: 'category' });
       activeCategories.add(category);
 
@@ -248,7 +248,7 @@ async function generateBudgetSankey(db) {
     if (!activeCategories.has(category)) continue;
 
     const total = data.cityFunds + data.federalFunds + data.stateFunds;
-    if (total < 5000000) continue; // Skip agencies < $5M
+    if (total < 25000000) continue; // Skip agencies < $25M
 
     if (!agenciesByCategory.has(category)) {
       agenciesByCategory.set(category, []);
@@ -260,12 +260,12 @@ async function generateBudgetSankey(db) {
     });
   }
 
-  // Add top 12 agencies per category to keep visualization manageable
+  // Add top 6 agencies per category to keep visualization manageable
   for (const [category, agencies] of agenciesByCategory.entries()) {
-    // Sort by total and take top 12
+    // Sort by total and take top 6
     const topAgencies = agencies
       .sort((a, b) => b.total - a.total)
-      .slice(0, 12);
+      .slice(0, 6);
 
     for (const { agency, funding } of topAgencies) {
       const agencyId = `agency-${agency}`;
@@ -617,10 +617,16 @@ async function generatePensionSankey(db) {
 async function generateRevenueSunburst(db) {
   console.log('[Revenue Sunburst] Fetching revenue data...\n');
 
+  // Revenue API uses different date format and year convention:
+  // - Format: "YYYY MM DD" (with spaces) instead of "YYYYMMDD"
+  // - Year: Uses fiscal year (e.g., "2025 06 30" for FY2025, not "2024 06 30")
+  const revenuePubDate = `${FISCAL_YEAR} 06 30`;
+
   const records = await fetchNycOpenData(REVENUE_API, {
     limit: 50000,
     params: {
       fiscal_year: FISCAL_YEAR,
+      publication_date: revenuePubDate,
     },
   });
 

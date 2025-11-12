@@ -139,6 +139,17 @@ export function getNodeColor(nodeName: string): string {
     return ASSET_CLASS_COLORS[nodeName as keyof typeof ASSET_CLASS_COLORS];
   }
 
+  // Try stripping common prefixes if direct lookup failed
+  const prefixes = ['funding-', 'category-', 'agency-', 'fund:', 'cat:'];
+  for (const prefix of prefixes) {
+    if (nodeName.startsWith(prefix)) {
+      const strippedName = nodeName.slice(prefix.length);
+      if (strippedName in ASSET_CLASS_COLORS) {
+        return ASSET_CLASS_COLORS[strippedName as keyof typeof ASSET_CLASS_COLORS];
+      }
+    }
+  }
+
   // All other nodes get the default color (pension managers, budget revenue sources)
   return DEFAULT_NODE_COLOR;
 }
