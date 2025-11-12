@@ -3,6 +3,7 @@
 // ABOUTME: Seed script for financial visualizations - generates sankey and sunburst datasets
 // ABOUTME: Combines budget sankey, pension sankey, revenue sunburst, and expense sunburst
 
+import { config } from 'dotenv';
 import { sankeyDatasets, sunburstDatasets } from '../server/lib/schema.ts';
 import {
   initDb,
@@ -12,6 +13,9 @@ import {
   timer,
   formatNumber,
 } from './lib/seed-utils.js';
+
+// Load environment variables
+config();
 
 const FISCAL_YEAR = 2025;
 const PUBLICATION_DATE = '20240630';
@@ -215,7 +219,7 @@ async function generateBudgetSankey(db) {
     catData.stateFunds += data.stateFunds;
   }
 
-  // Category nodes (level 1) - FINAL LEVEL (removed agencies)
+  // Category nodes (level 1)
   const activeCategories = new Set();
   for (const [category, funding] of categoryFunding.entries()) {
     const total = funding.cityFunds + funding.federalFunds + funding.stateFunds;
@@ -237,13 +241,63 @@ async function generateBudgetSankey(db) {
     }
   }
 
-  // Note: Removed level 2 agency nodes to keep visualization clean
-  // Sankey now shows: Funding Sources → Service Categories
+  // Agency nodes (level 2) - filtered to top agencies per category
+  const agenciesByCategory = new Map();
+  for (const [agency, data] of agencyFunding.entries()) {
+    const category = data.category;
+    if (!activeCategories.has(category)) continue;
+
+    const total = data.cityFunds + data.federalFunds + data.stateFunds;
+    if (total < 5000000) continue; // Skip agencies < $5M
+
+    if (!agenciesByCategory.has(category)) {
+      agenciesByCategory.set(category, []);
+    }
+    agenciesByCategory.get(category).push({
+      agency,
+      total,
+      funding: data,
+    });
+  }
+
+  // Add top 12 agencies per category to keep visualization manageable
+  for (const [category, agencies] of agenciesByCategory.entries()) {
+    // Sort by total and take top 12
+    const topAgencies = agencies
+      .sort((a, b) => b.total - a.total)
+      .slice(0, 12);
+
+    for (const { agency, funding } of topAgencies) {
+      const agencyId = `agency-${agency}`;
+      const normalizedAgencyName = toTitleCase(agency);
+
+      nodes.push({
+        id: agencyId,
+        label: normalizedAgencyName,
+        level: 2,
+        type: 'agency',
+      });
+
+      // Links from category to agency
+      for (const source of fundingSources) {
+        const amount = funding[source.key];
+        if (amount > 500000) { // Only if > $500K
+          links.push({
+            source: `category-${category}`,
+            target: agencyId,
+            value: amount,
+          });
+        }
+      }
+    }
+  }
+
+  // Now has 3 levels: Funding Sources → Service Categories → Major Agencies
 
   const dataset = {
     id: `budget-fy${FISCAL_YEAR}`,
     label: `NYC Expense Budget by Funding Source FY${FISCAL_YEAR}`,
-    description: 'Shows how funding sources (City, Federal, State) flow to service categories and agencies',
+    description: 'Shows how funding sources (City, Federal, State) flow to service categories and major agencies (3 levels)',
     fiscalYear: FISCAL_YEAR,
     dataType: 'budget',
     units: 'USD',
@@ -252,6 +306,7 @@ async function generateBudgetSankey(db) {
     metadata: {
       publicationDate: PUBLICATION_DATE,
       totalBudget: fundingTotals['City Funds'] + fundingTotals['Federal Funds'] + fundingTotals['State Funds'],
+      levels: 3,
     },
     generatedAt: new Date(),
   };
@@ -348,11 +403,11 @@ function categorizeAsset(assetClass, investmentType) {
     } else if (normalizedType.includes('HEDGE')) {
       subAsset = 'Hedge Funds';
     } else {
-      subAsset = investmentType || 'Other';
+      subAsset = toTitleCase(investmentType) || 'Other';
     }
   }
 
-  return { bucket, subAsset };
+  return { bucket, subAsset: toTitleCase(subAsset) };
 }
 
 async function fetchFundHoldings(datasetId, fundId) {
