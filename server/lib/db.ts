@@ -1,10 +1,14 @@
-// ABOUTME: Database connection using Drizzle ORM with Supabase Direct Connection
+// ABOUTME: Database connection using Drizzle ORM with Supabase Transaction Pooling
 // ABOUTME: Shared database connection used by all API routes with lazy initialization
 
 import { drizzle } from 'drizzle-orm/postgres-js';
 import postgres from 'postgres';
 import type { PostgresJsDatabase } from 'drizzle-orm/postgres-js';
 import * as schema from './schema.ts';
+import { setDefaultResultOrder } from 'dns';
+
+// Force IPv4 DNS resolution (Render doesn't support IPv6)
+setDefaultResultOrder('ipv4first');
 
 let _db: PostgresJsDatabase<typeof schema> | null = null;
 
@@ -23,14 +27,14 @@ function getDb() {
     connectionString += '&sslmode=require';
   }
 
-  // Create postgres client with Direct Connection configuration
-  // Optimized for long-running server (not serverless)
+  // Create postgres client with Supabase Pooler configuration
+  // Works with both Transaction (6543) and Session (5432) pooling
   const client = postgres(connectionString, {
-    max: 10, // Connection pool size (Direct connection supports up to 60)
+    max: 10, // Connection pool size
     idle_timeout: 20, // Close idle connections after 20 seconds
     connect_timeout: 10, // Connection timeout in seconds
     fetch_types: false, // Skip fetching types for performance
-    prepare: false, // Disable prepared statements for compatibility
+    prepare: false, // Disable prepared statements (required for Transaction pooling)
     ssl: 'require', // Force SSL for Supabase
     connection: {
       application_name: 'nyc-civic-app',
