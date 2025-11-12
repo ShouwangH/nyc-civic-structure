@@ -361,8 +361,14 @@ async function fetchFundHoldings(datasetId, fundId) {
   const API_BASE = `https://data.cityofnewyork.us/resource/${datasetId}.json`;
 
   // First, get the most recent period_end_date
-  const dateResponse = await fetchNycOpenData(`${API_BASE}?$select=period_end_date&$group=period_end_date&$order=period_end_date DESC&$limit=1`);
-  const dateData = dateResponse;
+  // Use raw fetch for this simple query
+  const dateUrl = `${API_BASE}?$select=period_end_date&$group=period_end_date&$order=period_end_date DESC&$limit=1`;
+  const dateResponse = await fetch(dateUrl);
+  if (!dateResponse.ok) {
+    console.error(`    Failed to fetch date for ${fundId}`);
+    return [];
+  }
+  const dateData = await dateResponse.json();
   const latestPeriodDate = dateData[0]?.period_end_date;
 
   if (!latestPeriodDate) {
