@@ -16,6 +16,7 @@ import type { Polygon, MultiPolygon } from 'geojson';
 
 /**
  * Calculate centroid of a polygon or multipolygon
+ * Used as fallback when pre-computed centroid is not available
  */
 function calculateCentroid(geometry: Polygon | MultiPolygon): [number, number] {
   let totalX = 0;
@@ -44,6 +45,21 @@ function calculateCentroid(geometry: Polygon | MultiPolygon): [number, number] {
 }
 
 /**
+ * Get centroid for a project, preferring pre-computed values from API
+ */
+function getCentroid(project: CapitalProjectFeature): [number, number] {
+  const { centroid_lon, centroid_lat } = project.properties;
+
+  // Use pre-computed centroid if available (much faster)
+  if (centroid_lon != null && centroid_lat != null) {
+    return [centroid_lon, centroid_lat];
+  }
+
+  // Fallback to runtime calculation for backwards compatibility
+  return calculateCentroid(project.geometry as Polygon | MultiPolygon);
+}
+
+/**
  * Capital budget visualization component
  */
 export function CapitalBudget({}: CapitalBudgetProps) {
@@ -55,9 +71,10 @@ export function CapitalBudget({}: CapitalBudgetProps) {
   const { projects, isLoading, error } = useCapitalBudgetData();
 
   // Transform projects to include centroids for column layer
+  // Uses pre-computed centroids from API when available (much faster)
   const projectsWithCentroids = useMemo<CapitalProjectWithCentroid[]>(() => {
     return projects.map((project) => {
-      const centroid = calculateCentroid(project.geometry as Polygon | MultiPolygon);
+      const centroid = getCentroid(project);
       // Add small random offset to prevent overlapping columns at same location
       // 0.0002 degrees ≈ 22 meters at NYC latitude
       const offsetLon = (Math.random() - 0.5) * 0.0002;

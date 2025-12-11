@@ -5,7 +5,7 @@ import { registerRoute } from '../router.ts';
 import { db } from '../lib/db.ts';
 import { housingBuildings, housingDemolitions, type HousingBuilding, type HousingDemolition } from '../lib/schema.ts';
 import { gte } from 'drizzle-orm';
-import { InMemoryCache, shouldForceRefresh } from '../lib/cache.ts';
+import { InMemoryCache, shouldForceRefresh, cachedJsonResponse } from '../lib/cache.ts';
 
 // Frontend-facing types (what the frontend expects)
 type ProcessedBuilding = {
@@ -138,7 +138,7 @@ async function getHousingData(request: Request) {
     const cachedData = cache.get();
     if (!forceRefresh && cachedData) {
       console.log('[Housing Data API] Returning cached data');
-      return Response.json({
+      return cachedJsonResponse({
         success: true,
         cached: true,
         data: cachedData,
@@ -148,7 +148,7 @@ async function getHousingData(request: Request) {
     // Fetch fresh data from database
     const data = await fetchHousingData();
 
-    return Response.json({
+    return cachedJsonResponse({
       success: true,
       cached: false,
       data,

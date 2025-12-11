@@ -20,6 +20,9 @@ export type CapitalProjectProperties = {
   plannedcommit_total: number;
   fiscalYear?: number;
   completionYear?: number;
+  // Pre-computed centroid from database (Phase 2.1 optimization)
+  centroid_lon?: number | null;
+  centroid_lat?: number | null;
 };
 
 /**

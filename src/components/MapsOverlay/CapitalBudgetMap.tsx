@@ -43,6 +43,7 @@ const FOOTPRINT_HEIGHT = 30;
 
 /**
  * Calculate centroid of a polygon or multipolygon
+ * Used as fallback when pre-computed centroid is not available
  */
 function calculateCentroid(geometry: Polygon | MultiPolygon): [number, number] {
   let totalX = 0;
@@ -70,6 +71,22 @@ function calculateCentroid(geometry: Polygon | MultiPolygon): [number, number] {
   return [totalX / totalPoints, totalY / totalPoints];
 }
 
+/**
+ * Get centroid for a project, preferring pre-computed values from API
+ */
+function getCentroid(project: CapitalProjectFeature): [number, number] {
+  const props = project.properties as any;
+  const { centroid_lon, centroid_lat } = props;
+
+  // Use pre-computed centroid if available (much faster)
+  if (centroid_lon != null && centroid_lat != null) {
+    return [centroid_lon, centroid_lat];
+  }
+
+  // Fallback to runtime calculation for backwards compatibility
+  return calculateCentroid(project.geometry as Polygon | MultiPolygon);
+}
+
 export function CapitalBudgetMap() {
   const { projects, isLoading, error } = useCapitalBudgetData();
   const [hoveredProject, setHoveredProject] = useState<CapitalProjectFeature | null>(null);
@@ -77,9 +94,10 @@ export function CapitalBudgetMap() {
   const [viewMode, setViewMode] = useState<'budget' | 'footprint'>('budget');
 
   // Transform projects to include centroids for column layer
+  // Uses pre-computed centroids from API when available (much faster)
   const projectsWithCentroids = useMemo(() => {
     return projects.map((project) => {
-      const centroid = calculateCentroid(project.geometry as Polygon | MultiPolygon);
+      const centroid = getCentroid(project);
       // Add small random offset to prevent overlapping columns at same location
       // 0.0002 degrees ≈ 22 meters at NYC latitude
       const offsetLon = (Math.random() - 0.5) * 0.0002;

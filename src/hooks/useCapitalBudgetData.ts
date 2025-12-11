@@ -3,6 +3,7 @@
 
 import { useState, useEffect } from 'react';
 import type { Feature, Polygon, Point } from 'geojson';
+import { mapDataCache, CACHE_KEYS } from '../lib/mapDataCache';
 
 // GeoJSON Feature properties for capital projects
 export type CapitalProjectProperties = {
@@ -19,6 +20,9 @@ export type CapitalProjectProperties = {
   plannedcommit_total: number;
   fiscalYear?: number; // Derived from mindate
   completionYear?: number; // Derived from maxdate
+  // Pre-computed centroid from database (Phase 2.1 optimization)
+  centroid_lon?: number | null;
+  centroid_lat?: number | null;
 };
 
 // GeoJSON Feature type for capital projects
@@ -31,7 +35,27 @@ type UseCapitalBudgetDataReturn = {
 };
 
 /**
+ * Fetch capital budget data from API
+ */
+async function fetchCapitalBudgetData(): Promise<CapitalProjectFeature[]> {
+  const response = await fetch('/api/capital-budget');
+
+  if (!response.ok) {
+    throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
+  }
+
+  const result = await response.json();
+
+  if (!result.success) {
+    throw new Error(result.message || 'Failed to fetch capital budget data');
+  }
+
+  return result.data;
+}
+
+/**
  * Fetch capital budget projects from database via API endpoint
+ * Uses client-side cache to avoid re-fetching on navigation
  */
 export function useCapitalBudgetData(): UseCapitalBudgetDataReturn {
   const [projects, setProjects] = useState<CapitalProjectFeature[]>([]);
@@ -39,26 +63,18 @@ export function useCapitalBudgetData(): UseCapitalBudgetDataReturn {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const loadData = async () => {
       try {
         setIsLoading(true);
         setError(null);
 
-        // Fetch from server API (with 24-hour caching)
-        const response = await fetch('/api/capital-budget');
+        // Use cache to avoid re-fetching on navigation
+        const data = await mapDataCache.fetchWithCache(
+          CACHE_KEYS.CAPITAL_BUDGET,
+          fetchCapitalBudgetData
+        );
 
-        if (!response.ok) {
-          throw new Error(`Failed to fetch: ${response.status} ${response.statusText}`);
-        }
-
-        const result = await response.json();
-
-        if (!result.success) {
-          throw new Error(result.message || 'Failed to fetch capital budget data');
-        }
-
-        // Server already transforms the data to our expected format
-        setProjects(result.data);
+        setProjects(data);
       } catch (err) {
         const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
         setError(errorMessage);
@@ -68,8 +84,16 @@ export function useCapitalBudgetData(): UseCapitalBudgetDataReturn {
       }
     };
 
-    void fetchData();
+    void loadData();
   }, []);
 
   return { projects, isLoading, error };
+}
+
+/**
+ * Preload capital budget data into cache
+ * Call this when user hovers over map navigation
+ */
+export function preloadCapitalBudgetData(): void {
+  mapDataCache.preload(CACHE_KEYS.CAPITAL_BUDGET, fetchCapitalBudgetData);
 }

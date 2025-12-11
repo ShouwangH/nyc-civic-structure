@@ -3,8 +3,15 @@
 
 import type { Connect } from 'vite';
 import type { IncomingMessage, ServerResponse } from 'http';
+import { gzip } from 'zlib';
+import { promisify } from 'util';
+
+const gzipAsync = promisify(gzip);
 
 type Handler = (req: Request) => Promise<Response>;
+
+// Minimum size to compress (1KB) - smaller responses don't benefit from compression
+const COMPRESSION_THRESHOLD = 1024;
 
 const routes: Map<string, Map<string, Handler>> = new Map();
 
@@ -91,7 +98,27 @@ export function createApiMiddleware(): Connect.NextHandleFunction {
       });
 
       const responseBody = await response.text();
-      res.end(responseBody);
+
+      // Check if client accepts gzip and response is large enough to benefit
+      const acceptEncoding = req.headers['accept-encoding'] || '';
+      const shouldCompress =
+        acceptEncoding.includes('gzip') &&
+        responseBody.length >= COMPRESSION_THRESHOLD &&
+        !res.getHeader('content-encoding'); // Don't double-compress
+
+      if (shouldCompress) {
+        try {
+          const compressed = await gzipAsync(Buffer.from(responseBody));
+          res.setHeader('Content-Encoding', 'gzip');
+          res.setHeader('Vary', 'Accept-Encoding');
+          res.end(compressed);
+        } catch {
+          // If compression fails, send uncompressed
+          res.end(responseBody);
+        }
+      } else {
+        res.end(responseBody);
+      }
     } catch (error) {
       console.error('API error:', error);
       res.statusCode = 500;

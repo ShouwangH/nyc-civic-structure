@@ -70,3 +70,33 @@ export function shouldForceRefresh(request: Request): boolean {
   const url = new URL(request.url);
   return url.searchParams.get('refresh') === 'true';
 }
+
+/**
+ * Create a JSON response with browser caching headers
+ * @param data - Response data to serialize as JSON
+ * @param options - Cache and response options
+ */
+export function cachedJsonResponse<T>(
+  data: T,
+  options: {
+    status?: number;
+    maxAge?: number; // Cache duration in seconds (default: 1 hour)
+    staleWhileRevalidate?: number; // Time to serve stale while revalidating (default: 1 day)
+  } = {}
+): Response {
+  const {
+    status = 200,
+    maxAge = 3600, // 1 hour default
+    staleWhileRevalidate = 86400, // 1 day default
+  } = options;
+
+  const headers = new Headers({
+    'Content-Type': 'application/json',
+    // Allow browser and CDN caching
+    'Cache-Control': `public, max-age=${maxAge}, stale-while-revalidate=${staleWhileRevalidate}`,
+    // Vary on Accept-Encoding to ensure compressed/uncompressed versions are cached separately
+    'Vary': 'Accept-Encoding',
+  });
+
+  return new Response(JSON.stringify(data), { status, headers });
+}
