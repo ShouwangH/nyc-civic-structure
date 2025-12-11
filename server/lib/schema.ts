@@ -290,6 +290,13 @@ export const capitalProjects = pgTable('capital_projects', {
   // Geospatial data (PostGIS GeoJSON)
   geometry: jsonb('geometry').notNull(), // GeoJSON geometry object
 
+  // Pre-computed centroid for faster rendering (Phase 2.1)
+  centroidLon: real('centroid_lon'), // Longitude of geometry centroid
+  centroidLat: real('centroid_lat'), // Latitude of geometry centroid
+
+  // Simplified geometry for faster API responses (Phase 2.2)
+  geometrySimplified: jsonb('geometry_simplified'), // Douglas-Peucker simplified
+
   // Metadata
   createdAt: timestamp('created_at').defaultNow().notNull(),
   updatedAt: timestamp('updated_at').defaultNow().notNull(),

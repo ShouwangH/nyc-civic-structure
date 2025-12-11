@@ -9,6 +9,7 @@ import type {
 } from '../../components/HousingTimelapse/types';
 import type { HousingDataResponse } from '../api-types';
 import { isSuccessResponse } from '../api-types';
+import { mapDataCache, CACHE_KEYS } from '../mapDataCache';
 
 /**
  * Construct BBL from borough, block, lot (DOB format)
@@ -153,10 +154,7 @@ function processDemolitionStats(demolitions: DemolitionRecord[], newConstruction
   };
 }
 
-/**
- * Fetch housing data from server (already processed in database)
- */
-async function fetchFromAPI(): Promise<{
+type HousingAPIData = {
   buildings: ProcessedBuilding[];
   demolitionData: Array<{
     existing_dwelling_units: number;
@@ -166,10 +164,14 @@ async function fetchFromAPI(): Promise<{
     block: string | undefined;
     lot: string | undefined;
   }>;
-}> {
-  console.info('[HousingData] Fetching from server API (with 24-hour caching)...');
+};
 
-  // Fetch from server API (data already processed in database)
+/**
+ * Raw fetch from API (no caching)
+ */
+async function fetchHousingDataFromAPI(): Promise<HousingAPIData> {
+  console.info('[HousingData] Fetching from server API...');
+
   const response = await fetch('/api/housing-data');
 
   if (!response.ok) {
@@ -182,13 +184,30 @@ async function fetchFromAPI(): Promise<{
     throw new Error(result.message || 'Failed to fetch housing data');
   }
 
-  // Type-safe data extraction (TypeScript now knows the shape)
   const { buildings, demolitions } = result.data;
 
   console.info(`[HousingData] Fetched ${buildings.length} buildings (already processed by server)`);
   console.info(`[HousingData] Fetched ${demolitions.length} demolition records`);
 
   return { buildings, demolitionData: demolitions };
+}
+
+/**
+ * Fetch housing data from server with client-side caching
+ */
+async function fetchFromAPI(): Promise<HousingAPIData> {
+  return mapDataCache.fetchWithCache(
+    CACHE_KEYS.HOUSING_DATA,
+    fetchHousingDataFromAPI
+  );
+}
+
+/**
+ * Preload housing data into cache
+ * Call this when user hovers over map navigation
+ */
+export function preloadHousingData(): void {
+  mapDataCache.preload(CACHE_KEYS.HOUSING_DATA, fetchHousingDataFromAPI);
 }
 
 /**

@@ -11,6 +11,7 @@ import { governmentScopes } from './data/datasets';
 import type { VisualizationState } from './controller/controller';
 import { initializeGraphData, type GraphData } from './data/loader';
 import { actions } from './controller/actions';
+import { useMapDataPreloader } from './hooks/useMapDataPreloader';
 
 cytoscape.use(cytoscapeElk);
 
@@ -19,6 +20,10 @@ function App() {
   const [graphData, setGraphData] = useState<GraphData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  // Preload map data in the background as soon as app loads
+  // This reduces perceived load time when user navigates to maps
+  useMapDataPreloader();
 
   // Single state object
   const [state, setState] = useState<VisualizationState>({

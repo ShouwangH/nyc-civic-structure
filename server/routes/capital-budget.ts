@@ -4,7 +4,7 @@
 import { registerRoute } from '../router.ts';
 import { db } from '../lib/db.ts';
 import { capitalProjects, type CapitalProject } from '../lib/schema.ts';
-import { InMemoryCache, shouldForceRefresh } from '../lib/cache.ts';
+import { InMemoryCache, shouldForceRefresh, cachedJsonResponse } from '../lib/cache.ts';
 
 // GeoJSON Feature type for capital projects (frontend format)
 type CapitalProjectFeature = {
@@ -24,6 +24,9 @@ type CapitalProjectFeature = {
     plannedcommit_total: number;
     fiscalYear: number | null;
     completionYear: number | null;
+    // Pre-computed centroid for faster rendering
+    centroid_lon: number | null;
+    centroid_lat: number | null;
   };
 };
 
@@ -32,9 +35,10 @@ const cache = new InMemoryCache<CapitalProjectFeature[]>();
 
 /**
  * Fetch capital budget data from database
+ * @param useSimplified - Use simplified geometry (default: true for faster loading)
  */
-async function fetchCapitalBudget(): Promise<CapitalProjectFeature[]> {
-  console.log('[Capital Budget API] Fetching from database...');
+async function fetchCapitalBudget(useSimplified = true): Promise<CapitalProjectFeature[]> {
+  console.log(`[Capital Budget API] Fetching from database (simplified=${useSimplified})...`);
 
   try {
     // Fetch all projects (already processed during seed)
@@ -46,9 +50,12 @@ async function fetchCapitalBudget(): Promise<CapitalProjectFeature[]> {
     console.log(`[Capital Budget API] Fetched ${projects.length} projects`);
 
     // Transform to GeoJSON features format for frontend compatibility
+    // Use simplified geometry by default for faster loading (82% smaller)
     const features: CapitalProjectFeature[] = projects.map(project => ({
       type: 'Feature' as const,
-      geometry: project.geometry,
+      geometry: useSimplified && project.geometrySimplified
+        ? project.geometrySimplified
+        : project.geometry,
       properties: {
         maprojid: project.maprojid,
         description: project.description,
@@ -63,6 +70,8 @@ async function fetchCapitalBudget(): Promise<CapitalProjectFeature[]> {
         plannedcommit_total: project.plannedCommitTotal,
         fiscalYear: project.fiscalYear,
         completionYear: project.completionYear,
+        centroid_lon: project.centroidLon,
+        centroid_lat: project.centroidLat,
       },
     }));
 
@@ -79,16 +88,22 @@ async function fetchCapitalBudget(): Promise<CapitalProjectFeature[]> {
 /**
  * GET /api/capital-budget
  * Returns capital budget projects from database with in-memory caching
+ * Query params:
+ *   - refresh=true: Force refresh from database
+ *   - full=true: Return full geometry instead of simplified (larger payload)
  */
 async function getCapitalBudget(request: Request) {
   try {
+    const url = new URL(request.url);
     const forceRefresh = shouldForceRefresh(request);
+    const useFullGeometry = url.searchParams.get('full') === 'true';
+    const useSimplified = !useFullGeometry;
 
-    // Check cache
+    // Check cache (only for simplified geometry requests)
     const cachedProjects = cache.get();
-    if (!forceRefresh && cachedProjects) {
+    if (!forceRefresh && useSimplified && cachedProjects) {
       console.log('[Capital Budget API] Returning cached data');
-      return Response.json({
+      return cachedJsonResponse({
         success: true,
         cached: true,
         count: cachedProjects.length,
@@ -97,9 +112,9 @@ async function getCapitalBudget(request: Request) {
     }
 
     // Fetch fresh data from database
-    const projects = await fetchCapitalBudget();
+    const projects = await fetchCapitalBudget(useSimplified);
 
-    return Response.json({
+    return cachedJsonResponse({
       success: true,
       cached: false,
       count: projects.length,

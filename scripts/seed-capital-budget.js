@@ -18,6 +18,126 @@ import {
 const CPDB_API = 'https://data.cityofnewyork.us/resource/9jkp-n57r.geojson';
 
 /**
+ * Calculate centroid of a GeoJSON geometry (Polygon or MultiPolygon)
+ * Uses simple average of all coordinates (not true centroid, but fast and sufficient for visualization)
+ */
+function calculateCentroid(geometry) {
+  if (!geometry || !geometry.coordinates) {
+    return [0, 0];
+  }
+
+  let totalX = 0;
+  let totalY = 0;
+  let totalPoints = 0;
+
+  const processRing = (ring) => {
+    for (const [lon, lat] of ring) {
+      totalX += lon;
+      totalY += lat;
+      totalPoints++;
+    }
+  };
+
+  if (geometry.type === 'Polygon') {
+    processRing(geometry.coordinates[0]); // Outer ring only
+  } else if (geometry.type === 'MultiPolygon') {
+    for (const polygon of geometry.coordinates) {
+      processRing(polygon[0]); // Outer ring of each polygon
+    }
+  } else if (geometry.type === 'Point') {
+    return geometry.coordinates;
+  }
+
+  return totalPoints > 0
+    ? [totalX / totalPoints, totalY / totalPoints]
+    : [0, 0];
+}
+
+/**
+ * Douglas-Peucker line simplification algorithm
+ * Reduces coordinate count while preserving shape
+ *
+ * @param coords - Array of [lon, lat] coordinates
+ * @param tolerance - Distance tolerance in degrees (~0.0001 = 11 meters at NYC latitude)
+ */
+function simplifyLine(coords, tolerance = 0.0001) {
+  if (coords.length <= 2) return coords;
+
+  // Find point with max distance from line between first and last
+  let maxDist = 0;
+  let maxIdx = 0;
+  const [x1, y1] = coords[0];
+  const [x2, y2] = coords[coords.length - 1];
+  const lineLengthSq = (y2 - y1) ** 2 + (x2 - x1) ** 2;
+
+  // Handle case where first and last points are the same (closed ring)
+  if (lineLengthSq === 0) {
+    // Find point furthest from the start point
+    for (let i = 1; i < coords.length - 1; i++) {
+      const [x0, y0] = coords[i];
+      const dist = Math.sqrt((x0 - x1) ** 2 + (y0 - y1) ** 2);
+      if (dist > maxDist) {
+        maxDist = dist;
+        maxIdx = i;
+      }
+    }
+  } else {
+    for (let i = 1; i < coords.length - 1; i++) {
+      const [x0, y0] = coords[i];
+      // Perpendicular distance to line
+      const dist = Math.abs((y2 - y1) * x0 - (x2 - x1) * y0 + x2 * y1 - y2 * x1) /
+                   Math.sqrt(lineLengthSq);
+      if (dist > maxDist) {
+        maxDist = dist;
+        maxIdx = i;
+      }
+    }
+  }
+
+  if (maxDist > tolerance) {
+    // Recursively simplify
+    const left = simplifyLine(coords.slice(0, maxIdx + 1), tolerance);
+    const right = simplifyLine(coords.slice(maxIdx), tolerance);
+    return [...left.slice(0, -1), ...right];
+  }
+
+  return [coords[0], coords[coords.length - 1]];
+}
+
+/**
+ * Simplify a GeoJSON geometry using Douglas-Peucker algorithm
+ */
+function simplifyGeometry(geometry, tolerance = 0.0001) {
+  if (!geometry) return null;
+
+  if (geometry.type === 'Polygon') {
+    return {
+      type: 'Polygon',
+      coordinates: geometry.coordinates.map(ring => {
+        const simplified = simplifyLine(ring, tolerance);
+        // Ensure ring has at least 4 points (GeoJSON requirement for polygons)
+        return simplified.length >= 4 ? simplified : ring;
+      }),
+    };
+  }
+
+  if (geometry.type === 'MultiPolygon') {
+    return {
+      type: 'MultiPolygon',
+      coordinates: geometry.coordinates.map(polygon =>
+        polygon.map(ring => {
+          const simplified = simplifyLine(ring, tolerance);
+          return simplified.length >= 4 ? simplified : ring;
+        })
+      ),
+    };
+  }
+
+  // Points and other types don't need simplification
+  return geometry;
+}
+
+/**
  * Process CPDB GeoJSON records
  */
 function processCapitalProjects(features) {
@@ -66,6 +186,13 @@ function processCapitalProjects(features) {
 
       // Store geometry as JSONB (PostGIS-compatible GeoJSON)
       geometry: feature.geometry,
+
+      // Pre-computed centroid for faster rendering (Phase 2.1)
+      centroidLon: calculateCentroid(feature.geometry)[0],
+      centroidLat: calculateCentroid(feature.geometry)[1],
+
+      // Simplified geometry for faster API responses (Phase 2.2)
+      geometrySimplified: simplifyGeometry(feature.geometry, 0.0001),
 
       lastSyncedAt: new Date(),
     };
